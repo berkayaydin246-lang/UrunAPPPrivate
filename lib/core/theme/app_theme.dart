@@ -4,17 +4,27 @@ import 'package:google_fonts/google_fonts.dart';
 class AppColors {
   AppColors._();
 
-  static const primary = Color(0xFF147D72);
-  static const primaryLight = Color(0xFF24A394);
-  static const primarySoft = Color(0xFFE6F4F1);
-  static const accent = Color(0xFFFF7A59);
-  static const softAccent = Color(0xFFFFE9DF);
-  static const background = Color(0xFFF7FAF8);
-  static const surface = Color(0xFFFFFFFF);
-  static const surfaceSoft = Color(0xFFF2F7F4);
-  static const textPrimary = Color(0xFF17211F);
-  static const textSecondary = Color(0xFF687A75);
-  static const border = Color(0xFFDCE8E4);
+  static const brandBackground = Color(0xFFFFF9F2);
+  static const brandSurface = Color(0xFFFFFFFF);
+  static const brandCream = Color(0xFFFFF4E4);
+  static const brandAmber = Color(0xFFF59E2E);
+  static const brandAmberSoft = Color(0xFFFFF1D6);
+  static const brandPlum = Color(0xFF2B1A2D);
+  static const brandText = Color(0xFF1F1C1A);
+  static const brandMuted = Color(0xFF756B62);
+  static const brandBorder = Color(0xFFEADCCB);
+
+  static const primary = brandPlum;
+  static const primaryLight = Color(0xFF4A344C);
+  static const primarySoft = brandCream;
+  static const accent = brandAmber;
+  static const softAccent = brandAmberSoft;
+  static const background = brandBackground;
+  static const surface = brandSurface;
+  static const surfaceSoft = brandCream;
+  static const textPrimary = brandText;
+  static const textSecondary = brandMuted;
+  static const border = brandBorder;
   static const positive = Color(0xFF2F8F62);
   static const positiveSoft = Color(0xFFE8F6EE);
   static const warning = Color(0xFFC7861A);
@@ -33,8 +43,8 @@ class AppColors {
   static const dangerText = Color(0xFF8E3636);
   static const infoBg = Color(0xFFDBEAFE);
   static const infoText = Color(0xFF1E40AF);
-  static const neutralBg = Color(0xFFF1F6F4);
-  static const neutralText = Color(0xFF536560);
+  static const neutralBg = Color(0xFFFFF7EC);
+  static const neutralText = Color(0xFF6C625A);
 }
 
 class AppSpacing {
@@ -61,9 +71,9 @@ class AppRadius {
 class AppShadows {
   AppShadows._();
 
-  static List<BoxShadow> soft([Color color = AppColors.primary]) => [
+  static List<BoxShadow> soft([Color color = AppColors.accent]) => [
     BoxShadow(
-      color: color.withValues(alpha: 0.08),
+      color: color.withValues(alpha: 0.1),
       blurRadius: 18,
       offset: const Offset(0, 8),
     ),
@@ -91,8 +101,8 @@ class AppTheme {
         ).copyWith(
           primary: AppColors.primary,
           onPrimary: Colors.white,
-          secondary: AppColors.primaryLight,
-          onSecondary: Colors.white,
+          secondary: AppColors.accent,
+          onSecondary: AppColors.brandPlum,
           error: AppColors.danger,
           onError: Colors.white,
           surface: AppColors.surface,
@@ -101,7 +111,7 @@ class AppTheme {
           outline: AppColors.border,
           outlineVariant: AppColors.border,
           tertiary: AppColors.accent,
-          onTertiary: Colors.white,
+          onTertiary: AppColors.brandPlum,
         );
 
     final baseText =
@@ -155,6 +165,7 @@ class AppTheme {
           fontWeight: FontWeight.w800,
         ),
         iconTheme: const IconThemeData(color: AppColors.primary),
+        actionsIconTheme: const IconThemeData(color: AppColors.primary),
       ),
       cardTheme: CardThemeData(
         color: AppColors.surface,
@@ -188,12 +199,12 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppRadius.input),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+          borderSide: const BorderSide(color: AppColors.accent, width: 1.5),
         ),
       ),
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.neutralBg,
-        selectedColor: AppColors.surfaceSoft,
+        selectedColor: AppColors.softAccent,
         disabledColor: AppColors.neutralBg,
         side: const BorderSide(color: AppColors.border),
         shape: RoundedRectangleBorder(
@@ -252,9 +263,11 @@ class AppTheme {
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: AppColors.surface,
-        selectedItemColor: AppColors.primary,
+        selectedItemColor: AppColors.accent,
         unselectedItemColor: AppColors.textSecondary,
-        selectedLabelStyle: textTheme.labelSmall,
+        selectedLabelStyle: textTheme.labelSmall?.copyWith(
+          fontWeight: FontWeight.w800,
+        ),
         unselectedLabelStyle: textTheme.labelSmall,
         type: BottomNavigationBarType.fixed,
         elevation: 0,
@@ -275,7 +288,7 @@ class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
       progressIndicatorTheme: const ProgressIndicatorThemeData(
-        color: AppColors.primary,
+        color: AppColors.accent,
       ),
       visualDensity: VisualDensity.adaptivePlatformDensity,
     );

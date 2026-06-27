@@ -38,8 +38,13 @@ const _tabShortNames = <String, String>{
 /// are shown as tabs so the user can swipe or tap to jump between them.
 class CategoryProductsPage extends StatefulWidget {
   final ProductCategory category;
+  final ProductRepository productRepository;
 
-  const CategoryProductsPage({super.key, required this.category});
+  const CategoryProductsPage({
+    super.key,
+    required this.category,
+    ProductRepository? productRepository,
+  }) : productRepository = productRepository ?? const ProductRepository();
 
   @override
   State<CategoryProductsPage> createState() => _CategoryProductsPageState();
@@ -79,7 +84,7 @@ class _CategoryProductsPageState extends State<CategoryProductsPage>
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.surface,
+        backgroundColor: AppColors.background,
         foregroundColor: AppColors.textPrimary,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
@@ -94,7 +99,12 @@ class _CategoryProductsPageState extends State<CategoryProductsPage>
       body: TabBarView(
         controller: _tabController,
         children: _mainCategories
-            .map((cat) => _CategoryTabPage(category: cat))
+            .map(
+              (cat) => _CategoryTabPage(
+                category: cat,
+                productRepository: widget.productRepository,
+              ),
+            )
             .toList(),
       ),
     );
@@ -116,27 +126,48 @@ class _CategoryTabBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: AppColors.surface,
+        color: AppColors.background,
         border: Border(bottom: BorderSide(color: AppColors.border)),
       ),
-      child: TabBar(
-        controller: controller,
-        isScrollable: true,
-        dividerColor: Colors.transparent,
-        indicatorColor: AppColors.primary,
-        indicatorWeight: 3.0,
-        labelColor: AppColors.primary,
-        unselectedLabelColor: AppColors.textSecondary,
-        labelPadding: const EdgeInsets.symmetric(horizontal: 16),
-        labelStyle: Theme.of(
-          context,
-        ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
-        unselectedLabelStyle: Theme.of(
-          context,
-        ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w500),
-        tabs: categories
-            .map((cat) => Tab(text: _tabShortNames[cat.title] ?? cat.title))
-            .toList(),
+      child: AnimatedBuilder(
+        animation: controller.animation ?? controller,
+        builder: (context, child) {
+          final clampedIndex = controller.index.clamp(0, categories.length - 1);
+          final selectedTheme = getCategoryThemeForCategory(
+            categories[clampedIndex],
+          );
+
+          return TabBar(
+            key: const ValueKey('main-category-tab-bar'),
+            controller: controller,
+            isScrollable: true,
+            dividerColor: Colors.transparent,
+            indicatorSize: TabBarIndicatorSize.label,
+            indicator: UnderlineTabIndicator(
+              borderSide: BorderSide(
+                color: selectedTheme.selectedChipColor,
+                width: 3,
+              ),
+              insets: const EdgeInsets.symmetric(horizontal: 12),
+            ),
+            indicatorColor: selectedTheme.selectedChipColor,
+            labelColor: selectedTheme.selectedChipColor,
+            unselectedLabelColor: AppColors.textSecondary,
+            overlayColor: WidgetStatePropertyAll(
+              selectedTheme.chipTint.withValues(alpha: 0.28),
+            ),
+            labelPadding: const EdgeInsets.symmetric(horizontal: 16),
+            labelStyle: Theme.of(
+              context,
+            ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w800),
+            unselectedLabelStyle: Theme.of(
+              context,
+            ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
+            tabs: categories
+                .map((cat) => Tab(text: _tabShortNames[cat.title] ?? cat.title))
+                .toList(),
+          );
+        },
       ),
     );
   }
@@ -146,8 +177,12 @@ class _CategoryTabBar extends StatelessWidget implements PreferredSizeWidget {
 
 class _CategoryTabPage extends StatefulWidget {
   final ProductCategory category;
+  final ProductRepository productRepository;
 
-  const _CategoryTabPage({required this.category});
+  const _CategoryTabPage({
+    required this.category,
+    required this.productRepository,
+  });
 
   @override
   State<_CategoryTabPage> createState() => _CategoryTabPageState();
@@ -165,7 +200,7 @@ class _CategoryTabPageState extends State<_CategoryTabPage> {
     _categoryTheme = getCategoryTheme(_listContext.lockedMainCategory);
     _providerOverride = filteredSearchProvider.overrideWith(
       (ref) => FilteredSearchNotifier(
-        const ProductRepository(),
+        widget.productRepository,
         initialFilter: _listContext.initialFilter(),
       ),
     );
@@ -256,20 +291,24 @@ class _SubCategoryQuickFilter extends ConsumerWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.fromLTRB(12, 6, 12, 4),
         children: [
-          _QuickChip(
-            label: 'Tümü',
-            selected: filter.subCategory == null,
-            categoryTheme: categoryTheme,
-            onTap: () => setFilter(filter.copyWith(subCategory: null)),
+          Center(
+            child: _QuickChip(
+              label: 'Tümü',
+              selected: filter.subCategory == null,
+              categoryTheme: categoryTheme,
+              onTap: () => setFilter(filter.copyWith(subCategory: null)),
+            ),
           ),
           ...subs.map(
             (sub) => Padding(
               padding: const EdgeInsets.only(left: 8),
-              child: _QuickChip(
-                label: sub,
-                selected: filter.subCategory == sub,
-                categoryTheme: categoryTheme,
-                onTap: () => setFilter(filter.copyWith(subCategory: sub)),
+              child: Center(
+                child: _QuickChip(
+                  label: sub,
+                  selected: filter.subCategory == sub,
+                  categoryTheme: categoryTheme,
+                  onTap: () => setFilter(filter.copyWith(subCategory: sub)),
+                ),
               ),
             ),
           ),
@@ -302,19 +341,16 @@ class _QuickChip extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
+        key: ValueKey('subcategory-chip-${categoryTheme.mainCategory}-$label'),
         duration: const Duration(milliseconds: 160),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        height: 36,
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 14),
         decoration: BoxDecoration(
           color: selected ? selectedBg : unselectedBg,
           borderRadius: BorderRadius.circular(999),
           border: Border.all(
-            color: selected
-                ? accent
-                : Color.lerp(
-                    categoryTheme.borderColor,
-                    AppColors.border,
-                    0.55,
-                  )!,
+            color: selected ? accent : categoryTheme.borderColor,
             width: selected ? 1.5 : 1.0,
           ),
           boxShadow: selected
@@ -327,14 +363,19 @@ class _QuickChip extends StatelessWidget {
                 ]
               : null,
         ),
-        child: Text(
-          label,
-          textAlign: TextAlign.center,
-          style: theme.textTheme.labelMedium?.copyWith(
-            color: selected
-                ? categoryTheme.selectedChipTextColor
-                : theme.colorScheme.onSurface,
-            fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+        child: Center(
+          child: Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: selected
+                  ? categoryTheme.selectedChipTextColor
+                  : categoryTheme.badgeColor,
+              fontWeight: selected ? FontWeight.w800 : FontWeight.w700,
+              height: 1.18,
+            ),
           ),
         ),
       ),

@@ -428,11 +428,10 @@ class _ProductListViewState extends ConsumerState<ProductListView> {
     _schedulePreviewWarm(searchState.products);
     final filter = searchState.filter;
     final pageTheme = widget.categoryTheme;
+    final pageAccent = pageTheme?.selectedChipColor;
     final textFieldFill = AppColors.surface;
-    final searchBorderColor =
-        pageTheme?.searchBorderColor.withValues(alpha: 0.72) ??
-        AppColors.border;
-    final searchIconColor = pageTheme?.filterButtonColor ?? AppColors.primary;
+    final searchBorderColor = pageTheme?.searchBorderColor ?? AppColors.border;
+    final searchIconColor = pageAccent ?? AppColors.accent;
 
     // On category pages the sub/main chips live in _SubCategoryQuickFilter
     // above this widget; only show the chip row for non-category filters.
@@ -463,11 +462,12 @@ class _ProductListViewState extends ConsumerState<ProductListView> {
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(AppRadius.input),
-                    boxShadow: AppShadows.soft(
-                      pageTheme?.primaryColor ?? AppColors.primary,
-                    ),
+                    boxShadow: AppShadows.soft(pageAccent ?? AppColors.accent),
                   ),
                   child: TextField(
+                    key: ValueKey(
+                      'product-search-field-${pageTheme?.mainCategory ?? 'global'}',
+                    ),
                     controller: _textController,
                     focusNode: _focusNode,
                     onChanged: _onSearchChanged,
@@ -496,7 +496,7 @@ class _ProductListViewState extends ConsumerState<ProductListView> {
                         borderRadius: BorderRadius.circular(AppRadius.input),
                         borderSide: BorderSide(
                           color:
-                              pageTheme?.searchBorderColor ?? AppColors.primary,
+                              pageTheme?.searchBorderColor ?? AppColors.accent,
                           width: 1.6,
                         ),
                       ),
@@ -571,7 +571,7 @@ class _FilterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final accent = categoryTheme?.filterButtonColor ?? AppColors.primary;
+    final accent = categoryTheme?.filterButtonColor ?? AppColors.accent;
     final hasActive = activeCount > 0;
     return Badge(
       isLabelVisible: hasActive,
@@ -580,22 +580,24 @@ class _FilterButton extends StatelessWidget {
       textColor:
           categoryTheme?.selectedChipTextColor ?? theme.colorScheme.onPrimary,
       child: IconButton.outlined(
+        key: ValueKey(
+          'product-filter-button-${categoryTheme?.mainCategory ?? 'global'}',
+        ),
         onPressed: onTap,
         icon: Icon(
           Icons.tune,
-          color: hasActive
+          color: hasActive || categoryTheme != null
               ? accent
-              : accent.withValues(alpha: categoryTheme == null ? 0.55 : 0.8),
+              : accent.withValues(alpha: 0.65),
         ),
         style: IconButton.styleFrom(
           backgroundColor:
               categoryTheme?.chipTint.withValues(alpha: 0.48) ??
               AppColors.surface,
           side: BorderSide(
-            color: hasActive
+            color: categoryTheme != null || hasActive
                 ? accent
-                : (categoryTheme?.borderColor.withValues(alpha: 0.92) ??
-                      AppColors.border),
+                : AppColors.border,
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.input),
@@ -777,7 +779,7 @@ class _LockedChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final accent = categoryTheme?.selectedChipColor ?? AppColors.primary;
+    final accent = categoryTheme?.selectedChipColor ?? AppColors.accent;
     return Padding(
       padding: const EdgeInsets.only(right: 6),
       child: Chip(
@@ -851,10 +853,13 @@ class _ResultsView extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
           child: Text(
             '${products.length}${searchState.hasMore ? '+' : ''} ürün',
+            key: ValueKey(
+              'product-result-count-${categoryTheme?.mainCategory ?? 'global'}',
+            ),
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
               fontSize: 14,
               color:
-                  categoryTheme?.badgeColor.withValues(alpha: 0.92) ??
+                  categoryTheme?.selectedChipColor ??
                   Theme.of(context).colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.w600,
             ),

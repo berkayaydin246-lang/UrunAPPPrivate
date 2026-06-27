@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_analyzer_app/core/theme/category_accent_colors.dart';
 
 class ProductCategory {
   final String id;
@@ -124,7 +125,7 @@ class ProductCategories {
         'çikolata',
         'kraker',
       ],
-      color: Color(0xFFFF8C00),
+      color: CategoryAccentColors.atistirmalik,
     ),
 
     ProductCategory(
@@ -158,7 +159,7 @@ class ProductCategories {
         'gazsiz_icecek',
       ],
       offFallbackQueries: ['içecek', 'meyve suyu', 'kola', 'enerji içeceği'],
-      color: Color(0xFF2980B9),
+      color: CategoryAccentColors.icecek,
     ),
 
     ProductCategory(
@@ -221,7 +222,7 @@ class ProductCategories {
         'kahvaltılık',
         'bal reçel',
       ],
-      color: Color(0xFF3498DB),
+      color: CategoryAccentColors.sutKahvaltilik,
     ),
 
     ProductCategory(
@@ -271,7 +272,7 @@ class ProductCategories {
         'mayonez',
         'konserve',
       ],
-      color: Color(0xFF84CC16),
+      color: CategoryAccentColors.temelGida,
     ),
 
     ProductCategory(
@@ -392,7 +393,7 @@ class ProductCategories {
         'balik_deniz_urunleri',
       ],
       offFallbackQueries: ['salam', 'sucuk', 'sosis', 'ton balığı', 'tavuk'],
-      color: Color(0xFFE74C3C),
+      color: CategoryAccentColors.etTavukBalik,
     ),
 
     ProductCategory(
@@ -416,7 +417,7 @@ class ProductCategories {
       offCategoryTags: ['en:fruits', 'en:vegetables'],
       databaseTags: [],
       offFallbackQueries: ['meyve', 'sebze', 'salata'],
-      color: Color(0xFF27AE60),
+      color: CategoryAccentColors.meyveSebze,
     ),
 
     ProductCategory(
@@ -446,7 +447,7 @@ class ProductCategories {
       offCategoryTags: ['en:ready-meals', 'en:frozen-foods'],
       databaseTags: ['hazir_yemek'],
       offFallbackQueries: ['hazır yemek', 'donuk ürün', 'instant noodle'],
-      color: Color(0xFF16A085),
+      color: CategoryAccentColors.hazirDonuk,
     ),
 
     ProductCategory(
@@ -469,7 +470,7 @@ class ProductCategories {
       offCategoryTags: ['en:ice-creams', 'en:desserts'],
       databaseTags: ['dondurma_tatli'],
       offFallbackQueries: ['dondurma', 'tatlı', 'dessert'],
-      color: Color(0xFF5DADE2),
+      color: CategoryAccentColors.dondurma,
     ),
 
     ProductCategory(
@@ -494,7 +495,7 @@ class ProductCategories {
       offCategoryTags: ['en:breads', 'en:pastries'],
       databaseTags: [],
       offFallbackQueries: ['ekmek', 'poğaça', 'pasta'],
-      color: Color(0xFFD4AC0D),
+      color: CategoryAccentColors.firinPastane,
     ),
 
     ProductCategory(
@@ -517,7 +518,7 @@ class ProductCategories {
       offCategoryTags: ['en:baby-foods'],
       databaseTags: ['bebek_cocuk'],
       offFallbackQueries: ['bebek maması', 'baby food', 'çocuk ürünü'],
-      color: Color(0xFF76D7C4),
+      color: CategoryAccentColors.bebek,
     ),
 
     ProductCategory(
@@ -546,7 +547,7 @@ class ProductCategories {
       offCategoryTags: ['en:protein-bars', 'en:dietary-supplements'],
       databaseTags: [],
       offFallbackQueries: ['protein bar', 'granola', 'glutensiz', 'vegan'],
-      color: Color(0xFF1ABC9C),
+      color: CategoryAccentColors.ozelBeslenme,
     ),
 
     ProductCategory(
@@ -555,7 +556,7 @@ class ProductCategories {
       icon: Icons.category_outlined,
       positiveKeywords: [],
       databaseTags: [],
-      color: Color(0xFF8B5CF6),
+      color: CategoryAccentColors.diger,
     ),
   ];
 

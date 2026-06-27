@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_analyzer_app/core/theme/category_accent_colors.dart';
 import 'package:food_analyzer_app/features/product/models/product.dart';
 import 'package:food_analyzer_app/features/search/models/product_category.dart';
 import 'package:food_analyzer_app/features/search/services/canonical_category_mapper.dart';
@@ -63,17 +64,17 @@ CategoryThemeData getCategoryTheme(String? mainCategory) {
     case CanonicalCategoryMapper.kAtistirmalik:
       return const CategoryThemeData(
         mainCategory: CanonicalCategoryMapper.kAtistirmalik,
-        primaryColor: Color(0xFFFF6B6B),
-        secondaryColor: Color(0xFFFFB4A2),
-        backgroundTint: Color(0xFFFFF7F5),
-        cardTint: Color(0xFFFFEFEC),
-        chipTint: Color(0xFFFFD6D6),
-        borderColor: Color(0xFFFF9A9A),
-        selectedChipColor: Color(0xFFFF6B6B),
+        primaryColor: CategoryAccentColors.atistirmalik,
+        secondaryColor: Color(0xFFFFB8AD),
+        backgroundTint: Color(0xFFFFF6F3),
+        cardTint: Color(0xFFFFECE7),
+        chipTint: Color(0xFFFFDAD4),
+        borderColor: Color(0xFFF1B1A8),
+        selectedChipColor: CategoryAccentColors.atistirmalik,
         selectedChipTextColor: Colors.white,
-        searchBorderColor: Color(0xFFFF8A8A),
-        filterButtonColor: Color(0xFFFF6B6B),
-        badgeColor: Color(0xFFFF4F5E),
+        searchBorderColor: CategoryAccentColors.atistirmalik,
+        filterButtonColor: CategoryAccentColors.atistirmalik,
+        badgeColor: CategoryAccentColors.atistirmalik,
         fallbackIcon: '🍫',
         imageAssetPath: 'assets/category_images/snacks.png',
       );
@@ -83,17 +84,17 @@ CategoryThemeData getCategoryTheme(String? mainCategory) {
     case CanonicalCategoryMapper.kSutKahvaltilik:
       return const CategoryThemeData(
         mainCategory: CanonicalCategoryMapper.kSutKahvaltilik,
-        primaryColor: Color(0xFF38BDF8),
-        secondaryColor: Color(0xFF7DD3FC),
-        backgroundTint: Color(0xFFF0F9FF),
-        cardTint: Color(0xFFE6F6FF),
-        chipTint: Color(0xFFD8F0FE),
-        borderColor: Color(0xFFBAE6FD),
-        selectedChipColor: Color(0xFF38BDF8),
-        selectedChipTextColor: Colors.white,
-        searchBorderColor: Color(0xFF7DD3FC),
-        filterButtonColor: Color(0xFF38BDF8),
-        badgeColor: Color(0xFF0284C7),
+        primaryColor: CategoryAccentColors.sutKahvaltilik,
+        secondaryColor: Color(0xFFF0C37E),
+        backgroundTint: Color(0xFFFFF9EF),
+        cardTint: Color(0xFFFFEED4),
+        chipTint: Color(0xFFFCE0B6),
+        borderColor: Color(0xFFEDC98D),
+        selectedChipColor: CategoryAccentColors.sutKahvaltilik,
+        selectedChipTextColor: Color(0xFF2B1A2D),
+        searchBorderColor: CategoryAccentColors.sutKahvaltilik,
+        filterButtonColor: CategoryAccentColors.sutKahvaltilik,
+        badgeColor: CategoryAccentColors.sutKahvaltilik,
         fallbackIcon: '🥛',
         imageAssetPath: 'assets/category_images/dairy.png',
       );
@@ -102,17 +103,17 @@ CategoryThemeData getCategoryTheme(String? mainCategory) {
     case CanonicalCategoryMapper.kEtTavukBalik:
       return const CategoryThemeData(
         mainCategory: CanonicalCategoryMapper.kEtTavukBalik,
-        primaryColor: Color(0xFFEF4444),
-        secondaryColor: Color(0xFFFCA5A5),
-        backgroundTint: Color(0xFFFFF7F7),
-        cardTint: Color(0xFFFFECEC),
-        chipTint: Color(0xFFFEE2E2),
-        borderColor: Color(0xFFFECACA),
-        selectedChipColor: Color(0xFFEF4444),
+        primaryColor: CategoryAccentColors.etTavukBalik,
+        secondaryColor: Color(0xFFF0A597),
+        backgroundTint: Color(0xFFFFF7F4),
+        cardTint: Color(0xFFF8E6E1),
+        chipTint: Color(0xFFF5D5CE),
+        borderColor: Color(0xFFE3B0A5),
+        selectedChipColor: CategoryAccentColors.etTavukBalik,
         selectedChipTextColor: Colors.white,
-        searchBorderColor: Color(0xFFF87171),
-        filterButtonColor: Color(0xFFEF4444),
-        badgeColor: Color(0xFFDC2626),
+        searchBorderColor: CategoryAccentColors.etTavukBalik,
+        filterButtonColor: CategoryAccentColors.etTavukBalik,
+        badgeColor: CategoryAccentColors.etTavukBalik,
         fallbackIcon: '🥩',
         imageAssetPath: 'assets/category_images/meat_fish.png',
       );
@@ -121,17 +122,17 @@ CategoryThemeData getCategoryTheme(String? mainCategory) {
     case CanonicalCategoryMapper.kIcecek:
       return const CategoryThemeData(
         mainCategory: CanonicalCategoryMapper.kIcecek,
-        primaryColor: Color(0xFF06B6D4),
-        secondaryColor: Color(0xFF67E8F9),
-        backgroundTint: Color(0xFFF0FDFF),
-        cardTint: Color(0xFFE2FAFD),
-        chipTint: Color(0xFFCFFAFE),
-        borderColor: Color(0xFFA5F3FC),
-        selectedChipColor: Color(0xFF06B6D4),
+        primaryColor: CategoryAccentColors.icecek,
+        secondaryColor: Color(0xFFA4D2FB),
+        backgroundTint: Color(0xFFF3F9FF),
+        cardTint: Color(0xFFE8F2FF),
+        chipTint: Color(0xFFD8EBFF),
+        borderColor: Color(0xFFA9D1F6),
+        selectedChipColor: CategoryAccentColors.icecek,
         selectedChipTextColor: Colors.white,
-        searchBorderColor: Color(0xFF22D3EE),
-        filterButtonColor: Color(0xFF06B6D4),
-        badgeColor: Color(0xFF0891B2),
+        searchBorderColor: CategoryAccentColors.icecek,
+        filterButtonColor: CategoryAccentColors.icecek,
+        badgeColor: CategoryAccentColors.icecek,
         fallbackIcon: '🥤',
         imageAssetPath: 'assets/category_images/drinks.png',
       );
@@ -140,17 +141,17 @@ CategoryThemeData getCategoryTheme(String? mainCategory) {
     case CanonicalCategoryMapper.kTemelGida:
       return const CategoryThemeData(
         mainCategory: CanonicalCategoryMapper.kTemelGida,
-        primaryColor: Color(0xFF84CC16),
-        secondaryColor: Color(0xFFA3E635),
-        backgroundTint: Color(0xFFF7FEE7),
-        cardTint: Color(0xFFEEFBD0),
-        chipTint: Color(0xFFECFCCB),
-        borderColor: Color(0xFFD9F99D),
-        selectedChipColor: Color(0xFF84CC16),
-        selectedChipTextColor: Color(0xFF243000),
-        searchBorderColor: Color(0xFFA3E635),
-        filterButtonColor: Color(0xFF84CC16),
-        badgeColor: Color(0xFF65A30D),
+        primaryColor: CategoryAccentColors.temelGida,
+        secondaryColor: Color(0xFFF3C56F),
+        backgroundTint: Color(0xFFFFF8EE),
+        cardTint: Color(0xFFFFEFD8),
+        chipTint: Color(0xFFFBE2BA),
+        borderColor: Color(0xFFF0C983),
+        selectedChipColor: CategoryAccentColors.temelGida,
+        selectedChipTextColor: Color(0xFF2B1A2D),
+        searchBorderColor: CategoryAccentColors.temelGida,
+        filterButtonColor: CategoryAccentColors.temelGida,
+        badgeColor: CategoryAccentColors.temelGida,
         fallbackIcon: '🌾',
         imageAssetPath: 'assets/category_images/staples.png',
       );
@@ -158,17 +159,17 @@ CategoryThemeData getCategoryTheme(String? mainCategory) {
     case CanonicalCategoryMapper.kMeyveSebze:
       return const CategoryThemeData(
         mainCategory: CanonicalCategoryMapper.kMeyveSebze,
-        primaryColor: Color(0xFF22C55E),
-        secondaryColor: Color(0xFF86EFAC),
-        backgroundTint: Color(0xFFF0FDF4),
-        cardTint: Color(0xFFDCFCE7),
-        chipTint: Color(0xFFBBF7D0),
-        borderColor: Color(0xFF86EFAC),
-        selectedChipColor: Color(0xFF22C55E),
+        primaryColor: CategoryAccentColors.meyveSebze,
+        secondaryColor: Color(0xFFA7D7B4),
+        backgroundTint: Color(0xFFF4FBF6),
+        cardTint: Color(0xFFE5F4E9),
+        chipTint: Color(0xFFD5ECD8),
+        borderColor: Color(0xFFA9D1B0),
+        selectedChipColor: CategoryAccentColors.meyveSebze,
         selectedChipTextColor: Colors.white,
-        searchBorderColor: Color(0xFF4ADE80),
-        filterButtonColor: Color(0xFF22C55E),
-        badgeColor: Color(0xFF16A34A),
+        searchBorderColor: CategoryAccentColors.meyveSebze,
+        filterButtonColor: CategoryAccentColors.meyveSebze,
+        badgeColor: CategoryAccentColors.meyveSebze,
         fallbackIcon: '🥦',
         imageAssetPath: 'assets/category_images/produce.png',
       );
@@ -176,17 +177,17 @@ CategoryThemeData getCategoryTheme(String? mainCategory) {
     case CanonicalCategoryMapper.kHazirDonuk:
       return const CategoryThemeData(
         mainCategory: CanonicalCategoryMapper.kHazirDonuk,
-        primaryColor: Color(0xFF0EA5E9),
-        secondaryColor: Color(0xFF7DD3FC),
-        backgroundTint: Color(0xFFF0F9FF),
-        cardTint: Color(0xFFE0F2FE),
-        chipTint: Color(0xFFBAE6FD),
-        borderColor: Color(0xFF7DD3FC),
-        selectedChipColor: Color(0xFF0EA5E9),
+        primaryColor: CategoryAccentColors.hazirDonuk,
+        secondaryColor: Color(0xFFF5BD7B),
+        backgroundTint: Color(0xFFFFF8EF),
+        cardTint: Color(0xFFFFE9D3),
+        chipTint: Color(0xFFFAD7B0),
+        borderColor: Color(0xFFF0B473),
+        selectedChipColor: CategoryAccentColors.hazirDonuk,
         selectedChipTextColor: Colors.white,
-        searchBorderColor: Color(0xFF38BDF8),
-        filterButtonColor: Color(0xFF0EA5E9),
-        badgeColor: Color(0xFF0284C7),
+        searchBorderColor: CategoryAccentColors.hazirDonuk,
+        filterButtonColor: CategoryAccentColors.hazirDonuk,
+        badgeColor: CategoryAccentColors.hazirDonuk,
         fallbackIcon: '🥡',
         imageAssetPath: 'assets/category_images/ready_meals.png',
       );
@@ -194,17 +195,17 @@ CategoryThemeData getCategoryTheme(String? mainCategory) {
     case CanonicalCategoryMapper.kDondurma:
       return const CategoryThemeData(
         mainCategory: CanonicalCategoryMapper.kDondurma,
-        primaryColor: Color(0xFF8B5CF6),
-        secondaryColor: Color(0xFFC4B5FD),
-        backgroundTint: Color(0xFFFAF5FF),
-        cardTint: Color(0xFFF3E8FF),
-        chipTint: Color(0xFFEDE9FE),
-        borderColor: Color(0xFFDDD6FE),
-        selectedChipColor: Color(0xFF8B5CF6),
-        selectedChipTextColor: Colors.white,
-        searchBorderColor: Color(0xFFA78BFA),
-        filterButtonColor: Color(0xFF8B5CF6),
-        badgeColor: Color(0xFF7C3AED),
+        primaryColor: CategoryAccentColors.dondurma,
+        secondaryColor: Color(0xFFF0B9E4),
+        backgroundTint: Color(0xFFFFF6FC),
+        cardTint: Color(0xFFF8E6F3),
+        chipTint: Color(0xFFF1D3EB),
+        borderColor: Color(0xFFE2B3D6),
+        selectedChipColor: CategoryAccentColors.dondurma,
+        selectedChipTextColor: Color(0xFF2B1A2D),
+        searchBorderColor: CategoryAccentColors.dondurma,
+        filterButtonColor: CategoryAccentColors.dondurma,
+        badgeColor: CategoryAccentColors.dondurma,
         fallbackIcon: '🍦',
         imageAssetPath: 'assets/category_images/ice_cream.png',
       );
@@ -212,17 +213,17 @@ CategoryThemeData getCategoryTheme(String? mainCategory) {
     case CanonicalCategoryMapper.kFirinPastane:
       return const CategoryThemeData(
         mainCategory: CanonicalCategoryMapper.kFirinPastane,
-        primaryColor: Color(0xFFF59E0B),
-        secondaryColor: Color(0xFFFBBF24),
-        backgroundTint: Color(0xFFFFFBEB),
-        cardTint: Color(0xFFFFF3D1),
-        chipTint: Color(0xFFFDE68A),
-        borderColor: Color(0xFFFCD34D),
-        selectedChipColor: Color(0xFFF59E0B),
+        primaryColor: CategoryAccentColors.firinPastane,
+        secondaryColor: Color(0xFFD4A47B),
+        backgroundTint: Color(0xFFFCF7F2),
+        cardTint: Color(0xFFF3E6D9),
+        chipTint: Color(0xFFECD3BC),
+        borderColor: Color(0xFFD8B48F),
+        selectedChipColor: CategoryAccentColors.firinPastane,
         selectedChipTextColor: Colors.white,
-        searchBorderColor: Color(0xFFF59E0B),
-        filterButtonColor: Color(0xFFF59E0B),
-        badgeColor: Color(0xFFD97706),
+        searchBorderColor: CategoryAccentColors.firinPastane,
+        filterButtonColor: CategoryAccentColors.firinPastane,
+        badgeColor: CategoryAccentColors.firinPastane,
         fallbackIcon: '🍞',
         imageAssetPath: 'assets/category_images/bakery.png',
       );
@@ -230,17 +231,17 @@ CategoryThemeData getCategoryTheme(String? mainCategory) {
     case CanonicalCategoryMapper.kBebek:
       return const CategoryThemeData(
         mainCategory: CanonicalCategoryMapper.kBebek,
-        primaryColor: Color(0xFF14B8A6),
-        secondaryColor: Color(0xFF5EEAD4),
-        backgroundTint: Color(0xFFF0FDFA),
-        cardTint: Color(0xFFCCFBF1),
-        chipTint: Color(0xFF99F6E4),
-        borderColor: Color(0xFF5EEAD4),
-        selectedChipColor: Color(0xFF14B8A6),
-        selectedChipTextColor: Colors.white,
-        searchBorderColor: Color(0xFF2DD4BF),
-        filterButtonColor: Color(0xFF14B8A6),
-        badgeColor: Color(0xFF0D9488),
+        primaryColor: CategoryAccentColors.bebek,
+        secondaryColor: Color(0xFFF7C8A7),
+        backgroundTint: Color(0xFFFFF8F3),
+        cardTint: Color(0xFFFFE9DA),
+        chipTint: Color(0xFFF8D8C0),
+        borderColor: Color(0xFFE9B792),
+        selectedChipColor: CategoryAccentColors.bebek,
+        selectedChipTextColor: Color(0xFF2B1A2D),
+        searchBorderColor: CategoryAccentColors.bebek,
+        filterButtonColor: CategoryAccentColors.bebek,
+        badgeColor: CategoryAccentColors.bebek,
         fallbackIcon: '🍼',
         imageAssetPath: 'assets/category_images/baby.png',
       );
@@ -248,17 +249,17 @@ CategoryThemeData getCategoryTheme(String? mainCategory) {
     case CanonicalCategoryMapper.kOzelBeslenme:
       return const CategoryThemeData(
         mainCategory: CanonicalCategoryMapper.kOzelBeslenme,
-        primaryColor: Color(0xFF10B981),
-        secondaryColor: Color(0xFF6EE7B7),
-        backgroundTint: Color(0xFFF0FDF4),
-        cardTint: Color(0xFFD1FAE5),
-        chipTint: Color(0xFFA7F3D0),
-        borderColor: Color(0xFF6EE7B7),
-        selectedChipColor: Color(0xFF10B981),
+        primaryColor: CategoryAccentColors.ozelBeslenme,
+        secondaryColor: Color(0xFFB5D9A8),
+        backgroundTint: Color(0xFFF5FBF1),
+        cardTint: Color(0xFFE6F3DE),
+        chipTint: Color(0xFFD4EAC9),
+        borderColor: Color(0xFFB6D3A6),
+        selectedChipColor: CategoryAccentColors.ozelBeslenme,
         selectedChipTextColor: Colors.white,
-        searchBorderColor: Color(0xFF34D399),
-        filterButtonColor: Color(0xFF10B981),
-        badgeColor: Color(0xFF059669),
+        searchBorderColor: CategoryAccentColors.ozelBeslenme,
+        filterButtonColor: CategoryAccentColors.ozelBeslenme,
+        badgeColor: CategoryAccentColors.ozelBeslenme,
         fallbackIcon: '🌿',
         imageAssetPath: 'assets/category_images/health.png',
       );
@@ -267,17 +268,17 @@ CategoryThemeData getCategoryTheme(String? mainCategory) {
     default:
       return const CategoryThemeData(
         mainCategory: CanonicalCategoryMapper.kDiger,
-        primaryColor: Color(0xFF8B5CF6),
-        secondaryColor: Color(0xFFC4B5FD),
-        backgroundTint: Color(0xFFFAF8FF),
-        cardTint: Color(0xFFF0EAFF),
-        chipTint: Color(0xFFEDE9FE),
-        borderColor: Color(0xFFDDD6FE),
-        selectedChipColor: Color(0xFF8B5CF6),
+        primaryColor: CategoryAccentColors.diger,
+        secondaryColor: Color(0xFFCDBDDA),
+        backgroundTint: Color(0xFFF9F6FC),
+        cardTint: Color(0xFFF0E8F5),
+        chipTint: Color(0xFFE5DBED),
+        borderColor: Color(0xFFD4C4DF),
+        selectedChipColor: CategoryAccentColors.diger,
         selectedChipTextColor: Colors.white,
-        searchBorderColor: Color(0xFFA78BFA),
-        filterButtonColor: Color(0xFF8B5CF6),
-        badgeColor: Color(0xFF7C3AED),
+        searchBorderColor: CategoryAccentColors.diger,
+        filterButtonColor: CategoryAccentColors.diger,
+        badgeColor: CategoryAccentColors.diger,
         fallbackIcon: '🛒',
         imageAssetPath: 'assets/category_images/other.png',
       );
@@ -285,6 +286,11 @@ CategoryThemeData getCategoryTheme(String? mainCategory) {
 }
 
 CategoryThemeData getCategoryThemeForCategory(ProductCategory category) {
+  final directMainCategory = _mainCategoryForProductCategoryId(category.id);
+  if (directMainCategory != null) {
+    return getCategoryTheme(directMainCategory);
+  }
+
   final canonical = CanonicalCategoryMapper.map(
     categoryTags: category.databaseTags.isNotEmpty
         ? category.databaseTags
@@ -292,6 +298,37 @@ CategoryThemeData getCategoryThemeForCategory(ProductCategory category) {
     name: category.title,
   );
   return getCategoryTheme(canonical.main);
+}
+
+String? _mainCategoryForProductCategoryId(String id) {
+  switch (id) {
+    case 'atistirmalik':
+      return CanonicalCategoryMapper.kAtistirmalik;
+    case 'icecek':
+      return CanonicalCategoryMapper.kIcecek;
+    case 'sut-kahvaltilik':
+      return CanonicalCategoryMapper.kSutKahvaltilik;
+    case 'temel-gida':
+      return CanonicalCategoryMapper.kTemelGida;
+    case 'et-tavuk-balik':
+      return CanonicalCategoryMapper.kEtTavukBalik;
+    case 'meyve-sebze':
+      return CanonicalCategoryMapper.kMeyveSebze;
+    case 'hazir-donuk':
+      return CanonicalCategoryMapper.kHazirDonuk;
+    case 'dondurma':
+      return CanonicalCategoryMapper.kDondurma;
+    case 'firin-pastane':
+      return CanonicalCategoryMapper.kFirinPastane;
+    case 'bebek-gida':
+      return CanonicalCategoryMapper.kBebek;
+    case 'ozel-beslenme':
+      return CanonicalCategoryMapper.kOzelBeslenme;
+    case 'diger':
+      return CanonicalCategoryMapper.kDiger;
+    default:
+      return null;
+  }
 }
 
 CategoryThemeData getCategoryThemeForProduct(Product product) {
