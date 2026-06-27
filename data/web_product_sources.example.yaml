@@ -1,0 +1,71 @@
+# Web product discovery sources (EXAMPLE / TEMPLATE)
+#
+# Copy this file to data/web_product_sources.yaml and fill in REAL, ALLOWED
+# source URLs. The scraper ONLY visits URLs listed here — nothing is hardcoded.
+#
+# Rules (enforced by policy, please respect):
+#   * Only add public product/category pages you are permitted to read.
+#   * Do NOT add authenticated/private pages.
+#   * Do NOT add sources that require defeating anti-bot protections.
+#   * Everything scraped goes to product_staging for admin review — never to
+#     the live `products` catalog, and never auto-approved.
+#
+# Each source has:
+#   id:                     unique short id (becomes source = "web_scraper:<id>")
+#   enabled:                true/false toggle
+#   type:                   product_pages | category_pages
+#   base_url:               optional; used to resolve relative links
+#   product_urls:           (type: product_pages) direct product detail URLs
+#   category_urls:          (type: category_pages) list of {category, url}
+#   product_link_selector:  optional CSS selector for product links on a listing
+#   link_selector:          alias of product_link_selector (back-compat)
+#   product_link_patterns:  extra URL substrings that mark a product link
+#   exclude_link_patterns:  extra URL substrings to skip (added to built-ins)
+#   max_pages_per_category: listing pages to crawl per category (pagination TODO)
+#   next_page_selector:     reserved for future pagination
+#   adapter:                opt-in source-specific adapter id (e.g. "migros") for
+#                           API-backed listings; only runs when generic discovery
+#                           finds zero links
+#   adapter_config:         per-adapter settings. For an API-backed site:
+#                             api_url_template: "https://site/api/categories/{category_id}/products?page={page}"
+#                             category_id: ""        # explicit id, else parsed from the URL
+#                             page_param: "page"
+#                             max_pages: 1
+#                           Placeholders: {category_id} {category_slug} {page} {category_url}
+#   notes:                  free text for operators
+
+sources:
+  # ── Example A: official brand product pages (highest trust when detailed) ──
+  - id: official_brand
+    enabled: false                 # flip to true once you add real URLs
+    type: product_pages
+    base_url: ""                   # e.g. "https://www.examplebrand.com.tr"
+    product_urls: []               # e.g.
+                                   #   - "https://www.examplebrand.com.tr/urun/kek-123"
+                                   #   - "https://www.examplebrand.com.tr/urun/cips-456"
+    notes: >
+      Official brand pages are preferred when they include ingredients and
+      nutrition. Add direct product detail URLs only.
+
+  # ── Example B: retailer category pages (discover → visit product pages) ────
+  - id: retailer
+    enabled: false
+    type: category_pages
+    base_url: ""                   # e.g. "https://www.exampleretailer.com.tr"
+    category_urls:
+      - category: cips
+        url: ""                    # e.g. "https://www.exampleretailer.com.tr/cips-c-100"
+      - category: kek
+        url: ""                    # e.g. "https://www.exampleretailer.com.tr/kek-c-200"
+    product_link_selector: ""      # optional, e.g. "a.product-card__link"
+    product_link_patterns:         # optional extra hints (added to built-ins)
+      - "-p-"
+    exclude_link_patterns:         # optional extra skips (added to built-ins)
+      - "/sepet"
+      - "/login"
+      - "/arama"
+    max_pages_per_category: 1      # pagination is a future TODO
+    notes: >
+      Retailer product pages can provide name, image, and sometimes
+      nutrition/ingredients. Use product_link_selector or product_link_patterns
+      if generic discovery picks up non-product links. Keep the delay polite.

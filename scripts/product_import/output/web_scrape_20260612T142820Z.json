@@ -1,0 +1,1560 @@
+{
+  "mode": "dry-run",
+  "candidates": [
+    {
+      "barcode": null,
+      "name": "Migros Dana Jambon 90 G",
+      "brand": null,
+      "category_suggestion": "Jambon",
+      "category_tags": [
+        "jambon"
+      ],
+      "search_keywords": [
+        "90",
+        "dana",
+        "jambon",
+        "migros"
+      ],
+      "image_front_url": "https://images.migrosone.com/sanalmarket/product/14900079/14900079_1-59fa86-1650x1650.jpg",
+      "image_front_storage_path": null,
+      "ingredients_text": "Dana eti ve yağı, patates nişastası, tuz, baharat karışımı, stabilizör (sodyum polifosfat), antioksidan (askorbik asit), koruyucu madde (sodyum nitrit). Eser miktarda iç antep fıstığı içerebilir",
+      "nutrition_json": {
+        "energy_kcal": 99.0,
+        "energy_kj": 417.0,
+        "fat": 3.0,
+        "saturated_fat": 1.8,
+        "carbohydrates": 5.0,
+        "sugars": 0.0,
+        "proteins": 13.0,
+        "salt": 2.0
+      },
+      "source": "web_scraper:migros",
+      "source_url": "https://www.migros.com.tr/migros-dana-jambon-90-g-p-e35b6f",
+      "raw_source_payload": {
+        "jsonld": null,
+        "meta": {
+          "og_title": "Migros Dana Jambon 90 G - Migros",
+          "og_image": "https://images.migrosone.com/sanalmarket/product/14900079/14900079_1-59fa86-1650x1650.jpg",
+          "og_description": "İçindekilerDana eti ve yağı, patates nişastası, tuz, baharat karışımı, stabilizör (sodyum polifosfat), antioksidan (askorbik asit), koruyucu madde (sodyum nitrit). Eser miktarda i.",
+          "title": "Migros Dana Jambon 90 G - Migros"
+        },
+        "ingredients_raw": "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Migros Dana Jambon 90 G - Migros\",\"description\":\"<p><strong>İçindekiler</strong><br>Dana eti ve yağı, patates nişastası, tuz, baharat karışımı, stabilizör (sodyum polifosfat), antioksidan (askorbik asit), koruyucu madde (sodyum nitrit). Eser miktarda iç antep fıstığı içerebilir.</p><p><strong>Alerjen Uyarısı</strong><br>Eser miktarda iç antep fıstığı içerebilir.</p><p><strong>Net Miktar (g/ml)</strong><br>90</p><p><strong>Saklama Koşulları</strong><br>Buzdolabında 0-4 °C muhafaza ediniz</p><p><strong>Menşei</strong><br>TÜRKİYE</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı Numarası</strong><br>706451</p><p><strong>Kullanım Önerileri</strong><br>Ambalajı açıldıktan sonra 2 gün içerisinde tüketiniz.</p><p><strong>Ürün Bilgilerini Kullanma Hakkında</strong><br>İnternet sitemizde ve online satış kanallarımızda yer alan ürün etiket bilgileri, ürünün tedarikçisi tarafından Migros Ticaret A.Ş.’ye iletilen en güncel bilgilerdir. Ürün etiket bilgileri ile internet sitemiz ve online satış kanallarımızda bulunan bilgiler arasında herhangi bir farklılık bulunması halinde sorumluluk tamamen tedarikçi firmaya aittir.</p>\",\"url\":\"https://www.migros.com.tr/migros-dana-jambon-90-g-p-e35b6f\",\"inLanguage\":\"tr-TR\",\"breadcrumb\":{\"@type\":\"BreadcrumbList\",\"numberOfItems\":4,\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"item\":{\"@id\":\"https://www.migros.com.tr/et-tavuk-balik-c-3\",\"name\":\"Et, Tavuk, Balık\"}},{\"@type\":\"ListItem\",\"position\":2,\"item\":{\"@id\":\"https://www.migros.com.tr/et-sarkuteri-c-6b\",\"name\":\"Et Şarküteri\"}},{\"@type\":\"ListItem\",\"position\":3,\"item\":{\"@id\":\"https://www.migros.com.tr/jambon-c-112d7\",\"name\":\"Jambon\"}},{\"@type\":\"ListItem\",\"position\":4,\"item\":{\"@id\":\"https://www.migros.com.tr/dana-jambon-c-112de\",\"name\":\"Dana Jambon\"}}]},\"mainEntity\":{\"@type\":\"WebPageElement\",\"offers\":{\"@type\":\"Offer\",\"itemOffered\":[{\"@type\":\"Product\",\"name\":\"Migros Dana Jambon 90 G\",\"url\":\"https://www.migros.com.tr/migros-dana-jambon-90-g-p-e35b6f\",\"category\":\"Jambon/Et Şarküteri/Et, Tavuk, Balık\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Migros\"},\"image\":[{\"@type\":\"ImageObject\",\"contentUrl\":\"https://images.migrosone.com/sanalmarket/product/14900079/14900079_1-59fa86.jpg\",\"caption\":\"Migros Dana Jambon 90 G\"}],\"offers\":{\"@type\":\"Offer\",\"itemCondition\":\"https://schema.org/NewCondition\",\"image\":\"https://images.migrosone.com/sanalmarket/product/14900079/14900079_1-59fa86.jpg\",\"availability\":\"https://schema.org/InStock\",\"category\":\"Jambon/Et Şarküteri/Et, Tavuk, Balık\",\"price\":\"65.00\",\"priceCurrency\":\"TRY\",\"areaServed\":\"TR\",\"seller\":{\"@type\":\"Organization\",\"name\":\"Migros Sanalmarket\",\"logo\":\"https://images.migrosone.com/sanalmarket/custom/sanalmarket-seo-34706362.png\"}}}]}}} [_nghost-ng-c1261675423]{position:relative;display:block}@media (max-width: 767.98px){[_nghost-ng-c1261675423]{overflow-x:scroll;white-space:nowrap;max-width:90vw;-ms-overflow-style:none;scrollbar-width:none}[_nghost-ng-c1261675423]::-webkit-scrollbar{display:none}}.breadcrumbs[_ngcontent-ng-c1261675423]{margin:0 0 .5rem;padding:0}.breadcrumbs__item[_ngcontent-ng-c1261675423]{display:inline;line-height:15px}.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{content:\"\";display:inline-block;color:var(--font-color__black);background:url(/assets/icons/right-chevron.svg) no-repeat center;width:10px;height:10px;margin:0 10px;background-size:cover;vertical-align:middle}@media (max-width: 767.98px){.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{margin:0 .4rem}}.breadcrumbs__item[_ngcontent-ng-c1261675423]:last-child .breadcrumbs__link[_ngcontent-ng-c1261675423]{color:var(--font-color__default)}.breadcrumbs__link[_ngcontent-ng-c1261675423]{font-family:var(--secondary-font-family);color:var(--background-color__DARK);font-size:12px}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423]{vertical-align:middle}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423] span[_ngcontent-ng-c1261675423]{width:45px;height:10px;background-color:var(--background-color__GREY);border-radius:var(--base-border-radius);display:inline-block} @keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}sm-product-images{display:block;position:relative}sm-product-images .product-images{max-width:33rem;text-align:-webkit-center}@media (min-width: 768px){sm-product-images .product-images{border:solid 1px var(--basicColorTransparent);border-radius:8px}}sm-product-images .product-images .preview-image-wrapper{width:32rem;height:32rem;position:relative;text-align:center;align-items:center;display:flex}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets{bottom:-5px}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets .swiper-pagination-bullet-active{background:var(--brandColorPrimary600)}@media (max-width: 768px){sm-product-images .product-images .preview-image-wrapper{max-width:20.5rem;margin-bottom:1rem}}sm-product-images .product-images .preview-image-wrapper img{max-width:100%;max-height:28rem;margin-top:2rem;height:auto}sm-product-images .product-images-carousel-cells{padding:0 1.5rem}sm-product-images .product-images-carousel-cell{margin-right:0;display:inline-flex;cursor:pointer;border:solid 1px var(--basicColorTransparent);min-width:3.188rem;height:3.188rem;border-radius:7px;background-color:var(--basic-color-white)}sm-product-images .product-images-carousel-cell img{max-height:2.875rem;margin:auto;display:block;border-radius:8px}sm-product-images .product-images-carousel-cell+.product-images-carousel-cell{margin-left:1rem}sm-product-images .product-images-carousel-cell--active{border:2px solid var(--brandColorPrimary700)}sm-product-images .product-images fe-scroll-slider{display:flex;justify-content:center;margin:.5rem}@media (max-width: 768px){sm-product-images .product-images fe-scroll-slider{max-width:20.5rem}}sm-product-images .product-images fe-scroll-slider .container-wrapper-content{min-width:8.8rem}sm-product-images .product-images fe-scroll-slider .container-wrapper-prev-btn:after{left:.4rem!important}sm-product-images .product-images fe-scroll-slider .container-wrapper-next-btn:after{left:-.4rem!important}sm-product-images .zoom-preview{background-size:48rem 48rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:32rem;height:32rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);bottom:30%;left:100%;z-index:99;animation:presence .3s ease-in-out} @charset \"UTF-8\";@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}fe-product-detail-tabs{display:block}fe-product-detail-tabs h3{font-size:22px;font-weight:var(--font-weight-bold)}fe-product-detail-tabs .product-detail-tabs__img{width:100%}fe-product-detail-tabs .product-detail-tabs__analysis{display:flex;justify-self:center;cursor:pointer;width:100%}@media (min-width: 768px){fe-product-detail-tabs .product-detail-tabs__analysis{max-height:37.5rem;width:auto}}fe-product-detail-tabs .product-detail-tabs__video-wrapper{aspect-ratio:16/9;width:100%;position:relative;max-width:1400px}fe-product-detail-tabs .product-detail-tabs__video-wrapper iframe{width:100%;height:100%}fe-product-detail-tabs .product-detail-tabs__product-safety-info .product-tab-images{text-align:start;margin-top:0}fe-product-detail-tabs .product-detail-tabs__product-safety-info__img{margin-top:var(--base-size-32)}fe-product-detail-tabs .installment-description-container{display:flex}fe-product-detail-tabs .installment-description-container .installment-description{padding-left:.5rem}fe-product-detail-tabs .installment-container{display:flex;justify-content:space-between;color:var(--basicColor900);flex-wrap:wrap}@media (min-width: 768px){fe-product-detail-tabs .installment-container{padding:1.4rem 0 2rem}}fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 100%;border-radius:.5rem;border:1px solid var(--basicColorTransparent);text-align:center;overflow-x:auto;margin-top:.75rem}@media (min-width: 768px){fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 32%;margin-top:0}}fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:4.688rem;margin:.5rem 0 .25rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:6.563rem;margin:.625rem 0 .438rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:4.813rem;margin:.688rem 0 .375rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:7.175rem;margin:.75rem 0 .625rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:4.75rem;margin:.875rem 0 .688rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:7.908rem;margin:1.125rem 0 .875rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead{background-color:var(--basicColor200)}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs fe-read-more div p{margin:0}fe-product-detail-tabs fe-read-more div ul{margin:0;padding:0}fe-product-detail-tabs fe-read-more div ul li p{display:inline-block}fe-product-detail-tabs fe-read-more div ul li:before{content:\"\\2022\";color:var(--secondary-color__500);font-weight:var(--font-weight-bold);display:inline-block;width:1em}fe-product-detail-tabs .product-tab-images{text-align:center;margin-top:1rem;margin-bottom:.5rem}fe-product-detail-tabs .product-tab-images img{max-width:100%;max-height:28rem}fe-product-detail-tabs .zoom-preview{background-size:28rem 56rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:25rem;height:25rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);top:5%;right:10%;z-index:99;animation:presence .3s ease-in-out}fe-product-detail-tabs iframe{width:calc(100% - 2rem);height:100rem}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-header,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-header{border-bottom:1px solid var(--secondary-color__500)}@media (max-width: 767.98px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label{min-width:max-content}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:var(--base-size-14)}@media (min-width: 768px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:1.125rem}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active{opacity:1!important;color:var(--secondary-color__500);font-weight:var(--font-weight-bold)}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text{color:inherit;font-weight:inherit}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after{background-color:var(--secondary-color__500)!important}",
+        "nutrition_basis": "per_100",
+        "nutrition_strategy": "dom",
+        "nutrition_warnings": [],
+        "image_candidates": [
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14900079/14900079_1-59fa86-1650x1650.jpg",
+            "score": 12,
+            "reasons": [
+              "+url:product",
+              "+medium_res"
+            ]
+          },
+          {
+            "url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/migroskop.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/anne-bebek.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/money/money-logo_small.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/migros-tv-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/saglikli-yasam/saglikli-yasam.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/kadin-akademisi.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/blindlook/blindlook-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/gidani-koru/gidani-koru.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/guven-damgasi/guven-damgasi@3x.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/etbis/etbis.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          }
+        ],
+        "image_best_score": 12,
+        "scraped_at": "2026-06-12T14:28:06.930791+00:00"
+      },
+      "name_source": "web_scraper:migros",
+      "brand_source": null,
+      "image_source": "web_scraper:migros",
+      "ingredients_source": "web_scraper:migros",
+      "nutrition_source": "web_scraper:migros",
+      "category_source": "web_scraper:migros",
+      "quality_score": 88,
+      "missing_fields": [
+        "brand",
+        "barcode"
+      ],
+      "status": "pending"
+    },
+    {
+      "barcode": null,
+      "name": "Migros Piliç Jambon 90 G",
+      "brand": null,
+      "category_suggestion": "Jambon",
+      "category_tags": [
+        "jambon"
+      ],
+      "search_keywords": [
+        "90",
+        "jambon",
+        "migros",
+        "pilic",
+        "piliç"
+      ],
+      "image_front_url": "https://images.migrosone.com/sanalmarket/product/14900078/14900078-c7ff85-1650x1650.jpg",
+      "image_front_storage_path": null,
+      "ingredients_text": "Piliç eti ve yağı, patates nişastası, tzu, baharat karışımı, stabilizör (sodyum polifosfat), antioksidan (askorbik asit), koruyucu madde (sodyum nitrit). Net Miktar (g/ml) 90",
+      "nutrition_json": {
+        "energy_kcal": 85.0,
+        "energy_kj": 360.0,
+        "fat": 1.0,
+        "saturated_fat": 0.2,
+        "carbohydrates": 5.0,
+        "sugars": 0.0,
+        "proteins": 14.0,
+        "salt": 1.7
+      },
+      "source": "web_scraper:migros",
+      "source_url": "https://www.migros.com.tr/migros-pilic-jambon-90-g-p-e35b6e",
+      "raw_source_payload": {
+        "jsonld": null,
+        "meta": {
+          "og_title": "Migros Piliç Jambon 90 G - Migros",
+          "og_image": "https://images.migrosone.com/sanalmarket/product/14900078/14900078-c7ff85-1650x1650.jpg",
+          "og_description": "İçindekilerPiliç eti ve yağı, patates nişastası, tzu, baharat karışımı, stabilizör (sodyum polifosfat), antioksidan (askorbik asit), koruyucu madde (sodyum nitrit).Net Miktar (g/m.",
+          "title": "Migros Piliç Jambon 90 G - Migros"
+        },
+        "ingredients_raw": "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Migros Piliç Jambon 90 G - Migros\",\"description\":\"<p><strong>İçindekiler</strong><br>Piliç eti ve yağı, patates nişastası, tzu, baharat karışımı, stabilizör (sodyum polifosfat), antioksidan (askorbik asit), koruyucu madde (sodyum nitrit).</p><p><strong>Net Miktar (g/ml)</strong><br>90</p><p><strong>Saklama Koşulları</strong><br>Buzdolabında 0-4 °C muhafaza ediniz.</p><p><strong>Menşei</strong><br>TÜRKİYE</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı Numarası</strong><br>706451</p><p><strong>Kullanım Önerileri</strong><br>Ambalaj açıldıktan sonra 2 gün içerisinde tüketiniz.</p><p><strong>Ürün Bilgilerini Kullanma Hakkında</strong><br>İnternet sitemizde ve online satış kanallarımızda yer alan ürün etiket bilgileri, ürünün tedarikçisi tarafından Migros Ticaret A.Ş.’ye iletilen en güncel bilgilerdir. Ürün etiket bilgileri ile internet sitemiz ve online satış kanallarımızda bulunan bilgiler arasında herhangi bir farklılık bulunması halinde sorumluluk tamamen tedarikçi firmaya aittir.</p>\",\"url\":\"https://www.migros.com.tr/migros-pilic-jambon-90-g-p-e35b6e\",\"inLanguage\":\"tr-TR\",\"breadcrumb\":{\"@type\":\"BreadcrumbList\",\"numberOfItems\":4,\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"item\":{\"@id\":\"https://www.migros.com.tr/et-tavuk-balik-c-3\",\"name\":\"Et, Tavuk, Balık\"}},{\"@type\":\"ListItem\",\"position\":2,\"item\":{\"@id\":\"https://www.migros.com.tr/et-sarkuteri-c-6b\",\"name\":\"Et Şarküteri\"}},{\"@type\":\"ListItem\",\"position\":3,\"item\":{\"@id\":\"https://www.migros.com.tr/jambon-c-112d7\",\"name\":\"Jambon\"}},{\"@type\":\"ListItem\",\"position\":4,\"item\":{\"@id\":\"https://www.migros.com.tr/pilic-jambon-c-112e2\",\"name\":\"Piliç Jambon\"}}]},\"mainEntity\":{\"@type\":\"WebPageElement\",\"offers\":{\"@type\":\"Offer\",\"itemOffered\":[{\"@type\":\"Product\",\"name\":\"Migros Piliç Jambon 90 G\",\"url\":\"https://www.migros.com.tr/migros-pilic-jambon-90-g-p-e35b6e\",\"category\":\"Jambon/Et Şarküteri/Et, Tavuk, Balık\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Migros\"},\"image\":[{\"@type\":\"ImageObject\",\"contentUrl\":\"https://images.migrosone.com/sanalmarket/product/14900078/14900078-c7ff85.jpg\",\"caption\":\"Migros Piliç Jambon 90 G\"}],\"offers\":{\"@type\":\"Offer\",\"itemCondition\":\"https://schema.org/NewCondition\",\"image\":\"https://images.migrosone.com/sanalmarket/product/14900078/14900078-c7ff85.jpg\",\"availability\":\"https://schema.org/InStock\",\"category\":\"Jambon/Et Şarküteri/Et, Tavuk, Balık\",\"price\":\"39.90\",\"priceCurrency\":\"TRY\",\"areaServed\":\"TR\",\"seller\":{\"@type\":\"Organization\",\"name\":\"Migros Sanalmarket\",\"logo\":\"https://images.migrosone.com/sanalmarket/custom/sanalmarket-seo-34706362.png\"}}}]}}} [_nghost-ng-c1261675423]{position:relative;display:block}@media (max-width: 767.98px){[_nghost-ng-c1261675423]{overflow-x:scroll;white-space:nowrap;max-width:90vw;-ms-overflow-style:none;scrollbar-width:none}[_nghost-ng-c1261675423]::-webkit-scrollbar{display:none}}.breadcrumbs[_ngcontent-ng-c1261675423]{margin:0 0 .5rem;padding:0}.breadcrumbs__item[_ngcontent-ng-c1261675423]{display:inline;line-height:15px}.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{content:\"\";display:inline-block;color:var(--font-color__black);background:url(/assets/icons/right-chevron.svg) no-repeat center;width:10px;height:10px;margin:0 10px;background-size:cover;vertical-align:middle}@media (max-width: 767.98px){.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{margin:0 .4rem}}.breadcrumbs__item[_ngcontent-ng-c1261675423]:last-child .breadcrumbs__link[_ngcontent-ng-c1261675423]{color:var(--font-color__default)}.breadcrumbs__link[_ngcontent-ng-c1261675423]{font-family:var(--secondary-font-family);color:var(--background-color__DARK);font-size:12px}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423]{vertical-align:middle}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423] span[_ngcontent-ng-c1261675423]{width:45px;height:10px;background-color:var(--background-color__GREY);border-radius:var(--base-border-radius);display:inline-block} @keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}sm-product-images{display:block;position:relative}sm-product-images .product-images{max-width:33rem;text-align:-webkit-center}@media (min-width: 768px){sm-product-images .product-images{border:solid 1px var(--basicColorTransparent);border-radius:8px}}sm-product-images .product-images .preview-image-wrapper{width:32rem;height:32rem;position:relative;text-align:center;align-items:center;display:flex}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets{bottom:-5px}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets .swiper-pagination-bullet-active{background:var(--brandColorPrimary600)}@media (max-width: 768px){sm-product-images .product-images .preview-image-wrapper{max-width:20.5rem;margin-bottom:1rem}}sm-product-images .product-images .preview-image-wrapper img{max-width:100%;max-height:28rem;margin-top:2rem;height:auto}sm-product-images .product-images-carousel-cells{padding:0 1.5rem}sm-product-images .product-images-carousel-cell{margin-right:0;display:inline-flex;cursor:pointer;border:solid 1px var(--basicColorTransparent);min-width:3.188rem;height:3.188rem;border-radius:7px;background-color:var(--basic-color-white)}sm-product-images .product-images-carousel-cell img{max-height:2.875rem;margin:auto;display:block;border-radius:8px}sm-product-images .product-images-carousel-cell+.product-images-carousel-cell{margin-left:1rem}sm-product-images .product-images-carousel-cell--active{border:2px solid var(--brandColorPrimary700)}sm-product-images .product-images fe-scroll-slider{display:flex;justify-content:center;margin:.5rem}@media (max-width: 768px){sm-product-images .product-images fe-scroll-slider{max-width:20.5rem}}sm-product-images .product-images fe-scroll-slider .container-wrapper-content{min-width:8.8rem}sm-product-images .product-images fe-scroll-slider .container-wrapper-prev-btn:after{left:.4rem!important}sm-product-images .product-images fe-scroll-slider .container-wrapper-next-btn:after{left:-.4rem!important}sm-product-images .zoom-preview{background-size:48rem 48rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:32rem;height:32rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);bottom:30%;left:100%;z-index:99;animation:presence .3s ease-in-out} @charset \"UTF-8\";@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}fe-product-detail-tabs{display:block}fe-product-detail-tabs h3{font-size:22px;font-weight:var(--font-weight-bold)}fe-product-detail-tabs .product-detail-tabs__img{width:100%}fe-product-detail-tabs .product-detail-tabs__analysis{display:flex;justify-self:center;cursor:pointer;width:100%}@media (min-width: 768px){fe-product-detail-tabs .product-detail-tabs__analysis{max-height:37.5rem;width:auto}}fe-product-detail-tabs .product-detail-tabs__video-wrapper{aspect-ratio:16/9;width:100%;position:relative;max-width:1400px}fe-product-detail-tabs .product-detail-tabs__video-wrapper iframe{width:100%;height:100%}fe-product-detail-tabs .product-detail-tabs__product-safety-info .product-tab-images{text-align:start;margin-top:0}fe-product-detail-tabs .product-detail-tabs__product-safety-info__img{margin-top:var(--base-size-32)}fe-product-detail-tabs .installment-description-container{display:flex}fe-product-detail-tabs .installment-description-container .installment-description{padding-left:.5rem}fe-product-detail-tabs .installment-container{display:flex;justify-content:space-between;color:var(--basicColor900);flex-wrap:wrap}@media (min-width: 768px){fe-product-detail-tabs .installment-container{padding:1.4rem 0 2rem}}fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 100%;border-radius:.5rem;border:1px solid var(--basicColorTransparent);text-align:center;overflow-x:auto;margin-top:.75rem}@media (min-width: 768px){fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 32%;margin-top:0}}fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:4.688rem;margin:.5rem 0 .25rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:6.563rem;margin:.625rem 0 .438rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:4.813rem;margin:.688rem 0 .375rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:7.175rem;margin:.75rem 0 .625rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:4.75rem;margin:.875rem 0 .688rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:7.908rem;margin:1.125rem 0 .875rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead{background-color:var(--basicColor200)}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs fe-read-more div p{margin:0}fe-product-detail-tabs fe-read-more div ul{margin:0;padding:0}fe-product-detail-tabs fe-read-more div ul li p{display:inline-block}fe-product-detail-tabs fe-read-more div ul li:before{content:\"\\2022\";color:var(--secondary-color__500);font-weight:var(--font-weight-bold);display:inline-block;width:1em}fe-product-detail-tabs .product-tab-images{text-align:center;margin-top:1rem;margin-bottom:.5rem}fe-product-detail-tabs .product-tab-images img{max-width:100%;max-height:28rem}fe-product-detail-tabs .zoom-preview{background-size:28rem 56rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:25rem;height:25rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);top:5%;right:10%;z-index:99;animation:presence .3s ease-in-out}fe-product-detail-tabs iframe{width:calc(100% - 2rem);height:100rem}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-header,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-header{border-bottom:1px solid var(--secondary-color__500)}@media (max-width: 767.98px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label{min-width:max-content}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:var(--base-size-14)}@media (min-width: 768px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:1.125rem}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active{opacity:1!important;color:var(--secondary-color__500);font-weight:var(--font-weight-bold)}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text{color:inherit;font-weight:inherit}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after{background-color:var(--secondary-color__500)!important}",
+        "nutrition_basis": "per_100",
+        "nutrition_strategy": "dom",
+        "nutrition_warnings": [],
+        "image_candidates": [
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14900078/14900078-c7ff85-1650x1650.jpg",
+            "score": 12,
+            "reasons": [
+              "+url:product",
+              "+medium_res"
+            ]
+          },
+          {
+            "url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/migroskop.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/anne-bebek.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/money/money-logo_small.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/migros-tv-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/saglikli-yasam/saglikli-yasam.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/kadin-akademisi.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/blindlook/blindlook-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/gidani-koru/gidani-koru.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/guven-damgasi/guven-damgasi@3x.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/etbis/etbis.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          }
+        ],
+        "image_best_score": 12,
+        "scraped_at": "2026-06-12T14:28:08.407605+00:00"
+      },
+      "name_source": "web_scraper:migros",
+      "brand_source": null,
+      "image_source": "web_scraper:migros",
+      "ingredients_source": "web_scraper:migros",
+      "nutrition_source": "web_scraper:migros",
+      "category_source": "web_scraper:migros",
+      "quality_score": 88,
+      "missing_fields": [
+        "brand",
+        "barcode"
+      ],
+      "status": "pending"
+    },
+    {
+      "barcode": null,
+      "name": "Namet Dana Dilimli Jambon 110 G",
+      "brand": "Namet",
+      "category_suggestion": "Jambon",
+      "category_tags": [
+        "jambon"
+      ],
+      "search_keywords": [
+        "110",
+        "dana",
+        "dilimli",
+        "jambon",
+        "namet"
+      ],
+      "image_front_url": "https://images.migrosone.com/sanalmarket/product/14901902/14901902-f5e105-1650x1650.jpg",
+      "image_front_storage_path": null,
+      "ingredients_text": "Dana eti, patates nişastası, baharat karışımı, tuz, su, kıvam arttırıcı (E407), stabilizör (E450, E451, E452), antioksidan (E300, E301) ve koruyucu (E250). Net Miktar (g/ml) 110",
+      "nutrition_json": {
+        "energy_kcal": 93.0,
+        "energy_kj": 394.0,
+        "fat": 1.0,
+        "saturated_fat": 0.6,
+        "carbohydrates": 8.0,
+        "proteins": 13.0,
+        "salt": 3.0
+      },
+      "source": "web_scraper:migros",
+      "source_url": "https://www.migros.com.tr/namet-dana-dilimli-jambon-110-g-p-e3628e",
+      "raw_source_payload": {
+        "jsonld": null,
+        "meta": {
+          "og_title": "Namet Dana Dilimli Jambon 110 G - Migros",
+          "og_image": "https://images.migrosone.com/sanalmarket/product/14901902/14901902-f5e105-1650x1650.jpg",
+          "og_description": "İçindekilerDana eti, patates nişastası, baharat karışımı, tuz, su, kıvam arttırıcı (E407), stabilizör (E450, E451, E452), antioksidan (E300, E301) ve koruyucu (E250).Net Miktar (g.",
+          "title": "Namet Dana Dilimli Jambon 110 G - Migros"
+        },
+        "ingredients_raw": "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Namet Dana Dilimli Jambon 110 G - Migros\",\"description\":\"<p><strong>İçindekiler</strong><br>Dana eti, patates nişastası, baharat karışımı, tuz, su, kıvam arttırıcı (E407), stabilizör (E450, E451, E452), antioksidan (E300, E301) ve koruyucu (E250).</p><p><strong>Net Miktar (g/ml)</strong><br>110</p><p><strong>Menşei</strong><br>TÜRKİYE</p><p><strong>İşletme Kayıt No</strong><br>TR41-0027</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı</strong><br>NAMET GIDA SAN.VE TİC.A.Ş.</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı Numarası</strong><br>024840</p><p><strong>Kullanım Önerileri</strong><br>0/4 derece de ambalajı açılmadan saklanmalı ve skt si gelmeden tüketilmelidir.</p><p><strong>Ürün Bilgilerini Kullanma Hakkında</strong><br>İnternet sitemizde ve online satış kanallarımızda yer alan ürün etiket bilgileri, ürünün tedarikçisi tarafından Migros Ticaret A.Ş.’ye iletilen en güncel bilgilerdir. Ürün etiket bilgileri ile internet sitemiz ve online satış kanallarımızda bulunan bilgiler arasında herhangi bir farklılık bulunması halinde sorumluluk tamamen tedarikçi firmaya aittir.</p>\",\"url\":\"https://www.migros.com.tr/namet-dana-dilimli-jambon-110-g-p-e3628e\",\"inLanguage\":\"tr-TR\",\"breadcrumb\":{\"@type\":\"BreadcrumbList\",\"numberOfItems\":4,\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"item\":{\"@id\":\"https://www.migros.com.tr/et-tavuk-balik-c-3\",\"name\":\"Et, Tavuk, Balık\"}},{\"@type\":\"ListItem\",\"position\":2,\"item\":{\"@id\":\"https://www.migros.com.tr/et-sarkuteri-c-6b\",\"name\":\"Et Şarküteri\"}},{\"@type\":\"ListItem\",\"position\":3,\"item\":{\"@id\":\"https://www.migros.com.tr/jambon-c-112d7\",\"name\":\"Jambon\"}},{\"@type\":\"ListItem\",\"position\":4,\"item\":{\"@id\":\"https://www.migros.com.tr/dana-jambon-c-112de\",\"name\":\"Dana Jambon\"}}]},\"mainEntity\":{\"@type\":\"WebPageElement\",\"offers\":{\"@type\":\"Offer\",\"itemOffered\":[{\"@type\":\"Product\",\"name\":\"Namet Dana Dilimli Jambon 110 G\",\"url\":\"https://www.migros.com.tr/namet-dana-dilimli-jambon-110-g-p-e3628e\",\"category\":\"Jambon/Et Şarküteri/Et, Tavuk, Balık\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Namet\"},\"image\":[{\"@type\":\"ImageObject\",\"contentUrl\":\"https://images.migrosone.com/sanalmarket/product/14901902/14901902-f5e105.jpg\",\"caption\":\"Namet Dana Dilimli Jambon 110 G\"}],\"offers\":{\"@type\":\"Offer\",\"itemCondition\":\"https://schema.org/NewCondition\",\"image\":\"https://images.migrosone.com/sanalmarket/product/14901902/14901902-f5e105.jpg\",\"availability\":\"https://schema.org/InStock\",\"category\":\"Jambon/Et Şarküteri/Et, Tavuk, Balık\",\"price\":\"249.00\",\"priceCurrency\":\"TRY\",\"areaServed\":\"TR\",\"seller\":{\"@type\":\"Organization\",\"name\":\"Migros Sanalmarket\",\"logo\":\"https://images.migrosone.com/sanalmarket/custom/sanalmarket-seo-34706362.png\"}}}]}}} [_nghost-ng-c1261675423]{position:relative;display:block}@media (max-width: 767.98px){[_nghost-ng-c1261675423]{overflow-x:scroll;white-space:nowrap;max-width:90vw;-ms-overflow-style:none;scrollbar-width:none}[_nghost-ng-c1261675423]::-webkit-scrollbar{display:none}}.breadcrumbs[_ngcontent-ng-c1261675423]{margin:0 0 .5rem;padding:0}.breadcrumbs__item[_ngcontent-ng-c1261675423]{display:inline;line-height:15px}.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{content:\"\";display:inline-block;color:var(--font-color__black);background:url(/assets/icons/right-chevron.svg) no-repeat center;width:10px;height:10px;margin:0 10px;background-size:cover;vertical-align:middle}@media (max-width: 767.98px){.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{margin:0 .4rem}}.breadcrumbs__item[_ngcontent-ng-c1261675423]:last-child .breadcrumbs__link[_ngcontent-ng-c1261675423]{color:var(--font-color__default)}.breadcrumbs__link[_ngcontent-ng-c1261675423]{font-family:var(--secondary-font-family);color:var(--background-color__DARK);font-size:12px}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423]{vertical-align:middle}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423] span[_ngcontent-ng-c1261675423]{width:45px;height:10px;background-color:var(--background-color__GREY);border-radius:var(--base-border-radius);display:inline-block} @keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}sm-product-images{display:block;position:relative}sm-product-images .product-images{max-width:33rem;text-align:-webkit-center}@media (min-width: 768px){sm-product-images .product-images{border:solid 1px var(--basicColorTransparent);border-radius:8px}}sm-product-images .product-images .preview-image-wrapper{width:32rem;height:32rem;position:relative;text-align:center;align-items:center;display:flex}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets{bottom:-5px}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets .swiper-pagination-bullet-active{background:var(--brandColorPrimary600)}@media (max-width: 768px){sm-product-images .product-images .preview-image-wrapper{max-width:20.5rem;margin-bottom:1rem}}sm-product-images .product-images .preview-image-wrapper img{max-width:100%;max-height:28rem;margin-top:2rem;height:auto}sm-product-images .product-images-carousel-cells{padding:0 1.5rem}sm-product-images .product-images-carousel-cell{margin-right:0;display:inline-flex;cursor:pointer;border:solid 1px var(--basicColorTransparent);min-width:3.188rem;height:3.188rem;border-radius:7px;background-color:var(--basic-color-white)}sm-product-images .product-images-carousel-cell img{max-height:2.875rem;margin:auto;display:block;border-radius:8px}sm-product-images .product-images-carousel-cell+.product-images-carousel-cell{margin-left:1rem}sm-product-images .product-images-carousel-cell--active{border:2px solid var(--brandColorPrimary700)}sm-product-images .product-images fe-scroll-slider{display:flex;justify-content:center;margin:.5rem}@media (max-width: 768px){sm-product-images .product-images fe-scroll-slider{max-width:20.5rem}}sm-product-images .product-images fe-scroll-slider .container-wrapper-content{min-width:8.8rem}sm-product-images .product-images fe-scroll-slider .container-wrapper-prev-btn:after{left:.4rem!important}sm-product-images .product-images fe-scroll-slider .container-wrapper-next-btn:after{left:-.4rem!important}sm-product-images .zoom-preview{background-size:48rem 48rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:32rem;height:32rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);bottom:30%;left:100%;z-index:99;animation:presence .3s ease-in-out} @charset \"UTF-8\";@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}fe-product-detail-tabs{display:block}fe-product-detail-tabs h3{font-size:22px;font-weight:var(--font-weight-bold)}fe-product-detail-tabs .product-detail-tabs__img{width:100%}fe-product-detail-tabs .product-detail-tabs__analysis{display:flex;justify-self:center;cursor:pointer;width:100%}@media (min-width: 768px){fe-product-detail-tabs .product-detail-tabs__analysis{max-height:37.5rem;width:auto}}fe-product-detail-tabs .product-detail-tabs__video-wrapper{aspect-ratio:16/9;width:100%;position:relative;max-width:1400px}fe-product-detail-tabs .product-detail-tabs__video-wrapper iframe{width:100%;height:100%}fe-product-detail-tabs .product-detail-tabs__product-safety-info .product-tab-images{text-align:start;margin-top:0}fe-product-detail-tabs .product-detail-tabs__product-safety-info__img{margin-top:var(--base-size-32)}fe-product-detail-tabs .installment-description-container{display:flex}fe-product-detail-tabs .installment-description-container .installment-description{padding-left:.5rem}fe-product-detail-tabs .installment-container{display:flex;justify-content:space-between;color:var(--basicColor900);flex-wrap:wrap}@media (min-width: 768px){fe-product-detail-tabs .installment-container{padding:1.4rem 0 2rem}}fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 100%;border-radius:.5rem;border:1px solid var(--basicColorTransparent);text-align:center;overflow-x:auto;margin-top:.75rem}@media (min-width: 768px){fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 32%;margin-top:0}}fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:4.688rem;margin:.5rem 0 .25rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:6.563rem;margin:.625rem 0 .438rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:4.813rem;margin:.688rem 0 .375rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:7.175rem;margin:.75rem 0 .625rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:4.75rem;margin:.875rem 0 .688rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:7.908rem;margin:1.125rem 0 .875rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead{background-color:var(--basicColor200)}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs fe-read-more div p{margin:0}fe-product-detail-tabs fe-read-more div ul{margin:0;padding:0}fe-product-detail-tabs fe-read-more div ul li p{display:inline-block}fe-product-detail-tabs fe-read-more div ul li:before{content:\"\\2022\";color:var(--secondary-color__500);font-weight:var(--font-weight-bold);display:inline-block;width:1em}fe-product-detail-tabs .product-tab-images{text-align:center;margin-top:1rem;margin-bottom:.5rem}fe-product-detail-tabs .product-tab-images img{max-width:100%;max-height:28rem}fe-product-detail-tabs .zoom-preview{background-size:28rem 56rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:25rem;height:25rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);top:5%;right:10%;z-index:99;animation:presence .3s ease-in-out}fe-product-detail-tabs iframe{width:calc(100% - 2rem);height:100rem}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-header,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-header{border-bottom:1px solid var(--secondary-color__500)}@media (max-width: 767.98px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label{min-width:max-content}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:var(--base-size-14)}@media (min-width: 768px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:1.125rem}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active{opacity:1!important;color:var(--secondary-color__500);font-weight:var(--font-weight-bold)}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text{color:inherit;font-weight:inherit}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after{background-color:var(--secondary-color__500)!important}",
+        "nutrition_basis": "per_100",
+        "nutrition_strategy": "dom",
+        "nutrition_warnings": [],
+        "image_candidates": [
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14901902/14901902-f5e105-1650x1650.jpg",
+            "score": 12,
+            "reasons": [
+              "+url:product",
+              "+medium_res"
+            ]
+          },
+          {
+            "url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/migroskop.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/anne-bebek.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/money/money-logo_small.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/migros-tv-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/saglikli-yasam/saglikli-yasam.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/kadin-akademisi.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/blindlook/blindlook-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/gidani-koru/gidani-koru.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/guven-damgasi/guven-damgasi@3x.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/etbis/etbis.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          }
+        ],
+        "image_best_score": 12,
+        "scraped_at": "2026-06-12T14:28:09.973944+00:00"
+      },
+      "name_source": "web_scraper:migros",
+      "brand_source": "web_scraper:migros",
+      "image_source": "web_scraper:migros",
+      "ingredients_source": "web_scraper:migros",
+      "nutrition_source": "web_scraper:migros",
+      "category_source": "web_scraper:migros",
+      "quality_score": 100,
+      "missing_fields": [
+        "barcode"
+      ],
+      "status": "pending"
+    },
+    {
+      "barcode": null,
+      "name": "Polonez Dana Jambon 50 G",
+      "brand": "Polonez",
+      "category_suggestion": "Jambon",
+      "category_tags": [
+        "jambon"
+      ],
+      "search_keywords": [
+        "50",
+        "dana",
+        "jambon",
+        "polonez"
+      ],
+      "image_front_url": "https://images.migrosone.com/sanalmarket/product/14901820/14901820-827dbf-1650x1650.jpg",
+      "image_front_storage_path": null,
+      "ingredients_text": "DANA ETİ VE YAĞI PATATES NİŞASTASI TUZ BAHARAT KARIŞIMI STABİLÜZÖR (SODYUM POLİFOSFAT) ANTİOKSİDAN(ASKORBİK ASİT) KORUYUCU SODYUM NİTRİT Net Miktar (g/ml) 50 Menşei TÜ",
+      "nutrition_json": {
+        "energy_kcal": 92.0,
+        "energy_kj": 388.0,
+        "fat": 2.0,
+        "saturated_fat": 1.2,
+        "carbohydrates": 5.0,
+        "sugars": 0.0,
+        "proteins": 13.0,
+        "salt": 1.8
+      },
+      "source": "web_scraper:migros",
+      "source_url": "https://www.migros.com.tr/polonez-dana-jambon-50-g-p-e3623c",
+      "raw_source_payload": {
+        "jsonld": null,
+        "meta": {
+          "og_title": "Polonez Dana Jambon 50 G - Migros",
+          "og_image": "https://images.migrosone.com/sanalmarket/product/14901820/14901820-827dbf-1650x1650.jpg",
+          "og_description": "İçindekilerDANA ETİ VE YAĞI PATATES NİŞASTASI TUZ BAHARAT KARIŞIMI STABİLÜZÖR (SODYUM POLİFOSFAT) ANTİOKSİDAN(ASKORBİK ASİT) KORUYUCU SODYUM NİTRİTNet Miktar (g/ml)50MenşeiTÜRKİYE.",
+          "title": "Polonez Dana Jambon 50 G - Migros"
+        },
+        "ingredients_raw": "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Polonez Dana Jambon 50 G - Migros\",\"description\":\"<p><strong>İçindekiler</strong><br>DANA ETİ VE YAĞI PATATES NİŞASTASI TUZ BAHARAT KARIŞIMI STABİLÜZÖR (SODYUM POLİFOSFAT) ANTİOKSİDAN(ASKORBİK ASİT) KORUYUCU SODYUM NİTRİT</p><p><strong>Net Miktar (g/ml)</strong><br>50</p><p><strong>Menşei</strong><br>TÜRKİYE</p><p><strong>İşletme Kayıt No</strong><br>34-0061</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı Numarası</strong><br>020144</p><p><strong>Kullanım Önerileri</strong><br>0-4 DERECEDE MUHAFAZA EDİNİZ</p><p><strong>Ürün Bilgilerini Kullanma Hakkında</strong><br>İnternet sitemizde ve online satış kanallarımızda yer alan ürün etiket bilgileri, ürünün tedarikçisi tarafından Migros Ticaret A.Ş.’ye iletilen en güncel bilgilerdir. Ürün etiket bilgileri ile internet sitemiz ve online satış kanallarımızda bulunan bilgiler arasında herhangi bir farklılık bulunması halinde sorumluluk tamamen tedarikçi firmaya aittir.</p>\",\"url\":\"https://www.migros.com.tr/polonez-dana-jambon-50-g-p-e3623c\",\"inLanguage\":\"tr-TR\",\"breadcrumb\":{\"@type\":\"BreadcrumbList\",\"numberOfItems\":4,\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"item\":{\"@id\":\"https://www.migros.com.tr/et-tavuk-balik-c-3\",\"name\":\"Et, Tavuk, Balık\"}},{\"@type\":\"ListItem\",\"position\":2,\"item\":{\"@id\":\"https://www.migros.com.tr/et-sarkuteri-c-6b\",\"name\":\"Et Şarküteri\"}},{\"@type\":\"ListItem\",\"position\":3,\"item\":{\"@id\":\"https://www.migros.com.tr/jambon-c-112d7\",\"name\":\"Jambon\"}},{\"@type\":\"ListItem\",\"position\":4,\"item\":{\"@id\":\"https://www.migros.com.tr/dana-jambon-c-112de\",\"name\":\"Dana Jambon\"}}]},\"mainEntity\":{\"@type\":\"WebPageElement\",\"offers\":{\"@type\":\"Offer\",\"itemOffered\":[{\"@type\":\"Product\",\"name\":\"Polonez Dana Jambon 50 G\",\"url\":\"https://www.migros.com.tr/polonez-dana-jambon-50-g-p-e3623c\",\"category\":\"Jambon/Et Şarküteri/Et, Tavuk, Balık\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Polonez\"},\"image\":[{\"@type\":\"ImageObject\",\"contentUrl\":\"https://images.migrosone.com/sanalmarket/product/14901820/14901820-827dbf.jpg\",\"caption\":\"Polonez Dana Jambon 50 G\"}],\"offers\":{\"@type\":\"Offer\",\"itemCondition\":\"https://schema.org/NewCondition\",\"image\":\"https://images.migrosone.com/sanalmarket/product/14901820/14901820-827dbf.jpg\",\"availability\":\"https://schema.org/InStock\",\"category\":\"Jambon/Et Şarküteri/Et, Tavuk, Balık\",\"price\":\"106.00\",\"priceCurrency\":\"TRY\",\"areaServed\":\"TR\",\"seller\":{\"@type\":\"Organization\",\"name\":\"Migros Sanalmarket\",\"logo\":\"https://images.migrosone.com/sanalmarket/custom/sanalmarket-seo-34706362.png\"}}}]}}} [_nghost-ng-c1261675423]{position:relative;display:block}@media (max-width: 767.98px){[_nghost-ng-c1261675423]{overflow-x:scroll;white-space:nowrap;max-width:90vw;-ms-overflow-style:none;scrollbar-width:none}[_nghost-ng-c1261675423]::-webkit-scrollbar{display:none}}.breadcrumbs[_ngcontent-ng-c1261675423]{margin:0 0 .5rem;padding:0}.breadcrumbs__item[_ngcontent-ng-c1261675423]{display:inline;line-height:15px}.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{content:\"\";display:inline-block;color:var(--font-color__black);background:url(/assets/icons/right-chevron.svg) no-repeat center;width:10px;height:10px;margin:0 10px;background-size:cover;vertical-align:middle}@media (max-width: 767.98px){.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{margin:0 .4rem}}.breadcrumbs__item[_ngcontent-ng-c1261675423]:last-child .breadcrumbs__link[_ngcontent-ng-c1261675423]{color:var(--font-color__default)}.breadcrumbs__link[_ngcontent-ng-c1261675423]{font-family:var(--secondary-font-family);color:var(--background-color__DARK);font-size:12px}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423]{vertical-align:middle}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423] span[_ngcontent-ng-c1261675423]{width:45px;height:10px;background-color:var(--background-color__GREY);border-radius:var(--base-border-radius);display:inline-block} @keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}sm-product-images{display:block;position:relative}sm-product-images .product-images{max-width:33rem;text-align:-webkit-center}@media (min-width: 768px){sm-product-images .product-images{border:solid 1px var(--basicColorTransparent);border-radius:8px}}sm-product-images .product-images .preview-image-wrapper{width:32rem;height:32rem;position:relative;text-align:center;align-items:center;display:flex}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets{bottom:-5px}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets .swiper-pagination-bullet-active{background:var(--brandColorPrimary600)}@media (max-width: 768px){sm-product-images .product-images .preview-image-wrapper{max-width:20.5rem;margin-bottom:1rem}}sm-product-images .product-images .preview-image-wrapper img{max-width:100%;max-height:28rem;margin-top:2rem;height:auto}sm-product-images .product-images-carousel-cells{padding:0 1.5rem}sm-product-images .product-images-carousel-cell{margin-right:0;display:inline-flex;cursor:pointer;border:solid 1px var(--basicColorTransparent);min-width:3.188rem;height:3.188rem;border-radius:7px;background-color:var(--basic-color-white)}sm-product-images .product-images-carousel-cell img{max-height:2.875rem;margin:auto;display:block;border-radius:8px}sm-product-images .product-images-carousel-cell+.product-images-carousel-cell{margin-left:1rem}sm-product-images .product-images-carousel-cell--active{border:2px solid var(--brandColorPrimary700)}sm-product-images .product-images fe-scroll-slider{display:flex;justify-content:center;margin:.5rem}@media (max-width: 768px){sm-product-images .product-images fe-scroll-slider{max-width:20.5rem}}sm-product-images .product-images fe-scroll-slider .container-wrapper-content{min-width:8.8rem}sm-product-images .product-images fe-scroll-slider .container-wrapper-prev-btn:after{left:.4rem!important}sm-product-images .product-images fe-scroll-slider .container-wrapper-next-btn:after{left:-.4rem!important}sm-product-images .zoom-preview{background-size:48rem 48rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:32rem;height:32rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);bottom:30%;left:100%;z-index:99;animation:presence .3s ease-in-out} @charset \"UTF-8\";@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}fe-product-detail-tabs{display:block}fe-product-detail-tabs h3{font-size:22px;font-weight:var(--font-weight-bold)}fe-product-detail-tabs .product-detail-tabs__img{width:100%}fe-product-detail-tabs .product-detail-tabs__analysis{display:flex;justify-self:center;cursor:pointer;width:100%}@media (min-width: 768px){fe-product-detail-tabs .product-detail-tabs__analysis{max-height:37.5rem;width:auto}}fe-product-detail-tabs .product-detail-tabs__video-wrapper{aspect-ratio:16/9;width:100%;position:relative;max-width:1400px}fe-product-detail-tabs .product-detail-tabs__video-wrapper iframe{width:100%;height:100%}fe-product-detail-tabs .product-detail-tabs__product-safety-info .product-tab-images{text-align:start;margin-top:0}fe-product-detail-tabs .product-detail-tabs__product-safety-info__img{margin-top:var(--base-size-32)}fe-product-detail-tabs .installment-description-container{display:flex}fe-product-detail-tabs .installment-description-container .installment-description{padding-left:.5rem}fe-product-detail-tabs .installment-container{display:flex;justify-content:space-between;color:var(--basicColor900);flex-wrap:wrap}@media (min-width: 768px){fe-product-detail-tabs .installment-container{padding:1.4rem 0 2rem}}fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 100%;border-radius:.5rem;border:1px solid var(--basicColorTransparent);text-align:center;overflow-x:auto;margin-top:.75rem}@media (min-width: 768px){fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 32%;margin-top:0}}fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:4.688rem;margin:.5rem 0 .25rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:6.563rem;margin:.625rem 0 .438rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:4.813rem;margin:.688rem 0 .375rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:7.175rem;margin:.75rem 0 .625rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:4.75rem;margin:.875rem 0 .688rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:7.908rem;margin:1.125rem 0 .875rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead{background-color:var(--basicColor200)}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs fe-read-more div p{margin:0}fe-product-detail-tabs fe-read-more div ul{margin:0;padding:0}fe-product-detail-tabs fe-read-more div ul li p{display:inline-block}fe-product-detail-tabs fe-read-more div ul li:before{content:\"\\2022\";color:var(--secondary-color__500);font-weight:var(--font-weight-bold);display:inline-block;width:1em}fe-product-detail-tabs .product-tab-images{text-align:center;margin-top:1rem;margin-bottom:.5rem}fe-product-detail-tabs .product-tab-images img{max-width:100%;max-height:28rem}fe-product-detail-tabs .zoom-preview{background-size:28rem 56rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:25rem;height:25rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);top:5%;right:10%;z-index:99;animation:presence .3s ease-in-out}fe-product-detail-tabs iframe{width:calc(100% - 2rem);height:100rem}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-header,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-header{border-bottom:1px solid var(--secondary-color__500)}@media (max-width: 767.98px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label{min-width:max-content}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:var(--base-size-14)}@media (min-width: 768px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:1.125rem}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active{opacity:1!important;color:var(--secondary-color__500);font-weight:var(--font-weight-bold)}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text{color:inherit;font-weight:inherit}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after{background-color:var(--secondary-color__500)!important}",
+        "nutrition_basis": "per_100",
+        "nutrition_strategy": "dom",
+        "nutrition_warnings": [],
+        "image_candidates": [
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14901820/14901820-827dbf-1650x1650.jpg",
+            "score": 12,
+            "reasons": [
+              "+url:product",
+              "+medium_res"
+            ]
+          },
+          {
+            "url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/migroskop.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/anne-bebek.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/money/money-logo_small.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/migros-tv-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/saglikli-yasam/saglikli-yasam.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/kadin-akademisi.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/blindlook/blindlook-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/gidani-koru/gidani-koru.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/guven-damgasi/guven-damgasi@3x.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/etbis/etbis.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          }
+        ],
+        "image_best_score": 12,
+        "scraped_at": "2026-06-12T14:28:11.477522+00:00"
+      },
+      "name_source": "web_scraper:migros",
+      "brand_source": "web_scraper:migros",
+      "image_source": "web_scraper:migros",
+      "ingredients_source": "web_scraper:migros",
+      "nutrition_source": "web_scraper:migros",
+      "category_source": "web_scraper:migros",
+      "quality_score": 100,
+      "missing_fields": [
+        "barcode"
+      ],
+      "status": "pending"
+    },
+    {
+      "barcode": null,
+      "name": "Polonez Dana Jambon Kg",
+      "brand": "Polonez",
+      "category_suggestion": "Jambon",
+      "category_tags": [
+        "jambon"
+      ],
+      "search_keywords": [
+        "dana",
+        "jambon",
+        "polonez"
+      ],
+      "image_front_url": "https://images.migrosone.com/sanalmarket/product/14901502/polonez-dana-jambon-kg-b7bfb9-1650x1650.jpg",
+      "image_front_storage_path": null,
+      "ingredients_text": "ve bilgisayar sarf malzemeleri iade/değişim kapsamında değerlendirilmemektedir. Abonelik sözleşmesi kapsamında sağlananlar dışında, gazete, dergi gibi süreli yayınlar iade/değişim kapsamında değerlendirilmemektedir. Belirli bir tarihte veya dönemde yapılması gereken, konaklama, eşya taşıma, araba kiralama, yiyecek- içecek tedariki ve boş zamanın değerlendirilmesine ilişkin ürünler iade/değişim kapsamında değerlendirilmemektedir. Elektronik ortamda anında ifa edilen hizmetler veya anında teslim edilen gayrimaddi ürünler iade/değişim kapsamında değerlendirilmemektedir",
+      "nutrition_json": {
+        "energy_kcal": 92.0,
+        "energy_kj": 388.0,
+        "fat": 2.0,
+        "saturated_fat": 1.2,
+        "carbohydrates": 5.0,
+        "sugars": 0.0,
+        "proteins": 13.0,
+        "salt": 1.8
+      },
+      "source": "web_scraper:migros",
+      "source_url": "https://www.migros.com.tr/polonez-dana-jambon-kg-p-e360fe",
+      "raw_source_payload": {
+        "jsonld": null,
+        "meta": {
+          "og_title": "Polonez Dana Jambon Kg - Migros",
+          "og_image": "https://images.migrosone.com/sanalmarket/product/14901502/polonez-dana-jambon-kg-b7bfb9-1650x1650.jpg",
+          "og_description": "MenşeiTÜRKİYEİşletmeci / Üretici / İthalatçı / Dağıtıcı Numarası020144Ürün Bilgilerini Kullanma Hakkındaİnternet sitemizde ve online satış kanallarımızda yer alan ürün etiket bilg.",
+          "title": "Polonez Dana Jambon Kg - Migros"
+        },
+        "ingredients_raw": "Ürünün tesliminden sonra ambalajın açılmış olması halinde maddi ortamda sunulan kitap, dijital içerik ve\n bilgisayar sarf malzemeleri iade/değişim kapsamında değerlendirilmemektedir. Abonelik sözleşmesi kapsamında sağlananlar dışında, gazete, dergi gibi süreli yayınlar iade/değişim kapsamında\n değerlendirilmemektedir. Belirli bir tarihte veya dönemde yapılması gereken, konaklama, eşya taşıma, araba kiralama, yiyecek- içecek\n tedariki ve boş zamanın değerlendirilmesine ilişkin ürünler iade/değişim kapsamında değerlendirilmemektedir. Elektronik ortamda anında ifa edilen hizmetler veya anında teslim edilen gayrimaddi ürünler iade/değişim\n kapsamında değerlendirilmemektedir.",
+        "nutrition_basis": "per_100",
+        "nutrition_strategy": "dom",
+        "nutrition_warnings": [],
+        "image_candidates": [
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14901502/polonez-dana-jambon-kg-b7bfb9-1650x1650.jpg",
+            "score": 30,
+            "reasons": [
+              "+url:product",
+              "+name_in_url",
+              "+brand_in_url",
+              "+medium_res"
+            ]
+          },
+          {
+            "url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/migroskop.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/anne-bebek.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/money/money-logo_small.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/migros-tv-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/saglikli-yasam/saglikli-yasam.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/kadin-akademisi.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/blindlook/blindlook-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/gidani-koru/gidani-koru.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/guven-damgasi/guven-damgasi@3x.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/etbis/etbis.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          }
+        ],
+        "image_best_score": 30,
+        "scraped_at": "2026-06-12T14:28:12.928433+00:00"
+      },
+      "name_source": "web_scraper:migros",
+      "brand_source": "web_scraper:migros",
+      "image_source": "web_scraper:migros",
+      "ingredients_source": "web_scraper:migros",
+      "nutrition_source": "web_scraper:migros",
+      "category_source": "web_scraper:migros",
+      "quality_score": 100,
+      "missing_fields": [
+        "barcode"
+      ],
+      "status": "pending"
+    },
+    {
+      "barcode": null,
+      "name": "Özlem Dana Jambon 60 G",
+      "brand": null,
+      "category_suggestion": "Jambon",
+      "category_tags": [
+        "jambon"
+      ],
+      "search_keywords": [
+        "60",
+        "dana",
+        "jambon",
+        "ozlem",
+        "özlem"
+      ],
+      "image_front_url": "https://images.migrosone.com/sanalmarket/product/14901812/14901812-706a2a-1650x1650.jpg",
+      "image_front_storage_path": null,
+      "ingredients_text": "dana eti ve yağı, patates nişastası, tuz, baharat karışımı, stabilizör (sodyum polifosfat), antioksidan (askorbik asit), koruyucu madde (sodyum nitrit) Net Miktar (g/ml) 60",
+      "nutrition_json": {
+        "energy_kcal": 101.0,
+        "energy_kj": 425.0,
+        "fat": 3.0,
+        "saturated_fat": 1.8,
+        "carbohydrates": 5.0,
+        "sugars": 0.0,
+        "proteins": 13.0,
+        "salt": 2.0
+      },
+      "source": "web_scraper:migros",
+      "source_url": "https://www.migros.com.tr/ozlem-dana-jambon-60-g-p-e36234",
+      "raw_source_payload": {
+        "jsonld": null,
+        "meta": {
+          "og_title": "Özlem Dana Jambon 60 G - Migros",
+          "og_image": "https://images.migrosone.com/sanalmarket/product/14901812/14901812-706a2a-1650x1650.jpg",
+          "og_description": "İçindekilerdana eti ve yağı, patates nişastası, tuz, baharat karışımı, stabilizör (sodyum polifosfat), antioksidan (askorbik asit), koruyucu madde (sodyum nitrit)Net Miktar (g/ml).",
+          "title": "Özlem Dana Jambon 60 G - Migros"
+        },
+        "ingredients_raw": "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Özlem Dana Jambon 60 G - Migros\",\"description\":\"<p><strong>İçindekiler</strong><br>dana eti ve yağı, patates nişastası, tuz, baharat karışımı, stabilizör (sodyum polifosfat), antioksidan (askorbik asit), koruyucu madde (sodyum nitrit)</p><p><strong>Net Miktar (g/ml)</strong><br>60</p><p><strong>Menşei</strong><br>TÜRKİYE</p><p><strong>İşletme Kayıt No</strong><br>34-1921</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı</strong><br>TARIM KREDİ ET ÜRÜNLERİ A.Ş..</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı Numarası</strong><br>706411</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı Adresi</strong><br>TEPEÖREN MAH.ÖZVATAN CAD. BO 3 TUZLA İSTANBUL</p><p><strong>Kullanım Önerileri</strong><br>+4 derecede muhafaza edilmelidir</p><p><strong>Ürün Bilgilerini Kullanma Hakkında</strong><br>İnternet sitemizde ve online satış kanallarımızda yer alan ürün etiket bilgileri, ürünün tedarikçisi tarafından Migros Ticaret A.Ş.’ye iletilen en güncel bilgilerdir. Ürün etiket bilgileri ile internet sitemiz ve online satış kanallarımızda bulunan bilgiler arasında herhangi bir farklılık bulunması halinde sorumluluk tamamen tedarikçi firmaya aittir.</p>\",\"url\":\"https://www.migros.com.tr/ozlem-dana-jambon-60-g-p-e36234\",\"inLanguage\":\"tr-TR\",\"breadcrumb\":{\"@type\":\"BreadcrumbList\",\"numberOfItems\":4,\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"item\":{\"@id\":\"https://www.migros.com.tr/et-tavuk-balik-c-3\",\"name\":\"Et, Tavuk, Balık\"}},{\"@type\":\"ListItem\",\"position\":2,\"item\":{\"@id\":\"https://www.migros.com.tr/et-sarkuteri-c-6b\",\"name\":\"Et Şarküteri\"}},{\"@type\":\"ListItem\",\"position\":3,\"item\":{\"@id\":\"https://www.migros.com.tr/jambon-c-112d7\",\"name\":\"Jambon\"}},{\"@type\":\"ListItem\",\"position\":4,\"item\":{\"@id\":\"https://www.migros.com.tr/dana-jambon-c-112de\",\"name\":\"Dana Jambon\"}}]},\"mainEntity\":{\"@type\":\"WebPageElement\",\"offers\":{\"@type\":\"Offer\",\"itemOffered\":[{\"@type\":\"Product\",\"name\":\"Özlem Dana Jambon 60 G\",\"url\":\"https://www.migros.com.tr/ozlem-dana-jambon-60-g-p-e36234\",\"category\":\"Jambon/Et Şarküteri/Et, Tavuk, Balık\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Özlem\"},\"image\":[{\"@type\":\"ImageObject\",\"contentUrl\":\"https://images.migrosone.com/sanalmarket/product/14901812/14901812-706a2a.jpg\",\"caption\":\"Özlem Dana Jambon 60 G\"}],\"offers\":{\"@type\":\"Offer\",\"itemCondition\":\"https://schema.org/NewCondition\",\"image\":\"https://images.migrosone.com/sanalmarket/product/14901812/14901812-706a2a.jpg\",\"availability\":\"https://schema.org/InStock\",\"category\":\"Jambon/Et Şarküteri/Et, Tavuk, Balık\",\"price\":\"88.90\",\"priceCurrency\":\"TRY\",\"areaServed\":\"TR\",\"seller\":{\"@type\":\"Organization\",\"name\":\"Migros Sanalmarket\",\"logo\":\"https://images.migrosone.com/sanalmarket/custom/sanalmarket-seo-34706362.png\"}}}]}}} [_nghost-ng-c1261675423]{position:relative;display:block}@media (max-width: 767.98px){[_nghost-ng-c1261675423]{overflow-x:scroll;white-space:nowrap;max-width:90vw;-ms-overflow-style:none;scrollbar-width:none}[_nghost-ng-c1261675423]::-webkit-scrollbar{display:none}}.breadcrumbs[_ngcontent-ng-c1261675423]{margin:0 0 .5rem;padding:0}.breadcrumbs__item[_ngcontent-ng-c1261675423]{display:inline;line-height:15px}.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{content:\"\";display:inline-block;color:var(--font-color__black);background:url(/assets/icons/right-chevron.svg) no-repeat center;width:10px;height:10px;margin:0 10px;background-size:cover;vertical-align:middle}@media (max-width: 767.98px){.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{margin:0 .4rem}}.breadcrumbs__item[_ngcontent-ng-c1261675423]:last-child .breadcrumbs__link[_ngcontent-ng-c1261675423]{color:var(--font-color__default)}.breadcrumbs__link[_ngcontent-ng-c1261675423]{font-family:var(--secondary-font-family);color:var(--background-color__DARK);font-size:12px}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423]{vertical-align:middle}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423] span[_ngcontent-ng-c1261675423]{width:45px;height:10px;background-color:var(--background-color__GREY);border-radius:var(--base-border-radius);display:inline-block} @keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}sm-product-images{display:block;position:relative}sm-product-images .product-images{max-width:33rem;text-align:-webkit-center}@media (min-width: 768px){sm-product-images .product-images{border:solid 1px var(--basicColorTransparent);border-radius:8px}}sm-product-images .product-images .preview-image-wrapper{width:32rem;height:32rem;position:relative;text-align:center;align-items:center;display:flex}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets{bottom:-5px}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets .swiper-pagination-bullet-active{background:var(--brandColorPrimary600)}@media (max-width: 768px){sm-product-images .product-images .preview-image-wrapper{max-width:20.5rem;margin-bottom:1rem}}sm-product-images .product-images .preview-image-wrapper img{max-width:100%;max-height:28rem;margin-top:2rem;height:auto}sm-product-images .product-images-carousel-cells{padding:0 1.5rem}sm-product-images .product-images-carousel-cell{margin-right:0;display:inline-flex;cursor:pointer;border:solid 1px var(--basicColorTransparent);min-width:3.188rem;height:3.188rem;border-radius:7px;background-color:var(--basic-color-white)}sm-product-images .product-images-carousel-cell img{max-height:2.875rem;margin:auto;display:block;border-radius:8px}sm-product-images .product-images-carousel-cell+.product-images-carousel-cell{margin-left:1rem}sm-product-images .product-images-carousel-cell--active{border:2px solid var(--brandColorPrimary700)}sm-product-images .product-images fe-scroll-slider{display:flex;justify-content:center;margin:.5rem}@media (max-width: 768px){sm-product-images .product-images fe-scroll-slider{max-width:20.5rem}}sm-product-images .product-images fe-scroll-slider .container-wrapper-content{min-width:8.8rem}sm-product-images .product-images fe-scroll-slider .container-wrapper-prev-btn:after{left:.4rem!important}sm-product-images .product-images fe-scroll-slider .container-wrapper-next-btn:after{left:-.4rem!important}sm-product-images .zoom-preview{background-size:48rem 48rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:32rem;height:32rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);bottom:30%;left:100%;z-index:99;animation:presence .3s ease-in-out} @charset \"UTF-8\";@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}fe-product-detail-tabs{display:block}fe-product-detail-tabs h3{font-size:22px;font-weight:var(--font-weight-bold)}fe-product-detail-tabs .product-detail-tabs__img{width:100%}fe-product-detail-tabs .product-detail-tabs__analysis{display:flex;justify-self:center;cursor:pointer;width:100%}@media (min-width: 768px){fe-product-detail-tabs .product-detail-tabs__analysis{max-height:37.5rem;width:auto}}fe-product-detail-tabs .product-detail-tabs__video-wrapper{aspect-ratio:16/9;width:100%;position:relative;max-width:1400px}fe-product-detail-tabs .product-detail-tabs__video-wrapper iframe{width:100%;height:100%}fe-product-detail-tabs .product-detail-tabs__product-safety-info .product-tab-images{text-align:start;margin-top:0}fe-product-detail-tabs .product-detail-tabs__product-safety-info__img{margin-top:var(--base-size-32)}fe-product-detail-tabs .installment-description-container{display:flex}fe-product-detail-tabs .installment-description-container .installment-description{padding-left:.5rem}fe-product-detail-tabs .installment-container{display:flex;justify-content:space-between;color:var(--basicColor900);flex-wrap:wrap}@media (min-width: 768px){fe-product-detail-tabs .installment-container{padding:1.4rem 0 2rem}}fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 100%;border-radius:.5rem;border:1px solid var(--basicColorTransparent);text-align:center;overflow-x:auto;margin-top:.75rem}@media (min-width: 768px){fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 32%;margin-top:0}}fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:4.688rem;margin:.5rem 0 .25rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:6.563rem;margin:.625rem 0 .438rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:4.813rem;margin:.688rem 0 .375rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:7.175rem;margin:.75rem 0 .625rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:4.75rem;margin:.875rem 0 .688rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:7.908rem;margin:1.125rem 0 .875rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead{background-color:var(--basicColor200)}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs fe-read-more div p{margin:0}fe-product-detail-tabs fe-read-more div ul{margin:0;padding:0}fe-product-detail-tabs fe-read-more div ul li p{display:inline-block}fe-product-detail-tabs fe-read-more div ul li:before{content:\"\\2022\";color:var(--secondary-color__500);font-weight:var(--font-weight-bold);display:inline-block;width:1em}fe-product-detail-tabs .product-tab-images{text-align:center;margin-top:1rem;margin-bottom:.5rem}fe-product-detail-tabs .product-tab-images img{max-width:100%;max-height:28rem}fe-product-detail-tabs .zoom-preview{background-size:28rem 56rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:25rem;height:25rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);top:5%;right:10%;z-index:99;animation:presence .3s ease-in-out}fe-product-detail-tabs iframe{width:calc(100% - 2rem);height:100rem}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-header,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-header{border-bottom:1px solid var(--secondary-color__500)}@media (max-width: 767.98px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label{min-width:max-content}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:var(--base-size-14)}@media (min-width: 768px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:1.125rem}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active{opacity:1!important;color:var(--secondary-color__500);font-weight:var(--font-weight-bold)}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text{color:inherit;font-weight:inherit}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after{background-color:var(--secondary-color__500)!important}",
+        "nutrition_basis": "per_100",
+        "nutrition_strategy": "dom",
+        "nutrition_warnings": [],
+        "image_candidates": [
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14901812/14901812-706a2a-1650x1650.jpg",
+            "score": 12,
+            "reasons": [
+              "+url:product",
+              "+medium_res"
+            ]
+          },
+          {
+            "url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/migroskop.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/anne-bebek.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/money/money-logo_small.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/migros-tv-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/saglikli-yasam/saglikli-yasam.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/kadin-akademisi.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/blindlook/blindlook-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/gidani-koru/gidani-koru.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/guven-damgasi/guven-damgasi@3x.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/etbis/etbis.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          }
+        ],
+        "image_best_score": 12,
+        "scraped_at": "2026-06-12T14:28:14.393823+00:00"
+      },
+      "name_source": "web_scraper:migros",
+      "brand_source": null,
+      "image_source": "web_scraper:migros",
+      "ingredients_source": "web_scraper:migros",
+      "nutrition_source": "web_scraper:migros",
+      "category_source": "web_scraper:migros",
+      "quality_score": 88,
+      "missing_fields": [
+        "brand",
+        "barcode"
+      ],
+      "status": "pending"
+    },
+    {
+      "barcode": null,
+      "name": "Polonez Dana Jambon Küpleri 100 G",
+      "brand": "Polonez",
+      "category_suggestion": "Jambon",
+      "category_tags": [
+        "jambon"
+      ],
+      "search_keywords": [
+        "100",
+        "dana",
+        "jambon",
+        "kupleri",
+        "küpleri",
+        "polonez"
+      ],
+      "image_front_url": "https://images.migrosone.com/sanalmarket/product/14106823/14106823_1-9fbfc3-1650x1650.jpg",
+      "image_front_storage_path": null,
+      "ingredients_text": "Dana eti ve yağı, patates nişastası, tuz, baharat karışımı, stabilizör(sodyum polifosfat), antioksidan(askorbik asit), koruyucu madde(sodyum nitrit) Net Miktar (g/ml) 100",
+      "nutrition_json": {
+        "energy_kcal": 90.0,
+        "energy_kj": 380.0,
+        "fat": 2.0,
+        "saturated_fat": 1.2,
+        "carbohydrates": 5.0,
+        "sugars": 0.0,
+        "proteins": 13.0,
+        "salt": 1.8
+      },
+      "source": "web_scraper:migros",
+      "source_url": "https://www.migros.com.tr/polonez-dana-jambon-kupleri-100-g-p-d740c7",
+      "raw_source_payload": {
+        "jsonld": null,
+        "meta": {
+          "og_title": "Polonez Dana Jambon Küpleri 100 G - Migros",
+          "og_image": "https://images.migrosone.com/sanalmarket/product/14106823/14106823_1-9fbfc3-1650x1650.jpg",
+          "og_description": "İçindekilerDana eti ve yağı, patates nişastası, tuz, baharat karışımı, stabilizör(sodyum polifosfat), antioksidan(askorbik asit), koruyucu madde(sodyum nitrit)Net Miktar (g/ml)100.",
+          "title": "Polonez Dana Jambon Küpleri 100 G - Migros"
+        },
+        "ingredients_raw": "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Polonez Dana Jambon Küpleri 100 G - Migros\",\"description\":\"<p><strong>İçindekiler</strong><br>Dana eti ve yağı, patates nişastası, tuz, baharat karışımı, stabilizör(sodyum polifosfat), antioksidan(askorbik asit), koruyucu madde(sodyum nitrit)</p><p><strong>Net Miktar (g/ml)</strong><br>100</p><p><strong>Saklama Koşulları</strong><br>0-4 °C muhafaza ediniz</p><p><strong>Menşei</strong><br>TÜRKİYE</p><p><strong>Kullanım Önerileri</strong><br>0-4 DERECEDE MUHAFAZA EDİNİZ</p><p><strong>Ürün Bilgilerini Kullanma Hakkında</strong><br>İnternet sitemizde ve online satış kanallarımızda yer alan ürün etiket bilgileri, ürünün tedarikçisi tarafından Migros Ticaret A.Ş.’ye iletilen en güncel bilgilerdir. Ürün etiket bilgileri ile internet sitemiz ve online satış kanallarımızda bulunan bilgiler arasında herhangi bir farklılık bulunması halinde sorumluluk tamamen tedarikçi firmaya aittir.</p>\",\"url\":\"https://www.migros.com.tr/polonez-dana-jambon-kupleri-100-g-p-d740c7\",\"inLanguage\":\"tr-TR\",\"breadcrumb\":{\"@type\":\"BreadcrumbList\",\"numberOfItems\":4,\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"item\":{\"@id\":\"https://www.migros.com.tr/et-tavuk-balik-c-3\",\"name\":\"Et, Tavuk, Balık\"}},{\"@type\":\"ListItem\",\"position\":2,\"item\":{\"@id\":\"https://www.migros.com.tr/et-sarkuteri-c-6b\",\"name\":\"Et Şarküteri\"}},{\"@type\":\"ListItem\",\"position\":3,\"item\":{\"@id\":\"https://www.migros.com.tr/jambon-c-112d7\",\"name\":\"Jambon\"}},{\"@type\":\"ListItem\",\"position\":4,\"item\":{\"@id\":\"https://www.migros.com.tr/dana-jambon-c-112de\",\"name\":\"Dana Jambon\"}}]},\"mainEntity\":{\"@type\":\"WebPageElement\",\"offers\":{\"@type\":\"Offer\",\"itemOffered\":[{\"@type\":\"Product\",\"name\":\"Polonez Dana Jambon Küpleri 100 G\",\"url\":\"https://www.migros.com.tr/polonez-dana-jambon-kupleri-100-g-p-d740c7\",\"category\":\"Jambon/Et Şarküteri/Et, Tavuk, Balık\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Polonez\"},\"image\":[{\"@type\":\"ImageObject\",\"contentUrl\":\"https://images.migrosone.com/sanalmarket/product/14106823/14106823_1-9fbfc3.jpg\",\"caption\":\"Polonez Dana Jambon Küpleri 100 G\"}],\"offers\":{\"@type\":\"Offer\",\"itemCondition\":\"https://schema.org/NewCondition\",\"image\":\"https://images.migrosone.com/sanalmarket/product/14106823/14106823_1-9fbfc3.jpg\",\"availability\":\"https://schema.org/InStock\",\"category\":\"Jambon/Et Şarküteri/Et, Tavuk, Balık\",\"price\":\"149.00\",\"priceCurrency\":\"TRY\",\"areaServed\":\"TR\",\"seller\":{\"@type\":\"Organization\",\"name\":\"Migros Sanalmarket\",\"logo\":\"https://images.migrosone.com/sanalmarket/custom/sanalmarket-seo-34706362.png\"}}}]}}} [_nghost-ng-c1261675423]{position:relative;display:block}@media (max-width: 767.98px){[_nghost-ng-c1261675423]{overflow-x:scroll;white-space:nowrap;max-width:90vw;-ms-overflow-style:none;scrollbar-width:none}[_nghost-ng-c1261675423]::-webkit-scrollbar{display:none}}.breadcrumbs[_ngcontent-ng-c1261675423]{margin:0 0 .5rem;padding:0}.breadcrumbs__item[_ngcontent-ng-c1261675423]{display:inline;line-height:15px}.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{content:\"\";display:inline-block;color:var(--font-color__black);background:url(/assets/icons/right-chevron.svg) no-repeat center;width:10px;height:10px;margin:0 10px;background-size:cover;vertical-align:middle}@media (max-width: 767.98px){.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{margin:0 .4rem}}.breadcrumbs__item[_ngcontent-ng-c1261675423]:last-child .breadcrumbs__link[_ngcontent-ng-c1261675423]{color:var(--font-color__default)}.breadcrumbs__link[_ngcontent-ng-c1261675423]{font-family:var(--secondary-font-family);color:var(--background-color__DARK);font-size:12px}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423]{vertical-align:middle}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423] span[_ngcontent-ng-c1261675423]{width:45px;height:10px;background-color:var(--background-color__GREY);border-radius:var(--base-border-radius);display:inline-block} @keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}sm-product-images{display:block;position:relative}sm-product-images .product-images{max-width:33rem;text-align:-webkit-center}@media (min-width: 768px){sm-product-images .product-images{border:solid 1px var(--basicColorTransparent);border-radius:8px}}sm-product-images .product-images .preview-image-wrapper{width:32rem;height:32rem;position:relative;text-align:center;align-items:center;display:flex}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets{bottom:-5px}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets .swiper-pagination-bullet-active{background:var(--brandColorPrimary600)}@media (max-width: 768px){sm-product-images .product-images .preview-image-wrapper{max-width:20.5rem;margin-bottom:1rem}}sm-product-images .product-images .preview-image-wrapper img{max-width:100%;max-height:28rem;margin-top:2rem;height:auto}sm-product-images .product-images-carousel-cells{padding:0 1.5rem}sm-product-images .product-images-carousel-cell{margin-right:0;display:inline-flex;cursor:pointer;border:solid 1px var(--basicColorTransparent);min-width:3.188rem;height:3.188rem;border-radius:7px;background-color:var(--basic-color-white)}sm-product-images .product-images-carousel-cell img{max-height:2.875rem;margin:auto;display:block;border-radius:8px}sm-product-images .product-images-carousel-cell+.product-images-carousel-cell{margin-left:1rem}sm-product-images .product-images-carousel-cell--active{border:2px solid var(--brandColorPrimary700)}sm-product-images .product-images fe-scroll-slider{display:flex;justify-content:center;margin:.5rem}@media (max-width: 768px){sm-product-images .product-images fe-scroll-slider{max-width:20.5rem}}sm-product-images .product-images fe-scroll-slider .container-wrapper-content{min-width:8.8rem}sm-product-images .product-images fe-scroll-slider .container-wrapper-prev-btn:after{left:.4rem!important}sm-product-images .product-images fe-scroll-slider .container-wrapper-next-btn:after{left:-.4rem!important}sm-product-images .zoom-preview{background-size:48rem 48rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:32rem;height:32rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);bottom:30%;left:100%;z-index:99;animation:presence .3s ease-in-out} @charset \"UTF-8\";@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}fe-product-detail-tabs{display:block}fe-product-detail-tabs h3{font-size:22px;font-weight:var(--font-weight-bold)}fe-product-detail-tabs .product-detail-tabs__img{width:100%}fe-product-detail-tabs .product-detail-tabs__analysis{display:flex;justify-self:center;cursor:pointer;width:100%}@media (min-width: 768px){fe-product-detail-tabs .product-detail-tabs__analysis{max-height:37.5rem;width:auto}}fe-product-detail-tabs .product-detail-tabs__video-wrapper{aspect-ratio:16/9;width:100%;position:relative;max-width:1400px}fe-product-detail-tabs .product-detail-tabs__video-wrapper iframe{width:100%;height:100%}fe-product-detail-tabs .product-detail-tabs__product-safety-info .product-tab-images{text-align:start;margin-top:0}fe-product-detail-tabs .product-detail-tabs__product-safety-info__img{margin-top:var(--base-size-32)}fe-product-detail-tabs .installment-description-container{display:flex}fe-product-detail-tabs .installment-description-container .installment-description{padding-left:.5rem}fe-product-detail-tabs .installment-container{display:flex;justify-content:space-between;color:var(--basicColor900);flex-wrap:wrap}@media (min-width: 768px){fe-product-detail-tabs .installment-container{padding:1.4rem 0 2rem}}fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 100%;border-radius:.5rem;border:1px solid var(--basicColorTransparent);text-align:center;overflow-x:auto;margin-top:.75rem}@media (min-width: 768px){fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 32%;margin-top:0}}fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:4.688rem;margin:.5rem 0 .25rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:6.563rem;margin:.625rem 0 .438rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:4.813rem;margin:.688rem 0 .375rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:7.175rem;margin:.75rem 0 .625rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:4.75rem;margin:.875rem 0 .688rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:7.908rem;margin:1.125rem 0 .875rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead{background-color:var(--basicColor200)}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs fe-read-more div p{margin:0}fe-product-detail-tabs fe-read-more div ul{margin:0;padding:0}fe-product-detail-tabs fe-read-more div ul li p{display:inline-block}fe-product-detail-tabs fe-read-more div ul li:before{content:\"\\2022\";color:var(--secondary-color__500);font-weight:var(--font-weight-bold);display:inline-block;width:1em}fe-product-detail-tabs .product-tab-images{text-align:center;margin-top:1rem;margin-bottom:.5rem}fe-product-detail-tabs .product-tab-images img{max-width:100%;max-height:28rem}fe-product-detail-tabs .zoom-preview{background-size:28rem 56rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:25rem;height:25rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);top:5%;right:10%;z-index:99;animation:presence .3s ease-in-out}fe-product-detail-tabs iframe{width:calc(100% - 2rem);height:100rem}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-header,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-header{border-bottom:1px solid var(--secondary-color__500)}@media (max-width: 767.98px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label{min-width:max-content}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:var(--base-size-14)}@media (min-width: 768px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:1.125rem}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active{opacity:1!important;color:var(--secondary-color__500);font-weight:var(--font-weight-bold)}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text{color:inherit;font-weight:inherit}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after{background-color:var(--secondary-color__500)!important}",
+        "nutrition_basis": "per_100",
+        "nutrition_strategy": "dom",
+        "nutrition_warnings": [],
+        "image_candidates": [
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14106823/14106823_1-9fbfc3-1650x1650.jpg",
+            "score": 12,
+            "reasons": [
+              "+url:product",
+              "+medium_res"
+            ]
+          },
+          {
+            "url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/migroskop.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/anne-bebek.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/money/money-logo_small.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/migros-tv-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/saglikli-yasam/saglikli-yasam.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/kadin-akademisi.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/blindlook/blindlook-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/gidani-koru/gidani-koru.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/guven-damgasi/guven-damgasi@3x.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/etbis/etbis.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          }
+        ],
+        "image_best_score": 12,
+        "scraped_at": "2026-06-12T14:28:15.963438+00:00"
+      },
+      "name_source": "web_scraper:migros",
+      "brand_source": "web_scraper:migros",
+      "image_source": "web_scraper:migros",
+      "ingredients_source": "web_scraper:migros",
+      "nutrition_source": "web_scraper:migros",
+      "category_source": "web_scraper:migros",
+      "quality_score": 100,
+      "missing_fields": [
+        "barcode"
+      ],
+      "status": "pending"
+    },
+    {
+      "barcode": null,
+      "name": "Özlem Dana But Jambon (Kg)",
+      "brand": null,
+      "category_suggestion": "Jambon",
+      "category_tags": [
+        "jambon"
+      ],
+      "search_keywords": [
+        "but",
+        "dana",
+        "jambon",
+        "ozlem",
+        "özlem"
+      ],
+      "image_front_url": "https://images.migrosone.com/sanalmarket/product/14909667/14909667_2-b010e3-1650x1650.jpg",
+      "image_front_storage_path": null,
+      "ingredients_text": "Dana but eti ve yağı, tuz, baharat karışımı, dekstroz, stabilizör (Sodyum polifosfat), antioksidan (Askorbik asit), koruyucu madde (Sodyum nitrit)",
+      "nutrition_json": {
+        "energy_kcal": 119.0,
+        "energy_kj": 502.0,
+        "fat": 3.0,
+        "saturated_fat": 1.8,
+        "carbohydrates": 1.0,
+        "sugars": 0.8,
+        "proteins": 22.0,
+        "salt": 2.5
+      },
+      "source": "web_scraper:migros",
+      "source_url": "https://www.migros.com.tr/ozlem-dana-but-jambon-kg-p-e380e3",
+      "raw_source_payload": {
+        "jsonld": null,
+        "meta": {
+          "og_title": "Özlem Dana But Jambon (Kg) - Migros",
+          "og_image": "https://images.migrosone.com/sanalmarket/product/14909667/14909667_1-11c111-1650x1650.jpg",
+          "og_description": "İçindekilerDana but eti ve yağı, tuz, baharat karışımı, dekstroz, stabilizör (Sodyum polifosfat), antioksidan (Askorbik asit), koruyucu madde (Sodyum nitrit).Saklama Koşulları0-4 .",
+          "title": "Özlem Dana But Jambon (Kg) - Migros"
+        },
+        "ingredients_raw": "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Özlem Dana But Jambon (Kg) - Migros\",\"description\":\"<p><strong>İçindekiler</strong><br>Dana but eti ve yağı, tuz, baharat karışımı, dekstroz, stabilizör (Sodyum polifosfat), antioksidan (Askorbik asit), koruyucu madde (Sodyum nitrit).</p><p><strong>Saklama Koşulları</strong><br>0-4 °C muhafaza ediniz</p><p><strong>Menşei</strong><br>TÜRKİYE</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı</strong><br>TARIM KREDİ ET ÜRÜNLERİ A.Ş..</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı Numarası</strong><br>706411</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı Adresi</strong><br>TEPEÖREN MAH.ÖZVATAN CAD. BO 3 TUZLA İSTANBUL</p><p><strong>Kullanım Önerileri</strong><br>Direkt ve ya pişirerek tüketilir.</p><p><strong>Ürün Bilgilerini Kullanma Hakkında</strong><br>İnternet sitemizde ve online satış kanallarımızda yer alan ürün etiket bilgileri, ürünün tedarikçisi tarafından Migros Ticaret A.Ş.’ye iletilen en güncel bilgilerdir. Ürün etiket bilgileri ile internet sitemiz ve online satış kanallarımızda bulunan bilgiler arasında herhangi bir farklılık bulunması halinde sorumluluk tamamen tedarikçi firmaya aittir.</p>\",\"url\":\"https://www.migros.com.tr/ozlem-dana-but-jambon-kg-p-e380e3\",\"inLanguage\":\"tr-TR\",\"breadcrumb\":{\"@type\":\"BreadcrumbList\",\"numberOfItems\":4,\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"item\":{\"@id\":\"https://www.migros.com.tr/et-tavuk-balik-c-3\",\"name\":\"Et, Tavuk, Balık\"}},{\"@type\":\"ListItem\",\"position\":2,\"item\":{\"@id\":\"https://www.migros.com.tr/et-sarkuteri-c-6b\",\"name\":\"Et Şarküteri\"}},{\"@type\":\"ListItem\",\"position\":3,\"item\":{\"@id\":\"https://www.migros.com.tr/jambon-c-112d7\",\"name\":\"Jambon\"}},{\"@type\":\"ListItem\",\"position\":4,\"item\":{\"@id\":\"https://www.migros.com.tr/dana-jambon-c-112de\",\"name\":\"Dana Jambon\"}}]},\"mainEntity\":{\"@type\":\"WebPageElement\",\"offers\":{\"@type\":\"Offer\",\"itemOffered\":[{\"@type\":\"Product\",\"name\":\"Özlem Dana But Jambon (Kg)\",\"url\":\"https://www.migros.com.tr/ozlem-dana-but-jambon-kg-p-e380e3\",\"category\":\"Jambon/Et Şarküteri/Et, Tavuk, Balık\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Özlem\"},\"image\":[{\"@type\":\"ImageObject\",\"contentUrl\":\"https://images.migrosone.com/sanalmarket/product/14909667/14909667_1-11c111.jpg\",\"caption\":\"Özlem Dana But Jambon (Kg)\"},{\"@type\":\"ImageObject\",\"contentUrl\":\"https://images.migrosone.com/sanalmarket/product/14909667/14909667_2-b010e3.jpg\",\"caption\":\"Özlem Dana But Jambon (Kg)\"}],\"offers\":{\"@type\":\"Offer\",\"itemCondition\":\"https://schema.org/NewCondition\",\"image\":\"https://images.migrosone.com/sanalmarket/product/14909667/14909667_1-11c111.jpg\",\"availability\":\"https://schema.org/InStock\",\"category\":\"Jambon/Et Şarküteri/Et, Tavuk, Balık\",\"price\":\"2550.00\",\"priceCurrency\":\"TRY\",\"areaServed\":\"TR\",\"seller\":{\"@type\":\"Organization\",\"name\":\"Migros Sanalmarket\",\"logo\":\"https://images.migrosone.com/sanalmarket/custom/sanalmarket-seo-34706362.png\"}}}]}}} [_nghost-ng-c1261675423]{position:relative;display:block}@media (max-width: 767.98px){[_nghost-ng-c1261675423]{overflow-x:scroll;white-space:nowrap;max-width:90vw;-ms-overflow-style:none;scrollbar-width:none}[_nghost-ng-c1261675423]::-webkit-scrollbar{display:none}}.breadcrumbs[_ngcontent-ng-c1261675423]{margin:0 0 .5rem;padding:0}.breadcrumbs__item[_ngcontent-ng-c1261675423]{display:inline;line-height:15px}.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{content:\"\";display:inline-block;color:var(--font-color__black);background:url(/assets/icons/right-chevron.svg) no-repeat center;width:10px;height:10px;margin:0 10px;background-size:cover;vertical-align:middle}@media (max-width: 767.98px){.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{margin:0 .4rem}}.breadcrumbs__item[_ngcontent-ng-c1261675423]:last-child .breadcrumbs__link[_ngcontent-ng-c1261675423]{color:var(--font-color__default)}.breadcrumbs__link[_ngcontent-ng-c1261675423]{font-family:var(--secondary-font-family);color:var(--background-color__DARK);font-size:12px}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423]{vertical-align:middle}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423] span[_ngcontent-ng-c1261675423]{width:45px;height:10px;background-color:var(--background-color__GREY);border-radius:var(--base-border-radius);display:inline-block} @keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}sm-product-images{display:block;position:relative}sm-product-images .product-images{max-width:33rem;text-align:-webkit-center}@media (min-width: 768px){sm-product-images .product-images{border:solid 1px var(--basicColorTransparent);border-radius:8px}}sm-product-images .product-images .preview-image-wrapper{width:32rem;height:32rem;position:relative;text-align:center;align-items:center;display:flex}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets{bottom:-5px}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets .swiper-pagination-bullet-active{background:var(--brandColorPrimary600)}@media (max-width: 768px){sm-product-images .product-images .preview-image-wrapper{max-width:20.5rem;margin-bottom:1rem}}sm-product-images .product-images .preview-image-wrapper img{max-width:100%;max-height:28rem;margin-top:2rem;height:auto}sm-product-images .product-images-carousel-cells{padding:0 1.5rem}sm-product-images .product-images-carousel-cell{margin-right:0;display:inline-flex;cursor:pointer;border:solid 1px var(--basicColorTransparent);min-width:3.188rem;height:3.188rem;border-radius:7px;background-color:var(--basic-color-white)}sm-product-images .product-images-carousel-cell img{max-height:2.875rem;margin:auto;display:block;border-radius:8px}sm-product-images .product-images-carousel-cell+.product-images-carousel-cell{margin-left:1rem}sm-product-images .product-images-carousel-cell--active{border:2px solid var(--brandColorPrimary700)}sm-product-images .product-images fe-scroll-slider{display:flex;justify-content:center;margin:.5rem}@media (max-width: 768px){sm-product-images .product-images fe-scroll-slider{max-width:20.5rem}}sm-product-images .product-images fe-scroll-slider .container-wrapper-content{min-width:8.8rem}sm-product-images .product-images fe-scroll-slider .container-wrapper-prev-btn:after{left:.4rem!important}sm-product-images .product-images fe-scroll-slider .container-wrapper-next-btn:after{left:-.4rem!important}sm-product-images .zoom-preview{background-size:48rem 48rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:32rem;height:32rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);bottom:30%;left:100%;z-index:99;animation:presence .3s ease-in-out} @charset \"UTF-8\";@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}fe-product-detail-tabs{display:block}fe-product-detail-tabs h3{font-size:22px;font-weight:var(--font-weight-bold)}fe-product-detail-tabs .product-detail-tabs__img{width:100%}fe-product-detail-tabs .product-detail-tabs__analysis{display:flex;justify-self:center;cursor:pointer;width:100%}@media (min-width: 768px){fe-product-detail-tabs .product-detail-tabs__analysis{max-height:37.5rem;width:auto}}fe-product-detail-tabs .product-detail-tabs__video-wrapper{aspect-ratio:16/9;width:100%;position:relative;max-width:1400px}fe-product-detail-tabs .product-detail-tabs__video-wrapper iframe{width:100%;height:100%}fe-product-detail-tabs .product-detail-tabs__product-safety-info .product-tab-images{text-align:start;margin-top:0}fe-product-detail-tabs .product-detail-tabs__product-safety-info__img{margin-top:var(--base-size-32)}fe-product-detail-tabs .installment-description-container{display:flex}fe-product-detail-tabs .installment-description-container .installment-description{padding-left:.5rem}fe-product-detail-tabs .installment-container{display:flex;justify-content:space-between;color:var(--basicColor900);flex-wrap:wrap}@media (min-width: 768px){fe-product-detail-tabs .installment-container{padding:1.4rem 0 2rem}}fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 100%;border-radius:.5rem;border:1px solid var(--basicColorTransparent);text-align:center;overflow-x:auto;margin-top:.75rem}@media (min-width: 768px){fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 32%;margin-top:0}}fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:4.688rem;margin:.5rem 0 .25rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:6.563rem;margin:.625rem 0 .438rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:4.813rem;margin:.688rem 0 .375rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:7.175rem;margin:.75rem 0 .625rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:4.75rem;margin:.875rem 0 .688rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:7.908rem;margin:1.125rem 0 .875rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead{background-color:var(--basicColor200)}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs fe-read-more div p{margin:0}fe-product-detail-tabs fe-read-more div ul{margin:0;padding:0}fe-product-detail-tabs fe-read-more div ul li p{display:inline-block}fe-product-detail-tabs fe-read-more div ul li:before{content:\"\\2022\";color:var(--secondary-color__500);font-weight:var(--font-weight-bold);display:inline-block;width:1em}fe-product-detail-tabs .product-tab-images{text-align:center;margin-top:1rem;margin-bottom:.5rem}fe-product-detail-tabs .product-tab-images img{max-width:100%;max-height:28rem}fe-product-detail-tabs .zoom-preview{background-size:28rem 56rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:25rem;height:25rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);top:5%;right:10%;z-index:99;animation:presence .3s ease-in-out}fe-product-detail-tabs iframe{width:calc(100% - 2rem);height:100rem}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-header,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-header{border-bottom:1px solid var(--secondary-color__500)}@media (max-width: 767.98px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label{min-width:max-content}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:var(--base-size-14)}@media (min-width: 768px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:1.125rem}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active{opacity:1!important;color:var(--secondary-color__500);font-weight:var(--font-weight-bold)}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text{color:inherit;font-weight:inherit}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after{background-color:var(--secondary-color__500)!important}",
+        "nutrition_basis": "per_100",
+        "nutrition_strategy": "dom",
+        "nutrition_warnings": [],
+        "image_candidates": [
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14909667/14909667_2-b010e3-1650x1650.jpg",
+            "score": 24,
+            "reasons": [
+              "+gallery",
+              "+url:product",
+              "+medium_res"
+            ]
+          },
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14909667/14909667_1-11c111-1650x1650.jpg",
+            "score": 12,
+            "reasons": [
+              "+url:product",
+              "+medium_res"
+            ]
+          },
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14909667/14909667_1-11c111-105x105.jpg",
+            "score": -12,
+            "reasons": [
+              "+gallery",
+              "+url:product",
+              "-tiny"
+            ]
+          },
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14909667/14909667_2-b010e3-105x105.jpg",
+            "score": -12,
+            "reasons": [
+              "+gallery",
+              "+url:product",
+              "-tiny"
+            ]
+          },
+          {
+            "url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/migroskop.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/anne-bebek.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/money/money-logo_small.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/migros-tv-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/saglikli-yasam/saglikli-yasam.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/kadin-akademisi.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/blindlook/blindlook-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          }
+        ],
+        "image_best_score": 24,
+        "scraped_at": "2026-06-12T14:28:17.472070+00:00"
+      },
+      "name_source": "web_scraper:migros",
+      "brand_source": null,
+      "image_source": "web_scraper:migros",
+      "ingredients_source": "web_scraper:migros",
+      "nutrition_source": "web_scraper:migros",
+      "category_source": "web_scraper:migros",
+      "quality_score": 88,
+      "missing_fields": [
+        "brand",
+        "barcode"
+      ],
+      "status": "pending"
+    },
+    {
+      "barcode": null,
+      "name": "Polonez Hindi Jambon 50 G",
+      "brand": "Polonez",
+      "category_suggestion": "Jambon",
+      "category_tags": [
+        "jambon"
+      ],
+      "search_keywords": [
+        "50",
+        "hindi",
+        "jambon",
+        "polonez"
+      ],
+      "image_front_url": "https://images.migrosone.com/sanalmarket/product/14901819/14901819-0b2e8f-1650x1650.jpg",
+      "image_front_storage_path": null,
+      "ingredients_text": "HİNDİ ETİ VE YAĞI PATATES NİŞASTASI TUZ BAHARAT KARIŞIMI STABİLÜZÖR (SODYUM POLİFOSFAT) ANTİOKSİDAN(ASKORBİK ASİT) KORUYUCU SODYUM NİTRİT Net Miktar (g/ml) 50 Menşei TÜRK",
+      "nutrition_json": {
+        "energy_kcal": 83.0,
+        "energy_kj": 351.0,
+        "fat": 1.0,
+        "saturated_fat": 0.2,
+        "carbohydrates": 5.0,
+        "sugars": 0.0,
+        "proteins": 13.0,
+        "salt": 1.7
+      },
+      "source": "web_scraper:migros",
+      "source_url": "https://www.migros.com.tr/polonez-hindi-jambon-50-g-p-e3623b",
+      "raw_source_payload": {
+        "jsonld": null,
+        "meta": {
+          "og_title": "Polonez Hindi Jambon 50 G - Migros",
+          "og_image": "https://images.migrosone.com/sanalmarket/product/14901819/14901819-0b2e8f-1650x1650.jpg",
+          "og_description": "İçindekilerHİNDİ ETİ VE YAĞI PATATES NİŞASTASI TUZ BAHARAT KARIŞIMI STABİLÜZÖR (SODYUM POLİFOSFAT) ANTİOKSİDAN(ASKORBİK ASİT) KORUYUCU SODYUM NİTRİTNet Miktar (g/ml)50MenşeiTÜRKİY.",
+          "title": "Polonez Hindi Jambon 50 G - Migros"
+        },
+        "ingredients_raw": "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Polonez Hindi Jambon 50 G - Migros\",\"description\":\"<p><strong>İçindekiler</strong><br>HİNDİ ETİ VE YAĞI PATATES NİŞASTASI TUZ BAHARAT KARIŞIMI STABİLÜZÖR (SODYUM POLİFOSFAT) ANTİOKSİDAN(ASKORBİK ASİT) KORUYUCU SODYUM NİTRİT</p><p><strong>Net Miktar (g/ml)</strong><br>50</p><p><strong>Menşei</strong><br>TÜRKİYE</p><p><strong>İşletme Kayıt No</strong><br>34-0061</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı Numarası</strong><br>020144</p><p><strong>Kullanım Önerileri</strong><br>0-4 DERECEDE MUHAFAZA EDİNİZ</p><p><strong>Ürün Bilgilerini Kullanma Hakkında</strong><br>İnternet sitemizde ve online satış kanallarımızda yer alan ürün etiket bilgileri, ürünün tedarikçisi tarafından Migros Ticaret A.Ş.’ye iletilen en güncel bilgilerdir. Ürün etiket bilgileri ile internet sitemiz ve online satış kanallarımızda bulunan bilgiler arasında herhangi bir farklılık bulunması halinde sorumluluk tamamen tedarikçi firmaya aittir.</p>\",\"url\":\"https://www.migros.com.tr/polonez-hindi-jambon-50-g-p-e3623b\",\"inLanguage\":\"tr-TR\",\"breadcrumb\":{\"@type\":\"BreadcrumbList\",\"numberOfItems\":4,\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"item\":{\"@id\":\"https://www.migros.com.tr/et-tavuk-balik-c-3\",\"name\":\"Et, Tavuk, Balık\"}},{\"@type\":\"ListItem\",\"position\":2,\"item\":{\"@id\":\"https://www.migros.com.tr/et-sarkuteri-c-6b\",\"name\":\"Et Şarküteri\"}},{\"@type\":\"ListItem\",\"position\":3,\"item\":{\"@id\":\"https://www.migros.com.tr/jambon-c-112d7\",\"name\":\"Jambon\"}},{\"@type\":\"ListItem\",\"position\":4,\"item\":{\"@id\":\"https://www.migros.com.tr/hindi-jambon-c-112e0\",\"name\":\"Hindi Jambon\"}}]},\"mainEntity\":{\"@type\":\"WebPageElement\",\"offers\":{\"@type\":\"Offer\",\"itemOffered\":[{\"@type\":\"Product\",\"name\":\"Polonez Hindi Jambon 50 G\",\"url\":\"https://www.migros.com.tr/polonez-hindi-jambon-50-g-p-e3623b\",\"category\":\"Jambon/Et Şarküteri/Et, Tavuk, Balık\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Polonez\"},\"image\":[{\"@type\":\"ImageObject\",\"contentUrl\":\"https://images.migrosone.com/sanalmarket/product/14901819/14901819-0b2e8f.jpg\",\"caption\":\"Polonez Hindi Jambon 50 G\"}],\"offers\":{\"@type\":\"Offer\",\"itemCondition\":\"https://schema.org/NewCondition\",\"image\":\"https://images.migrosone.com/sanalmarket/product/14901819/14901819-0b2e8f.jpg\",\"availability\":\"https://schema.org/InStock\",\"category\":\"Jambon/Et Şarküteri/Et, Tavuk, Balık\",\"price\":\"58.50\",\"priceCurrency\":\"TRY\",\"areaServed\":\"TR\",\"seller\":{\"@type\":\"Organization\",\"name\":\"Migros Sanalmarket\",\"logo\":\"https://images.migrosone.com/sanalmarket/custom/sanalmarket-seo-34706362.png\"}}}]}}} [_nghost-ng-c1261675423]{position:relative;display:block}@media (max-width: 767.98px){[_nghost-ng-c1261675423]{overflow-x:scroll;white-space:nowrap;max-width:90vw;-ms-overflow-style:none;scrollbar-width:none}[_nghost-ng-c1261675423]::-webkit-scrollbar{display:none}}.breadcrumbs[_ngcontent-ng-c1261675423]{margin:0 0 .5rem;padding:0}.breadcrumbs__item[_ngcontent-ng-c1261675423]{display:inline;line-height:15px}.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{content:\"\";display:inline-block;color:var(--font-color__black);background:url(/assets/icons/right-chevron.svg) no-repeat center;width:10px;height:10px;margin:0 10px;background-size:cover;vertical-align:middle}@media (max-width: 767.98px){.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{margin:0 .4rem}}.breadcrumbs__item[_ngcontent-ng-c1261675423]:last-child .breadcrumbs__link[_ngcontent-ng-c1261675423]{color:var(--font-color__default)}.breadcrumbs__link[_ngcontent-ng-c1261675423]{font-family:var(--secondary-font-family);color:var(--background-color__DARK);font-size:12px}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423]{vertical-align:middle}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423] span[_ngcontent-ng-c1261675423]{width:45px;height:10px;background-color:var(--background-color__GREY);border-radius:var(--base-border-radius);display:inline-block} @keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}sm-product-images{display:block;position:relative}sm-product-images .product-images{max-width:33rem;text-align:-webkit-center}@media (min-width: 768px){sm-product-images .product-images{border:solid 1px var(--basicColorTransparent);border-radius:8px}}sm-product-images .product-images .preview-image-wrapper{width:32rem;height:32rem;position:relative;text-align:center;align-items:center;display:flex}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets{bottom:-5px}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets .swiper-pagination-bullet-active{background:var(--brandColorPrimary600)}@media (max-width: 768px){sm-product-images .product-images .preview-image-wrapper{max-width:20.5rem;margin-bottom:1rem}}sm-product-images .product-images .preview-image-wrapper img{max-width:100%;max-height:28rem;margin-top:2rem;height:auto}sm-product-images .product-images-carousel-cells{padding:0 1.5rem}sm-product-images .product-images-carousel-cell{margin-right:0;display:inline-flex;cursor:pointer;border:solid 1px var(--basicColorTransparent);min-width:3.188rem;height:3.188rem;border-radius:7px;background-color:var(--basic-color-white)}sm-product-images .product-images-carousel-cell img{max-height:2.875rem;margin:auto;display:block;border-radius:8px}sm-product-images .product-images-carousel-cell+.product-images-carousel-cell{margin-left:1rem}sm-product-images .product-images-carousel-cell--active{border:2px solid var(--brandColorPrimary700)}sm-product-images .product-images fe-scroll-slider{display:flex;justify-content:center;margin:.5rem}@media (max-width: 768px){sm-product-images .product-images fe-scroll-slider{max-width:20.5rem}}sm-product-images .product-images fe-scroll-slider .container-wrapper-content{min-width:8.8rem}sm-product-images .product-images fe-scroll-slider .container-wrapper-prev-btn:after{left:.4rem!important}sm-product-images .product-images fe-scroll-slider .container-wrapper-next-btn:after{left:-.4rem!important}sm-product-images .zoom-preview{background-size:48rem 48rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:32rem;height:32rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);bottom:30%;left:100%;z-index:99;animation:presence .3s ease-in-out} @charset \"UTF-8\";@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}fe-product-detail-tabs{display:block}fe-product-detail-tabs h3{font-size:22px;font-weight:var(--font-weight-bold)}fe-product-detail-tabs .product-detail-tabs__img{width:100%}fe-product-detail-tabs .product-detail-tabs__analysis{display:flex;justify-self:center;cursor:pointer;width:100%}@media (min-width: 768px){fe-product-detail-tabs .product-detail-tabs__analysis{max-height:37.5rem;width:auto}}fe-product-detail-tabs .product-detail-tabs__video-wrapper{aspect-ratio:16/9;width:100%;position:relative;max-width:1400px}fe-product-detail-tabs .product-detail-tabs__video-wrapper iframe{width:100%;height:100%}fe-product-detail-tabs .product-detail-tabs__product-safety-info .product-tab-images{text-align:start;margin-top:0}fe-product-detail-tabs .product-detail-tabs__product-safety-info__img{margin-top:var(--base-size-32)}fe-product-detail-tabs .installment-description-container{display:flex}fe-product-detail-tabs .installment-description-container .installment-description{padding-left:.5rem}fe-product-detail-tabs .installment-container{display:flex;justify-content:space-between;color:var(--basicColor900);flex-wrap:wrap}@media (min-width: 768px){fe-product-detail-tabs .installment-container{padding:1.4rem 0 2rem}}fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 100%;border-radius:.5rem;border:1px solid var(--basicColorTransparent);text-align:center;overflow-x:auto;margin-top:.75rem}@media (min-width: 768px){fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 32%;margin-top:0}}fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:4.688rem;margin:.5rem 0 .25rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:6.563rem;margin:.625rem 0 .438rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:4.813rem;margin:.688rem 0 .375rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:7.175rem;margin:.75rem 0 .625rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:4.75rem;margin:.875rem 0 .688rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:7.908rem;margin:1.125rem 0 .875rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead{background-color:var(--basicColor200)}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs fe-read-more div p{margin:0}fe-product-detail-tabs fe-read-more div ul{margin:0;padding:0}fe-product-detail-tabs fe-read-more div ul li p{display:inline-block}fe-product-detail-tabs fe-read-more div ul li:before{content:\"\\2022\";color:var(--secondary-color__500);font-weight:var(--font-weight-bold);display:inline-block;width:1em}fe-product-detail-tabs .product-tab-images{text-align:center;margin-top:1rem;margin-bottom:.5rem}fe-product-detail-tabs .product-tab-images img{max-width:100%;max-height:28rem}fe-product-detail-tabs .zoom-preview{background-size:28rem 56rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:25rem;height:25rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);top:5%;right:10%;z-index:99;animation:presence .3s ease-in-out}fe-product-detail-tabs iframe{width:calc(100% - 2rem);height:100rem}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-header,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-header{border-bottom:1px solid var(--secondary-color__500)}@media (max-width: 767.98px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label{min-width:max-content}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:var(--base-size-14)}@media (min-width: 768px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:1.125rem}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active{opacity:1!important;color:var(--secondary-color__500);font-weight:var(--font-weight-bold)}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text{color:inherit;font-weight:inherit}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after{background-color:var(--secondary-color__500)!important}",
+        "nutrition_basis": "per_100",
+        "nutrition_strategy": "dom",
+        "nutrition_warnings": [],
+        "image_candidates": [
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14901819/14901819-0b2e8f-1650x1650.jpg",
+            "score": 12,
+            "reasons": [
+              "+url:product",
+              "+medium_res"
+            ]
+          },
+          {
+            "url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/migroskop.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/anne-bebek.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/money/money-logo_small.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/migros-tv-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/saglikli-yasam/saglikli-yasam.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/kadin-akademisi.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/blindlook/blindlook-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/gidani-koru/gidani-koru.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/guven-damgasi/guven-damgasi@3x.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/etbis/etbis.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          }
+        ],
+        "image_best_score": 12,
+        "scraped_at": "2026-06-12T14:28:18.883320+00:00"
+      },
+      "name_source": "web_scraper:migros",
+      "brand_source": "web_scraper:migros",
+      "image_source": "web_scraper:migros",
+      "ingredients_source": "web_scraper:migros",
+      "nutrition_source": "web_scraper:migros",
+      "category_source": "web_scraper:migros",
+      "quality_score": 100,
+      "missing_fields": [
+        "barcode"
+      ],
+      "status": "pending"
+    },
+    {
+      "barcode": null,
+      "name": "Namet Dana Jambon Kg",
+      "brand": "Namet",
+      "category_suggestion": "Jambon",
+      "category_tags": [
+        "jambon"
+      ],
+      "search_keywords": [
+        "dana",
+        "jambon",
+        "namet"
+      ],
+      "image_front_url": "https://images.migrosone.com/sanalmarket/product/14900506/14900506-9eb0e7-1650x1650.png",
+      "image_front_storage_path": null,
+      "ingredients_text": "ve bilgisayar sarf malzemeleri iade/değişim kapsamında değerlendirilmemektedir. Abonelik sözleşmesi kapsamında sağlananlar dışında, gazete, dergi gibi süreli yayınlar iade/değişim kapsamında değerlendirilmemektedir. Belirli bir tarihte veya dönemde yapılması gereken, konaklama, eşya taşıma, araba kiralama, yiyecek- içecek tedariki ve boş zamanın değerlendirilmesine ilişkin ürünler iade/değişim kapsamında değerlendirilmemektedir. Elektronik ortamda anında ifa edilen hizmetler veya anında teslim edilen gayrimaddi ürünler iade/değişim kapsamında değerlendirilmemektedir",
+      "nutrition_json": null,
+      "source": "web_scraper:migros",
+      "source_url": "https://www.migros.com.tr/namet-dana-jambon-kg-p-e35d1a",
+      "raw_source_payload": {
+        "jsonld": null,
+        "meta": {
+          "og_title": "Namet Dana Jambon Kg - Migros",
+          "og_image": "https://images.migrosone.com/sanalmarket/product/14900506/14900506-9eb0e7-1650x1650.png",
+          "og_description": "MenşeiTÜRKİYEİşletmeci / Üretici / İthalatçı / DağıtıcıNAMET GIDA SAN.VE TİC.A.Ş.İşletmeci / Üretici / İthalatçı / Dağıtıcı Numarası024840Ürün Bilgilerini Kullanma Hakkındaİnterne.",
+          "title": "Namet Dana Jambon Kg - Migros"
+        },
+        "ingredients_raw": "Ürünün tesliminden sonra ambalajın açılmış olması halinde maddi ortamda sunulan kitap, dijital içerik ve\n bilgisayar sarf malzemeleri iade/değişim kapsamında değerlendirilmemektedir. Abonelik sözleşmesi kapsamında sağlananlar dışında, gazete, dergi gibi süreli yayınlar iade/değişim kapsamında\n değerlendirilmemektedir. Belirli bir tarihte veya dönemde yapılması gereken, konaklama, eşya taşıma, araba kiralama, yiyecek- içecek\n tedariki ve boş zamanın değerlendirilmesine ilişkin ürünler iade/değişim kapsamında değerlendirilmemektedir. Elektronik ortamda anında ifa edilen hizmetler veya anında teslim edilen gayrimaddi ürünler iade/değişim\n kapsamında değerlendirilmemektedir.",
+        "nutrition_basis": null,
+        "nutrition_strategy": "text",
+        "nutrition_warnings": [
+          "nutrition_no_values_found"
+        ],
+        "image_candidates": [
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14900506/14900506-9eb0e7-1650x1650.png",
+            "score": 12,
+            "reasons": [
+              "+url:product",
+              "+medium_res"
+            ]
+          },
+          {
+            "url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/migroskop.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/anne-bebek.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/money/money-logo_small.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/migros-tv-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/saglikli-yasam/saglikli-yasam.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/kadin-akademisi.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/blindlook/blindlook-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/gidani-koru/gidani-koru.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/guven-damgasi/guven-damgasi@3x.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/etbis/etbis.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          }
+        ],
+        "image_best_score": 12,
+        "scraped_at": "2026-06-12T14:28:20.413934+00:00"
+      },
+      "name_source": "web_scraper:migros",
+      "brand_source": "web_scraper:migros",
+      "image_source": "web_scraper:migros",
+      "ingredients_source": "web_scraper:migros",
+      "nutrition_source": null,
+      "category_source": "web_scraper:migros",
+      "quality_score": 80,
+      "missing_fields": [
+        "nutrition",
+        "barcode"
+      ],
+      "status": "pending"
+    }
+  ],
+  "skipped": [],
+  "errors": [],
+  "source_stats": {
+    "migros": {
+      "pages": 11,
+      "candidates": 10,
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,740 @@
+[
+  {
+    "e_number": null,
+    "name_tr": "Su",
+    "name_en": "Water",
+    "category": "temel_malzeme",
+    "description": "Saf su, içecek ve gıdalarda temel bileşen",
+    "risk_level": "low",
+    "health_info": "Doğal ve güvenli"
+  },
+  {
+    "e_number": null,
+    "name_tr": "Şeker",
+    "name_en": "Sugar",
+    "category": "tatlandırıcı",
+    "description": "Şeker kamışı veya pancardan elde edilen doğal tatlandırıcı",
+    "risk_level": "medium",
+    "health_info": "Aşırı tüketim obezite ve diyabet riskini artırır"
+  },
+  {
+    "e_number": null,
+    "name_tr": "Tuz",
+    "name_en": "Salt",
+    "category": "lezzet_arttırıcı",
+    "description": "Sodyum klorür, doğal mineral",
+    "risk_level": "medium",
+    "health_info": "Aşırı tüketim yüksek tansiyon yapabilir"
+  },
+  {
+    "e_number": null,
+    "name_tr": "Un",
+    "name_en": "Flour",
+    "category": "temel_malzeme",
+    "description": "Buğdaydan elde edilen öğütülmüş tahıl",
+    "risk_level": "low",
+    "health_info": "Çölyak hastaları için uygun değil"
+  },
+  {
+    "e_number": null,
+    "name_tr": "Süt",
+    "name_en": "Milk",
+    "category": "temel_malzeme",
+    "description": "İnekten elde edilen doğal içecek",
+    "risk_level": "low",
+    "health_info": "Laktoz intoleransı olanlarda sindirim sorunu yapabilir"
+  },
+  {
+    "e_number": null,
+    "name_tr": "Yumurta",
+    "name_en": "Egg",
+    "category": "temel_malzeme",
+    "description": "Tavuktan elde edilen protein kaynağı",
+    "risk_level": "low",
+    "health_info": "Yumurta alerjisi olanlarda reaksiyon yapabilir"
+  },
+  {
+    "e_number": null,
+    "name_tr": "Glikoz şurubu",
+    "name_en": "Glucose syrup",
+    "category": "tatlandırıcı",
+    "description": "Nişastadan elde edilen yüksek işlenmiş şeker",
+    "risk_level": "high",
+    "health_info": "Metabolik sorunlara yol açabilir, aşırı tüketimden kaçının"
+  },
+  {
+    "e_number": null,
+    "name_tr": "Fruktoz şurubu",
+    "name_en": "Fructose syrup",
+    "category": "tatlandırıcı",
+    "description": "Mısır nişastasından elde edilen yüksek işlenmiş şeker",
+    "risk_level": "high",
+    "health_info": "Karaciğer yağlanması riskini artırabilir"
+  },
+  {
+    "e_number": null,
+    "name_tr": "Palmiye yağı",
+    "name_en": "Palm oil",
+    "category": "yağ",
+    "description": "Palmiye ağacından elde edilen bitkisel yağ",
+    "risk_level": "medium",
+    "health_info": "Yüksek doymuş yağ içerir, kalp sağlığına olumsuz etki yapabilir"
+  },
+  {
+    "e_number": null,
+    "name_tr": "Ayçiçek yağı",
+    "name_en": "Sunflower oil",
+    "category": "yağ",
+    "description": "Ayçiçeği tohumundan elde edilen bitkisel yağ",
+    "risk_level": "low",
+    "health_info": "Doğal ve güvenli, omega-6 içerir"
+  },
+  {
+    "e_number": "E100",
+    "name_tr": "Kurkumin",
+    "name_en": "Curcumin",
+    "category": "renklendirici",
+    "description": "Zerdeçaldan elde edilen doğal sarı renklendirici",
+    "risk_level": "low",
+    "health_info": "Doğal ve güvenli"
+  },
+  {
+    "e_number": "E101",
+    "name_tr": "Riboflavin",
+    "name_en": "Riboflavin",
+    "category": "renklendirici",
+    "description": "B2 vitamini, sarı renklendirici",
+    "risk_level": "low",
+    "health_info": "Vitamin olarak da kullanılır, güvenli"
+  },
+  {
+    "e_number": "E102",
+    "name_tr": "Tartrazin",
+    "name_en": "Tartrazine",
+    "category": "renklendirici",
+    "description": "Sentetik sarı renklendirici",
+    "risk_level": "high",
+    "health_info": "Çocuklarda hiperaktivite ve alerjik reaksiyonlara neden olabilir"
+  },
+  {
+    "e_number": "E104",
+    "name_tr": "Kinolin sarısı",
+    "name_en": "Quinoline yellow",
+    "category": "renklendirici",
+    "description": "Sentetik sarı renklendirici",
+    "risk_level": "high",
+    "health_info": "Çocuklarda dikkat eksikliğine neden olabilir, bazı ülkelerde yasaklı"
+  },
+  {
+    "e_number": "E110",
+    "name_tr": "Sunset sarısı",
+    "name_en": "Sunset yellow",
+    "category": "renklendirici",
+    "description": "Sentetik turuncu renklendirici",
+    "risk_level": "high",
+    "health_info": "Alerjik reaksiyonlar ve hiperaktiviteye neden olabilir"
+  },
+  {
+    "e_number": "E120",
+    "name_tr": "Karmin",
+    "name_en": "Carmine",
+    "category": "renklendirici",
+    "description": "Koşinilden elde edilen kırmızı renklendirici",
+    "risk_level": "medium",
+    "health_info": "Böceklerden elde edilir, vejetaryenler için uygun değil"
+  },
+  {
+    "e_number": "E122",
+    "name_tr": "Azorubin",
+    "name_en": "Azorubine",
+    "category": "renklendirici",
+    "description": "Sentetik kırmızı renklendirici",
+    "risk_level": "high",
+    "health_info": "Alerjik reaksiyonlara neden olabilir, çocuklarda hiperaktivite riski"
+  },
+  {
+    "e_number": "E124",
+    "name_tr": "Ponceau 4R",
+    "name_en": "Ponceau 4R",
+    "category": "renklendirici",
+    "description": "Sentetik kırmızı renklendirici",
+    "risk_level": "high",
+    "health_info": "ABD'de yasaklı, alerjik reaksiyonlara neden olabilir"
+  },
+  {
+    "e_number": "E129",
+    "name_tr": "Allura kırmızısı",
+    "name_en": "Allura red",
+    "category": "renklendirici",
+    "description": "Sentetik kırmızı renklendirici",
+    "risk_level": "high",
+    "health_info": "Çocuklarda hiperaktivite ve dikkat eksikliği yapabilir"
+  },
+  {
+    "e_number": "E131",
+    "name_tr": "Patent mavisi",
+    "name_en": "Patent blue",
+    "category": "renklendirici",
+    "description": "Sentetik mavi renklendirici",
+    "risk_level": "medium",
+    "health_info": "ABD ve Avustralya'da yasaklı"
+  },
+  {
+    "e_number": "E132",
+    "name_tr": "İndigotin",
+    "name_en": "Indigotine",
+    "category": "renklendirici",
+    "description": "Sentetik mavi renklendirici",
+    "risk_level": "medium",
+    "health_info": "Bazı kişilerde mide bulantısına neden olabilir"
+  },
+  {
+    "e_number": "E133",
+    "name_tr": "Parlak mavi",
+    "name_en": "Brilliant blue",
+    "category": "renklendirici",
+    "description": "Sentetik mavi renklendirici",
+    "risk_level": "medium",
+    "health_info": "Aşırı miktarda kullanıldığında alerjik reaksiyonlara neden olabilir"
+  },
+  {
+    "e_number": "E150a",
+    "name_tr": "Karamel (sade)",
+    "name_en": "Caramel (plain)",
+    "category": "renklendirici",
+    "description": "Şekerden elde edilen doğal kahverengi renklendirici",
+    "risk_level": "low",
+    "health_info": "Doğal ve güvenli"
+  },
+  {
+    "e_number": "E150c",
+    "name_tr": "Amonyaklı karamel",
+    "name_en": "Ammonia caramel",
+    "category": "renklendirici",
+    "description": "Amonyak ile işlenmiş karamel",
+    "risk_level": "medium",
+    "health_info": "Bazı çalışmalarda kanser riski tartışılıyor"
+  },
+  {
+    "e_number": "E160a",
+    "name_tr": "Karoten",
+    "name_en": "Carotene",
+    "category": "renklendirici",
+    "description": "Havuçtan elde edilen doğal turuncu renklendirici",
+    "risk_level": "low",
+    "health_info": "A vitamini kaynağı, güvenli"
+  },
+  {
+    "e_number": "E160c",
+    "name_tr": "Paprika özü",
+    "name_en": "Paprika extract",
+    "category": "renklendirici",
+    "description": "Kırmızı biberden elde edilen doğal renklendirici",
+    "risk_level": "low",
+    "health_info": "Doğal ve güvenli"
+  },
+  {
+    "e_number": "E162",
+    "name_tr": "Pancar kırmızısı",
+    "name_en": "Beetroot red",
+    "category": "renklendirici",
+    "description": "Pancardan elde edilen doğal kırmızı renklendirici",
+    "risk_level": "low",
+    "health_info": "Doğal ve güvenli"
+  },
+  {
+    "e_number": "E163",
+    "name_tr": "Antosiyanin",
+    "name_en": "Anthocyanin",
+    "category": "renklendirici",
+    "description": "Meyvelerden elde edilen doğal mor/kırmızı renklendirici",
+    "risk_level": "low",
+    "health_info": "Antioksidan özelliği var, güvenli"
+  },
+  {
+    "e_number": "E170",
+    "name_tr": "Kalsiyum karbonat",
+    "name_en": "Calcium carbonate",
+    "category": "renklendirici",
+    "description": "Beyaz renklendirici ve kalsiyum kaynağı",
+    "risk_level": "low",
+    "health_info": "Doğal mineral, güvenli"
+  },
+  {
+    "e_number": "E200",
+    "name_tr": "Sorbik asit",
+    "name_en": "Sorbic acid",
+    "category": "koruyucu",
+    "description": "Küf ve maya oluşumunu önleyen koruyucu",
+    "risk_level": "low",
+    "health_info": "Genel olarak güvenli kabul edilir"
+  },
+  {
+    "e_number": "E202",
+    "name_tr": "Potasyum sorbat",
+    "name_en": "Potassium sorbate",
+    "category": "koruyucu",
+    "description": "Yaygın kullanılan gıda koruyucusu",
+    "risk_level": "low",
+    "health_info": "Güvenli kabul edilir, alerjik reaksiyon nadir"
+  },
+  {
+    "e_number": "E210",
+    "name_tr": "Benzoik asit",
+    "name_en": "Benzoic acid",
+    "category": "koruyucu",
+    "description": "Gıda koruyucusu, özellikle asidik ürünlerde",
+    "risk_level": "medium",
+    "health_info": "Yüksek dozlarda alerjik reaksiyonlara neden olabilir"
+  },
+  {
+    "e_number": "E211",
+    "name_tr": "Sodyum benzoat",
+    "name_en": "Sodium benzoate",
+    "category": "koruyucu",
+    "description": "İçeceklerde yaygın kullanılan koruyucu",
+    "risk_level": "medium",
+    "health_info": "C vitamini ile birleştiğinde benzene oluşturabilir"
+  },
+  {
+    "e_number": "E220",
+    "name_tr": "Kükürt dioksit",
+    "name_en": "Sulfur dioxide",
+    "category": "koruyucu",
+    "description": "Kuru meyve ve şaraplarda kullanılan koruyucu",
+    "risk_level": "high",
+    "health_info": "Astım hastalarında sorun yaratabilir, alerjik reaksiyonlara neden olur"
+  },
+  {
+    "e_number": "E221",
+    "name_tr": "Sodyum sülfit",
+    "name_en": "Sodium sulfite",
+    "category": "koruyucu",
+    "description": "Antioksidan ve koruyucu",
+    "risk_level": "medium",
+    "health_info": "Sülfit alerjisi olanlarda reaksiyon yapabilir"
+  },
+  {
+    "e_number": "E249",
+    "name_tr": "Potasyum nitrit",
+    "name_en": "Potassium nitrite",
+    "category": "koruyucu",
+    "description": "Et ürünlerinde botulismus önleyici",
+    "risk_level": "high",
+    "health_info": "Kanser riskini artırabilir, çocuklar için önerilmez"
+  },
+  {
+    "e_number": "E250",
+    "name_tr": "Sodyum nitrit",
+    "name_en": "Sodium nitrite",
+    "category": "koruyucu",
+    "description": "Şarküteri ürünlerinde renk koruyucu ve koruyucu",
+    "risk_level": "high",
+    "health_info": "Nitrozamin oluşumuna neden olabilir, kanser riski"
+  },
+  {
+    "e_number": "E251",
+    "name_tr": "Sodyum nitrat",
+    "name_en": "Sodium nitrate",
+    "category": "koruyucu",
+    "description": "Et ürünlerinde koruyucu",
+    "risk_level": "high",
+    "health_info": "Vücutta nitrite dönüşür, kanser riski"
+  },
+  {
+    "e_number": "E252",
+    "name_tr": "Potasyum nitrat",
+    "name_en": "Potassium nitrate",
+    "category": "koruyucu",
+    "description": "Peynir ve et ürünlerinde koruyucu",
+    "risk_level": "high",
+    "health_info": "Nitrite dönüşebilir, sık tüketim önerilmez"
+  },
+  {
+    "e_number": "E260",
+    "name_tr": "Asetik asit",
+    "name_en": "Acetic acid",
+    "category": "asitlik_düzenleyici",
+    "description": "Sirke, doğal asit",
+    "risk_level": "low",
+    "health_info": "Doğal ve güvenli"
+  },
+  {
+    "e_number": "E270",
+    "name_tr": "Laktik asit",
+    "name_en": "Lactic acid",
+    "category": "asitlik_düzenleyici",
+    "description": "Süt fermantasyonundan elde edilen asit",
+    "risk_level": "low",
+    "health_info": "Doğal ve güvenli"
+  },
+  {
+    "e_number": "E300",
+    "name_tr": "Askorbik asit",
+    "name_en": "Ascorbic acid",
+    "category": "antioksidan",
+    "description": "C vitamini, doğal antioksidan",
+    "risk_level": "low",
+    "health_info": "Vitamin kaynağı, güvenli"
+  },
+  {
+    "e_number": "E301",
+    "name_tr": "Sodyum askorbat",
+    "name_en": "Sodium ascorbate",
+    "category": "antioksidan",
+    "description": "C vitamininin sodyum tuzu",
+    "risk_level": "low",
+    "health_info": "Güvenli"
+  },
+  {
+    "e_number": "E304",
+    "name_tr": "Askorbil palmitat",
+    "name_en": "Ascorbyl palmitate",
+    "category": "antioksidan",
+    "description": "Yağda çözünen C vitamini türevi",
+    "risk_level": "low",
+    "health_info": "Güvenli"
+  },
+  {
+    "e_number": "E306",
+    "name_tr": "Tokoferol",
+    "name_en": "Tocopherol",
+    "category": "antioksidan",
+    "description": "E vitamini, doğal antioksidan",
+    "risk_level": "low",
+    "health_info": "Vitamin kaynağı, güvenli"
+  },
+  {
+    "e_number": "E320",
+    "name_tr": "BHA",
+    "name_en": "Butylated hydroxyanisole",
+    "category": "antioksidan",
+    "description": "Sentetik antioksidan",
+    "risk_level": "high",
+    "health_info": "Kanser riskini artırabileceği tartışılıyor, bazı ülkelerde yasaklı"
+  },
+  {
+    "e_number": "E321",
+    "name_tr": "BHT",
+    "name_en": "Butylated hydroxytoluene",
+    "category": "antioksidan",
+    "description": "Sentetik antioksidan",
+    "risk_level": "high",
+    "health_info": "Hormonal dengeyi bozabilir, tartışmalı"
+  },
+  {
+    "e_number": "E330",
+    "name_tr": "Sitrik asit",
+    "name_en": "Citric acid",
+    "category": "asitlik_düzenleyici",
+    "description": "Narenciye meyvelerinden elde edilen doğal asit",
+    "risk_level": "low",
+    "health_info": "Doğal ve güvenli"
+  },
+  {
+    "e_number": "E331",
+    "name_tr": "Sodyum sitrat",
+    "name_en": "Sodium citrate",
+    "category": "asitlik_düzenleyici",
+    "description": "Sitrik asitin sodyum tuzu",
+    "risk_level": "low",
+    "health_info": "Güvenli"
+  },
+  {
+    "e_number": "E338",
+    "name_tr": "Fosforik asit",
+    "name_en": "Phosphoric acid",
+    "category": "asitlik_düzenleyici",
+    "description": "Kolalı içeceklerde kullanılan asit",
+    "risk_level": "medium",
+    "health_info": "Aşırı tüketim kemik erimesine neden olabilir"
+  },
+  {
+    "e_number": "E339",
+    "name_tr": "Sodyum fosfat",
+    "name_en": "Sodium phosphate",
+    "category": "emülgatör",
+    "description": "Işlenmiş gıdalarda kıvam sağlayıcı",
+    "risk_level": "medium",
+    "health_info": "Yüksek dozda böbrek sorunlarına neden olabilir"
+  },
+  {
+    "e_number": "E385",
+    "name_tr": "Kalsiyum EDTA",
+    "name_en": "Calcium EDTA",
+    "category": "koruyucu",
+    "description": "Metal şelatörü, raf ömrü uzatıcı",
+    "risk_level": "medium",
+    "health_info": "Yüksek dozda mineral emilimini engelleyebilir"
+  },
+  {
+    "e_number": "E407",
+    "name_tr": "Karragenan",
+    "name_en": "Carrageenan",
+    "category": "kıvam_arttırıcı",
+    "description": "Deniz yosunundan elde edilen kıvam arttırıcı",
+    "risk_level": "medium",
+    "health_info": "Bağırsak iltihabına neden olabileceği tartışılıyor"
+  },
+  {
+    "e_number": "E412",
+    "name_tr": "Guar gam",
+    "name_en": "Guar gum",
+    "category": "kıvam_arttırıcı",
+    "description": "Guar fasulyesinden elde edilen doğal kıvam arttırıcı",
+    "risk_level": "low",
+    "health_info": "Genel olarak güvenli"
+  },
+  {
+    "e_number": "E414",
+    "name_tr": "Arap zamkı",
+    "name_en": "Gum arabic",
+    "category": "kıvam_arttırıcı",
+    "description": "Akasya ağacından elde edilen doğal zamk",
+    "risk_level": "low",
+    "health_info": "Doğal ve güvenli"
+  },
+  {
+    "e_number": "E415",
+    "name_tr": "Ksantan gam",
+    "name_en": "Xanthan gum",
+    "category": "kıvam_arttırıcı",
+    "description": "Fermantasyonla elde edilen kıvam arttırıcı",
+    "risk_level": "low",
+    "health_info": "Güvenli"
+  },
+  {
+    "e_number": "E420",
+    "name_tr": "Sorbitol",
+    "name_en": "Sorbitol",
+    "category": "tatlandırıcı",
+    "description": "Şekersiz sakızlarda kullanılan şeker alkolü",
+    "risk_level": "medium",
+    "health_info": "Aşırı tüketim ishale neden olabilir"
+  },
+  {
+    "e_number": "E421",
+    "name_tr": "Mannitol",
+    "name_en": "Mannitol",
+    "category": "tatlandırıcı",
+    "description": "Şeker alkolü, düşük kalorili tatlandırıcı",
+    "risk_level": "medium",
+    "health_info": "Aşırı tüketim mide rahatsızlığına neden olabilir"
+  },
+  {
+    "e_number": "E422",
+    "name_tr": "Gliserol",
+    "name_en": "Glycerol",
+    "category": "nem_tutucu",
+    "description": "Nem tutucu ve tatlandırıcı",
+    "risk_level": "low",
+    "health_info": "Güvenli"
+  },
+  {
+    "e_number": "E440",
+    "name_tr": "Pektin",
+    "name_en": "Pectin",
+    "category": "kıvam_arttırıcı",
+    "description": "Meyvelerden elde edilen doğal kıvam arttırıcı",
+    "risk_level": "low",
+    "health_info": "Doğal ve güvenli, kolesterolü düşürmeye yardımcı olabilir"
+  },
+  {
+    "e_number": "E450",
+    "name_tr": "Difosfat",
+    "name_en": "Diphosphate",
+    "category": "emülgatör",
+    "description": "Işlenmiş et ürünlerinde kıvam sağlayıcı",
+    "risk_level": "medium",
+    "health_info": "Aşırı tüketim kalsiyum emilimini engelleyebilir"
+  },
+  {
+    "e_number": "E451",
+    "name_tr": "Trifosfat",
+    "name_en": "Triphosphate",
+    "category": "emülgatör",
+    "description": "Su tutma ve kıvam sağlayıcı",
+    "risk_level": "medium",
+    "health_info": "Yüksek dozda böbrek problemlerine neden olabilir"
+  },
+  {
+    "e_number": "E452",
+    "name_tr": "Polifosfat",
+    "name_en": "Polyphosphate",
+    "category": "emülgatör",
+    "description": "Işlenmiş gıdalarda stabilizatör",
+    "risk_level": "medium",
+    "health_info": "Aşırı tüketim kemik sağlığını olumsuz etkileyebilir"
+  },
+  {
+    "e_number": "E471",
+    "name_tr": "Mono ve digliseritler",
+    "name_en": "Mono and diglycerides",
+    "category": "emülgatör",
+    "description": "Yaygın kullanılan emülgatör",
+    "risk_level": "low",
+    "health_info": "Güvenli kabul edilir"
+  },
+  {
+    "e_number": "E472e",
+    "name_tr": "Yağ asidi esterleri",
+    "name_en": "Fatty acid esters",
+    "category": "emülgatör",
+    "description": "Hamur işlerinde yumuşatıcı",
+    "risk_level": "low",
+    "health_info": "Güvenli"
+  },
+  {
+    "e_number": "E500",
+    "name_tr": "Sodyum karbonat",
+    "name_en": "Sodium carbonate",
+    "category": "asitlik_düzenleyici",
+    "description": "Kabartma tozu bileşeni",
+    "risk_level": "low",
+    "health_info": "Güvenli"
+  },
+  {
+    "e_number": "E503",
+    "name_tr": "Amonyum karbonat",
+    "name_en": "Ammonium carbonate",
+    "category": "kabartıcı",
+    "description": "Bisküvi ve kurabiyelerde kabartıcı",
+    "risk_level": "low",
+    "health_info": "Pişirmede amonyak buharlaşır, güvenli"
+  },
+  {
+    "e_number": "E508",
+    "name_tr": "Potasyum klorür",
+    "name_en": "Potassium chloride",
+    "category": "lezzet_arttırıcı",
+    "description": "Tuz yerine kullanılan mineral",
+    "risk_level": "low",
+    "health_info": "Böbrek hastalarında dikkatli kullanılmalı"
+  },
+  {
+    "e_number": "E509",
+    "name_tr": "Kalsiyum klorür",
+    "name_en": "Calcium chloride",
+    "category": "sertleştirici",
+    "description": "Sebze ve meyvelerde sertlik sağlayıcı",
+    "risk_level": "low",
+    "health_info": "Güvenli"
+  },
+  {
+    "e_number": "E621",
+    "name_tr": "Monosodyum glutamat (MSG)",
+    "name_en": "Monosodium glutamate",
+    "category": "lezzet_arttırıcı",
+    "description": "Umami lezzet veren katkı maddesi",
+    "risk_level": "medium",
+    "health_info": "Bazı kişilerde baş ağrısı ve alerjik reaksiyonlara neden olabilir"
+  },
+  {
+    "e_number": "E627",
+    "name_tr": "Disodyum guanilat",
+    "name_en": "Disodium guanylate",
+    "category": "lezzet_arttırıcı",
+    "description": "MSG ile birlikte kullanılan lezzet güçlendirici",
+    "risk_level": "medium",
+    "health_info": "Gut hastalarında sorun yaratabilir"
+  },
+  {
+    "e_number": "E631",
+    "name_tr": "Disodyum inosinat",
+    "name_en": "Disodium inosinate",
+    "category": "lezzet_arttırıcı",
+    "description": "MSG ile birlikte kullanılan lezzet güçlendirici",
+    "risk_level": "medium",
+    "health_info": "Gut hastalarında uygun değil"
+  },
+  {
+    "e_number": "E900",
+    "name_tr": "Polidimetilsiloksan",
+    "name_en": "Polydimethylsiloxane",
+    "category": "köpük_önleyici",
+    "description": "Kızartma yağlarında köpük önleyici",
+    "risk_level": "low",
+    "health_info": "Sindirilmeden atılır, güvenli"
+  },
+  {
+    "e_number": "E950",
+    "name_tr": "Asesülfam K",
+    "name_en": "Acesulfame K",
+    "category": "tatlandırıcı",
+    "description": "Yapay tatlandırıcı, şekerden 200 kat tatlı",
+    "risk_level": "medium",
+    "health_info": "Uzun vadeli etkileri tartışmalı"
+  },
+  {
+    "e_number": "E951",
+    "name_tr": "Aspartam",
+    "name_en": "Aspartame",
+    "category": "tatlandırıcı",
+    "description": "Yaygın kullanılan yapay tatlandırıcı",
+    "risk_level": "medium",
+    "health_info": "Fenilketonüri hastalarında sakıncalı, bazı kişilerde baş ağrısı yapabilir"
+  },
+  {
+    "e_number": "E952",
+    "name_tr": "Siklamat",
+    "name_en": "Cyclamate",
+    "category": "tatlandırıcı",
+    "description": "Yapay tatlandırıcı",
+    "risk_level": "high",
+    "health_info": "ABD'de yasaklı, kanser riski tartışmalı"
+  },
+  {
+    "e_number": "E954",
+    "name_tr": "Sakarin",
+    "name_en": "Saccharin",
+    "category": "tatlandırıcı",
+    "description": "En eski yapay tatlandırıcı",
+    "risk_level": "medium",
+    "health_info": "Eski çalışmalarda kanser riski iddiası çürütüldü, ancak sık tüketimi önerilmez"
+  },
+  {
+    "e_number": "E955",
+    "name_tr": "Sukraloz",
+    "name_en": "Sucralose",
+    "category": "tatlandırıcı",
+    "description": "Şekerden üretilen yapay tatlandırıcı",
+    "risk_level": "low",
+    "health_info": "Genel olarak güvenli kabul edilir"
+  },
+  {
+    "e_number": "E960",
+    "name_tr": "Steviol glikozitleri",
+    "name_en": "Steviol glycosides",
+    "category": "tatlandırıcı",
+    "description": "Stevia bitkisinden elde edilen doğal tatlandırıcı",
+    "risk_level": "low",
+    "health_info": "Doğal ve güvenli"
+  },
+  {
+    "e_number": "E1200",
+    "name_tr": "Polidekstroz",
+    "name_en": "Polydextrose",
+    "category": "şişirici",
+    "description": "Düşük kalorili şişirici, prebiyotik lif",
+    "risk_level": "low",
+    "health_info": "Güvenli, sindirim sistemi için faydalı olabilir"
+  },
+  {
+    "e_number": "E1400",
+    "name_tr": "Dekstrin",
+    "name_en": "Dextrin",
+    "category": "kıvam_arttırıcı",
+    "description": "Nişastadan elde edilen karbonhidrat",
+    "risk_level": "low",
+    "health_info": "Güvenli"
+  },
+  {
+    "e_number": "E1442",
+    "name_tr": "Modifiye nişasta",
+    "name_en": "Modified starch",
+    "category": "kıvam_arttırıcı",
+    "description": "Kimyasal işlemle değiştirilmiş nişasta",
+    "risk_level": "low",
+    "health_info": "Güvenli kabul edilir"
+  }
+]

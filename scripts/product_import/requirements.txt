@@ -1,0 +1,7 @@
+# Dependencies for the product import + web discovery pipeline.
+# Install with: pip install -r scripts/product_import/requirements.txt
+requests>=2.31.0
+python-dotenv>=1.0.0
+# Web scraper (scrape_products_from_web.py) only:
+PyYAML>=6.0
+beautifulsoup4>=4.12.0

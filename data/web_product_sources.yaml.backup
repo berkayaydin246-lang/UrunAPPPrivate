@@ -1,0 +1,49 @@
+# Web product discovery sources (ACTIVE CONFIG)
+#
+# Add REAL, ALLOWED product/category URLs below. Until you do, the scraper has
+# nothing to crawl and will print:
+#   "No product source URLs configured. Add category/product URLs to
+#    data/web_product_sources.yaml."
+#
+# See data/web_product_sources.example.yaml for a fully commented template and
+# the policy rules (public pages only, no auth/anti-bot, staging-only output).
+
+sources:
+  - id: official_brand
+    enabled: true
+    type: product_pages
+    base_url: ""
+    product_urls: []
+    notes: "Official brand pages are preferred when they include product details."
+
+  - id: retailer
+    enabled: true
+    type: category_pages
+    base_url: ""
+    category_urls:
+      - category: cips
+        url: ""
+      - category: kek
+        url: ""
+    link_selector: ""
+    notes: "Retailer product pages can provide name, image, and sometimes nutrition/ingredients."
+
+  # Example retailer with the full discovery knobs (fill in the URLs to enable).
+  - id: migros
+    enabled: true
+    type: category_pages
+    base_url: "https://www.migros.com.tr"
+    category_urls:
+      - category: cips
+        url: ""          # paste a Migros category/listing URL here
+      - category: kek
+        url: ""
+    product_link_selector: ""        # optional CSS selector for product links
+    product_link_patterns:
+      - "-p-"                        # Migros product URLs look like .../...-p-<id>
+    exclude_link_patterns:
+      - "/sepet"
+      - "/login"
+      - "/arama"
+    max_pages_per_category: 1        # pagination is a future TODO
+    notes: "Migros category discovery — generic link patterns, no Migros-only code."

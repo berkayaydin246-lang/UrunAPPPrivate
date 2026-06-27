@@ -1,0 +1,1570 @@
+{
+  "mode": "dry-run",
+  "candidates": [
+    {
+      "barcode": null,
+      "name": "Beşler Nostalji Dana Sucuk 300 G",
+      "brand": "Beşler",
+      "category_suggestion": "Sucuk",
+      "category_tags": [
+        "sucuk"
+      ],
+      "search_keywords": [
+        "300",
+        "besler",
+        "beşler",
+        "dana",
+        "nostalji",
+        "sucuk"
+      ],
+      "image_front_url": "https://images.migrosone.com/sanalmarket/product/14205136/14205136_1-da2298-1650x1650.jpg",
+      "image_front_storage_path": null,
+      "ingredients_text": "Dana eti,sığır yağı,baharat karışımı,tuz Net Miktar (g/ml) 300",
+      "nutrition_json": {
+        "energy_kcal": 432.0,
+        "energy_kj": 1809.0,
+        "fat": 40.0,
+        "saturated_fat": 18.0,
+        "carbohydrates": 2.0,
+        "sugars": 0.0,
+        "proteins": 16.0,
+        "salt": 2.0
+      },
+      "source": "web_scraper:migros",
+      "source_url": "https://www.migros.com.tr/besler-nostalji-dana-sucuk-300-g-p-d8c0d0",
+      "raw_source_payload": {
+        "jsonld": null,
+        "meta": {
+          "og_title": "Beşler Nostalji Dana Sucuk 300 G - Migros",
+          "og_image": "https://images.migrosone.com/sanalmarket/product/14205136/14205136_1-da2298-1650x1650.jpg",
+          "og_description": "İçindekilerDana eti,sığır yağı,baharat karışımı,tuzNet Miktar (g/ml)300Saklama Koşulları0-4 °C muhafaza edinizMenşeiTÜRKİYEİşletmeci / Üretici / İthalatçı / DağıtıcıBEŞLER ET GIDA.",
+          "title": "Beşler Nostalji Dana Sucuk 300 G - Migros"
+        },
+        "ingredients_raw": "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Beşler Nostalji Dana Sucuk 300 G - Migros\",\"description\":\"<p><strong>İçindekiler</strong><br>Dana eti,sığır yağı,baharat karışımı,tuz</p><p><strong>Net Miktar (g/ml)</strong><br>300</p><p><strong>Saklama Koşulları</strong><br>0-4 °C muhafaza ediniz</p><p><strong>Menşei</strong><br>TÜRKİYE</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı</strong><br>BEŞLER ET GIDA SAN.VE TİC.A.Ş.</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı Numarası</strong><br>706991</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı Adresi</strong><br>ALİPAŞA MH. ERKOÇ SK. NO:24 SİLİVRİ İSTANBUL</p><p><strong>Kullanım Önerileri</strong><br>Pirişilerek tüketilir.</p><p><strong>Ürün Bilgilerini Kullanma Hakkında</strong><br>İnternet sitemizde ve online satış kanallarımızda yer alan ürün etiket bilgileri, ürünün tedarikçisi tarafından Migros Ticaret A.Ş.’ye iletilen en güncel bilgilerdir. Ürün etiket bilgileri ile internet sitemiz ve online satış kanallarımızda bulunan bilgiler arasında herhangi bir farklılık bulunması halinde sorumluluk tamamen tedarikçi firmaya aittir.</p>\",\"url\":\"https://www.migros.com.tr/besler-nostalji-dana-sucuk-300-g-p-d8c0d0\",\"inLanguage\":\"tr-TR\",\"breadcrumb\":{\"@type\":\"BreadcrumbList\",\"numberOfItems\":4,\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"item\":{\"@id\":\"https://www.migros.com.tr/et-tavuk-balik-c-3\",\"name\":\"Et, Tavuk, Balık\"}},{\"@type\":\"ListItem\",\"position\":2,\"item\":{\"@id\":\"https://www.migros.com.tr/et-sarkuteri-c-6b\",\"name\":\"Et Şarküteri\"}},{\"@type\":\"ListItem\",\"position\":3,\"item\":{\"@id\":\"https://www.migros.com.tr/sucuk-c-404\",\"name\":\"Sucuk\"}},{\"@type\":\"ListItem\",\"position\":4,\"item\":{\"@id\":\"https://www.migros.com.tr/dana-sucuk-c-271d\",\"name\":\"Dana Sucuk\"}}]},\"mainEntity\":{\"@type\":\"WebPageElement\",\"offers\":{\"@type\":\"Offer\",\"itemOffered\":[{\"@type\":\"Product\",\"name\":\"Beşler Nostalji Dana Sucuk 300 G\",\"url\":\"https://www.migros.com.tr/besler-nostalji-dana-sucuk-300-g-p-d8c0d0\",\"category\":\"Sucuk/Et Şarküteri/Et, Tavuk, Balık\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Beşler\"},\"image\":[{\"@type\":\"ImageObject\",\"contentUrl\":\"https://images.migrosone.com/sanalmarket/product/14205136/14205136_1-da2298.jpg\",\"caption\":\"Beşler Nostalji Dana Sucuk 300 G\"}],\"offers\":{\"@type\":\"Offer\",\"itemCondition\":\"https://schema.org/NewCondition\",\"image\":\"https://images.migrosone.com/sanalmarket/product/14205136/14205136_1-da2298.jpg\",\"availability\":\"https://schema.org/InStock\",\"category\":\"Sucuk/Et Şarküteri/Et, Tavuk, Balık\",\"price\":\"349.00\",\"priceCurrency\":\"TRY\",\"areaServed\":\"TR\",\"seller\":{\"@type\":\"Organization\",\"name\":\"Migros Sanalmarket\",\"logo\":\"https://images.migrosone.com/sanalmarket/custom/sanalmarket-seo-34706362.png\"}}}]}}} [_nghost-ng-c1261675423]{position:relative;display:block}@media (max-width: 767.98px){[_nghost-ng-c1261675423]{overflow-x:scroll;white-space:nowrap;max-width:90vw;-ms-overflow-style:none;scrollbar-width:none}[_nghost-ng-c1261675423]::-webkit-scrollbar{display:none}}.breadcrumbs[_ngcontent-ng-c1261675423]{margin:0 0 .5rem;padding:0}.breadcrumbs__item[_ngcontent-ng-c1261675423]{display:inline;line-height:15px}.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{content:\"\";display:inline-block;color:var(--font-color__black);background:url(/assets/icons/right-chevron.svg) no-repeat center;width:10px;height:10px;margin:0 10px;background-size:cover;vertical-align:middle}@media (max-width: 767.98px){.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{margin:0 .4rem}}.breadcrumbs__item[_ngcontent-ng-c1261675423]:last-child .breadcrumbs__link[_ngcontent-ng-c1261675423]{color:var(--font-color__default)}.breadcrumbs__link[_ngcontent-ng-c1261675423]{font-family:var(--secondary-font-family);color:var(--background-color__DARK);font-size:12px}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423]{vertical-align:middle}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423] span[_ngcontent-ng-c1261675423]{width:45px;height:10px;background-color:var(--background-color__GREY);border-radius:var(--base-border-radius);display:inline-block} @keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}sm-product-images{display:block;position:relative}sm-product-images .product-images{max-width:33rem;text-align:-webkit-center}@media (min-width: 768px){sm-product-images .product-images{border:solid 1px var(--basicColorTransparent);border-radius:8px}}sm-product-images .product-images .preview-image-wrapper{width:32rem;height:32rem;position:relative;text-align:center;align-items:center;display:flex}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets{bottom:-5px}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets .swiper-pagination-bullet-active{background:var(--brandColorPrimary600)}@media (max-width: 768px){sm-product-images .product-images .preview-image-wrapper{max-width:20.5rem;margin-bottom:1rem}}sm-product-images .product-images .preview-image-wrapper img{max-width:100%;max-height:28rem;margin-top:2rem;height:auto}sm-product-images .product-images-carousel-cells{padding:0 1.5rem}sm-product-images .product-images-carousel-cell{margin-right:0;display:inline-flex;cursor:pointer;border:solid 1px var(--basicColorTransparent);min-width:3.188rem;height:3.188rem;border-radius:7px;background-color:var(--basic-color-white)}sm-product-images .product-images-carousel-cell img{max-height:2.875rem;margin:auto;display:block;border-radius:8px}sm-product-images .product-images-carousel-cell+.product-images-carousel-cell{margin-left:1rem}sm-product-images .product-images-carousel-cell--active{border:2px solid var(--brandColorPrimary700)}sm-product-images .product-images fe-scroll-slider{display:flex;justify-content:center;margin:.5rem}@media (max-width: 768px){sm-product-images .product-images fe-scroll-slider{max-width:20.5rem}}sm-product-images .product-images fe-scroll-slider .container-wrapper-content{min-width:8.8rem}sm-product-images .product-images fe-scroll-slider .container-wrapper-prev-btn:after{left:.4rem!important}sm-product-images .product-images fe-scroll-slider .container-wrapper-next-btn:after{left:-.4rem!important}sm-product-images .zoom-preview{background-size:48rem 48rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:32rem;height:32rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);bottom:30%;left:100%;z-index:99;animation:presence .3s ease-in-out} @charset \"UTF-8\";@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}fe-product-detail-tabs{display:block}fe-product-detail-tabs h3{font-size:22px;font-weight:var(--font-weight-bold)}fe-product-detail-tabs .product-detail-tabs__img{width:100%}fe-product-detail-tabs .product-detail-tabs__analysis{display:flex;justify-self:center;cursor:pointer;width:100%}@media (min-width: 768px){fe-product-detail-tabs .product-detail-tabs__analysis{max-height:37.5rem;width:auto}}fe-product-detail-tabs .product-detail-tabs__video-wrapper{aspect-ratio:16/9;width:100%;position:relative;max-width:1400px}fe-product-detail-tabs .product-detail-tabs__video-wrapper iframe{width:100%;height:100%}fe-product-detail-tabs .product-detail-tabs__product-safety-info .product-tab-images{text-align:start;margin-top:0}fe-product-detail-tabs .product-detail-tabs__product-safety-info__img{margin-top:var(--base-size-32)}fe-product-detail-tabs .installment-description-container{display:flex}fe-product-detail-tabs .installment-description-container .installment-description{padding-left:.5rem}fe-product-detail-tabs .installment-container{display:flex;justify-content:space-between;color:var(--basicColor900);flex-wrap:wrap}@media (min-width: 768px){fe-product-detail-tabs .installment-container{padding:1.4rem 0 2rem}}fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 100%;border-radius:.5rem;border:1px solid var(--basicColorTransparent);text-align:center;overflow-x:auto;margin-top:.75rem}@media (min-width: 768px){fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 32%;margin-top:0}}fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:4.688rem;margin:.5rem 0 .25rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:6.563rem;margin:.625rem 0 .438rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:4.813rem;margin:.688rem 0 .375rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:7.175rem;margin:.75rem 0 .625rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:4.75rem;margin:.875rem 0 .688rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:7.908rem;margin:1.125rem 0 .875rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead{background-color:var(--basicColor200)}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs fe-read-more div p{margin:0}fe-product-detail-tabs fe-read-more div ul{margin:0;padding:0}fe-product-detail-tabs fe-read-more div ul li p{display:inline-block}fe-product-detail-tabs fe-read-more div ul li:before{content:\"\\2022\";color:var(--secondary-color__500);font-weight:var(--font-weight-bold);display:inline-block;width:1em}fe-product-detail-tabs .product-tab-images{text-align:center;margin-top:1rem;margin-bottom:.5rem}fe-product-detail-tabs .product-tab-images img{max-width:100%;max-height:28rem}fe-product-detail-tabs .zoom-preview{background-size:28rem 56rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:25rem;height:25rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);top:5%;right:10%;z-index:99;animation:presence .3s ease-in-out}fe-product-detail-tabs iframe{width:calc(100% - 2rem);height:100rem}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-header,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-header{border-bottom:1px solid var(--secondary-color__500)}@media (max-width: 767.98px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label{min-width:max-content}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:var(--base-size-14)}@media (min-width: 768px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:1.125rem}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active{opacity:1!important;color:var(--secondary-color__500);font-weight:var(--font-weight-bold)}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text{color:inherit;font-weight:inherit}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after{background-color:var(--secondary-color__500)!important}",
+        "nutrition_basis": "per_100",
+        "nutrition_strategy": "dom",
+        "nutrition_warnings": [],
+        "image_candidates": [
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14205136/14205136_1-da2298-1650x1650.jpg",
+            "score": 12,
+            "reasons": [
+              "+url:product",
+              "+medium_res"
+            ]
+          },
+          {
+            "url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/migroskop.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/anne-bebek.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/money/money-logo_small.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/migros-tv-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/saglikli-yasam/saglikli-yasam.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/kadin-akademisi.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/blindlook/blindlook-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/gidani-koru/gidani-koru.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/guven-damgasi/guven-damgasi@3x.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/etbis/etbis.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          }
+        ],
+        "image_best_score": 12,
+        "scraped_at": "2026-06-12T13:20:51.448492+00:00"
+      },
+      "name_source": "web_scraper:migros",
+      "brand_source": "web_scraper:migros",
+      "image_source": "web_scraper:migros",
+      "ingredients_source": "web_scraper:migros",
+      "nutrition_source": "web_scraper:migros",
+      "category_source": "web_scraper:migros",
+      "quality_score": 100,
+      "missing_fields": [
+        "barcode"
+      ],
+      "status": "pending"
+    },
+    {
+      "barcode": null,
+      "name": "Polonez Dana Sucuk 240 G",
+      "brand": "Polonez",
+      "category_suggestion": "Sucuk",
+      "category_tags": [
+        "sucuk"
+      ],
+      "search_keywords": [
+        "240",
+        "dana",
+        "polonez",
+        "sucuk"
+      ],
+      "image_front_url": "https://images.migrosone.com/sanalmarket/product/14209411/14209411_1-1bae48-1650x1650.jpg",
+      "image_front_storage_path": null,
+      "ingredients_text": "DANA ETİ VE YAĞI TUZ BAHARAT KARIŞIMI SARIMSAK STABİLİZÖR (SODYUM POLİFOSFAT)ANTİOKSİDAN (ASKORBİK ASİT) KORUYUCU MADDE (SODYUM NİTRİT) Net Miktar (g/ml) 240 Saklama Ko",
+      "nutrition_json": {
+        "energy_kcal": 432.0,
+        "energy_kj": 1786.0,
+        "fat": 40.0,
+        "saturated_fat": 22.0,
+        "carbohydrates": 2.0,
+        "sugars": 0.0,
+        "fiber": 0.0,
+        "proteins": 16.0,
+        "salt": 2.0,
+        "sodium": 0.8
+      },
+      "source": "web_scraper:migros",
+      "source_url": "https://www.migros.com.tr/polonez-dana-sucuk-240-g-p-d8d183",
+      "raw_source_payload": {
+        "jsonld": null,
+        "meta": {
+          "og_title": "Polonez Dana Sucuk 240 G - Migros",
+          "og_image": "https://images.migrosone.com/sanalmarket/product/14209411/14209411_1-1bae48-1650x1650.jpg",
+          "og_description": "İçindekilerDANA ETİ VE YAĞI TUZ BAHARAT KARIŞIMI SARIMSAK STABİLİZÖR (SODYUM POLİFOSFAT)ANTİOKSİDAN (ASKORBİK ASİT) KORUYUCU MADDE (SODYUM NİTRİT)Net Miktar (g/ml)240Saklama Koşul.",
+          "title": "Polonez Dana Sucuk 240 G - Migros"
+        },
+        "ingredients_raw": "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Polonez Dana Sucuk 240 G - Migros\",\"description\":\"<p><strong>İçindekiler</strong><br>DANA ETİ VE YAĞI TUZ BAHARAT KARIŞIMI SARIMSAK STABİLİZÖR (SODYUM POLİFOSFAT)ANTİOKSİDAN (ASKORBİK ASİT) KORUYUCU MADDE (SODYUM NİTRİT)</p><p><strong>Net Miktar (g/ml)</strong><br>240</p><p><strong>Saklama Koşulları</strong><br>0-4 °C muhafaza ediniz</p><p><strong>Menşei</strong><br>TÜRKİYE</p><p><strong>İşletme Kayıt No</strong><br>TR-35-K-011888</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı Numarası</strong><br>020144</p><p><strong>Ürün Bilgilerini Kullanma Hakkında</strong><br>İnternet sitemizde ve online satış kanallarımızda yer alan ürün etiket bilgileri, ürünün tedarikçisi tarafından Migros Ticaret A.Ş.’ye iletilen en güncel bilgilerdir. Ürün etiket bilgileri ile internet sitemiz ve online satış kanallarımızda bulunan bilgiler arasında herhangi bir farklılık bulunması halinde sorumluluk tamamen tedarikçi firmaya aittir.</p>\",\"url\":\"https://www.migros.com.tr/polonez-dana-sucuk-240-g-p-d8d183\",\"inLanguage\":\"tr-TR\",\"breadcrumb\":{\"@type\":\"BreadcrumbList\",\"numberOfItems\":4,\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"item\":{\"@id\":\"https://www.migros.com.tr/et-tavuk-balik-c-3\",\"name\":\"Et, Tavuk, Balık\"}},{\"@type\":\"ListItem\",\"position\":2,\"item\":{\"@id\":\"https://www.migros.com.tr/et-sarkuteri-c-6b\",\"name\":\"Et Şarküteri\"}},{\"@type\":\"ListItem\",\"position\":3,\"item\":{\"@id\":\"https://www.migros.com.tr/sucuk-c-404\",\"name\":\"Sucuk\"}},{\"@type\":\"ListItem\",\"position\":4,\"item\":{\"@id\":\"https://www.migros.com.tr/dana-sucuk-c-271d\",\"name\":\"Dana Sucuk\"}}]},\"mainEntity\":{\"@type\":\"WebPageElement\",\"offers\":{\"@type\":\"Offer\",\"itemOffered\":[{\"@type\":\"Product\",\"name\":\"Polonez Dana Sucuk 240 G\",\"url\":\"https://www.migros.com.tr/polonez-dana-sucuk-240-g-p-d8d183\",\"category\":\"Sucuk/Et Şarküteri/Et, Tavuk, Balık\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Polonez\"},\"image\":[{\"@type\":\"ImageObject\",\"contentUrl\":\"https://images.migrosone.com/sanalmarket/product/14209411/14209411_1-1bae48.jpg\",\"caption\":\"Polonez Dana Sucuk 240 G\"}],\"offers\":{\"@type\":\"Offer\",\"itemCondition\":\"https://schema.org/NewCondition\",\"image\":\"https://images.migrosone.com/sanalmarket/product/14209411/14209411_1-1bae48.jpg\",\"availability\":\"https://schema.org/InStock\",\"category\":\"Sucuk/Et Şarküteri/Et, Tavuk, Balık\",\"price\":\"585.00\",\"priceCurrency\":\"TRY\",\"areaServed\":\"TR\",\"seller\":{\"@type\":\"Organization\",\"name\":\"Migros Sanalmarket\",\"logo\":\"https://images.migrosone.com/sanalmarket/custom/sanalmarket-seo-34706362.png\"}}}]}}} [_nghost-ng-c1261675423]{position:relative;display:block}@media (max-width: 767.98px){[_nghost-ng-c1261675423]{overflow-x:scroll;white-space:nowrap;max-width:90vw;-ms-overflow-style:none;scrollbar-width:none}[_nghost-ng-c1261675423]::-webkit-scrollbar{display:none}}.breadcrumbs[_ngcontent-ng-c1261675423]{margin:0 0 .5rem;padding:0}.breadcrumbs__item[_ngcontent-ng-c1261675423]{display:inline;line-height:15px}.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{content:\"\";display:inline-block;color:var(--font-color__black);background:url(/assets/icons/right-chevron.svg) no-repeat center;width:10px;height:10px;margin:0 10px;background-size:cover;vertical-align:middle}@media (max-width: 767.98px){.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{margin:0 .4rem}}.breadcrumbs__item[_ngcontent-ng-c1261675423]:last-child .breadcrumbs__link[_ngcontent-ng-c1261675423]{color:var(--font-color__default)}.breadcrumbs__link[_ngcontent-ng-c1261675423]{font-family:var(--secondary-font-family);color:var(--background-color__DARK);font-size:12px}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423]{vertical-align:middle}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423] span[_ngcontent-ng-c1261675423]{width:45px;height:10px;background-color:var(--background-color__GREY);border-radius:var(--base-border-radius);display:inline-block} @keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}sm-product-images{display:block;position:relative}sm-product-images .product-images{max-width:33rem;text-align:-webkit-center}@media (min-width: 768px){sm-product-images .product-images{border:solid 1px var(--basicColorTransparent);border-radius:8px}}sm-product-images .product-images .preview-image-wrapper{width:32rem;height:32rem;position:relative;text-align:center;align-items:center;display:flex}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets{bottom:-5px}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets .swiper-pagination-bullet-active{background:var(--brandColorPrimary600)}@media (max-width: 768px){sm-product-images .product-images .preview-image-wrapper{max-width:20.5rem;margin-bottom:1rem}}sm-product-images .product-images .preview-image-wrapper img{max-width:100%;max-height:28rem;margin-top:2rem;height:auto}sm-product-images .product-images-carousel-cells{padding:0 1.5rem}sm-product-images .product-images-carousel-cell{margin-right:0;display:inline-flex;cursor:pointer;border:solid 1px var(--basicColorTransparent);min-width:3.188rem;height:3.188rem;border-radius:7px;background-color:var(--basic-color-white)}sm-product-images .product-images-carousel-cell img{max-height:2.875rem;margin:auto;display:block;border-radius:8px}sm-product-images .product-images-carousel-cell+.product-images-carousel-cell{margin-left:1rem}sm-product-images .product-images-carousel-cell--active{border:2px solid var(--brandColorPrimary700)}sm-product-images .product-images fe-scroll-slider{display:flex;justify-content:center;margin:.5rem}@media (max-width: 768px){sm-product-images .product-images fe-scroll-slider{max-width:20.5rem}}sm-product-images .product-images fe-scroll-slider .container-wrapper-content{min-width:8.8rem}sm-product-images .product-images fe-scroll-slider .container-wrapper-prev-btn:after{left:.4rem!important}sm-product-images .product-images fe-scroll-slider .container-wrapper-next-btn:after{left:-.4rem!important}sm-product-images .zoom-preview{background-size:48rem 48rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:32rem;height:32rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);bottom:30%;left:100%;z-index:99;animation:presence .3s ease-in-out} @charset \"UTF-8\";@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}fe-product-detail-tabs{display:block}fe-product-detail-tabs h3{font-size:22px;font-weight:var(--font-weight-bold)}fe-product-detail-tabs .product-detail-tabs__img{width:100%}fe-product-detail-tabs .product-detail-tabs__analysis{display:flex;justify-self:center;cursor:pointer;width:100%}@media (min-width: 768px){fe-product-detail-tabs .product-detail-tabs__analysis{max-height:37.5rem;width:auto}}fe-product-detail-tabs .product-detail-tabs__video-wrapper{aspect-ratio:16/9;width:100%;position:relative;max-width:1400px}fe-product-detail-tabs .product-detail-tabs__video-wrapper iframe{width:100%;height:100%}fe-product-detail-tabs .product-detail-tabs__product-safety-info .product-tab-images{text-align:start;margin-top:0}fe-product-detail-tabs .product-detail-tabs__product-safety-info__img{margin-top:var(--base-size-32)}fe-product-detail-tabs .installment-description-container{display:flex}fe-product-detail-tabs .installment-description-container .installment-description{padding-left:.5rem}fe-product-detail-tabs .installment-container{display:flex;justify-content:space-between;color:var(--basicColor900);flex-wrap:wrap}@media (min-width: 768px){fe-product-detail-tabs .installment-container{padding:1.4rem 0 2rem}}fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 100%;border-radius:.5rem;border:1px solid var(--basicColorTransparent);text-align:center;overflow-x:auto;margin-top:.75rem}@media (min-width: 768px){fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 32%;margin-top:0}}fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:4.688rem;margin:.5rem 0 .25rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:6.563rem;margin:.625rem 0 .438rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:4.813rem;margin:.688rem 0 .375rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:7.175rem;margin:.75rem 0 .625rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:4.75rem;margin:.875rem 0 .688rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:7.908rem;margin:1.125rem 0 .875rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead{background-color:var(--basicColor200)}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs fe-read-more div p{margin:0}fe-product-detail-tabs fe-read-more div ul{margin:0;padding:0}fe-product-detail-tabs fe-read-more div ul li p{display:inline-block}fe-product-detail-tabs fe-read-more div ul li:before{content:\"\\2022\";color:var(--secondary-color__500);font-weight:var(--font-weight-bold);display:inline-block;width:1em}fe-product-detail-tabs .product-tab-images{text-align:center;margin-top:1rem;margin-bottom:.5rem}fe-product-detail-tabs .product-tab-images img{max-width:100%;max-height:28rem}fe-product-detail-tabs .zoom-preview{background-size:28rem 56rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:25rem;height:25rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);top:5%;right:10%;z-index:99;animation:presence .3s ease-in-out}fe-product-detail-tabs iframe{width:calc(100% - 2rem);height:100rem}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-header,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-header{border-bottom:1px solid var(--secondary-color__500)}@media (max-width: 767.98px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label{min-width:max-content}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:var(--base-size-14)}@media (min-width: 768px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:1.125rem}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active{opacity:1!important;color:var(--secondary-color__500);font-weight:var(--font-weight-bold)}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text{color:inherit;font-weight:inherit}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after{background-color:var(--secondary-color__500)!important}",
+        "nutrition_basis": "per_100",
+        "nutrition_strategy": "dom",
+        "nutrition_warnings": [],
+        "image_candidates": [
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14209411/14209411_1-1bae48-1650x1650.jpg",
+            "score": 12,
+            "reasons": [
+              "+url:product",
+              "+medium_res"
+            ]
+          },
+          {
+            "url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/migroskop.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/anne-bebek.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/money/money-logo_small.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/migros-tv-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/saglikli-yasam/saglikli-yasam.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/kadin-akademisi.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/blindlook/blindlook-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/gidani-koru/gidani-koru.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/guven-damgasi/guven-damgasi@3x.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/etbis/etbis.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          }
+        ],
+        "image_best_score": 12,
+        "scraped_at": "2026-06-12T13:20:53.025557+00:00"
+      },
+      "name_source": "web_scraper:migros",
+      "brand_source": "web_scraper:migros",
+      "image_source": "web_scraper:migros",
+      "ingredients_source": "web_scraper:migros",
+      "nutrition_source": "web_scraper:migros",
+      "category_source": "web_scraper:migros",
+      "quality_score": 100,
+      "missing_fields": [
+        "barcode"
+      ],
+      "status": "pending"
+    },
+    {
+      "barcode": null,
+      "name": "Migros Dana Sucuk 250 G",
+      "brand": null,
+      "category_suggestion": "Sucuk",
+      "category_tags": [
+        "sucuk"
+      ],
+      "search_keywords": [
+        "250",
+        "dana",
+        "migros",
+        "sucuk"
+      ],
+      "image_front_url": "https://images.migrosone.com/sanalmarket/product/14200158/14200158-c3753d-1650x1650.jpg",
+      "image_front_storage_path": null,
+      "ingredients_text": "DANA ETİ VE YAĞI BAHARAT KARIŞIMI TUZ SARIMSAK STABİLİZÖR (SODYUM POLİFOSFAT)ANTİOKSİDAN (ASKORBİK ASİT KORUYUCU MADDE (SODYUM NİTRİT) Net Miktar (g/ml) 250 Saklama Ko",
+      "nutrition_json": {
+        "energy_kcal": 432.0,
+        "energy_kj": 1786.0,
+        "fat": 40.0,
+        "saturated_fat": 22.0,
+        "carbohydrates": 2.0,
+        "sugars": 0.0,
+        "proteins": 16.0,
+        "salt": 2.0
+      },
+      "source": "web_scraper:migros",
+      "source_url": "https://www.migros.com.tr/migros-dana-sucuk-250-g-p-d8ad5e",
+      "raw_source_payload": {
+        "jsonld": null,
+        "meta": {
+          "og_title": "Migros Dana Sucuk 250 G - Migros",
+          "og_image": "https://images.migrosone.com/sanalmarket/product/14200158/14200158-c3753d-1650x1650.jpg",
+          "og_description": "İçindekilerDANA ETİ VE YAĞI BAHARAT KARIŞIMI TUZ SARIMSAK STABİLİZÖR (SODYUM POLİFOSFAT)ANTİOKSİDAN (ASKORBİK ASİT KORUYUCU MADDE (SODYUM NİTRİT)Net Miktar (g/ml)250Saklama Koşull.",
+          "title": "Migros Dana Sucuk 250 G - Migros"
+        },
+        "ingredients_raw": "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Migros Dana Sucuk 250 G - Migros\",\"description\":\"<p><strong>İçindekiler</strong><br>DANA ETİ VE YAĞI BAHARAT KARIŞIMI TUZ SARIMSAK STABİLİZÖR (SODYUM POLİFOSFAT)ANTİOKSİDAN (ASKORBİK ASİT KORUYUCU MADDE (SODYUM NİTRİT)</p><p><strong>Net Miktar (g/ml)</strong><br>250</p><p><strong>Saklama Koşulları</strong><br>Güneş ışığından koruyunuz. 0-4 °C muhafaza ediniz</p><p><strong>Menşei</strong><br>TÜRKİYE</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı Numarası</strong><br>706451</p><p><strong>Ürün Bilgilerini Kullanma Hakkında</strong><br>İnternet sitemizde ve online satış kanallarımızda yer alan ürün etiket bilgileri, ürünün tedarikçisi tarafından Migros Ticaret A.Ş.’ye iletilen en güncel bilgilerdir. Ürün etiket bilgileri ile internet sitemiz ve online satış kanallarımızda bulunan bilgiler arasında herhangi bir farklılık bulunması halinde sorumluluk tamamen tedarikçi firmaya aittir.</p>\",\"url\":\"https://www.migros.com.tr/migros-dana-sucuk-250-g-p-d8ad5e\",\"inLanguage\":\"tr-TR\",\"breadcrumb\":{\"@type\":\"BreadcrumbList\",\"numberOfItems\":4,\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"item\":{\"@id\":\"https://www.migros.com.tr/et-tavuk-balik-c-3\",\"name\":\"Et, Tavuk, Balık\"}},{\"@type\":\"ListItem\",\"position\":2,\"item\":{\"@id\":\"https://www.migros.com.tr/et-sarkuteri-c-6b\",\"name\":\"Et Şarküteri\"}},{\"@type\":\"ListItem\",\"position\":3,\"item\":{\"@id\":\"https://www.migros.com.tr/sucuk-c-404\",\"name\":\"Sucuk\"}},{\"@type\":\"ListItem\",\"position\":4,\"item\":{\"@id\":\"https://www.migros.com.tr/dana-sucuk-c-271d\",\"name\":\"Dana Sucuk\"}}]},\"mainEntity\":{\"@type\":\"WebPageElement\",\"offers\":{\"@type\":\"Offer\",\"itemOffered\":[{\"@type\":\"Product\",\"name\":\"Migros Dana Sucuk 250 G\",\"url\":\"https://www.migros.com.tr/migros-dana-sucuk-250-g-p-d8ad5e\",\"category\":\"Sucuk/Et Şarküteri/Et, Tavuk, Balık\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Migros\"},\"image\":[{\"@type\":\"ImageObject\",\"contentUrl\":\"https://images.migrosone.com/sanalmarket/product/14200158/14200158-c3753d.jpg\",\"caption\":\"Migros Dana Sucuk 250 G\"}],\"offers\":{\"@type\":\"Offer\",\"itemCondition\":\"https://schema.org/NewCondition\",\"image\":\"https://images.migrosone.com/sanalmarket/product/14200158/14200158-c3753d.jpg\",\"availability\":\"https://schema.org/InStock\",\"category\":\"Sucuk/Et Şarküteri/Et, Tavuk, Balık\",\"price\":\"199.00\",\"priceCurrency\":\"TRY\",\"areaServed\":\"TR\",\"seller\":{\"@type\":\"Organization\",\"name\":\"Migros Sanalmarket\",\"logo\":\"https://images.migrosone.com/sanalmarket/custom/sanalmarket-seo-34706362.png\"}}}]}}} [_nghost-ng-c1261675423]{position:relative;display:block}@media (max-width: 767.98px){[_nghost-ng-c1261675423]{overflow-x:scroll;white-space:nowrap;max-width:90vw;-ms-overflow-style:none;scrollbar-width:none}[_nghost-ng-c1261675423]::-webkit-scrollbar{display:none}}.breadcrumbs[_ngcontent-ng-c1261675423]{margin:0 0 .5rem;padding:0}.breadcrumbs__item[_ngcontent-ng-c1261675423]{display:inline;line-height:15px}.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{content:\"\";display:inline-block;color:var(--font-color__black);background:url(/assets/icons/right-chevron.svg) no-repeat center;width:10px;height:10px;margin:0 10px;background-size:cover;vertical-align:middle}@media (max-width: 767.98px){.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{margin:0 .4rem}}.breadcrumbs__item[_ngcontent-ng-c1261675423]:last-child .breadcrumbs__link[_ngcontent-ng-c1261675423]{color:var(--font-color__default)}.breadcrumbs__link[_ngcontent-ng-c1261675423]{font-family:var(--secondary-font-family);color:var(--background-color__DARK);font-size:12px}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423]{vertical-align:middle}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423] span[_ngcontent-ng-c1261675423]{width:45px;height:10px;background-color:var(--background-color__GREY);border-radius:var(--base-border-radius);display:inline-block} @keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}sm-product-images{display:block;position:relative}sm-product-images .product-images{max-width:33rem;text-align:-webkit-center}@media (min-width: 768px){sm-product-images .product-images{border:solid 1px var(--basicColorTransparent);border-radius:8px}}sm-product-images .product-images .preview-image-wrapper{width:32rem;height:32rem;position:relative;text-align:center;align-items:center;display:flex}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets{bottom:-5px}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets .swiper-pagination-bullet-active{background:var(--brandColorPrimary600)}@media (max-width: 768px){sm-product-images .product-images .preview-image-wrapper{max-width:20.5rem;margin-bottom:1rem}}sm-product-images .product-images .preview-image-wrapper img{max-width:100%;max-height:28rem;margin-top:2rem;height:auto}sm-product-images .product-images-carousel-cells{padding:0 1.5rem}sm-product-images .product-images-carousel-cell{margin-right:0;display:inline-flex;cursor:pointer;border:solid 1px var(--basicColorTransparent);min-width:3.188rem;height:3.188rem;border-radius:7px;background-color:var(--basic-color-white)}sm-product-images .product-images-carousel-cell img{max-height:2.875rem;margin:auto;display:block;border-radius:8px}sm-product-images .product-images-carousel-cell+.product-images-carousel-cell{margin-left:1rem}sm-product-images .product-images-carousel-cell--active{border:2px solid var(--brandColorPrimary700)}sm-product-images .product-images fe-scroll-slider{display:flex;justify-content:center;margin:.5rem}@media (max-width: 768px){sm-product-images .product-images fe-scroll-slider{max-width:20.5rem}}sm-product-images .product-images fe-scroll-slider .container-wrapper-content{min-width:8.8rem}sm-product-images .product-images fe-scroll-slider .container-wrapper-prev-btn:after{left:.4rem!important}sm-product-images .product-images fe-scroll-slider .container-wrapper-next-btn:after{left:-.4rem!important}sm-product-images .zoom-preview{background-size:48rem 48rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:32rem;height:32rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);bottom:30%;left:100%;z-index:99;animation:presence .3s ease-in-out} @charset \"UTF-8\";@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}fe-product-detail-tabs{display:block}fe-product-detail-tabs h3{font-size:22px;font-weight:var(--font-weight-bold)}fe-product-detail-tabs .product-detail-tabs__img{width:100%}fe-product-detail-tabs .product-detail-tabs__analysis{display:flex;justify-self:center;cursor:pointer;width:100%}@media (min-width: 768px){fe-product-detail-tabs .product-detail-tabs__analysis{max-height:37.5rem;width:auto}}fe-product-detail-tabs .product-detail-tabs__video-wrapper{aspect-ratio:16/9;width:100%;position:relative;max-width:1400px}fe-product-detail-tabs .product-detail-tabs__video-wrapper iframe{width:100%;height:100%}fe-product-detail-tabs .product-detail-tabs__product-safety-info .product-tab-images{text-align:start;margin-top:0}fe-product-detail-tabs .product-detail-tabs__product-safety-info__img{margin-top:var(--base-size-32)}fe-product-detail-tabs .installment-description-container{display:flex}fe-product-detail-tabs .installment-description-container .installment-description{padding-left:.5rem}fe-product-detail-tabs .installment-container{display:flex;justify-content:space-between;color:var(--basicColor900);flex-wrap:wrap}@media (min-width: 768px){fe-product-detail-tabs .installment-container{padding:1.4rem 0 2rem}}fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 100%;border-radius:.5rem;border:1px solid var(--basicColorTransparent);text-align:center;overflow-x:auto;margin-top:.75rem}@media (min-width: 768px){fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 32%;margin-top:0}}fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:4.688rem;margin:.5rem 0 .25rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:6.563rem;margin:.625rem 0 .438rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:4.813rem;margin:.688rem 0 .375rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:7.175rem;margin:.75rem 0 .625rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:4.75rem;margin:.875rem 0 .688rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:7.908rem;margin:1.125rem 0 .875rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead{background-color:var(--basicColor200)}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs fe-read-more div p{margin:0}fe-product-detail-tabs fe-read-more div ul{margin:0;padding:0}fe-product-detail-tabs fe-read-more div ul li p{display:inline-block}fe-product-detail-tabs fe-read-more div ul li:before{content:\"\\2022\";color:var(--secondary-color__500);font-weight:var(--font-weight-bold);display:inline-block;width:1em}fe-product-detail-tabs .product-tab-images{text-align:center;margin-top:1rem;margin-bottom:.5rem}fe-product-detail-tabs .product-tab-images img{max-width:100%;max-height:28rem}fe-product-detail-tabs .zoom-preview{background-size:28rem 56rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:25rem;height:25rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);top:5%;right:10%;z-index:99;animation:presence .3s ease-in-out}fe-product-detail-tabs iframe{width:calc(100% - 2rem);height:100rem}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-header,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-header{border-bottom:1px solid var(--secondary-color__500)}@media (max-width: 767.98px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label{min-width:max-content}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:var(--base-size-14)}@media (min-width: 768px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:1.125rem}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active{opacity:1!important;color:var(--secondary-color__500);font-weight:var(--font-weight-bold)}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text{color:inherit;font-weight:inherit}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after{background-color:var(--secondary-color__500)!important}",
+        "nutrition_basis": "per_100",
+        "nutrition_strategy": "dom",
+        "nutrition_warnings": [],
+        "image_candidates": [
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14200158/14200158-c3753d-1650x1650.jpg",
+            "score": 12,
+            "reasons": [
+              "+url:product",
+              "+medium_res"
+            ]
+          },
+          {
+            "url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/migroskop.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/anne-bebek.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/money/money-logo_small.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/migros-tv-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/saglikli-yasam/saglikli-yasam.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/kadin-akademisi.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/blindlook/blindlook-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/gidani-koru/gidani-koru.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/guven-damgasi/guven-damgasi@3x.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/etbis/etbis.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          }
+        ],
+        "image_best_score": 12,
+        "scraped_at": "2026-06-12T13:20:54.493899+00:00"
+      },
+      "name_source": "web_scraper:migros",
+      "brand_source": null,
+      "image_source": "web_scraper:migros",
+      "ingredients_source": "web_scraper:migros",
+      "nutrition_source": "web_scraper:migros",
+      "category_source": "web_scraper:migros",
+      "quality_score": 88,
+      "missing_fields": [
+        "brand",
+        "barcode"
+      ],
+      "status": "pending"
+    },
+    {
+      "barcode": null,
+      "name": "Cumhuriyet Parmak Sucuk Kg",
+      "brand": "Cumhuriyet",
+      "category_suggestion": "Sucuk",
+      "category_tags": [
+        "sucuk"
+      ],
+      "search_keywords": [
+        "cumhuriyet",
+        "parmak",
+        "sucuk"
+      ],
+      "image_front_url": "https://images.migrosone.com/sanalmarket/product/14206002/14206002-b0ef60-1650x1650.jpg",
+      "image_front_storage_path": null,
+      "ingredients_text": "DANA ETİ VE YAĞI, TUZ,BAHARAT KARIŞIMI(KİMYON,KIRMIZI TOZ BİBER, KARABİBER),SARIMSAK,DEKSTROZ,STABİLİZATÖR(SODYUM POLİFOSFAT),KORUYUCU (SODYUM NİTRİT) Saklama K",
+      "nutrition_json": {
+        "energy_kcal": 386.0,
+        "energy_kj": 1626.0,
+        "fat": 40.0,
+        "saturated_fat": 20.0,
+        "carbohydrates": 1.5,
+        "sugars": 0.2,
+        "proteins": 16.0,
+        "salt": 1.5
+      },
+      "source": "web_scraper:migros",
+      "source_url": "https://www.migros.com.tr/cumhuriyet-parmak-sucuk-kg-p-d8c432",
+      "raw_source_payload": {
+        "jsonld": null,
+        "meta": {
+          "og_title": "Cumhuriyet Parmak Sucuk Kg - Migros",
+          "og_image": "https://images.migrosone.com/sanalmarket/product/14206002/14206002-b0ef60-1650x1650.jpg",
+          "og_description": "İçindekilerDANA ETİ VE YAĞI, TUZ,BAHARAT KARIŞIMI(KİMYON,KIRMIZI TOZ BİBER, KARABİBER),SARIMSAK,DEKSTROZ,STABİLİZATÖR(SODYUM POLİFOSFAT),KORUYUCU (SODYUM NİTRİT)Saklama Koşulları0.",
+          "title": "Cumhuriyet Parmak Sucuk Kg - Migros"
+        },
+        "ingredients_raw": "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Cumhuriyet Parmak Sucuk Kg - Migros\",\"description\":\"<p><strong>İçindekiler</strong><br>DANA ETİ VE YAĞI, TUZ,BAHARAT KARIŞIMI(KİMYON,KIRMIZI TOZ BİBER, KARABİBER),SARIMSAK,DEKSTROZ,STABİLİZATÖR(SODYUM POLİFOSFAT),KORUYUCU (SODYUM NİTRİT)</p><p><strong>Saklama Koşulları</strong><br>0-4 °C muhafaza ediniz</p><p><strong>Menşei</strong><br>TÜRKİYE</p><p><strong>İşletme Kayıt No</strong><br>TR03-0070</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı</strong><br>ERDOĞDU ET VE GIDA ÜRÜNLERİ TİC.LTD.ŞTİ.</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı Numarası</strong><br>030445</p><p><strong>Kullanım Önerileri</strong><br>SON TÜKETİM TARİHİNDEN ÖNCE TÜKETİNİZ.</p><p><strong>Ürün Bilgilerini Kullanma Hakkında</strong><br>İnternet sitemizde ve online satış kanallarımızda yer alan ürün etiket bilgileri, ürünün tedarikçisi tarafından Migros Ticaret A.Ş.’ye iletilen en güncel bilgilerdir. Ürün etiket bilgileri ile internet sitemiz ve online satış kanallarımızda bulunan bilgiler arasında herhangi bir farklılık bulunması halinde sorumluluk tamamen tedarikçi firmaya aittir.</p>\",\"url\":\"https://www.migros.com.tr/cumhuriyet-parmak-sucuk-kg-p-d8c432\",\"inLanguage\":\"tr-TR\",\"breadcrumb\":{\"@type\":\"BreadcrumbList\",\"numberOfItems\":4,\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"item\":{\"@id\":\"https://www.migros.com.tr/et-tavuk-balik-c-3\",\"name\":\"Et, Tavuk, Balık\"}},{\"@type\":\"ListItem\",\"position\":2,\"item\":{\"@id\":\"https://www.migros.com.tr/et-sarkuteri-c-6b\",\"name\":\"Et Şarküteri\"}},{\"@type\":\"ListItem\",\"position\":3,\"item\":{\"@id\":\"https://www.migros.com.tr/sucuk-c-404\",\"name\":\"Sucuk\"}},{\"@type\":\"ListItem\",\"position\":4,\"item\":{\"@id\":\"https://www.migros.com.tr/dana-sucuk-c-271d\",\"name\":\"Dana Sucuk\"}}]},\"mainEntity\":{\"@type\":\"WebPageElement\",\"offers\":{\"@type\":\"Offer\",\"itemOffered\":[{\"@type\":\"Product\",\"name\":\"Cumhuriyet Parmak Sucuk Kg\",\"url\":\"https://www.migros.com.tr/cumhuriyet-parmak-sucuk-kg-p-d8c432\",\"category\":\"Sucuk/Et Şarküteri/Et, Tavuk, Balık\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Cumhuriyet Sucukları\"},\"image\":[{\"@type\":\"ImageObject\",\"contentUrl\":\"https://images.migrosone.com/sanalmarket/product/14206002/14206002-b0ef60.jpg\",\"caption\":\"Cumhuriyet Parmak Sucuk Kg\"}],\"offers\":{\"@type\":\"Offer\",\"itemCondition\":\"https://schema.org/NewCondition\",\"image\":\"https://images.migrosone.com/sanalmarket/product/14206002/14206002-b0ef60.jpg\",\"availability\":\"https://schema.org/InStock\",\"category\":\"Sucuk/Et Şarküteri/Et, Tavuk, Balık\",\"price\":\"2199.00\",\"priceCurrency\":\"TRY\",\"areaServed\":\"TR\",\"seller\":{\"@type\":\"Organization\",\"name\":\"Migros Sanalmarket\",\"logo\":\"https://images.migrosone.com/sanalmarket/custom/sanalmarket-seo-34706362.png\"}}}]}}} [_nghost-ng-c1261675423]{position:relative;display:block}@media (max-width: 767.98px){[_nghost-ng-c1261675423]{overflow-x:scroll;white-space:nowrap;max-width:90vw;-ms-overflow-style:none;scrollbar-width:none}[_nghost-ng-c1261675423]::-webkit-scrollbar{display:none}}.breadcrumbs[_ngcontent-ng-c1261675423]{margin:0 0 .5rem;padding:0}.breadcrumbs__item[_ngcontent-ng-c1261675423]{display:inline;line-height:15px}.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{content:\"\";display:inline-block;color:var(--font-color__black);background:url(/assets/icons/right-chevron.svg) no-repeat center;width:10px;height:10px;margin:0 10px;background-size:cover;vertical-align:middle}@media (max-width: 767.98px){.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{margin:0 .4rem}}.breadcrumbs__item[_ngcontent-ng-c1261675423]:last-child .breadcrumbs__link[_ngcontent-ng-c1261675423]{color:var(--font-color__default)}.breadcrumbs__link[_ngcontent-ng-c1261675423]{font-family:var(--secondary-font-family);color:var(--background-color__DARK);font-size:12px}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423]{vertical-align:middle}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423] span[_ngcontent-ng-c1261675423]{width:45px;height:10px;background-color:var(--background-color__GREY);border-radius:var(--base-border-radius);display:inline-block} @keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}sm-product-images{display:block;position:relative}sm-product-images .product-images{max-width:33rem;text-align:-webkit-center}@media (min-width: 768px){sm-product-images .product-images{border:solid 1px var(--basicColorTransparent);border-radius:8px}}sm-product-images .product-images .preview-image-wrapper{width:32rem;height:32rem;position:relative;text-align:center;align-items:center;display:flex}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets{bottom:-5px}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets .swiper-pagination-bullet-active{background:var(--brandColorPrimary600)}@media (max-width: 768px){sm-product-images .product-images .preview-image-wrapper{max-width:20.5rem;margin-bottom:1rem}}sm-product-images .product-images .preview-image-wrapper img{max-width:100%;max-height:28rem;margin-top:2rem;height:auto}sm-product-images .product-images-carousel-cells{padding:0 1.5rem}sm-product-images .product-images-carousel-cell{margin-right:0;display:inline-flex;cursor:pointer;border:solid 1px var(--basicColorTransparent);min-width:3.188rem;height:3.188rem;border-radius:7px;background-color:var(--basic-color-white)}sm-product-images .product-images-carousel-cell img{max-height:2.875rem;margin:auto;display:block;border-radius:8px}sm-product-images .product-images-carousel-cell+.product-images-carousel-cell{margin-left:1rem}sm-product-images .product-images-carousel-cell--active{border:2px solid var(--brandColorPrimary700)}sm-product-images .product-images fe-scroll-slider{display:flex;justify-content:center;margin:.5rem}@media (max-width: 768px){sm-product-images .product-images fe-scroll-slider{max-width:20.5rem}}sm-product-images .product-images fe-scroll-slider .container-wrapper-content{min-width:8.8rem}sm-product-images .product-images fe-scroll-slider .container-wrapper-prev-btn:after{left:.4rem!important}sm-product-images .product-images fe-scroll-slider .container-wrapper-next-btn:after{left:-.4rem!important}sm-product-images .zoom-preview{background-size:48rem 48rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:32rem;height:32rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);bottom:30%;left:100%;z-index:99;animation:presence .3s ease-in-out} @charset \"UTF-8\";@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}fe-product-detail-tabs{display:block}fe-product-detail-tabs h3{font-size:22px;font-weight:var(--font-weight-bold)}fe-product-detail-tabs .product-detail-tabs__img{width:100%}fe-product-detail-tabs .product-detail-tabs__analysis{display:flex;justify-self:center;cursor:pointer;width:100%}@media (min-width: 768px){fe-product-detail-tabs .product-detail-tabs__analysis{max-height:37.5rem;width:auto}}fe-product-detail-tabs .product-detail-tabs__video-wrapper{aspect-ratio:16/9;width:100%;position:relative;max-width:1400px}fe-product-detail-tabs .product-detail-tabs__video-wrapper iframe{width:100%;height:100%}fe-product-detail-tabs .product-detail-tabs__product-safety-info .product-tab-images{text-align:start;margin-top:0}fe-product-detail-tabs .product-detail-tabs__product-safety-info__img{margin-top:var(--base-size-32)}fe-product-detail-tabs .installment-description-container{display:flex}fe-product-detail-tabs .installment-description-container .installment-description{padding-left:.5rem}fe-product-detail-tabs .installment-container{display:flex;justify-content:space-between;color:var(--basicColor900);flex-wrap:wrap}@media (min-width: 768px){fe-product-detail-tabs .installment-container{padding:1.4rem 0 2rem}}fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 100%;border-radius:.5rem;border:1px solid var(--basicColorTransparent);text-align:center;overflow-x:auto;margin-top:.75rem}@media (min-width: 768px){fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 32%;margin-top:0}}fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:4.688rem;margin:.5rem 0 .25rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:6.563rem;margin:.625rem 0 .438rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:4.813rem;margin:.688rem 0 .375rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:7.175rem;margin:.75rem 0 .625rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:4.75rem;margin:.875rem 0 .688rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:7.908rem;margin:1.125rem 0 .875rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead{background-color:var(--basicColor200)}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs fe-read-more div p{margin:0}fe-product-detail-tabs fe-read-more div ul{margin:0;padding:0}fe-product-detail-tabs fe-read-more div ul li p{display:inline-block}fe-product-detail-tabs fe-read-more div ul li:before{content:\"\\2022\";color:var(--secondary-color__500);font-weight:var(--font-weight-bold);display:inline-block;width:1em}fe-product-detail-tabs .product-tab-images{text-align:center;margin-top:1rem;margin-bottom:.5rem}fe-product-detail-tabs .product-tab-images img{max-width:100%;max-height:28rem}fe-product-detail-tabs .zoom-preview{background-size:28rem 56rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:25rem;height:25rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);top:5%;right:10%;z-index:99;animation:presence .3s ease-in-out}fe-product-detail-tabs iframe{width:calc(100% - 2rem);height:100rem}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-header,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-header{border-bottom:1px solid var(--secondary-color__500)}@media (max-width: 767.98px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label{min-width:max-content}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:var(--base-size-14)}@media (min-width: 768px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:1.125rem}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active{opacity:1!important;color:var(--secondary-color__500);font-weight:var(--font-weight-bold)}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text{color:inherit;font-weight:inherit}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after{background-color:var(--secondary-color__500)!important}",
+        "nutrition_basis": "per_100",
+        "nutrition_strategy": "dom",
+        "nutrition_warnings": [],
+        "image_candidates": [
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14206002/14206002-b0ef60-1650x1650.jpg",
+            "score": 12,
+            "reasons": [
+              "+url:product",
+              "+medium_res"
+            ]
+          },
+          {
+            "url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/migroskop.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/anne-bebek.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/money/money-logo_small.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/migros-tv-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/saglikli-yasam/saglikli-yasam.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/kadin-akademisi.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/blindlook/blindlook-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/gidani-koru/gidani-koru.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/guven-damgasi/guven-damgasi@3x.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/etbis/etbis.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          }
+        ],
+        "image_best_score": 12,
+        "scraped_at": "2026-06-12T13:20:56.105150+00:00"
+      },
+      "name_source": "web_scraper:migros",
+      "brand_source": "web_scraper:migros",
+      "image_source": "web_scraper:migros",
+      "ingredients_source": "web_scraper:migros",
+      "nutrition_source": "web_scraper:migros",
+      "category_source": "web_scraper:migros",
+      "quality_score": 100,
+      "missing_fields": [
+        "barcode"
+      ],
+      "status": "pending"
+    },
+    {
+      "barcode": null,
+      "name": "Namet Dana Kasap Sucuk 250 G",
+      "brand": "Namet",
+      "category_suggestion": "Sucuk",
+      "category_tags": [
+        "sucuk"
+      ],
+      "search_keywords": [
+        "250",
+        "dana",
+        "kasap",
+        "namet",
+        "sucuk"
+      ],
+      "image_front_url": "https://images.migrosone.com/sanalmarket/product/14209464/14209464_1-5efd0f-1650x1650.jpg",
+      "image_front_storage_path": null,
+      "ingredients_text": "DANA ETİ VE YAĞI BAHARAT KARIŞIMI TUZ SARIMSAK ANTİOKSİDAN KORUYUCU Ale",
+      "nutrition_json": {
+        "energy_kcal": 440.0,
+        "energy_kj": 1820.0,
+        "fat": 40.0,
+        "saturated_fat": 21.0,
+        "carbohydrates": 4.0,
+        "sugars": 0.5,
+        "fiber": 0.0,
+        "proteins": 16.0,
+        "salt": 2.0,
+        "sodium": 0.0
+      },
+      "source": "web_scraper:migros",
+      "source_url": "https://www.migros.com.tr/namet-dana-kasap-sucuk-250-g-p-d8d1b8",
+      "raw_source_payload": {
+        "jsonld": null,
+        "meta": {
+          "og_title": "Namet Dana Kasap Sucuk 250 G - Migros",
+          "og_image": "https://images.migrosone.com/sanalmarket/product/14209464/14209464_1-5efd0f-1650x1650.jpg",
+          "og_description": "İçindekilerDANA ETİ VE YAĞI BAHARAT KARIŞIMI TUZ SARIMSAK ANTİOKSİDAN KORUYUCUAlerjen UyarısıSOYA VE SOYA TÜREVLERİ İLE SÜT VE SÜT ÜRÜNLERİ İÇERİR.Net Miktar (g/ml)250Saklama Koşu.",
+          "title": "Namet Dana Kasap Sucuk 250 G - Migros"
+        },
+        "ingredients_raw": "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Namet Dana Kasap Sucuk 250 G - Migros\",\"description\":\"<p><strong>İçindekiler</strong><br>DANA ETİ VE YAĞI BAHARAT KARIŞIMI TUZ SARIMSAK ANTİOKSİDAN KORUYUCU</p><p><strong>Alerjen Uyarısı</strong><br>SOYA VE SOYA TÜREVLERİ İLE SÜT VE SÜT ÜRÜNLERİ İÇERİR.</p><p><strong>Net Miktar (g/ml)</strong><br>250</p><p><strong>Saklama Koşulları</strong><br>0-4 °C muhafaza ediniz</p><p><strong>Menşei</strong><br>TÜRKİYE</p><p><strong>İşletme Kayıt No</strong><br>TR 41 - 0027</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı</strong><br>NAMET GIDA SAN.VE TİC.A.Ş.</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı Numarası</strong><br>024840</p><p><strong>Kullanım Önerileri</strong><br>0/+4 DERECEDE ORJİNAL AMBALAJINDA STT YE KADAR TÜKETİLMELİ.</p><p><strong>Ürün Bilgilerini Kullanma Hakkında</strong><br>İnternet sitemizde ve online satış kanallarımızda yer alan ürün etiket bilgileri, ürünün tedarikçisi tarafından Migros Ticaret A.Ş.’ye iletilen en güncel bilgilerdir. Ürün etiket bilgileri ile internet sitemiz ve online satış kanallarımızda bulunan bilgiler arasında herhangi bir farklılık bulunması halinde sorumluluk tamamen tedarikçi firmaya aittir.</p>\",\"url\":\"https://www.migros.com.tr/namet-dana-kasap-sucuk-250-g-p-d8d1b8\",\"inLanguage\":\"tr-TR\",\"breadcrumb\":{\"@type\":\"BreadcrumbList\",\"numberOfItems\":4,\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"item\":{\"@id\":\"https://www.migros.com.tr/et-tavuk-balik-c-3\",\"name\":\"Et, Tavuk, Balık\"}},{\"@type\":\"ListItem\",\"position\":2,\"item\":{\"@id\":\"https://www.migros.com.tr/et-sarkuteri-c-6b\",\"name\":\"Et Şarküteri\"}},{\"@type\":\"ListItem\",\"position\":3,\"item\":{\"@id\":\"https://www.migros.com.tr/sucuk-c-404\",\"name\":\"Sucuk\"}},{\"@type\":\"ListItem\",\"position\":4,\"item\":{\"@id\":\"https://www.migros.com.tr/dana-sucuk-c-271d\",\"name\":\"Dana Sucuk\"}}]},\"mainEntity\":{\"@type\":\"WebPageElement\",\"offers\":{\"@type\":\"Offer\",\"itemOffered\":[{\"@type\":\"Product\",\"name\":\"Namet Dana Kasap Sucuk 250 G\",\"url\":\"https://www.migros.com.tr/namet-dana-kasap-sucuk-250-g-p-d8d1b8\",\"category\":\"Sucuk/Et Şarküteri/Et, Tavuk, Balık\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Namet\"},\"image\":[{\"@type\":\"ImageObject\",\"contentUrl\":\"https://images.migrosone.com/sanalmarket/product/14209464/14209464_1-5efd0f.jpg\",\"caption\":\"Namet Dana Kasap Sucuk 250 G\"}],\"offers\":{\"@type\":\"Offer\",\"itemCondition\":\"https://schema.org/NewCondition\",\"image\":\"https://images.migrosone.com/sanalmarket/product/14209464/14209464_1-5efd0f.jpg\",\"availability\":\"https://schema.org/InStock\",\"category\":\"Sucuk/Et Şarküteri/Et, Tavuk, Balık\",\"price\":\"299.00\",\"priceCurrency\":\"TRY\",\"areaServed\":\"TR\",\"seller\":{\"@type\":\"Organization\",\"name\":\"Migros Sanalmarket\",\"logo\":\"https://images.migrosone.com/sanalmarket/custom/sanalmarket-seo-34706362.png\"}}}]}}} [_nghost-ng-c1261675423]{position:relative;display:block}@media (max-width: 767.98px){[_nghost-ng-c1261675423]{overflow-x:scroll;white-space:nowrap;max-width:90vw;-ms-overflow-style:none;scrollbar-width:none}[_nghost-ng-c1261675423]::-webkit-scrollbar{display:none}}.breadcrumbs[_ngcontent-ng-c1261675423]{margin:0 0 .5rem;padding:0}.breadcrumbs__item[_ngcontent-ng-c1261675423]{display:inline;line-height:15px}.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{content:\"\";display:inline-block;color:var(--font-color__black);background:url(/assets/icons/right-chevron.svg) no-repeat center;width:10px;height:10px;margin:0 10px;background-size:cover;vertical-align:middle}@media (max-width: 767.98px){.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{margin:0 .4rem}}.breadcrumbs__item[_ngcontent-ng-c1261675423]:last-child .breadcrumbs__link[_ngcontent-ng-c1261675423]{color:var(--font-color__default)}.breadcrumbs__link[_ngcontent-ng-c1261675423]{font-family:var(--secondary-font-family);color:var(--background-color__DARK);font-size:12px}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423]{vertical-align:middle}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423] span[_ngcontent-ng-c1261675423]{width:45px;height:10px;background-color:var(--background-color__GREY);border-radius:var(--base-border-radius);display:inline-block} @keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}sm-product-images{display:block;position:relative}sm-product-images .product-images{max-width:33rem;text-align:-webkit-center}@media (min-width: 768px){sm-product-images .product-images{border:solid 1px var(--basicColorTransparent);border-radius:8px}}sm-product-images .product-images .preview-image-wrapper{width:32rem;height:32rem;position:relative;text-align:center;align-items:center;display:flex}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets{bottom:-5px}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets .swiper-pagination-bullet-active{background:var(--brandColorPrimary600)}@media (max-width: 768px){sm-product-images .product-images .preview-image-wrapper{max-width:20.5rem;margin-bottom:1rem}}sm-product-images .product-images .preview-image-wrapper img{max-width:100%;max-height:28rem;margin-top:2rem;height:auto}sm-product-images .product-images-carousel-cells{padding:0 1.5rem}sm-product-images .product-images-carousel-cell{margin-right:0;display:inline-flex;cursor:pointer;border:solid 1px var(--basicColorTransparent);min-width:3.188rem;height:3.188rem;border-radius:7px;background-color:var(--basic-color-white)}sm-product-images .product-images-carousel-cell img{max-height:2.875rem;margin:auto;display:block;border-radius:8px}sm-product-images .product-images-carousel-cell+.product-images-carousel-cell{margin-left:1rem}sm-product-images .product-images-carousel-cell--active{border:2px solid var(--brandColorPrimary700)}sm-product-images .product-images fe-scroll-slider{display:flex;justify-content:center;margin:.5rem}@media (max-width: 768px){sm-product-images .product-images fe-scroll-slider{max-width:20.5rem}}sm-product-images .product-images fe-scroll-slider .container-wrapper-content{min-width:8.8rem}sm-product-images .product-images fe-scroll-slider .container-wrapper-prev-btn:after{left:.4rem!important}sm-product-images .product-images fe-scroll-slider .container-wrapper-next-btn:after{left:-.4rem!important}sm-product-images .zoom-preview{background-size:48rem 48rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:32rem;height:32rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);bottom:30%;left:100%;z-index:99;animation:presence .3s ease-in-out} @charset \"UTF-8\";@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}fe-product-detail-tabs{display:block}fe-product-detail-tabs h3{font-size:22px;font-weight:var(--font-weight-bold)}fe-product-detail-tabs .product-detail-tabs__img{width:100%}fe-product-detail-tabs .product-detail-tabs__analysis{display:flex;justify-self:center;cursor:pointer;width:100%}@media (min-width: 768px){fe-product-detail-tabs .product-detail-tabs__analysis{max-height:37.5rem;width:auto}}fe-product-detail-tabs .product-detail-tabs__video-wrapper{aspect-ratio:16/9;width:100%;position:relative;max-width:1400px}fe-product-detail-tabs .product-detail-tabs__video-wrapper iframe{width:100%;height:100%}fe-product-detail-tabs .product-detail-tabs__product-safety-info .product-tab-images{text-align:start;margin-top:0}fe-product-detail-tabs .product-detail-tabs__product-safety-info__img{margin-top:var(--base-size-32)}fe-product-detail-tabs .installment-description-container{display:flex}fe-product-detail-tabs .installment-description-container .installment-description{padding-left:.5rem}fe-product-detail-tabs .installment-container{display:flex;justify-content:space-between;color:var(--basicColor900);flex-wrap:wrap}@media (min-width: 768px){fe-product-detail-tabs .installment-container{padding:1.4rem 0 2rem}}fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 100%;border-radius:.5rem;border:1px solid var(--basicColorTransparent);text-align:center;overflow-x:auto;margin-top:.75rem}@media (min-width: 768px){fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 32%;margin-top:0}}fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:4.688rem;margin:.5rem 0 .25rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:6.563rem;margin:.625rem 0 .438rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:4.813rem;margin:.688rem 0 .375rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:7.175rem;margin:.75rem 0 .625rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:4.75rem;margin:.875rem 0 .688rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:7.908rem;margin:1.125rem 0 .875rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead{background-color:var(--basicColor200)}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs fe-read-more div p{margin:0}fe-product-detail-tabs fe-read-more div ul{margin:0;padding:0}fe-product-detail-tabs fe-read-more div ul li p{display:inline-block}fe-product-detail-tabs fe-read-more div ul li:before{content:\"\\2022\";color:var(--secondary-color__500);font-weight:var(--font-weight-bold);display:inline-block;width:1em}fe-product-detail-tabs .product-tab-images{text-align:center;margin-top:1rem;margin-bottom:.5rem}fe-product-detail-tabs .product-tab-images img{max-width:100%;max-height:28rem}fe-product-detail-tabs .zoom-preview{background-size:28rem 56rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:25rem;height:25rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);top:5%;right:10%;z-index:99;animation:presence .3s ease-in-out}fe-product-detail-tabs iframe{width:calc(100% - 2rem);height:100rem}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-header,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-header{border-bottom:1px solid var(--secondary-color__500)}@media (max-width: 767.98px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label{min-width:max-content}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:var(--base-size-14)}@media (min-width: 768px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:1.125rem}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active{opacity:1!important;color:var(--secondary-color__500);font-weight:var(--font-weight-bold)}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text{color:inherit;font-weight:inherit}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after{background-color:var(--secondary-color__500)!important}",
+        "nutrition_basis": "per_100",
+        "nutrition_strategy": "dom",
+        "nutrition_warnings": [],
+        "image_candidates": [
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14209464/14209464_1-5efd0f-1650x1650.jpg",
+            "score": 12,
+            "reasons": [
+              "+url:product",
+              "+medium_res"
+            ]
+          },
+          {
+            "url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/migroskop.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/anne-bebek.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/money/money-logo_small.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/migros-tv-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/saglikli-yasam/saglikli-yasam.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/kadin-akademisi.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/blindlook/blindlook-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/gidani-koru/gidani-koru.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/guven-damgasi/guven-damgasi@3x.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/etbis/etbis.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          }
+        ],
+        "image_best_score": 12,
+        "scraped_at": "2026-06-12T13:20:57.543882+00:00"
+      },
+      "name_source": "web_scraper:migros",
+      "brand_source": "web_scraper:migros",
+      "image_source": "web_scraper:migros",
+      "ingredients_source": "web_scraper:migros",
+      "nutrition_source": "web_scraper:migros",
+      "category_source": "web_scraper:migros",
+      "quality_score": 100,
+      "missing_fields": [
+        "barcode"
+      ],
+      "status": "pending"
+    },
+    {
+      "barcode": null,
+      "name": "Pınar Sucuk Mangal Keyfi 300 G",
+      "brand": "Pınar",
+      "category_suggestion": "Sucuk",
+      "category_tags": [
+        "sucuk"
+      ],
+      "search_keywords": [
+        "300",
+        "keyfi",
+        "mangal",
+        "pinar",
+        "pınar",
+        "sucuk"
+      ],
+      "image_front_url": "https://images.migrosone.com/sanalmarket/product/14209351/14209351_1-f3ba84-1650x1650.jpg",
+      "image_front_storage_path": null,
+      "ingredients_text": "Hindi eti,dana yağı,baharat karışımı,tuz,tatlı kırmızıbiber,sarımsak,koruyucu madde(sodyum nitrit),stabilazör (sodyum polifosfat),antioksidan(askorbik asit).Yağ oranı en çok %40. Net Miktar (g/ml) 300",
+      "nutrition_json": {
+        "energy_kcal": 377.0,
+        "energy_kj": 1559.0,
+        "fat": 35.0,
+        "saturated_fat": 23.0,
+        "carbohydrates": 1.5,
+        "sugars": 0.6,
+        "proteins": 14.0,
+        "salt": 1.7
+      },
+      "source": "web_scraper:migros",
+      "source_url": "https://www.migros.com.tr/pinar-sucuk-mangal-keyfi-300-g-p-d8d147",
+      "raw_source_payload": {
+        "jsonld": null,
+        "meta": {
+          "og_title": "Pınar Sucuk Mangal Keyfi 300 G - Migros",
+          "og_image": "https://images.migrosone.com/sanalmarket/product/14209351/14209351_1-f3ba84-1650x1650.jpg",
+          "og_description": "İçindekilerHindi eti,dana yağı,baharat karışımı,tuz,tatlı kırmızıbiber,sarımsak,koruyucu madde(sodyum nitrit),stabilazör (sodyum polifosfat),antioksidan(askorbik asit).Yağ oranı e.",
+          "title": "Pınar Sucuk Mangal Keyfi 300 G - Migros"
+        },
+        "ingredients_raw": "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Pınar Sucuk Mangal Keyfi 300 G - Migros\",\"description\":\"<p><strong>İçindekiler</strong><br>Hindi eti,dana yağı,baharat karışımı,tuz,tatlı kırmızıbiber,sarımsak,koruyucu madde(sodyum nitrit),stabilazör (sodyum polifosfat),antioksidan(askorbik asit).Yağ oranı en çok %40.</p><p><strong>Net Miktar (g/ml)</strong><br>300</p><p><strong>Saklama Koşulları</strong><br>0-4 °C muhafaza ediniz</p><p><strong>Menşei</strong><br>TÜRKİYE</p><p><strong>İşletme Kayıt No</strong><br>TR35-0042</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı</strong><br>YAŞAR BİRLEŞİK PAZ.DAĞ.TUR.VE TİC. A.Ş.</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı Numarası</strong><br>700484</p><p><strong>Kullanım Önerileri</strong><br>0 °C - 4 °C'de saklayınız.Belirtilen raf ömrü, 0 °C - 4 °C'de ambalajı açılmadığı sürece geçerlidir.</p><p><strong>Ürün Bilgilerini Kullanma Hakkında</strong><br>İnternet sitemizde ve online satış kanallarımızda yer alan ürün etiket bilgileri, ürünün tedarikçisi tarafından Migros Ticaret A.Ş.’ye iletilen en güncel bilgilerdir. Ürün etiket bilgileri ile internet sitemiz ve online satış kanallarımızda bulunan bilgiler arasında herhangi bir farklılık bulunması halinde sorumluluk tamamen tedarikçi firmaya aittir.</p>\",\"url\":\"https://www.migros.com.tr/pinar-sucuk-mangal-keyfi-300-g-p-d8d147\",\"inLanguage\":\"tr-TR\",\"breadcrumb\":{\"@type\":\"BreadcrumbList\",\"numberOfItems\":4,\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"item\":{\"@id\":\"https://www.migros.com.tr/et-tavuk-balik-c-3\",\"name\":\"Et, Tavuk, Balık\"}},{\"@type\":\"ListItem\",\"position\":2,\"item\":{\"@id\":\"https://www.migros.com.tr/et-sarkuteri-c-6b\",\"name\":\"Et Şarküteri\"}},{\"@type\":\"ListItem\",\"position\":3,\"item\":{\"@id\":\"https://www.migros.com.tr/sucuk-c-404\",\"name\":\"Sucuk\"}},{\"@type\":\"ListItem\",\"position\":4,\"item\":{\"@id\":\"https://www.migros.com.tr/hindi-sucuk-c-271f\",\"name\":\"Hindi Sucuk\"}}]},\"mainEntity\":{\"@type\":\"WebPageElement\",\"offers\":{\"@type\":\"Offer\",\"itemOffered\":[{\"@type\":\"Product\",\"name\":\"Pınar Sucuk Mangal Keyfi 300 G\",\"url\":\"https://www.migros.com.tr/pinar-sucuk-mangal-keyfi-300-g-p-d8d147\",\"category\":\"Sucuk/Et Şarküteri/Et, Tavuk, Balık\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Pınar\"},\"image\":[{\"@type\":\"ImageObject\",\"contentUrl\":\"https://images.migrosone.com/sanalmarket/product/14209351/14209351_1-f3ba84.jpg\",\"caption\":\"Pınar Sucuk Mangal Keyfi 300 G\"}],\"offers\":{\"@type\":\"Offer\",\"itemCondition\":\"https://schema.org/NewCondition\",\"image\":\"https://images.migrosone.com/sanalmarket/product/14209351/14209351_1-f3ba84.jpg\",\"availability\":\"https://schema.org/InStock\",\"category\":\"Sucuk/Et Şarküteri/Et, Tavuk, Balık\",\"price\":\"209.00\",\"priceCurrency\":\"TRY\",\"areaServed\":\"TR\",\"seller\":{\"@type\":\"Organization\",\"name\":\"Migros Sanalmarket\",\"logo\":\"https://images.migrosone.com/sanalmarket/custom/sanalmarket-seo-34706362.png\"}}}]}}} [_nghost-ng-c1261675423]{position:relative;display:block}@media (max-width: 767.98px){[_nghost-ng-c1261675423]{overflow-x:scroll;white-space:nowrap;max-width:90vw;-ms-overflow-style:none;scrollbar-width:none}[_nghost-ng-c1261675423]::-webkit-scrollbar{display:none}}.breadcrumbs[_ngcontent-ng-c1261675423]{margin:0 0 .5rem;padding:0}.breadcrumbs__item[_ngcontent-ng-c1261675423]{display:inline;line-height:15px}.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{content:\"\";display:inline-block;color:var(--font-color__black);background:url(/assets/icons/right-chevron.svg) no-repeat center;width:10px;height:10px;margin:0 10px;background-size:cover;vertical-align:middle}@media (max-width: 767.98px){.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{margin:0 .4rem}}.breadcrumbs__item[_ngcontent-ng-c1261675423]:last-child .breadcrumbs__link[_ngcontent-ng-c1261675423]{color:var(--font-color__default)}.breadcrumbs__link[_ngcontent-ng-c1261675423]{font-family:var(--secondary-font-family);color:var(--background-color__DARK);font-size:12px}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423]{vertical-align:middle}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423] span[_ngcontent-ng-c1261675423]{width:45px;height:10px;background-color:var(--background-color__GREY);border-radius:var(--base-border-radius);display:inline-block} @keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}sm-product-images{display:block;position:relative}sm-product-images .product-images{max-width:33rem;text-align:-webkit-center}@media (min-width: 768px){sm-product-images .product-images{border:solid 1px var(--basicColorTransparent);border-radius:8px}}sm-product-images .product-images .preview-image-wrapper{width:32rem;height:32rem;position:relative;text-align:center;align-items:center;display:flex}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets{bottom:-5px}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets .swiper-pagination-bullet-active{background:var(--brandColorPrimary600)}@media (max-width: 768px){sm-product-images .product-images .preview-image-wrapper{max-width:20.5rem;margin-bottom:1rem}}sm-product-images .product-images .preview-image-wrapper img{max-width:100%;max-height:28rem;margin-top:2rem;height:auto}sm-product-images .product-images-carousel-cells{padding:0 1.5rem}sm-product-images .product-images-carousel-cell{margin-right:0;display:inline-flex;cursor:pointer;border:solid 1px var(--basicColorTransparent);min-width:3.188rem;height:3.188rem;border-radius:7px;background-color:var(--basic-color-white)}sm-product-images .product-images-carousel-cell img{max-height:2.875rem;margin:auto;display:block;border-radius:8px}sm-product-images .product-images-carousel-cell+.product-images-carousel-cell{margin-left:1rem}sm-product-images .product-images-carousel-cell--active{border:2px solid var(--brandColorPrimary700)}sm-product-images .product-images fe-scroll-slider{display:flex;justify-content:center;margin:.5rem}@media (max-width: 768px){sm-product-images .product-images fe-scroll-slider{max-width:20.5rem}}sm-product-images .product-images fe-scroll-slider .container-wrapper-content{min-width:8.8rem}sm-product-images .product-images fe-scroll-slider .container-wrapper-prev-btn:after{left:.4rem!important}sm-product-images .product-images fe-scroll-slider .container-wrapper-next-btn:after{left:-.4rem!important}sm-product-images .zoom-preview{background-size:48rem 48rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:32rem;height:32rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);bottom:30%;left:100%;z-index:99;animation:presence .3s ease-in-out} @charset \"UTF-8\";@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}fe-product-detail-tabs{display:block}fe-product-detail-tabs h3{font-size:22px;font-weight:var(--font-weight-bold)}fe-product-detail-tabs .product-detail-tabs__img{width:100%}fe-product-detail-tabs .product-detail-tabs__analysis{display:flex;justify-self:center;cursor:pointer;width:100%}@media (min-width: 768px){fe-product-detail-tabs .product-detail-tabs__analysis{max-height:37.5rem;width:auto}}fe-product-detail-tabs .product-detail-tabs__video-wrapper{aspect-ratio:16/9;width:100%;position:relative;max-width:1400px}fe-product-detail-tabs .product-detail-tabs__video-wrapper iframe{width:100%;height:100%}fe-product-detail-tabs .product-detail-tabs__product-safety-info .product-tab-images{text-align:start;margin-top:0}fe-product-detail-tabs .product-detail-tabs__product-safety-info__img{margin-top:var(--base-size-32)}fe-product-detail-tabs .installment-description-container{display:flex}fe-product-detail-tabs .installment-description-container .installment-description{padding-left:.5rem}fe-product-detail-tabs .installment-container{display:flex;justify-content:space-between;color:var(--basicColor900);flex-wrap:wrap}@media (min-width: 768px){fe-product-detail-tabs .installment-container{padding:1.4rem 0 2rem}}fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 100%;border-radius:.5rem;border:1px solid var(--basicColorTransparent);text-align:center;overflow-x:auto;margin-top:.75rem}@media (min-width: 768px){fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 32%;margin-top:0}}fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:4.688rem;margin:.5rem 0 .25rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:6.563rem;margin:.625rem 0 .438rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:4.813rem;margin:.688rem 0 .375rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:7.175rem;margin:.75rem 0 .625rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:4.75rem;margin:.875rem 0 .688rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:7.908rem;margin:1.125rem 0 .875rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead{background-color:var(--basicColor200)}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs fe-read-more div p{margin:0}fe-product-detail-tabs fe-read-more div ul{margin:0;padding:0}fe-product-detail-tabs fe-read-more div ul li p{display:inline-block}fe-product-detail-tabs fe-read-more div ul li:before{content:\"\\2022\";color:var(--secondary-color__500);font-weight:var(--font-weight-bold);display:inline-block;width:1em}fe-product-detail-tabs .product-tab-images{text-align:center;margin-top:1rem;margin-bottom:.5rem}fe-product-detail-tabs .product-tab-images img{max-width:100%;max-height:28rem}fe-product-detail-tabs .zoom-preview{background-size:28rem 56rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:25rem;height:25rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);top:5%;right:10%;z-index:99;animation:presence .3s ease-in-out}fe-product-detail-tabs iframe{width:calc(100% - 2rem);height:100rem}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-header,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-header{border-bottom:1px solid var(--secondary-color__500)}@media (max-width: 767.98px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label{min-width:max-content}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:var(--base-size-14)}@media (min-width: 768px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:1.125rem}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active{opacity:1!important;color:var(--secondary-color__500);font-weight:var(--font-weight-bold)}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text{color:inherit;font-weight:inherit}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after{background-color:var(--secondary-color__500)!important}",
+        "nutrition_basis": "per_100",
+        "nutrition_strategy": "dom",
+        "nutrition_warnings": [],
+        "image_candidates": [
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14209351/14209351_1-f3ba84-1650x1650.jpg",
+            "score": 12,
+            "reasons": [
+              "+url:product",
+              "+medium_res"
+            ]
+          },
+          {
+            "url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/migroskop.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/anne-bebek.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/money/money-logo_small.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/migros-tv-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/saglikli-yasam/saglikli-yasam.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/kadin-akademisi.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/blindlook/blindlook-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/gidani-koru/gidani-koru.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/guven-damgasi/guven-damgasi@3x.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/etbis/etbis.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          }
+        ],
+        "image_best_score": 12,
+        "scraped_at": "2026-06-12T13:20:59.002676+00:00"
+      },
+      "name_source": "web_scraper:migros",
+      "brand_source": "web_scraper:migros",
+      "image_source": "web_scraper:migros",
+      "ingredients_source": "web_scraper:migros",
+      "nutrition_source": "web_scraper:migros",
+      "category_source": "web_scraper:migros",
+      "quality_score": 100,
+      "missing_fields": [
+        "barcode"
+      ],
+      "status": "pending"
+    },
+    {
+      "barcode": null,
+      "name": "Maret Dana Kasap Sucuk 400 G",
+      "brand": "Maret",
+      "category_suggestion": "Sucuk",
+      "category_tags": [
+        "sucuk"
+      ],
+      "search_keywords": [
+        "400",
+        "dana",
+        "kasap",
+        "maret",
+        "sucuk"
+      ],
+      "image_front_url": "https://images.migrosone.com/sanalmarket/product/14209460/14209460-7b48cc-1650x1650.jpg",
+      "image_front_storage_path": null,
+      "ingredients_text": "DANA ETİ VE YAĞI BAHARAT KARIŞIMI, TUZ, SARIMSAK,ANTİOKSİDAN VE KORUYUCU (SODYUM NİTRAT) Net Miktar (g/ml) 400 Sakl",
+      "nutrition_json": {
+        "energy_kcal": 440.0,
+        "energy_kj": 1820.0,
+        "fat": 40.0,
+        "saturated_fat": 21.0,
+        "carbohydrates": 4.0,
+        "sugars": 0.5,
+        "proteins": 16.0,
+        "salt": 2.0
+      },
+      "source": "web_scraper:migros",
+      "source_url": "https://www.migros.com.tr/maret-dana-kasap-sucuk-400-g-p-d8d1b4",
+      "raw_source_payload": {
+        "jsonld": null,
+        "meta": {
+          "og_title": "Maret Dana Kasap Sucuk 400 G - Migros",
+          "og_image": "https://images.migrosone.com/sanalmarket/product/14209460/14209460-7b48cc-1650x1650.jpg",
+          "og_description": "İçindekilerDANA ETİ VE YAĞI BAHARAT KARIŞIMI, TUZ, SARIMSAK,ANTİOKSİDAN VE KORUYUCU (SODYUM NİTRAT)Net Miktar (g/ml)400Saklama Koşulları0-4 °C muhafaza edinizMenşeiTÜRKİYEİşletme .",
+          "title": "Maret Dana Kasap Sucuk 400 G - Migros"
+        },
+        "ingredients_raw": "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Maret Dana Kasap Sucuk 400 G - Migros\",\"description\":\"<p><strong>İçindekiler</strong><br>DANA ETİ VE YAĞI BAHARAT KARIŞIMI, TUZ, SARIMSAK,ANTİOKSİDAN VE KORUYUCU (SODYUM NİTRAT)</p><p><strong>Net Miktar (g/ml)</strong><br>400</p><p><strong>Saklama Koşulları</strong><br>0-4 °C muhafaza ediniz</p><p><strong>Menşei</strong><br>TÜRKİYE</p><p><strong>İşletme Kayıt No</strong><br>TR41-0027</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı</strong><br>NAMET GIDA SAN.VE TİC.A.Ş.</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı Numarası</strong><br>703352</p><p><strong>Kullanım Önerileri</strong><br>TÜKETİME HAZIR</p><p><strong>Ürün Bilgilerini Kullanma Hakkında</strong><br>İnternet sitemizde ve online satış kanallarımızda yer alan ürün etiket bilgileri, ürünün tedarikçisi tarafından Migros Ticaret A.Ş.’ye iletilen en güncel bilgilerdir. Ürün etiket bilgileri ile internet sitemiz ve online satış kanallarımızda bulunan bilgiler arasında herhangi bir farklılık bulunması halinde sorumluluk tamamen tedarikçi firmaya aittir.</p>\",\"url\":\"https://www.migros.com.tr/maret-dana-kasap-sucuk-400-g-p-d8d1b4\",\"inLanguage\":\"tr-TR\",\"breadcrumb\":{\"@type\":\"BreadcrumbList\",\"numberOfItems\":4,\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"item\":{\"@id\":\"https://www.migros.com.tr/et-tavuk-balik-c-3\",\"name\":\"Et, Tavuk, Balık\"}},{\"@type\":\"ListItem\",\"position\":2,\"item\":{\"@id\":\"https://www.migros.com.tr/et-sarkuteri-c-6b\",\"name\":\"Et Şarküteri\"}},{\"@type\":\"ListItem\",\"position\":3,\"item\":{\"@id\":\"https://www.migros.com.tr/sucuk-c-404\",\"name\":\"Sucuk\"}},{\"@type\":\"ListItem\",\"position\":4,\"item\":{\"@id\":\"https://www.migros.com.tr/dana-sucuk-c-271d\",\"name\":\"Dana Sucuk\"}}]},\"mainEntity\":{\"@type\":\"WebPageElement\",\"offers\":{\"@type\":\"Offer\",\"itemOffered\":[{\"@type\":\"Product\",\"name\":\"Maret Dana Kasap Sucuk 400 G\",\"url\":\"https://www.migros.com.tr/maret-dana-kasap-sucuk-400-g-p-d8d1b4\",\"category\":\"Sucuk/Et Şarküteri/Et, Tavuk, Balık\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Maret\"},\"image\":[{\"@type\":\"ImageObject\",\"contentUrl\":\"https://images.migrosone.com/sanalmarket/product/14209460/14209460-7b48cc.jpg\",\"caption\":\"Maret Dana Kasap Sucuk 400 G\"}],\"offers\":{\"@type\":\"Offer\",\"itemCondition\":\"https://schema.org/NewCondition\",\"image\":\"https://images.migrosone.com/sanalmarket/product/14209460/14209460-7b48cc.jpg\",\"availability\":\"https://schema.org/InStock\",\"category\":\"Sucuk/Et Şarküteri/Et, Tavuk, Balık\",\"price\":\"414.00\",\"priceCurrency\":\"TRY\",\"areaServed\":\"TR\",\"seller\":{\"@type\":\"Organization\",\"name\":\"Migros Sanalmarket\",\"logo\":\"https://images.migrosone.com/sanalmarket/custom/sanalmarket-seo-34706362.png\"}}}]}}} [_nghost-ng-c1261675423]{position:relative;display:block}@media (max-width: 767.98px){[_nghost-ng-c1261675423]{overflow-x:scroll;white-space:nowrap;max-width:90vw;-ms-overflow-style:none;scrollbar-width:none}[_nghost-ng-c1261675423]::-webkit-scrollbar{display:none}}.breadcrumbs[_ngcontent-ng-c1261675423]{margin:0 0 .5rem;padding:0}.breadcrumbs__item[_ngcontent-ng-c1261675423]{display:inline;line-height:15px}.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{content:\"\";display:inline-block;color:var(--font-color__black);background:url(/assets/icons/right-chevron.svg) no-repeat center;width:10px;height:10px;margin:0 10px;background-size:cover;vertical-align:middle}@media (max-width: 767.98px){.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{margin:0 .4rem}}.breadcrumbs__item[_ngcontent-ng-c1261675423]:last-child .breadcrumbs__link[_ngcontent-ng-c1261675423]{color:var(--font-color__default)}.breadcrumbs__link[_ngcontent-ng-c1261675423]{font-family:var(--secondary-font-family);color:var(--background-color__DARK);font-size:12px}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423]{vertical-align:middle}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423] span[_ngcontent-ng-c1261675423]{width:45px;height:10px;background-color:var(--background-color__GREY);border-radius:var(--base-border-radius);display:inline-block} @keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}sm-product-images{display:block;position:relative}sm-product-images .product-images{max-width:33rem;text-align:-webkit-center}@media (min-width: 768px){sm-product-images .product-images{border:solid 1px var(--basicColorTransparent);border-radius:8px}}sm-product-images .product-images .preview-image-wrapper{width:32rem;height:32rem;position:relative;text-align:center;align-items:center;display:flex}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets{bottom:-5px}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets .swiper-pagination-bullet-active{background:var(--brandColorPrimary600)}@media (max-width: 768px){sm-product-images .product-images .preview-image-wrapper{max-width:20.5rem;margin-bottom:1rem}}sm-product-images .product-images .preview-image-wrapper img{max-width:100%;max-height:28rem;margin-top:2rem;height:auto}sm-product-images .product-images-carousel-cells{padding:0 1.5rem}sm-product-images .product-images-carousel-cell{margin-right:0;display:inline-flex;cursor:pointer;border:solid 1px var(--basicColorTransparent);min-width:3.188rem;height:3.188rem;border-radius:7px;background-color:var(--basic-color-white)}sm-product-images .product-images-carousel-cell img{max-height:2.875rem;margin:auto;display:block;border-radius:8px}sm-product-images .product-images-carousel-cell+.product-images-carousel-cell{margin-left:1rem}sm-product-images .product-images-carousel-cell--active{border:2px solid var(--brandColorPrimary700)}sm-product-images .product-images fe-scroll-slider{display:flex;justify-content:center;margin:.5rem}@media (max-width: 768px){sm-product-images .product-images fe-scroll-slider{max-width:20.5rem}}sm-product-images .product-images fe-scroll-slider .container-wrapper-content{min-width:8.8rem}sm-product-images .product-images fe-scroll-slider .container-wrapper-prev-btn:after{left:.4rem!important}sm-product-images .product-images fe-scroll-slider .container-wrapper-next-btn:after{left:-.4rem!important}sm-product-images .zoom-preview{background-size:48rem 48rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:32rem;height:32rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);bottom:30%;left:100%;z-index:99;animation:presence .3s ease-in-out} @charset \"UTF-8\";@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}fe-product-detail-tabs{display:block}fe-product-detail-tabs h3{font-size:22px;font-weight:var(--font-weight-bold)}fe-product-detail-tabs .product-detail-tabs__img{width:100%}fe-product-detail-tabs .product-detail-tabs__analysis{display:flex;justify-self:center;cursor:pointer;width:100%}@media (min-width: 768px){fe-product-detail-tabs .product-detail-tabs__analysis{max-height:37.5rem;width:auto}}fe-product-detail-tabs .product-detail-tabs__video-wrapper{aspect-ratio:16/9;width:100%;position:relative;max-width:1400px}fe-product-detail-tabs .product-detail-tabs__video-wrapper iframe{width:100%;height:100%}fe-product-detail-tabs .product-detail-tabs__product-safety-info .product-tab-images{text-align:start;margin-top:0}fe-product-detail-tabs .product-detail-tabs__product-safety-info__img{margin-top:var(--base-size-32)}fe-product-detail-tabs .installment-description-container{display:flex}fe-product-detail-tabs .installment-description-container .installment-description{padding-left:.5rem}fe-product-detail-tabs .installment-container{display:flex;justify-content:space-between;color:var(--basicColor900);flex-wrap:wrap}@media (min-width: 768px){fe-product-detail-tabs .installment-container{padding:1.4rem 0 2rem}}fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 100%;border-radius:.5rem;border:1px solid var(--basicColorTransparent);text-align:center;overflow-x:auto;margin-top:.75rem}@media (min-width: 768px){fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 32%;margin-top:0}}fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:4.688rem;margin:.5rem 0 .25rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:6.563rem;margin:.625rem 0 .438rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:4.813rem;margin:.688rem 0 .375rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:7.175rem;margin:.75rem 0 .625rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:4.75rem;margin:.875rem 0 .688rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:7.908rem;margin:1.125rem 0 .875rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead{background-color:var(--basicColor200)}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs fe-read-more div p{margin:0}fe-product-detail-tabs fe-read-more div ul{margin:0;padding:0}fe-product-detail-tabs fe-read-more div ul li p{display:inline-block}fe-product-detail-tabs fe-read-more div ul li:before{content:\"\\2022\";color:var(--secondary-color__500);font-weight:var(--font-weight-bold);display:inline-block;width:1em}fe-product-detail-tabs .product-tab-images{text-align:center;margin-top:1rem;margin-bottom:.5rem}fe-product-detail-tabs .product-tab-images img{max-width:100%;max-height:28rem}fe-product-detail-tabs .zoom-preview{background-size:28rem 56rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:25rem;height:25rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);top:5%;right:10%;z-index:99;animation:presence .3s ease-in-out}fe-product-detail-tabs iframe{width:calc(100% - 2rem);height:100rem}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-header,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-header{border-bottom:1px solid var(--secondary-color__500)}@media (max-width: 767.98px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label{min-width:max-content}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:var(--base-size-14)}@media (min-width: 768px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:1.125rem}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active{opacity:1!important;color:var(--secondary-color__500);font-weight:var(--font-weight-bold)}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text{color:inherit;font-weight:inherit}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after{background-color:var(--secondary-color__500)!important}",
+        "nutrition_basis": "per_100",
+        "nutrition_strategy": "dom",
+        "nutrition_warnings": [],
+        "image_candidates": [
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14209460/14209460-7b48cc-1650x1650.jpg",
+            "score": 12,
+            "reasons": [
+              "+url:product",
+              "+medium_res"
+            ]
+          },
+          {
+            "url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/migroskop.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/anne-bebek.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/money/money-logo_small.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/migros-tv-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/saglikli-yasam/saglikli-yasam.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/kadin-akademisi.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/blindlook/blindlook-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/gidani-koru/gidani-koru.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/guven-damgasi/guven-damgasi@3x.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/etbis/etbis.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          }
+        ],
+        "image_best_score": 12,
+        "scraped_at": "2026-06-12T13:21:00.481959+00:00"
+      },
+      "name_source": "web_scraper:migros",
+      "brand_source": "web_scraper:migros",
+      "image_source": "web_scraper:migros",
+      "ingredients_source": "web_scraper:migros",
+      "nutrition_source": "web_scraper:migros",
+      "category_source": "web_scraper:migros",
+      "quality_score": 100,
+      "missing_fields": [
+        "barcode"
+      ],
+      "status": "pending"
+    },
+    {
+      "barcode": null,
+      "name": "Cumhuriyet Kangal Sucuk Kg",
+      "brand": "Cumhuriyet",
+      "category_suggestion": "Sucuk",
+      "category_tags": [
+        "sucuk"
+      ],
+      "search_keywords": [
+        "cumhuriyet",
+        "kangal",
+        "sucuk"
+      ],
+      "image_front_url": "https://images.migrosone.com/sanalmarket/product/14206001/cumhuriyet-kangal-sucuk-fermente-kg-bee8ca-1650x1650.jpg",
+      "image_front_storage_path": null,
+      "ingredients_text": "DANA ETİ VE YAĞI, TUZ,BAHARAT KARIŞIMI(KİMYON,KIRMIZI TOZ BİBER, KARABİBER),SARIMSAK,DEKSTROZ,STABİLİZATÖR(SODYUM POLİFOSFAT),KORUYUCU (SODYUM NİTRİT) Saklama K",
+      "nutrition_json": {
+        "energy_kcal": 389.0,
+        "energy_kj": 1626.0,
+        "fat": 40.0,
+        "saturated_fat": 20.0,
+        "carbohydrates": 1.5,
+        "sugars": 0.2,
+        "proteins": 16.0,
+        "salt": 1.5
+      },
+      "source": "web_scraper:migros",
+      "source_url": "https://www.migros.com.tr/cumhuriyet-kangal-sucuk-kg-p-d8c431",
+      "raw_source_payload": {
+        "jsonld": null,
+        "meta": {
+          "og_title": "Cumhuriyet Kangal Sucuk Kg - Migros",
+          "og_image": "https://images.migrosone.com/sanalmarket/product/14206001/cumhuriyet-kangal-sucuk-fermente-kg-bee8ca-1650x1650.jpg",
+          "og_description": "İçindekilerDANA ETİ VE YAĞI, TUZ,BAHARAT KARIŞIMI(KİMYON,KIRMIZI TOZ BİBER, KARABİBER),SARIMSAK,DEKSTROZ,STABİLİZATÖR(SODYUM POLİFOSFAT),KORUYUCU (SODYUM NİTRİT)Saklama Koşulları0.",
+          "title": "Cumhuriyet Kangal Sucuk Kg - Migros"
+        },
+        "ingredients_raw": "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Cumhuriyet Kangal Sucuk Kg - Migros\",\"description\":\"<p><strong>İçindekiler</strong><br>DANA ETİ VE YAĞI, TUZ,BAHARAT KARIŞIMI(KİMYON,KIRMIZI TOZ BİBER, KARABİBER),SARIMSAK,DEKSTROZ,STABİLİZATÖR(SODYUM POLİFOSFAT),KORUYUCU (SODYUM NİTRİT)</p><p><strong>Saklama Koşulları</strong><br>0-4 °C muhafaza ediniz</p><p><strong>Menşei</strong><br>TÜRKİYE</p><p><strong>İşletme Kayıt No</strong><br>TR03-0070</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı</strong><br>ERDOĞDU ET VE GIDA ÜRÜNLERİ TİC.LTD.ŞTİ.</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı Numarası</strong><br>030445</p><p><strong>Kullanım Önerileri</strong><br>SON TÜKETİM TARİHİNDEN ÖNCE TÜKETİNİZ.</p><p><strong>Ürün Bilgilerini Kullanma Hakkında</strong><br>İnternet sitemizde ve online satış kanallarımızda yer alan ürün etiket bilgileri, ürünün tedarikçisi tarafından Migros Ticaret A.Ş.’ye iletilen en güncel bilgilerdir. Ürün etiket bilgileri ile internet sitemiz ve online satış kanallarımızda bulunan bilgiler arasında herhangi bir farklılık bulunması halinde sorumluluk tamamen tedarikçi firmaya aittir.</p>\",\"url\":\"https://www.migros.com.tr/cumhuriyet-kangal-sucuk-kg-p-d8c431\",\"inLanguage\":\"tr-TR\",\"breadcrumb\":{\"@type\":\"BreadcrumbList\",\"numberOfItems\":4,\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"item\":{\"@id\":\"https://www.migros.com.tr/et-tavuk-balik-c-3\",\"name\":\"Et, Tavuk, Balık\"}},{\"@type\":\"ListItem\",\"position\":2,\"item\":{\"@id\":\"https://www.migros.com.tr/et-sarkuteri-c-6b\",\"name\":\"Et Şarküteri\"}},{\"@type\":\"ListItem\",\"position\":3,\"item\":{\"@id\":\"https://www.migros.com.tr/sucuk-c-404\",\"name\":\"Sucuk\"}},{\"@type\":\"ListItem\",\"position\":4,\"item\":{\"@id\":\"https://www.migros.com.tr/dana-sucuk-c-271d\",\"name\":\"Dana Sucuk\"}}]},\"mainEntity\":{\"@type\":\"WebPageElement\",\"offers\":{\"@type\":\"Offer\",\"itemOffered\":[{\"@type\":\"Product\",\"name\":\"Cumhuriyet Kangal Sucuk Kg\",\"url\":\"https://www.migros.com.tr/cumhuriyet-kangal-sucuk-kg-p-d8c431\",\"category\":\"Sucuk/Et Şarküteri/Et, Tavuk, Balık\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Cumhuriyet Sucukları\"},\"image\":[{\"@type\":\"ImageObject\",\"contentUrl\":\"https://images.migrosone.com/sanalmarket/product/14206001/cumhuriyet-kangal-sucuk-fermente-kg-bee8ca.jpg\",\"caption\":\"Cumhuriyet Kangal Sucuk Kg\"}],\"offers\":{\"@type\":\"Offer\",\"itemCondition\":\"https://schema.org/NewCondition\",\"image\":\"https://images.migrosone.com/sanalmarket/product/14206001/cumhuriyet-kangal-sucuk-fermente-kg-bee8ca.jpg\",\"availability\":\"https://schema.org/InStock\",\"category\":\"Sucuk/Et Şarküteri/Et, Tavuk, Balık\",\"price\":\"2199.00\",\"priceCurrency\":\"TRY\",\"areaServed\":\"TR\",\"seller\":{\"@type\":\"Organization\",\"name\":\"Migros Sanalmarket\",\"logo\":\"https://images.migrosone.com/sanalmarket/custom/sanalmarket-seo-34706362.png\"}}}]}}} [_nghost-ng-c1261675423]{position:relative;display:block}@media (max-width: 767.98px){[_nghost-ng-c1261675423]{overflow-x:scroll;white-space:nowrap;max-width:90vw;-ms-overflow-style:none;scrollbar-width:none}[_nghost-ng-c1261675423]::-webkit-scrollbar{display:none}}.breadcrumbs[_ngcontent-ng-c1261675423]{margin:0 0 .5rem;padding:0}.breadcrumbs__item[_ngcontent-ng-c1261675423]{display:inline;line-height:15px}.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{content:\"\";display:inline-block;color:var(--font-color__black);background:url(/assets/icons/right-chevron.svg) no-repeat center;width:10px;height:10px;margin:0 10px;background-size:cover;vertical-align:middle}@media (max-width: 767.98px){.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{margin:0 .4rem}}.breadcrumbs__item[_ngcontent-ng-c1261675423]:last-child .breadcrumbs__link[_ngcontent-ng-c1261675423]{color:var(--font-color__default)}.breadcrumbs__link[_ngcontent-ng-c1261675423]{font-family:var(--secondary-font-family);color:var(--background-color__DARK);font-size:12px}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423]{vertical-align:middle}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423] span[_ngcontent-ng-c1261675423]{width:45px;height:10px;background-color:var(--background-color__GREY);border-radius:var(--base-border-radius);display:inline-block} @keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}sm-product-images{display:block;position:relative}sm-product-images .product-images{max-width:33rem;text-align:-webkit-center}@media (min-width: 768px){sm-product-images .product-images{border:solid 1px var(--basicColorTransparent);border-radius:8px}}sm-product-images .product-images .preview-image-wrapper{width:32rem;height:32rem;position:relative;text-align:center;align-items:center;display:flex}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets{bottom:-5px}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets .swiper-pagination-bullet-active{background:var(--brandColorPrimary600)}@media (max-width: 768px){sm-product-images .product-images .preview-image-wrapper{max-width:20.5rem;margin-bottom:1rem}}sm-product-images .product-images .preview-image-wrapper img{max-width:100%;max-height:28rem;margin-top:2rem;height:auto}sm-product-images .product-images-carousel-cells{padding:0 1.5rem}sm-product-images .product-images-carousel-cell{margin-right:0;display:inline-flex;cursor:pointer;border:solid 1px var(--basicColorTransparent);min-width:3.188rem;height:3.188rem;border-radius:7px;background-color:var(--basic-color-white)}sm-product-images .product-images-carousel-cell img{max-height:2.875rem;margin:auto;display:block;border-radius:8px}sm-product-images .product-images-carousel-cell+.product-images-carousel-cell{margin-left:1rem}sm-product-images .product-images-carousel-cell--active{border:2px solid var(--brandColorPrimary700)}sm-product-images .product-images fe-scroll-slider{display:flex;justify-content:center;margin:.5rem}@media (max-width: 768px){sm-product-images .product-images fe-scroll-slider{max-width:20.5rem}}sm-product-images .product-images fe-scroll-slider .container-wrapper-content{min-width:8.8rem}sm-product-images .product-images fe-scroll-slider .container-wrapper-prev-btn:after{left:.4rem!important}sm-product-images .product-images fe-scroll-slider .container-wrapper-next-btn:after{left:-.4rem!important}sm-product-images .zoom-preview{background-size:48rem 48rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:32rem;height:32rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);bottom:30%;left:100%;z-index:99;animation:presence .3s ease-in-out} @charset \"UTF-8\";@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}fe-product-detail-tabs{display:block}fe-product-detail-tabs h3{font-size:22px;font-weight:var(--font-weight-bold)}fe-product-detail-tabs .product-detail-tabs__img{width:100%}fe-product-detail-tabs .product-detail-tabs__analysis{display:flex;justify-self:center;cursor:pointer;width:100%}@media (min-width: 768px){fe-product-detail-tabs .product-detail-tabs__analysis{max-height:37.5rem;width:auto}}fe-product-detail-tabs .product-detail-tabs__video-wrapper{aspect-ratio:16/9;width:100%;position:relative;max-width:1400px}fe-product-detail-tabs .product-detail-tabs__video-wrapper iframe{width:100%;height:100%}fe-product-detail-tabs .product-detail-tabs__product-safety-info .product-tab-images{text-align:start;margin-top:0}fe-product-detail-tabs .product-detail-tabs__product-safety-info__img{margin-top:var(--base-size-32)}fe-product-detail-tabs .installment-description-container{display:flex}fe-product-detail-tabs .installment-description-container .installment-description{padding-left:.5rem}fe-product-detail-tabs .installment-container{display:flex;justify-content:space-between;color:var(--basicColor900);flex-wrap:wrap}@media (min-width: 768px){fe-product-detail-tabs .installment-container{padding:1.4rem 0 2rem}}fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 100%;border-radius:.5rem;border:1px solid var(--basicColorTransparent);text-align:center;overflow-x:auto;margin-top:.75rem}@media (min-width: 768px){fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 32%;margin-top:0}}fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:4.688rem;margin:.5rem 0 .25rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:6.563rem;margin:.625rem 0 .438rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:4.813rem;margin:.688rem 0 .375rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:7.175rem;margin:.75rem 0 .625rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:4.75rem;margin:.875rem 0 .688rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:7.908rem;margin:1.125rem 0 .875rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead{background-color:var(--basicColor200)}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs fe-read-more div p{margin:0}fe-product-detail-tabs fe-read-more div ul{margin:0;padding:0}fe-product-detail-tabs fe-read-more div ul li p{display:inline-block}fe-product-detail-tabs fe-read-more div ul li:before{content:\"\\2022\";color:var(--secondary-color__500);font-weight:var(--font-weight-bold);display:inline-block;width:1em}fe-product-detail-tabs .product-tab-images{text-align:center;margin-top:1rem;margin-bottom:.5rem}fe-product-detail-tabs .product-tab-images img{max-width:100%;max-height:28rem}fe-product-detail-tabs .zoom-preview{background-size:28rem 56rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:25rem;height:25rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);top:5%;right:10%;z-index:99;animation:presence .3s ease-in-out}fe-product-detail-tabs iframe{width:calc(100% - 2rem);height:100rem}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-header,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-header{border-bottom:1px solid var(--secondary-color__500)}@media (max-width: 767.98px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label{min-width:max-content}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:var(--base-size-14)}@media (min-width: 768px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:1.125rem}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active{opacity:1!important;color:var(--secondary-color__500);font-weight:var(--font-weight-bold)}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text{color:inherit;font-weight:inherit}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after{background-color:var(--secondary-color__500)!important}",
+        "nutrition_basis": "per_100",
+        "nutrition_strategy": "dom",
+        "nutrition_warnings": [],
+        "image_candidates": [
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14206001/cumhuriyet-kangal-sucuk-fermente-kg-bee8ca-1650x1650.jpg",
+            "score": 20,
+            "reasons": [
+              "+url:product",
+              "+brand_in_url",
+              "+medium_res"
+            ]
+          },
+          {
+            "url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/migroskop.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/anne-bebek.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/money/money-logo_small.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/migros-tv-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/saglikli-yasam/saglikli-yasam.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/kadin-akademisi.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/blindlook/blindlook-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/gidani-koru/gidani-koru.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/guven-damgasi/guven-damgasi@3x.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/etbis/etbis.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          }
+        ],
+        "image_best_score": 20,
+        "scraped_at": "2026-06-12T13:21:02.276592+00:00"
+      },
+      "name_source": "web_scraper:migros",
+      "brand_source": "web_scraper:migros",
+      "image_source": "web_scraper:migros",
+      "ingredients_source": "web_scraper:migros",
+      "nutrition_source": "web_scraper:migros",
+      "category_source": "web_scraper:migros",
+      "quality_score": 100,
+      "missing_fields": [
+        "barcode"
+      ],
+      "status": "pending"
+    },
+    {
+      "barcode": null,
+      "name": "Namet Kangal Sucuk Acılı Kg",
+      "brand": "Namet",
+      "category_suggestion": "Sucuk",
+      "category_tags": [
+        "sucuk"
+      ],
+      "search_keywords": [
+        "acili",
+        "acılı",
+        "kangal",
+        "namet",
+        "sucuk"
+      ],
+      "image_front_url": "https://images.migrosone.com/sanalmarket/product/14209404/14209404-3706fa-1650x1650.png",
+      "image_front_storage_path": null,
+      "ingredients_text": "Dana eti ve yağı ,baharat karışımı ,tuz ,sarımsak ,stabilizör (E450 E452),antioksidan (E316) ,koruyucu (E250)",
+      "nutrition_json": {
+        "energy_kcal": 440.0,
+        "energy_kj": 1820.0,
+        "fat": 40.0,
+        "saturated_fat": 21.0,
+        "carbohydrates": 4.0,
+        "sugars": 0.5,
+        "fiber": 0.0,
+        "proteins": 16.0,
+        "salt": 2.0,
+        "sodium": 0.0
+      },
+      "source": "web_scraper:migros",
+      "source_url": "https://www.migros.com.tr/namet-kangal-sucuk-acili-kg-p-d8d17c",
+      "raw_source_payload": {
+        "jsonld": null,
+        "meta": {
+          "og_title": "Namet Kangal Sucuk Acılı Kg - Migros",
+          "og_image": "https://images.migrosone.com/sanalmarket/product/14209404/14209404-3706fa-1650x1650.png",
+          "og_description": "İçindekilerDana eti ve yağı ,baharat karışımı ,tuz ,sarımsak ,stabilizör (E450 E452),antioksidan (E316) ,koruyucu (E250)Alerjen UyarısıAlerjen içermemektedir.Saklama Koşulları0-4 .",
+          "title": "Namet Kangal Sucuk Acılı Kg - Migros"
+        },
+        "ingredients_raw": "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Namet Kangal Sucuk Acılı Kg - Migros\",\"description\":\"<p><strong>İçindekiler</strong><br>Dana eti ve yağı ,baharat karışımı ,tuz ,sarımsak ,stabilizör (E450 E452),antioksidan (E316) ,koruyucu (E250)</p><p><strong>Alerjen Uyarısı</strong><br>Alerjen içermemektedir.</p><p><strong>Saklama Koşulları</strong><br>0-4 °C muhafaza ediniz</p><p><strong>Menşei</strong><br>TÜRKİYE</p><p><strong>İşletme Kayıt No</strong><br>TR41-0027</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı</strong><br>NAMET GIDA SAN.VE TİC.A.Ş.</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı Numarası</strong><br>024840</p><p><strong>Ürün Bilgilerini Kullanma Hakkında</strong><br>İnternet sitemizde ve online satış kanallarımızda yer alan ürün etiket bilgileri, ürünün tedarikçisi tarafından Migros Ticaret A.Ş.’ye iletilen en güncel bilgilerdir. Ürün etiket bilgileri ile internet sitemiz ve online satış kanallarımızda bulunan bilgiler arasında herhangi bir farklılık bulunması halinde sorumluluk tamamen tedarikçi firmaya aittir.</p>\",\"url\":\"https://www.migros.com.tr/namet-kangal-sucuk-acili-kg-p-d8d17c\",\"inLanguage\":\"tr-TR\",\"breadcrumb\":{\"@type\":\"BreadcrumbList\",\"numberOfItems\":4,\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"item\":{\"@id\":\"https://www.migros.com.tr/et-tavuk-balik-c-3\",\"name\":\"Et, Tavuk, Balık\"}},{\"@type\":\"ListItem\",\"position\":2,\"item\":{\"@id\":\"https://www.migros.com.tr/et-sarkuteri-c-6b\",\"name\":\"Et Şarküteri\"}},{\"@type\":\"ListItem\",\"position\":3,\"item\":{\"@id\":\"https://www.migros.com.tr/sucuk-c-404\",\"name\":\"Sucuk\"}},{\"@type\":\"ListItem\",\"position\":4,\"item\":{\"@id\":\"https://www.migros.com.tr/dana-sucuk-c-271d\",\"name\":\"Dana Sucuk\"}}]},\"mainEntity\":{\"@type\":\"WebPageElement\",\"offers\":{\"@type\":\"Offer\",\"itemOffered\":[{\"@type\":\"Product\",\"name\":\"Namet Kangal Sucuk Acılı Kg\",\"url\":\"https://www.migros.com.tr/namet-kangal-sucuk-acili-kg-p-d8d17c\",\"category\":\"Sucuk/Et Şarküteri/Et, Tavuk, Balık\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Namet\"},\"image\":[{\"@type\":\"ImageObject\",\"contentUrl\":\"https://images.migrosone.com/sanalmarket/product/14209404/14209404-3706fa.png\",\"caption\":\"Namet Kangal Sucuk Acılı Kg\"}],\"offers\":{\"@type\":\"Offer\",\"itemCondition\":\"https://schema.org/NewCondition\",\"image\":\"https://images.migrosone.com/sanalmarket/product/14209404/14209404-3706fa.png\",\"availability\":\"https://schema.org/InStock\",\"category\":\"Sucuk/Et Şarküteri/Et, Tavuk, Balık\",\"price\":\"1449.00\",\"priceCurrency\":\"TRY\",\"areaServed\":\"TR\",\"seller\":{\"@type\":\"Organization\",\"name\":\"Migros Sanalmarket\",\"logo\":\"https://images.migrosone.com/sanalmarket/custom/sanalmarket-seo-34706362.png\"}}}]}}} [_nghost-ng-c1261675423]{position:relative;display:block}@media (max-width: 767.98px){[_nghost-ng-c1261675423]{overflow-x:scroll;white-space:nowrap;max-width:90vw;-ms-overflow-style:none;scrollbar-width:none}[_nghost-ng-c1261675423]::-webkit-scrollbar{display:none}}.breadcrumbs[_ngcontent-ng-c1261675423]{margin:0 0 .5rem;padding:0}.breadcrumbs__item[_ngcontent-ng-c1261675423]{display:inline;line-height:15px}.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{content:\"\";display:inline-block;color:var(--font-color__black);background:url(/assets/icons/right-chevron.svg) no-repeat center;width:10px;height:10px;margin:0 10px;background-size:cover;vertical-align:middle}@media (max-width: 767.98px){.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{margin:0 .4rem}}.breadcrumbs__item[_ngcontent-ng-c1261675423]:last-child .breadcrumbs__link[_ngcontent-ng-c1261675423]{color:var(--font-color__default)}.breadcrumbs__link[_ngcontent-ng-c1261675423]{font-family:var(--secondary-font-family);color:var(--background-color__DARK);font-size:12px}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423]{vertical-align:middle}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423] span[_ngcontent-ng-c1261675423]{width:45px;height:10px;background-color:var(--background-color__GREY);border-radius:var(--base-border-radius);display:inline-block} @keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}sm-product-images{display:block;position:relative}sm-product-images .product-images{max-width:33rem;text-align:-webkit-center}@media (min-width: 768px){sm-product-images .product-images{border:solid 1px var(--basicColorTransparent);border-radius:8px}}sm-product-images .product-images .preview-image-wrapper{width:32rem;height:32rem;position:relative;text-align:center;align-items:center;display:flex}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets{bottom:-5px}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets .swiper-pagination-bullet-active{background:var(--brandColorPrimary600)}@media (max-width: 768px){sm-product-images .product-images .preview-image-wrapper{max-width:20.5rem;margin-bottom:1rem}}sm-product-images .product-images .preview-image-wrapper img{max-width:100%;max-height:28rem;margin-top:2rem;height:auto}sm-product-images .product-images-carousel-cells{padding:0 1.5rem}sm-product-images .product-images-carousel-cell{margin-right:0;display:inline-flex;cursor:pointer;border:solid 1px var(--basicColorTransparent);min-width:3.188rem;height:3.188rem;border-radius:7px;background-color:var(--basic-color-white)}sm-product-images .product-images-carousel-cell img{max-height:2.875rem;margin:auto;display:block;border-radius:8px}sm-product-images .product-images-carousel-cell+.product-images-carousel-cell{margin-left:1rem}sm-product-images .product-images-carousel-cell--active{border:2px solid var(--brandColorPrimary700)}sm-product-images .product-images fe-scroll-slider{display:flex;justify-content:center;margin:.5rem}@media (max-width: 768px){sm-product-images .product-images fe-scroll-slider{max-width:20.5rem}}sm-product-images .product-images fe-scroll-slider .container-wrapper-content{min-width:8.8rem}sm-product-images .product-images fe-scroll-slider .container-wrapper-prev-btn:after{left:.4rem!important}sm-product-images .product-images fe-scroll-slider .container-wrapper-next-btn:after{left:-.4rem!important}sm-product-images .zoom-preview{background-size:48rem 48rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:32rem;height:32rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);bottom:30%;left:100%;z-index:99;animation:presence .3s ease-in-out} @charset \"UTF-8\";@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}fe-product-detail-tabs{display:block}fe-product-detail-tabs h3{font-size:22px;font-weight:var(--font-weight-bold)}fe-product-detail-tabs .product-detail-tabs__img{width:100%}fe-product-detail-tabs .product-detail-tabs__analysis{display:flex;justify-self:center;cursor:pointer;width:100%}@media (min-width: 768px){fe-product-detail-tabs .product-detail-tabs__analysis{max-height:37.5rem;width:auto}}fe-product-detail-tabs .product-detail-tabs__video-wrapper{aspect-ratio:16/9;width:100%;position:relative;max-width:1400px}fe-product-detail-tabs .product-detail-tabs__video-wrapper iframe{width:100%;height:100%}fe-product-detail-tabs .product-detail-tabs__product-safety-info .product-tab-images{text-align:start;margin-top:0}fe-product-detail-tabs .product-detail-tabs__product-safety-info__img{margin-top:var(--base-size-32)}fe-product-detail-tabs .installment-description-container{display:flex}fe-product-detail-tabs .installment-description-container .installment-description{padding-left:.5rem}fe-product-detail-tabs .installment-container{display:flex;justify-content:space-between;color:var(--basicColor900);flex-wrap:wrap}@media (min-width: 768px){fe-product-detail-tabs .installment-container{padding:1.4rem 0 2rem}}fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 100%;border-radius:.5rem;border:1px solid var(--basicColorTransparent);text-align:center;overflow-x:auto;margin-top:.75rem}@media (min-width: 768px){fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 32%;margin-top:0}}fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:4.688rem;margin:.5rem 0 .25rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:6.563rem;margin:.625rem 0 .438rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:4.813rem;margin:.688rem 0 .375rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:7.175rem;margin:.75rem 0 .625rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:4.75rem;margin:.875rem 0 .688rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:7.908rem;margin:1.125rem 0 .875rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead{background-color:var(--basicColor200)}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs fe-read-more div p{margin:0}fe-product-detail-tabs fe-read-more div ul{margin:0;padding:0}fe-product-detail-tabs fe-read-more div ul li p{display:inline-block}fe-product-detail-tabs fe-read-more div ul li:before{content:\"\\2022\";color:var(--secondary-color__500);font-weight:var(--font-weight-bold);display:inline-block;width:1em}fe-product-detail-tabs .product-tab-images{text-align:center;margin-top:1rem;margin-bottom:.5rem}fe-product-detail-tabs .product-tab-images img{max-width:100%;max-height:28rem}fe-product-detail-tabs .zoom-preview{background-size:28rem 56rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:25rem;height:25rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);top:5%;right:10%;z-index:99;animation:presence .3s ease-in-out}fe-product-detail-tabs iframe{width:calc(100% - 2rem);height:100rem}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-header,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-header{border-bottom:1px solid var(--secondary-color__500)}@media (max-width: 767.98px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label{min-width:max-content}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:var(--base-size-14)}@media (min-width: 768px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:1.125rem}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active{opacity:1!important;color:var(--secondary-color__500);font-weight:var(--font-weight-bold)}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text{color:inherit;font-weight:inherit}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after{background-color:var(--secondary-color__500)!important}",
+        "nutrition_basis": "per_100",
+        "nutrition_strategy": "dom",
+        "nutrition_warnings": [],
+        "image_candidates": [
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14209404/14209404-3706fa-1650x1650.png",
+            "score": 12,
+            "reasons": [
+              "+url:product",
+              "+medium_res"
+            ]
+          },
+          {
+            "url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/migroskop.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/anne-bebek.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/money/money-logo_small.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/migros-tv-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/saglikli-yasam/saglikli-yasam.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/kadin-akademisi.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/blindlook/blindlook-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/gidani-koru/gidani-koru.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/guven-damgasi/guven-damgasi@3x.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/etbis/etbis.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          }
+        ],
+        "image_best_score": 12,
+        "scraped_at": "2026-06-12T13:21:03.488797+00:00"
+      },
+      "name_source": "web_scraper:migros",
+      "brand_source": "web_scraper:migros",
+      "image_source": "web_scraper:migros",
+      "ingredients_source": "web_scraper:migros",
+      "nutrition_source": "web_scraper:migros",
+      "category_source": "web_scraper:migros",
+      "quality_score": 100,
+      "missing_fields": [
+        "barcode"
+      ],
+      "status": "pending"
+    },
+    {
+      "barcode": null,
+      "name": "Polonez Acılı Sucuk 240 G",
+      "brand": "Polonez",
+      "category_suggestion": "Sucuk",
+      "category_tags": [
+        "sucuk"
+      ],
+      "search_keywords": [
+        "240",
+        "acili",
+        "acılı",
+        "polonez",
+        "sucuk"
+      ],
+      "image_front_url": "https://images.migrosone.com/sanalmarket/product/14209410/14209410_1-0b625c-1650x1650.jpg",
+      "image_front_storage_path": null,
+      "ingredients_text": "DANA ETİ VE YAĞI TUZ BAHARAT KARIŞIMI SARIMSAK STABİLİZÖR (SODYUM POLİFOSFAT)ANTİOKSİDAN (ASKORBİK ASİT) KORUYUCU MADDE (SODYUM NİTRİT) Net Miktar (g/ml) 240 Saklama Ko",
+      "nutrition_json": {
+        "energy_kcal": 432.0,
+        "energy_kj": 1786.0,
+        "fat": 40.0,
+        "saturated_fat": 22.0,
+        "carbohydrates": 2.0,
+        "sugars": 0.0,
+        "fiber": 0.0,
+        "proteins": 16.0,
+        "salt": 2.0,
+        "sodium": 0.8
+      },
+      "source": "web_scraper:migros",
+      "source_url": "https://www.migros.com.tr/polonez-acili-sucuk-240-g-p-d8d182",
+      "raw_source_payload": {
+        "jsonld": null,
+        "meta": {
+          "og_title": "Polonez Acılı Sucuk 240 G - Migros",
+          "og_image": "https://images.migrosone.com/sanalmarket/product/14209410/14209410_1-0b625c-1650x1650.jpg",
+          "og_description": "İçindekilerDANA ETİ VE YAĞI TUZ BAHARAT KARIŞIMI SARIMSAK STABİLİZÖR (SODYUM POLİFOSFAT)ANTİOKSİDAN (ASKORBİK ASİT) KORUYUCU MADDE (SODYUM NİTRİT)Net Miktar (g/ml)240Saklama Koşul.",
+          "title": "Polonez Acılı Sucuk 240 G - Migros"
+        },
+        "ingredients_raw": "{\"@context\":\"https://schema.org\",\"@type\":\"WebPage\",\"name\":\"Polonez Acılı Sucuk 240 G - Migros\",\"description\":\"<p><strong>İçindekiler</strong><br>DANA ETİ VE YAĞI TUZ BAHARAT KARIŞIMI SARIMSAK STABİLİZÖR (SODYUM POLİFOSFAT)ANTİOKSİDAN (ASKORBİK ASİT) KORUYUCU MADDE (SODYUM NİTRİT)</p><p><strong>Net Miktar (g/ml)</strong><br>240</p><p><strong>Saklama Koşulları</strong><br>0-4 °C muhafaza ediniz</p><p><strong>Menşei</strong><br>TÜRKİYE</p><p><strong>İşletme Kayıt No</strong><br>TR34-0061</p><p><strong>İşletmeci / Üretici / İthalatçı / Dağıtıcı Numarası</strong><br>020144</p><p><strong>Kullanım Önerileri</strong><br>0-4 DERECEDE MUHAFAZA EDİNİZ</p><p><strong>Ürün Bilgilerini Kullanma Hakkında</strong><br>İnternet sitemizde ve online satış kanallarımızda yer alan ürün etiket bilgileri, ürünün tedarikçisi tarafından Migros Ticaret A.Ş.’ye iletilen en güncel bilgilerdir. Ürün etiket bilgileri ile internet sitemiz ve online satış kanallarımızda bulunan bilgiler arasında herhangi bir farklılık bulunması halinde sorumluluk tamamen tedarikçi firmaya aittir.</p>\",\"url\":\"https://www.migros.com.tr/polonez-acili-sucuk-240-g-p-d8d182\",\"inLanguage\":\"tr-TR\",\"breadcrumb\":{\"@type\":\"BreadcrumbList\",\"numberOfItems\":4,\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"item\":{\"@id\":\"https://www.migros.com.tr/et-tavuk-balik-c-3\",\"name\":\"Et, Tavuk, Balık\"}},{\"@type\":\"ListItem\",\"position\":2,\"item\":{\"@id\":\"https://www.migros.com.tr/et-sarkuteri-c-6b\",\"name\":\"Et Şarküteri\"}},{\"@type\":\"ListItem\",\"position\":3,\"item\":{\"@id\":\"https://www.migros.com.tr/sucuk-c-404\",\"name\":\"Sucuk\"}},{\"@type\":\"ListItem\",\"position\":4,\"item\":{\"@id\":\"https://www.migros.com.tr/dana-sucuk-c-271d\",\"name\":\"Dana Sucuk\"}}]},\"mainEntity\":{\"@type\":\"WebPageElement\",\"offers\":{\"@type\":\"Offer\",\"itemOffered\":[{\"@type\":\"Product\",\"name\":\"Polonez Acılı Sucuk 240 G\",\"url\":\"https://www.migros.com.tr/polonez-acili-sucuk-240-g-p-d8d182\",\"category\":\"Sucuk/Et Şarküteri/Et, Tavuk, Balık\",\"brand\":{\"@type\":\"Brand\",\"name\":\"Polonez\"},\"image\":[{\"@type\":\"ImageObject\",\"contentUrl\":\"https://images.migrosone.com/sanalmarket/product/14209410/14209410_1-0b625c.jpg\",\"caption\":\"Polonez Acılı Sucuk 240 G\"}],\"offers\":{\"@type\":\"Offer\",\"itemCondition\":\"https://schema.org/NewCondition\",\"image\":\"https://images.migrosone.com/sanalmarket/product/14209410/14209410_1-0b625c.jpg\",\"availability\":\"https://schema.org/InStock\",\"category\":\"Sucuk/Et Şarküteri/Et, Tavuk, Balık\",\"price\":\"585.00\",\"priceCurrency\":\"TRY\",\"areaServed\":\"TR\",\"seller\":{\"@type\":\"Organization\",\"name\":\"Migros Sanalmarket\",\"logo\":\"https://images.migrosone.com/sanalmarket/custom/sanalmarket-seo-34706362.png\"}}}]}}} [_nghost-ng-c1261675423]{position:relative;display:block}@media (max-width: 767.98px){[_nghost-ng-c1261675423]{overflow-x:scroll;white-space:nowrap;max-width:90vw;-ms-overflow-style:none;scrollbar-width:none}[_nghost-ng-c1261675423]::-webkit-scrollbar{display:none}}.breadcrumbs[_ngcontent-ng-c1261675423]{margin:0 0 .5rem;padding:0}.breadcrumbs__item[_ngcontent-ng-c1261675423]{display:inline;line-height:15px}.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{content:\"\";display:inline-block;color:var(--font-color__black);background:url(/assets/icons/right-chevron.svg) no-repeat center;width:10px;height:10px;margin:0 10px;background-size:cover;vertical-align:middle}@media (max-width: 767.98px){.breadcrumbs__item[_ngcontent-ng-c1261675423] + li[_ngcontent-ng-c1261675423]:before{margin:0 .4rem}}.breadcrumbs__item[_ngcontent-ng-c1261675423]:last-child .breadcrumbs__link[_ngcontent-ng-c1261675423]{color:var(--font-color__default)}.breadcrumbs__link[_ngcontent-ng-c1261675423]{font-family:var(--secondary-font-family);color:var(--background-color__DARK);font-size:12px}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423]{vertical-align:middle}.breadcrumbs--skeleton[_ngcontent-ng-c1261675423] span[_ngcontent-ng-c1261675423]{width:45px;height:10px;background-color:var(--background-color__GREY);border-radius:var(--base-border-radius);display:inline-block} @keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}sm-product-images{display:block;position:relative}sm-product-images .product-images{max-width:33rem;text-align:-webkit-center}@media (min-width: 768px){sm-product-images .product-images{border:solid 1px var(--basicColorTransparent);border-radius:8px}}sm-product-images .product-images .preview-image-wrapper{width:32rem;height:32rem;position:relative;text-align:center;align-items:center;display:flex}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets{bottom:-5px}sm-product-images .product-images .preview-image-wrapper .swiper .swiper-pagination-bullets .swiper-pagination-bullet-active{background:var(--brandColorPrimary600)}@media (max-width: 768px){sm-product-images .product-images .preview-image-wrapper{max-width:20.5rem;margin-bottom:1rem}}sm-product-images .product-images .preview-image-wrapper img{max-width:100%;max-height:28rem;margin-top:2rem;height:auto}sm-product-images .product-images-carousel-cells{padding:0 1.5rem}sm-product-images .product-images-carousel-cell{margin-right:0;display:inline-flex;cursor:pointer;border:solid 1px var(--basicColorTransparent);min-width:3.188rem;height:3.188rem;border-radius:7px;background-color:var(--basic-color-white)}sm-product-images .product-images-carousel-cell img{max-height:2.875rem;margin:auto;display:block;border-radius:8px}sm-product-images .product-images-carousel-cell+.product-images-carousel-cell{margin-left:1rem}sm-product-images .product-images-carousel-cell--active{border:2px solid var(--brandColorPrimary700)}sm-product-images .product-images fe-scroll-slider{display:flex;justify-content:center;margin:.5rem}@media (max-width: 768px){sm-product-images .product-images fe-scroll-slider{max-width:20.5rem}}sm-product-images .product-images fe-scroll-slider .container-wrapper-content{min-width:8.8rem}sm-product-images .product-images fe-scroll-slider .container-wrapper-prev-btn:after{left:.4rem!important}sm-product-images .product-images fe-scroll-slider .container-wrapper-next-btn:after{left:-.4rem!important}sm-product-images .zoom-preview{background-size:48rem 48rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:32rem;height:32rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);bottom:30%;left:100%;z-index:99;animation:presence .3s ease-in-out} @charset \"UTF-8\";@keyframes spin{0%{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes presence{0%{opacity:0}to{opacity:1}}fe-product-detail-tabs{display:block}fe-product-detail-tabs h3{font-size:22px;font-weight:var(--font-weight-bold)}fe-product-detail-tabs .product-detail-tabs__img{width:100%}fe-product-detail-tabs .product-detail-tabs__analysis{display:flex;justify-self:center;cursor:pointer;width:100%}@media (min-width: 768px){fe-product-detail-tabs .product-detail-tabs__analysis{max-height:37.5rem;width:auto}}fe-product-detail-tabs .product-detail-tabs__video-wrapper{aspect-ratio:16/9;width:100%;position:relative;max-width:1400px}fe-product-detail-tabs .product-detail-tabs__video-wrapper iframe{width:100%;height:100%}fe-product-detail-tabs .product-detail-tabs__product-safety-info .product-tab-images{text-align:start;margin-top:0}fe-product-detail-tabs .product-detail-tabs__product-safety-info__img{margin-top:var(--base-size-32)}fe-product-detail-tabs .installment-description-container{display:flex}fe-product-detail-tabs .installment-description-container .installment-description{padding-left:.5rem}fe-product-detail-tabs .installment-container{display:flex;justify-content:space-between;color:var(--basicColor900);flex-wrap:wrap}@media (min-width: 768px){fe-product-detail-tabs .installment-container{padding:1.4rem 0 2rem}}fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 100%;border-radius:.5rem;border:1px solid var(--basicColorTransparent);text-align:center;overflow-x:auto;margin-top:.75rem}@media (min-width: 768px){fe-product-detail-tabs .installment-container .installment-wrapper{flex:0 0 32%;margin-top:0}}fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:4.688rem;margin:.5rem 0 .25rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.GARANTI{width:6.563rem;margin:.625rem 0 .438rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:4.813rem;margin:.688rem 0 .375rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.ISBANK{width:7.175rem;margin:.75rem 0 .625rem}}fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:4.75rem;margin:.875rem 0 .688rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper img.YAPIKREDI{width:7.908rem;margin:1.125rem 0 .875rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead{background-color:var(--basicColor200)}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table thead .mdc-data-table__header-cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{color:var(--basicColor900);font-size:.75rem}@media (min-width: 992px){fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell{font-size:1rem;padding:0 1rem}}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:first-of-type{text-align:center;padding-left:.5rem}fe-product-detail-tabs .installment-container .installment-wrapper .mat-mdc-table tbody .mdc-data-table__cell:not(:first-of-type){padding-left:0}fe-product-detail-tabs fe-read-more div p{margin:0}fe-product-detail-tabs fe-read-more div ul{margin:0;padding:0}fe-product-detail-tabs fe-read-more div ul li p{display:inline-block}fe-product-detail-tabs fe-read-more div ul li:before{content:\"\\2022\";color:var(--secondary-color__500);font-weight:var(--font-weight-bold);display:inline-block;width:1em}fe-product-detail-tabs .product-tab-images{text-align:center;margin-top:1rem;margin-bottom:.5rem}fe-product-detail-tabs .product-tab-images img{max-width:100%;max-height:28rem}fe-product-detail-tabs .zoom-preview{background-size:28rem 56rem;background-repeat:no-repeat;background-position:0 0;background-color:#fff;width:25rem;height:25rem;border-radius:8px;position:absolute;border:solid 1px var(--basicColorTransparent);top:5%;right:10%;z-index:99;animation:presence .3s ease-in-out}fe-product-detail-tabs iframe{width:calc(100% - 2rem);height:100rem}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-header,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-header{border-bottom:1px solid var(--secondary-color__500)}@media (max-width: 767.98px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label{min-width:max-content}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:var(--base-size-14)}@media (min-width: 768px){body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label .fe-tab-label__text{font-size:1.125rem}}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active{opacity:1!important;color:var(--secondary-color__500);font-weight:var(--font-weight-bold)}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active .fe-tab-label__text{color:inherit;font-weight:inherit}body.tazedirekt fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after,body.macrocenter fe-product-detail-tabs fe-tab-group .fe-tab-label.fe-tab-label--active:after{background-color:var(--secondary-color__500)!important}",
+        "nutrition_basis": "per_100",
+        "nutrition_strategy": "dom",
+        "nutrition_warnings": [],
+        "image_candidates": [
+          {
+            "url": "https://images.migrosone.com/sanalmarket/product/14209410/14209410_1-0b625c-1650x1650.jpg",
+            "score": 12,
+            "reasons": [
+              "+url:product",
+              "+medium_res"
+            ]
+          },
+          {
+            "url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/migroskop.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/icons/digital-magazine/anne-bebek.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:icon"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/money/money-logo_small.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/migros-tv-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/saglikli-yasam/saglikli-yasam.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/migros/kadin-akademisi.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/blindlook/blindlook-logo.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/gidani-koru/gidani-koru.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/guven-damgasi/guven-damgasi@3x.webp",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          },
+          {
+            "url": "https://assets.migrosone.com/sanalmarket-pweb-app/assets/logos/etbis/etbis.jpg",
+            "score": -28,
+            "reasons": [
+              "+gallery",
+              "-url:logo"
+            ]
+          }
+        ],
+        "image_best_score": 12,
+        "scraped_at": "2026-06-12T13:21:05.198669+00:00"
+      },
+      "name_source": "web_scraper:migros",
+      "brand_source": "web_scraper:migros",
+      "image_source": "web_scraper:migros",
+      "ingredients_source": "web_scraper:migros",
+      "nutrition_source": "web_scraper:migros",
+      "category_source": "web_scraper:migros",
+      "quality_score": 100,
+      "missing_fields": [
+        "barcode"
+      ],
+      "status": "pending"
+    }
+  ],
+  "skipped": [],
+  "errors": [],
+  "source_stats": {
+    "migros": {
+      "pages": 11,
+      "candidates": 10,
+      "errors": 0
+    }
+  }
+}

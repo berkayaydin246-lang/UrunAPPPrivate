@@ -1,0 +1,85 @@
+sources:
+- id: migros
+  enabled: true
+  type: category_pages
+  base_url: https://www.migros.com.tr
+  adapter: migros
+  category_urls:
+  - category: salam
+    url: https://www.migros.com.tr/salam-c-112d6
+  - category: sucuk
+    url: https://www.migros.com.tr/sucuk-c-404
+  - category: sosis
+    url: https://www.migros.com.tr/sosis-c-405
+  - category: jambon
+    url: https://www.migros.com.tr/jambon-c-112d7
+  - category: pastirma
+    url: https://www.migros.com.tr/pastirma-c-407
+  - category: fume_et
+    url: https://www.migros.com.tr/fume-et-c-112d8
+  - category: kavurma
+    url: https://www.migros.com.tr/kavurma-c-52b
+  - category: balik_deniz_urunleri
+    url: https://www.migros.com.tr/balik-deniz-urunleri-c-6a
+  - category: kirmizi_et
+    url: https://www.migros.com.tr/kirmizi-et-c-68
+  - category: beyaz_et
+    url: https://www.migros.com.tr/beyaz-et-c-69
+  - category: peynir
+    url: https://www.migros.com.tr/peynir-c-6d
+  - category: kahvaltiliklar
+    url: https://www.migros.com.tr/kahvaltiliklar-c-73
+  - category: sutlu_tatli_krema
+    url: https://www.migros.com.tr/sutlu-tatli-krema-c-72
+  - category: yogurt
+    url: https://www.migros.com.tr/yogurt-c-6e
+  - category: sut
+    url: https://www.migros.com.tr/sut-c-6c
+  - category: konserve
+    url: https://www.migros.com.tr/konserve-c-452
+  - category: sos
+    url: https://www.migros.com.tr/sos-c-113fc
+  - category: gazsiz_icecek
+    url: https://www.migros.com.tr/gazsiz-icecek-c-81
+  - category: gazli_icecek
+    url: https://www.migros.com.tr/gazli-icecek-c-80
+  - category: kuruyemis
+    url: https://www.migros.com.tr/kuruyemis-c-442
+  - category: biskuvi
+    url: https://www.migros.com.tr/biskuvi-c-43c
+  - category: cips
+    url: https://www.migros.com.tr/cips-c-440
+  - category: sekerleme
+    url: https://www.migros.com.tr/sekerleme-c-444
+  - category: kek
+    url: https://www.migros.com.tr/kek-c-43d
+  - category: cikolata
+    url: https://www.migros.com.tr/cikolata-c-439
+  - category: bar_kaplamalilar
+    url: https://www.migros.com.tr/bar-kaplamalilar-c-43b
+  - category: kraker
+    url: https://www.migros.com.tr/kraker-c-27ea
+  - category: misir_ve_pirinc_patlagi
+    url: https://www.migros.com.tr/misir-ve-pirinc-patlagi-c-1202e
+  - category: kuru_meyve
+    url: https://www.migros.com.tr/kuru-meyve-c-441
+  - category: sakiz
+    url: https://www.migros.com.tr/sakiz-c-443
+  adapter_config:
+    api_url_template: https://www.migros.com.tr/rest/search/screens/{category_slug}
+    max_pages: 25
+  product_link_selector: ''
+  product_link_patterns:
+  - -p-
+  exclude_link_patterns:
+  - /sepet
+  - /login
+  - /arama
+  - /kampanya
+  - /yardim
+  - .jpg
+  - .png
+  - .css
+  - .js
+  max_pages_per_category: 25
+  notes: Migros API-backed category discovery

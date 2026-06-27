@@ -1,3 +1,7 @@
+import java.io.FileInputStream
+import java.util.Properties
+import org.gradle.api.GradleException
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -5,9 +9,19 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+val releaseKeyPropertiesFile = rootProject.file("key.properties")
+val releaseKeyProperties = Properties()
+if (releaseKeyPropertiesFile.exists()) {
+    FileInputStream(releaseKeyPropertiesFile).use(releaseKeyProperties::load)
+}
+
+val isReleaseTaskRequested = gradle.startParameter.taskNames.any { taskName ->
+    taskName.contains("release", ignoreCase = true)
+}
+
 android {
-    namespace = "com.example.food_analyzer_app"
-    compileSdk = flutter.compileSdkVersion
+    namespace = "com.freshscan.app"
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -19,22 +33,54 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
+    signingConfigs {
+        create("release") {
+            if (releaseKeyPropertiesFile.exists()) {
+                val storeFileValue =
+                    releaseKeyProperties.getProperty("storeFile")?.trim()
+                val storePasswordValue =
+                    releaseKeyProperties.getProperty("storePassword")?.trim()
+                val keyAliasValue =
+                    releaseKeyProperties.getProperty("keyAlias")?.trim()
+                val keyPasswordValue =
+                    releaseKeyProperties.getProperty("keyPassword")?.trim()
+
+                if (
+                    storeFileValue.isNullOrEmpty() ||
+                    storePasswordValue.isNullOrEmpty() ||
+                    keyAliasValue.isNullOrEmpty() ||
+                    keyPasswordValue.isNullOrEmpty()
+                ) {
+                    throw GradleException(
+                        "android/key.properties is missing one or more required values. " +
+                            "Copy android/key.properties.example and fill in storeFile, storePassword, keyAlias, and keyPassword.",
+                    )
+                }
+
+                storeFile = rootProject.file(storeFileValue)
+                storePassword = storePasswordValue
+                keyAlias = keyAliasValue
+                keyPassword = keyPasswordValue
+            } else if (isReleaseTaskRequested) {
+                throw GradleException(
+                    "Missing android/key.properties. Copy android/key.properties.example to android/key.properties " +
+                        "and point it to your upload keystore before running a release build.",
+                )
+            }
+        }
+    }
+
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.food_analyzer_app"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        applicationId = "com.freshscan.app"
         minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 }

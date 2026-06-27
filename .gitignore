@@ -49,3 +49,21 @@ app.*.map.json
 .vscode/settings.json
 android/key.properties
 android/app/upload-keystore.jks
+
+# Signing secrets (belt-and-suspenders)
+*.jks
+*.keystore
+
+# Python virtual environments
+venv/
+.venv/
+**/venv/
+**/.venv/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+
+# tmp scratch directories
+tmp/

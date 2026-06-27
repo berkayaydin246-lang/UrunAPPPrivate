@@ -1,0 +1,2088 @@
+[
+  {
+    "name": "Su",
+    "normalized_name": "su",
+    "alternative_names": [
+      "Water"
+    ],
+    "aliases": null,
+    "common_names": [
+      "Su"
+    ],
+    "english_names": [
+      "Water"
+    ],
+    "e_code": null,
+    "category": null,
+    "additive_group": null,
+    "risk_level": "low",
+    "short_description": "Saf su, içecek ve gıdalarda temel bileşen",
+    "long_description": "Saf su, içecek ve gıdalarda temel bileşen\n\nDoğal ve güvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Şeker",
+    "normalized_name": "seker",
+    "alternative_names": [
+      "Sugar"
+    ],
+    "aliases": null,
+    "common_names": [
+      "Şeker"
+    ],
+    "english_names": [
+      "Sugar"
+    ],
+    "e_code": null,
+    "category": "tatlandırıcı",
+    "additive_group": "Tatlandırıcı",
+    "risk_level": "medium",
+    "short_description": "Şeker kamışı veya pancardan elde edilen doğal tatlandırıcı",
+    "long_description": "Şeker kamışı veya pancardan elde edilen doğal tatlandırıcı\n\nAşırı tüketim obezite ve diyabet riskini artırır",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Tuz",
+    "normalized_name": "tuz",
+    "alternative_names": [
+      "Salt"
+    ],
+    "aliases": null,
+    "common_names": [
+      "Tuz"
+    ],
+    "english_names": [
+      "Salt"
+    ],
+    "e_code": null,
+    "category": "lezzet_arttırıcı",
+    "additive_group": "Lezzet Arttırıcı",
+    "risk_level": "medium",
+    "short_description": "Sodyum klorür, doğal mineral",
+    "long_description": "Sodyum klorür, doğal mineral\n\nAşırı tüketim yüksek tansiyon yapabilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Un",
+    "normalized_name": "un",
+    "alternative_names": [
+      "Flour"
+    ],
+    "aliases": null,
+    "common_names": [
+      "Un"
+    ],
+    "english_names": [
+      "Flour"
+    ],
+    "e_code": null,
+    "category": null,
+    "additive_group": null,
+    "risk_level": "low",
+    "short_description": "Buğdaydan elde edilen öğütülmüş tahıl",
+    "long_description": "Buğdaydan elde edilen öğütülmüş tahıl\n\nÇölyak hastaları için uygun değil",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Süt",
+    "normalized_name": "sut",
+    "alternative_names": [
+      "Milk"
+    ],
+    "aliases": null,
+    "common_names": [
+      "Süt"
+    ],
+    "english_names": [
+      "Milk"
+    ],
+    "e_code": null,
+    "category": null,
+    "additive_group": null,
+    "risk_level": "low",
+    "short_description": "İnekten elde edilen doğal içecek",
+    "long_description": "İnekten elde edilen doğal içecek\n\nLaktoz intoleransı olanlarda sindirim sorunu yapabilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Yumurta",
+    "normalized_name": "yumurta",
+    "alternative_names": [
+      "Egg"
+    ],
+    "aliases": null,
+    "common_names": [
+      "Yumurta"
+    ],
+    "english_names": [
+      "Egg"
+    ],
+    "e_code": null,
+    "category": null,
+    "additive_group": null,
+    "risk_level": "low",
+    "short_description": "Tavuktan elde edilen protein kaynağı",
+    "long_description": "Tavuktan elde edilen protein kaynağı\n\nYumurta alerjisi olanlarda reaksiyon yapabilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Glikoz şurubu",
+    "normalized_name": "glikoz surubu",
+    "alternative_names": [
+      "Glucose syrup"
+    ],
+    "aliases": null,
+    "common_names": [
+      "Glikoz şurubu"
+    ],
+    "english_names": [
+      "Glucose syrup"
+    ],
+    "e_code": null,
+    "category": "tatlandırıcı",
+    "additive_group": "Tatlandırıcı",
+    "risk_level": "high",
+    "short_description": "Nişastadan elde edilen yüksek işlenmiş şeker",
+    "long_description": "Nişastadan elde edilen yüksek işlenmiş şeker\n\nMetabolik sorunlara yol açabilir, aşırı tüketimden kaçının",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Fruktoz şurubu",
+    "normalized_name": "fruktoz surubu",
+    "alternative_names": [
+      "Fructose syrup"
+    ],
+    "aliases": null,
+    "common_names": [
+      "Fruktoz şurubu"
+    ],
+    "english_names": [
+      "Fructose syrup"
+    ],
+    "e_code": null,
+    "category": "tatlandırıcı",
+    "additive_group": "Tatlandırıcı",
+    "risk_level": "high",
+    "short_description": "Mısır nişastasından elde edilen yüksek işlenmiş şeker",
+    "long_description": "Mısır nişastasından elde edilen yüksek işlenmiş şeker\n\nKaraciğer yağlanması riskini artırabilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Palmiye yağı",
+    "normalized_name": "palmiye yagi",
+    "alternative_names": [
+      "Palm oil"
+    ],
+    "aliases": null,
+    "common_names": [
+      "Palmiye yağı"
+    ],
+    "english_names": [
+      "Palm oil"
+    ],
+    "e_code": null,
+    "category": "yağ",
+    "additive_group": "Yağ",
+    "risk_level": "medium",
+    "short_description": "Palmiye ağacından elde edilen bitkisel yağ",
+    "long_description": "Palmiye ağacından elde edilen bitkisel yağ\n\nYüksek doymuş yağ içerir, kalp sağlığına olumsuz etki yapabilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Ayçiçek yağı",
+    "normalized_name": "aycicek yagi",
+    "alternative_names": [
+      "Sunflower oil"
+    ],
+    "aliases": null,
+    "common_names": [
+      "Ayçiçek yağı"
+    ],
+    "english_names": [
+      "Sunflower oil"
+    ],
+    "e_code": null,
+    "category": "yağ",
+    "additive_group": "Yağ",
+    "risk_level": "low",
+    "short_description": "Ayçiçeği tohumundan elde edilen bitkisel yağ",
+    "long_description": "Ayçiçeği tohumundan elde edilen bitkisel yağ\n\nDoğal ve güvenli, omega-6 içerir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Kurkumin",
+    "normalized_name": "kurkumin",
+    "alternative_names": [
+      "Curcumin"
+    ],
+    "aliases": [
+      "E100",
+      "e100"
+    ],
+    "common_names": [
+      "Kurkumin"
+    ],
+    "english_names": [
+      "Curcumin"
+    ],
+    "e_code": "E100",
+    "category": "renklendirici",
+    "additive_group": "Renklendirici",
+    "risk_level": "low",
+    "short_description": "Zerdeçaldan elde edilen doğal sarı renklendirici",
+    "long_description": "Zerdeçaldan elde edilen doğal sarı renklendirici\n\nDoğal ve güvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Riboflavin",
+    "normalized_name": "riboflavin",
+    "alternative_names": null,
+    "aliases": [
+      "E101",
+      "e101"
+    ],
+    "common_names": [
+      "Riboflavin"
+    ],
+    "english_names": null,
+    "e_code": "E101",
+    "category": "renklendirici",
+    "additive_group": "Renklendirici",
+    "risk_level": "low",
+    "short_description": "B2 vitamini, sarı renklendirici",
+    "long_description": "B2 vitamini, sarı renklendirici\n\nVitamin olarak da kullanılır, güvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Tartrazin",
+    "normalized_name": "tartrazin",
+    "alternative_names": [
+      "Tartrazine"
+    ],
+    "aliases": [
+      "E102",
+      "e102"
+    ],
+    "common_names": [
+      "Tartrazin"
+    ],
+    "english_names": [
+      "Tartrazine"
+    ],
+    "e_code": "E102",
+    "category": "renklendirici",
+    "additive_group": "Renklendirici",
+    "risk_level": "high",
+    "short_description": "Sentetik sarı renklendirici",
+    "long_description": "Sentetik sarı renklendirici\n\nÇocuklarda hiperaktivite ve alerjik reaksiyonlara neden olabilir",
+    "child_warning": "Çocuklar için önerilmez",
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Kinolin sarısı",
+    "normalized_name": "kinolin sarisi",
+    "alternative_names": [
+      "Quinoline yellow"
+    ],
+    "aliases": [
+      "E104",
+      "e104"
+    ],
+    "common_names": [
+      "Kinolin sarısı"
+    ],
+    "english_names": [
+      "Quinoline yellow"
+    ],
+    "e_code": "E104",
+    "category": "renklendirici",
+    "additive_group": "Renklendirici",
+    "risk_level": "high",
+    "short_description": "Sentetik sarı renklendirici",
+    "long_description": "Sentetik sarı renklendirici\n\nÇocuklarda dikkat eksikliğine neden olabilir, bazı ülkelerde yasaklı",
+    "child_warning": "Çocuklar için önerilmez",
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Sunset sarısı",
+    "normalized_name": "sunset sarisi",
+    "alternative_names": [
+      "Sunset yellow"
+    ],
+    "aliases": [
+      "E110",
+      "e110"
+    ],
+    "common_names": [
+      "Sunset sarısı"
+    ],
+    "english_names": [
+      "Sunset yellow"
+    ],
+    "e_code": "E110",
+    "category": "renklendirici",
+    "additive_group": "Renklendirici",
+    "risk_level": "high",
+    "short_description": "Sentetik turuncu renklendirici",
+    "long_description": "Sentetik turuncu renklendirici\n\nAlerjik reaksiyonlar ve hiperaktiviteye neden olabilir",
+    "child_warning": "Çocuklar için önerilmez",
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Karmin",
+    "normalized_name": "karmin",
+    "alternative_names": [
+      "Carmine"
+    ],
+    "aliases": [
+      "E120",
+      "e120"
+    ],
+    "common_names": [
+      "Karmin"
+    ],
+    "english_names": [
+      "Carmine"
+    ],
+    "e_code": "E120",
+    "category": "renklendirici",
+    "additive_group": "Renklendirici",
+    "risk_level": "medium",
+    "short_description": "Koşinilden elde edilen kırmızı renklendirici",
+    "long_description": "Koşinilden elde edilen kırmızı renklendirici\n\nBöceklerden elde edilir, vejetaryenler için uygun değil",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Azorubin",
+    "normalized_name": "azorubin",
+    "alternative_names": [
+      "Azorubine"
+    ],
+    "aliases": [
+      "E122",
+      "e122"
+    ],
+    "common_names": [
+      "Azorubin"
+    ],
+    "english_names": [
+      "Azorubine"
+    ],
+    "e_code": "E122",
+    "category": "renklendirici",
+    "additive_group": "Renklendirici",
+    "risk_level": "high",
+    "short_description": "Sentetik kırmızı renklendirici",
+    "long_description": "Sentetik kırmızı renklendirici\n\nAlerjik reaksiyonlara neden olabilir, çocuklarda hiperaktivite riski",
+    "child_warning": "Çocuklar için önerilmez",
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Ponceau 4R",
+    "normalized_name": "ponceau 4r",
+    "alternative_names": null,
+    "aliases": [
+      "E124",
+      "e124"
+    ],
+    "common_names": [
+      "Ponceau 4R"
+    ],
+    "english_names": null,
+    "e_code": "E124",
+    "category": "renklendirici",
+    "additive_group": "Renklendirici",
+    "risk_level": "high",
+    "short_description": "Sentetik kırmızı renklendirici",
+    "long_description": "Sentetik kırmızı renklendirici\n\nABD'de yasaklı, alerjik reaksiyonlara neden olabilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Allura kırmızısı",
+    "normalized_name": "allura kirmizisi",
+    "alternative_names": [
+      "Allura red"
+    ],
+    "aliases": [
+      "E129",
+      "e129"
+    ],
+    "common_names": [
+      "Allura kırmızısı"
+    ],
+    "english_names": [
+      "Allura red"
+    ],
+    "e_code": "E129",
+    "category": "renklendirici",
+    "additive_group": "Renklendirici",
+    "risk_level": "high",
+    "short_description": "Sentetik kırmızı renklendirici",
+    "long_description": "Sentetik kırmızı renklendirici\n\nÇocuklarda hiperaktivite ve dikkat eksikliği yapabilir",
+    "child_warning": "Çocuklar için önerilmez",
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Patent mavisi",
+    "normalized_name": "patent mavisi",
+    "alternative_names": [
+      "Patent blue"
+    ],
+    "aliases": [
+      "E131",
+      "e131"
+    ],
+    "common_names": [
+      "Patent mavisi"
+    ],
+    "english_names": [
+      "Patent blue"
+    ],
+    "e_code": "E131",
+    "category": "renklendirici",
+    "additive_group": "Renklendirici",
+    "risk_level": "medium",
+    "short_description": "Sentetik mavi renklendirici",
+    "long_description": "Sentetik mavi renklendirici\n\nABD ve Avustralya'da yasaklı",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "İndigotin",
+    "normalized_name": "indigotin",
+    "alternative_names": [
+      "Indigotine"
+    ],
+    "aliases": [
+      "E132",
+      "e132"
+    ],
+    "common_names": [
+      "İndigotin"
+    ],
+    "english_names": [
+      "Indigotine"
+    ],
+    "e_code": "E132",
+    "category": "renklendirici",
+    "additive_group": "Renklendirici",
+    "risk_level": "medium",
+    "short_description": "Sentetik mavi renklendirici",
+    "long_description": "Sentetik mavi renklendirici\n\nBazı kişilerde mide bulantısına neden olabilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Parlak mavi",
+    "normalized_name": "parlak mavi",
+    "alternative_names": [
+      "Brilliant blue"
+    ],
+    "aliases": [
+      "E133",
+      "e133"
+    ],
+    "common_names": [
+      "Parlak mavi"
+    ],
+    "english_names": [
+      "Brilliant blue"
+    ],
+    "e_code": "E133",
+    "category": "renklendirici",
+    "additive_group": "Renklendirici",
+    "risk_level": "medium",
+    "short_description": "Sentetik mavi renklendirici",
+    "long_description": "Sentetik mavi renklendirici\n\nAşırı miktarda kullanıldığında alerjik reaksiyonlara neden olabilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Karamel (sade)",
+    "normalized_name": "karamel sade",
+    "alternative_names": [
+      "Caramel (plain)"
+    ],
+    "aliases": [
+      "E150A",
+      "e150a"
+    ],
+    "common_names": [
+      "Karamel (sade)"
+    ],
+    "english_names": [
+      "Caramel (plain)"
+    ],
+    "e_code": "E150A",
+    "category": "renklendirici",
+    "additive_group": "Renklendirici",
+    "risk_level": "low",
+    "short_description": "Şekerden elde edilen doğal kahverengi renklendirici",
+    "long_description": "Şekerden elde edilen doğal kahverengi renklendirici\n\nDoğal ve güvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Amonyaklı karamel",
+    "normalized_name": "amonyakli karamel",
+    "alternative_names": [
+      "Ammonia caramel"
+    ],
+    "aliases": [
+      "E150C",
+      "e150c"
+    ],
+    "common_names": [
+      "Amonyaklı karamel"
+    ],
+    "english_names": [
+      "Ammonia caramel"
+    ],
+    "e_code": "E150C",
+    "category": "renklendirici",
+    "additive_group": "Renklendirici",
+    "risk_level": "medium",
+    "short_description": "Amonyak ile işlenmiş karamel",
+    "long_description": "Amonyak ile işlenmiş karamel\n\nBazı çalışmalarda kanser riski tartışılıyor",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Karoten",
+    "normalized_name": "karoten",
+    "alternative_names": [
+      "Carotene"
+    ],
+    "aliases": [
+      "E160A",
+      "e160a"
+    ],
+    "common_names": [
+      "Karoten"
+    ],
+    "english_names": [
+      "Carotene"
+    ],
+    "e_code": "E160A",
+    "category": "renklendirici",
+    "additive_group": "Renklendirici",
+    "risk_level": "low",
+    "short_description": "Havuçtan elde edilen doğal turuncu renklendirici",
+    "long_description": "Havuçtan elde edilen doğal turuncu renklendirici\n\nA vitamini kaynağı, güvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Paprika özü",
+    "normalized_name": "paprika ozu",
+    "alternative_names": [
+      "Paprika extract"
+    ],
+    "aliases": [
+      "E160C",
+      "e160c"
+    ],
+    "common_names": [
+      "Paprika özü"
+    ],
+    "english_names": [
+      "Paprika extract"
+    ],
+    "e_code": "E160C",
+    "category": "renklendirici",
+    "additive_group": "Renklendirici",
+    "risk_level": "low",
+    "short_description": "Kırmızı biberden elde edilen doğal renklendirici",
+    "long_description": "Kırmızı biberden elde edilen doğal renklendirici\n\nDoğal ve güvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Pancar kırmızısı",
+    "normalized_name": "pancar kirmizisi",
+    "alternative_names": [
+      "Beetroot red"
+    ],
+    "aliases": [
+      "E162",
+      "e162"
+    ],
+    "common_names": [
+      "Pancar kırmızısı"
+    ],
+    "english_names": [
+      "Beetroot red"
+    ],
+    "e_code": "E162",
+    "category": "renklendirici",
+    "additive_group": "Renklendirici",
+    "risk_level": "low",
+    "short_description": "Pancardan elde edilen doğal kırmızı renklendirici",
+    "long_description": "Pancardan elde edilen doğal kırmızı renklendirici\n\nDoğal ve güvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Antosiyanin",
+    "normalized_name": "antosiyanin",
+    "alternative_names": [
+      "Anthocyanin"
+    ],
+    "aliases": [
+      "E163",
+      "e163"
+    ],
+    "common_names": [
+      "Antosiyanin"
+    ],
+    "english_names": [
+      "Anthocyanin"
+    ],
+    "e_code": "E163",
+    "category": "renklendirici",
+    "additive_group": "Renklendirici",
+    "risk_level": "low",
+    "short_description": "Meyvelerden elde edilen doğal mor/kırmızı renklendirici",
+    "long_description": "Meyvelerden elde edilen doğal mor/kırmızı renklendirici\n\nAntioksidan özelliği var, güvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Kalsiyum karbonat",
+    "normalized_name": "kalsiyum karbonat",
+    "alternative_names": [
+      "Calcium carbonate"
+    ],
+    "aliases": [
+      "E170",
+      "e170"
+    ],
+    "common_names": [
+      "Kalsiyum karbonat"
+    ],
+    "english_names": [
+      "Calcium carbonate"
+    ],
+    "e_code": "E170",
+    "category": "renklendirici",
+    "additive_group": "Renklendirici",
+    "risk_level": "low",
+    "short_description": "Beyaz renklendirici ve kalsiyum kaynağı",
+    "long_description": "Beyaz renklendirici ve kalsiyum kaynağı\n\nDoğal mineral, güvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Sorbik asit",
+    "normalized_name": "sorbik asit",
+    "alternative_names": [
+      "Sorbic acid"
+    ],
+    "aliases": [
+      "E200",
+      "e200"
+    ],
+    "common_names": [
+      "Sorbik asit"
+    ],
+    "english_names": [
+      "Sorbic acid"
+    ],
+    "e_code": "E200",
+    "category": "koruyucu",
+    "additive_group": "Koruyucu",
+    "risk_level": "low",
+    "short_description": "Küf ve maya oluşumunu önleyen koruyucu",
+    "long_description": "Küf ve maya oluşumunu önleyen koruyucu\n\nGenel olarak güvenli kabul edilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Potasyum sorbat",
+    "normalized_name": "potasyum sorbat",
+    "alternative_names": [
+      "Potassium sorbate"
+    ],
+    "aliases": [
+      "E202",
+      "e202"
+    ],
+    "common_names": [
+      "Potasyum sorbat"
+    ],
+    "english_names": [
+      "Potassium sorbate"
+    ],
+    "e_code": "E202",
+    "category": "koruyucu",
+    "additive_group": "Koruyucu",
+    "risk_level": "low",
+    "short_description": "Yaygın kullanılan gıda koruyucusu",
+    "long_description": "Yaygın kullanılan gıda koruyucusu\n\nGüvenli kabul edilir, alerjik reaksiyon nadir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Benzoik asit",
+    "normalized_name": "benzoik asit",
+    "alternative_names": [
+      "Benzoic acid"
+    ],
+    "aliases": [
+      "E210",
+      "e210"
+    ],
+    "common_names": [
+      "Benzoik asit"
+    ],
+    "english_names": [
+      "Benzoic acid"
+    ],
+    "e_code": "E210",
+    "category": "koruyucu",
+    "additive_group": "Koruyucu",
+    "risk_level": "medium",
+    "short_description": "Gıda koruyucusu, özellikle asidik ürünlerde",
+    "long_description": "Gıda koruyucusu, özellikle asidik ürünlerde\n\nYüksek dozlarda alerjik reaksiyonlara neden olabilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Sodyum benzoat",
+    "normalized_name": "sodyum benzoat",
+    "alternative_names": [
+      "Sodium benzoate"
+    ],
+    "aliases": [
+      "E211",
+      "e211"
+    ],
+    "common_names": [
+      "Sodyum benzoat"
+    ],
+    "english_names": [
+      "Sodium benzoate"
+    ],
+    "e_code": "E211",
+    "category": "koruyucu",
+    "additive_group": "Koruyucu",
+    "risk_level": "medium",
+    "short_description": "İçeceklerde yaygın kullanılan koruyucu",
+    "long_description": "İçeceklerde yaygın kullanılan koruyucu\n\nC vitamini ile birleştiğinde benzene oluşturabilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Kükürt dioksit",
+    "normalized_name": "kukurt dioksit",
+    "alternative_names": [
+      "Sulfur dioxide"
+    ],
+    "aliases": [
+      "E220",
+      "e220"
+    ],
+    "common_names": [
+      "Kükürt dioksit"
+    ],
+    "english_names": [
+      "Sulfur dioxide"
+    ],
+    "e_code": "E220",
+    "category": "koruyucu",
+    "additive_group": "Koruyucu",
+    "risk_level": "high",
+    "short_description": "Kuru meyve ve şaraplarda kullanılan koruyucu",
+    "long_description": "Kuru meyve ve şaraplarda kullanılan koruyucu\n\nAstım hastalarında sorun yaratabilir, alerjik reaksiyonlara neden olur",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Sodyum sülfit",
+    "normalized_name": "sodyum sulfit",
+    "alternative_names": [
+      "Sodium sulfite"
+    ],
+    "aliases": [
+      "E221",
+      "e221"
+    ],
+    "common_names": [
+      "Sodyum sülfit"
+    ],
+    "english_names": [
+      "Sodium sulfite"
+    ],
+    "e_code": "E221",
+    "category": "koruyucu",
+    "additive_group": "Koruyucu",
+    "risk_level": "medium",
+    "short_description": "Antioksidan ve koruyucu",
+    "long_description": "Antioksidan ve koruyucu\n\nSülfit alerjisi olanlarda reaksiyon yapabilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Potasyum nitrit",
+    "normalized_name": "potasyum nitrit",
+    "alternative_names": [
+      "Potassium nitrite"
+    ],
+    "aliases": [
+      "E249",
+      "e249"
+    ],
+    "common_names": [
+      "Potasyum nitrit"
+    ],
+    "english_names": [
+      "Potassium nitrite"
+    ],
+    "e_code": "E249",
+    "category": "koruyucu",
+    "additive_group": "Koruyucu",
+    "risk_level": "high",
+    "short_description": "Et ürünlerinde botulismus önleyici",
+    "long_description": "Et ürünlerinde botulismus önleyici\n\nKanser riskini artırabilir, çocuklar için önerilmez",
+    "child_warning": "Çocuklar için önerilmez",
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Sodyum nitrit",
+    "normalized_name": "sodyum nitrit",
+    "alternative_names": [
+      "Sodium nitrite"
+    ],
+    "aliases": [
+      "E250",
+      "e250"
+    ],
+    "common_names": [
+      "Sodyum nitrit"
+    ],
+    "english_names": [
+      "Sodium nitrite"
+    ],
+    "e_code": "E250",
+    "category": "koruyucu",
+    "additive_group": "Koruyucu",
+    "risk_level": "high",
+    "short_description": "Şarküteri ürünlerinde renk koruyucu ve koruyucu",
+    "long_description": "Şarküteri ürünlerinde renk koruyucu ve koruyucu\n\nNitrozamin oluşumuna neden olabilir, kanser riski",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Sodyum nitrat",
+    "normalized_name": "sodyum nitrat",
+    "alternative_names": [
+      "Sodium nitrate"
+    ],
+    "aliases": [
+      "E251",
+      "e251"
+    ],
+    "common_names": [
+      "Sodyum nitrat"
+    ],
+    "english_names": [
+      "Sodium nitrate"
+    ],
+    "e_code": "E251",
+    "category": "koruyucu",
+    "additive_group": "Koruyucu",
+    "risk_level": "high",
+    "short_description": "Et ürünlerinde koruyucu",
+    "long_description": "Et ürünlerinde koruyucu\n\nVücutta nitrite dönüşür, kanser riski",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Potasyum nitrat",
+    "normalized_name": "potasyum nitrat",
+    "alternative_names": [
+      "Potassium nitrate"
+    ],
+    "aliases": [
+      "E252",
+      "e252"
+    ],
+    "common_names": [
+      "Potasyum nitrat"
+    ],
+    "english_names": [
+      "Potassium nitrate"
+    ],
+    "e_code": "E252",
+    "category": "koruyucu",
+    "additive_group": "Koruyucu",
+    "risk_level": "high",
+    "short_description": "Peynir ve et ürünlerinde koruyucu",
+    "long_description": "Peynir ve et ürünlerinde koruyucu\n\nNitrite dönüşebilir, sık tüketim önerilmez",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Asetik asit",
+    "normalized_name": "asetik asit",
+    "alternative_names": [
+      "Acetic acid"
+    ],
+    "aliases": [
+      "E260",
+      "e260"
+    ],
+    "common_names": [
+      "Asetik asit"
+    ],
+    "english_names": [
+      "Acetic acid"
+    ],
+    "e_code": "E260",
+    "category": "asitlik_düzenleyici",
+    "additive_group": "Asitlik Düzenleyici",
+    "risk_level": "low",
+    "short_description": "Sirke, doğal asit",
+    "long_description": "Sirke, doğal asit\n\nDoğal ve güvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Laktik asit",
+    "normalized_name": "laktik asit",
+    "alternative_names": [
+      "Lactic acid"
+    ],
+    "aliases": [
+      "E270",
+      "e270"
+    ],
+    "common_names": [
+      "Laktik asit"
+    ],
+    "english_names": [
+      "Lactic acid"
+    ],
+    "e_code": "E270",
+    "category": "asitlik_düzenleyici",
+    "additive_group": "Asitlik Düzenleyici",
+    "risk_level": "low",
+    "short_description": "Süt fermantasyonundan elde edilen asit",
+    "long_description": "Süt fermantasyonundan elde edilen asit\n\nDoğal ve güvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Askorbik asit",
+    "normalized_name": "askorbik asit",
+    "alternative_names": [
+      "Ascorbic acid"
+    ],
+    "aliases": [
+      "E300",
+      "e300"
+    ],
+    "common_names": [
+      "Askorbik asit"
+    ],
+    "english_names": [
+      "Ascorbic acid"
+    ],
+    "e_code": "E300",
+    "category": "antioksidan",
+    "additive_group": "Antioksidan",
+    "risk_level": "low",
+    "short_description": "C vitamini, doğal antioksidan",
+    "long_description": "C vitamini, doğal antioksidan\n\nVitamin kaynağı, güvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Sodyum askorbat",
+    "normalized_name": "sodyum askorbat",
+    "alternative_names": [
+      "Sodium ascorbate"
+    ],
+    "aliases": [
+      "E301",
+      "e301"
+    ],
+    "common_names": [
+      "Sodyum askorbat"
+    ],
+    "english_names": [
+      "Sodium ascorbate"
+    ],
+    "e_code": "E301",
+    "category": "antioksidan",
+    "additive_group": "Antioksidan",
+    "risk_level": "low",
+    "short_description": "C vitamininin sodyum tuzu",
+    "long_description": "C vitamininin sodyum tuzu\n\nGüvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Askorbil palmitat",
+    "normalized_name": "askorbil palmitat",
+    "alternative_names": [
+      "Ascorbyl palmitate"
+    ],
+    "aliases": [
+      "E304",
+      "e304"
+    ],
+    "common_names": [
+      "Askorbil palmitat"
+    ],
+    "english_names": [
+      "Ascorbyl palmitate"
+    ],
+    "e_code": "E304",
+    "category": "antioksidan",
+    "additive_group": "Antioksidan",
+    "risk_level": "low",
+    "short_description": "Yağda çözünen C vitamini türevi",
+    "long_description": "Yağda çözünen C vitamini türevi\n\nGüvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Tokoferol",
+    "normalized_name": "tokoferol",
+    "alternative_names": [
+      "Tocopherol"
+    ],
+    "aliases": [
+      "E306",
+      "e306"
+    ],
+    "common_names": [
+      "Tokoferol"
+    ],
+    "english_names": [
+      "Tocopherol"
+    ],
+    "e_code": "E306",
+    "category": "antioksidan",
+    "additive_group": "Antioksidan",
+    "risk_level": "low",
+    "short_description": "E vitamini, doğal antioksidan",
+    "long_description": "E vitamini, doğal antioksidan\n\nVitamin kaynağı, güvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "BHA",
+    "normalized_name": "bha",
+    "alternative_names": [
+      "Butylated hydroxyanisole"
+    ],
+    "aliases": [
+      "E320",
+      "e320"
+    ],
+    "common_names": [
+      "BHA"
+    ],
+    "english_names": [
+      "Butylated hydroxyanisole"
+    ],
+    "e_code": "E320",
+    "category": "antioksidan",
+    "additive_group": "Antioksidan",
+    "risk_level": "high",
+    "short_description": "Sentetik antioksidan",
+    "long_description": "Sentetik antioksidan\n\nKanser riskini artırabileceği tartışılıyor, bazı ülkelerde yasaklı",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "BHT",
+    "normalized_name": "bht",
+    "alternative_names": [
+      "Butylated hydroxytoluene"
+    ],
+    "aliases": [
+      "E321",
+      "e321"
+    ],
+    "common_names": [
+      "BHT"
+    ],
+    "english_names": [
+      "Butylated hydroxytoluene"
+    ],
+    "e_code": "E321",
+    "category": "antioksidan",
+    "additive_group": "Antioksidan",
+    "risk_level": "high",
+    "short_description": "Sentetik antioksidan",
+    "long_description": "Sentetik antioksidan\n\nHormonal dengeyi bozabilir, tartışmalı",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Sitrik asit",
+    "normalized_name": "sitrik asit",
+    "alternative_names": [
+      "Citric acid"
+    ],
+    "aliases": [
+      "E330",
+      "e330"
+    ],
+    "common_names": [
+      "Sitrik asit"
+    ],
+    "english_names": [
+      "Citric acid"
+    ],
+    "e_code": "E330",
+    "category": "asitlik_düzenleyici",
+    "additive_group": "Asitlik Düzenleyici",
+    "risk_level": "low",
+    "short_description": "Narenciye meyvelerinden elde edilen doğal asit",
+    "long_description": "Narenciye meyvelerinden elde edilen doğal asit\n\nDoğal ve güvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Sodyum sitrat",
+    "normalized_name": "sodyum sitrat",
+    "alternative_names": [
+      "Sodium citrate"
+    ],
+    "aliases": [
+      "E331",
+      "e331"
+    ],
+    "common_names": [
+      "Sodyum sitrat"
+    ],
+    "english_names": [
+      "Sodium citrate"
+    ],
+    "e_code": "E331",
+    "category": "asitlik_düzenleyici",
+    "additive_group": "Asitlik Düzenleyici",
+    "risk_level": "low",
+    "short_description": "Sitrik asitin sodyum tuzu",
+    "long_description": "Sitrik asitin sodyum tuzu\n\nGüvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Fosforik asit",
+    "normalized_name": "fosforik asit",
+    "alternative_names": [
+      "Phosphoric acid"
+    ],
+    "aliases": [
+      "E338",
+      "e338"
+    ],
+    "common_names": [
+      "Fosforik asit"
+    ],
+    "english_names": [
+      "Phosphoric acid"
+    ],
+    "e_code": "E338",
+    "category": "asitlik_düzenleyici",
+    "additive_group": "Asitlik Düzenleyici",
+    "risk_level": "medium",
+    "short_description": "Kolalı içeceklerde kullanılan asit",
+    "long_description": "Kolalı içeceklerde kullanılan asit\n\nAşırı tüketim kemik erimesine neden olabilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Sodyum fosfat",
+    "normalized_name": "sodyum fosfat",
+    "alternative_names": [
+      "Sodium phosphate"
+    ],
+    "aliases": [
+      "E339",
+      "e339"
+    ],
+    "common_names": [
+      "Sodyum fosfat"
+    ],
+    "english_names": [
+      "Sodium phosphate"
+    ],
+    "e_code": "E339",
+    "category": "emülgatör",
+    "additive_group": "Emülgatör",
+    "risk_level": "medium",
+    "short_description": "Işlenmiş gıdalarda kıvam sağlayıcı",
+    "long_description": "Işlenmiş gıdalarda kıvam sağlayıcı\n\nYüksek dozda böbrek sorunlarına neden olabilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Kalsiyum EDTA",
+    "normalized_name": "kalsiyum edta",
+    "alternative_names": [
+      "Calcium EDTA"
+    ],
+    "aliases": [
+      "E385",
+      "e385"
+    ],
+    "common_names": [
+      "Kalsiyum EDTA"
+    ],
+    "english_names": [
+      "Calcium EDTA"
+    ],
+    "e_code": "E385",
+    "category": "koruyucu",
+    "additive_group": "Koruyucu",
+    "risk_level": "medium",
+    "short_description": "Metal şelatörü, raf ömrü uzatıcı",
+    "long_description": "Metal şelatörü, raf ömrü uzatıcı\n\nYüksek dozda mineral emilimini engelleyebilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Karragenan",
+    "normalized_name": "karragenan",
+    "alternative_names": [
+      "Carrageenan"
+    ],
+    "aliases": [
+      "E407",
+      "e407"
+    ],
+    "common_names": [
+      "Karragenan"
+    ],
+    "english_names": [
+      "Carrageenan"
+    ],
+    "e_code": "E407",
+    "category": "kıvam_arttırıcı",
+    "additive_group": "Kıvam Arttırıcı",
+    "risk_level": "medium",
+    "short_description": "Deniz yosunundan elde edilen kıvam arttırıcı",
+    "long_description": "Deniz yosunundan elde edilen kıvam arttırıcı\n\nBağırsak iltihabına neden olabileceği tartışılıyor",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Guar gam",
+    "normalized_name": "guar gam",
+    "alternative_names": [
+      "Guar gum"
+    ],
+    "aliases": [
+      "E412",
+      "e412"
+    ],
+    "common_names": [
+      "Guar gam"
+    ],
+    "english_names": [
+      "Guar gum"
+    ],
+    "e_code": "E412",
+    "category": "kıvam_arttırıcı",
+    "additive_group": "Kıvam Arttırıcı",
+    "risk_level": "low",
+    "short_description": "Guar fasulyesinden elde edilen doğal kıvam arttırıcı",
+    "long_description": "Guar fasulyesinden elde edilen doğal kıvam arttırıcı\n\nGenel olarak güvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Arap zamkı",
+    "normalized_name": "arap zamki",
+    "alternative_names": [
+      "Gum arabic"
+    ],
+    "aliases": [
+      "E414",
+      "e414"
+    ],
+    "common_names": [
+      "Arap zamkı"
+    ],
+    "english_names": [
+      "Gum arabic"
+    ],
+    "e_code": "E414",
+    "category": "kıvam_arttırıcı",
+    "additive_group": "Kıvam Arttırıcı",
+    "risk_level": "low",
+    "short_description": "Akasya ağacından elde edilen doğal zamk",
+    "long_description": "Akasya ağacından elde edilen doğal zamk\n\nDoğal ve güvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Ksantan gam",
+    "normalized_name": "ksantan gam",
+    "alternative_names": [
+      "Xanthan gum"
+    ],
+    "aliases": [
+      "E415",
+      "e415"
+    ],
+    "common_names": [
+      "Ksantan gam"
+    ],
+    "english_names": [
+      "Xanthan gum"
+    ],
+    "e_code": "E415",
+    "category": "kıvam_arttırıcı",
+    "additive_group": "Kıvam Arttırıcı",
+    "risk_level": "low",
+    "short_description": "Fermantasyonla elde edilen kıvam arttırıcı",
+    "long_description": "Fermantasyonla elde edilen kıvam arttırıcı\n\nGüvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Sorbitol",
+    "normalized_name": "sorbitol",
+    "alternative_names": null,
+    "aliases": [
+      "E420",
+      "e420"
+    ],
+    "common_names": [
+      "Sorbitol"
+    ],
+    "english_names": null,
+    "e_code": "E420",
+    "category": "tatlandırıcı",
+    "additive_group": "Tatlandırıcı",
+    "risk_level": "medium",
+    "short_description": "Şekersiz sakızlarda kullanılan şeker alkolü",
+    "long_description": "Şekersiz sakızlarda kullanılan şeker alkolü\n\nAşırı tüketim ishale neden olabilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Mannitol",
+    "normalized_name": "mannitol",
+    "alternative_names": null,
+    "aliases": [
+      "E421",
+      "e421"
+    ],
+    "common_names": [
+      "Mannitol"
+    ],
+    "english_names": null,
+    "e_code": "E421",
+    "category": "tatlandırıcı",
+    "additive_group": "Tatlandırıcı",
+    "risk_level": "medium",
+    "short_description": "Şeker alkolü, düşük kalorili tatlandırıcı",
+    "long_description": "Şeker alkolü, düşük kalorili tatlandırıcı\n\nAşırı tüketim mide rahatsızlığına neden olabilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Gliserol",
+    "normalized_name": "gliserol",
+    "alternative_names": [
+      "Glycerol"
+    ],
+    "aliases": [
+      "E422",
+      "e422"
+    ],
+    "common_names": [
+      "Gliserol"
+    ],
+    "english_names": [
+      "Glycerol"
+    ],
+    "e_code": "E422",
+    "category": "nem_tutucu",
+    "additive_group": "Nem Tutucu",
+    "risk_level": "low",
+    "short_description": "Nem tutucu ve tatlandırıcı",
+    "long_description": "Nem tutucu ve tatlandırıcı\n\nGüvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Pektin",
+    "normalized_name": "pektin",
+    "alternative_names": [
+      "Pectin"
+    ],
+    "aliases": [
+      "E440",
+      "e440"
+    ],
+    "common_names": [
+      "Pektin"
+    ],
+    "english_names": [
+      "Pectin"
+    ],
+    "e_code": "E440",
+    "category": "kıvam_arttırıcı",
+    "additive_group": "Kıvam Arttırıcı",
+    "risk_level": "low",
+    "short_description": "Meyvelerden elde edilen doğal kıvam arttırıcı",
+    "long_description": "Meyvelerden elde edilen doğal kıvam arttırıcı\n\nDoğal ve güvenli, kolesterolü düşürmeye yardımcı olabilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Difosfat",
+    "normalized_name": "difosfat",
+    "alternative_names": [
+      "Diphosphate"
+    ],
+    "aliases": [
+      "E450",
+      "e450"
+    ],
+    "common_names": [
+      "Difosfat"
+    ],
+    "english_names": [
+      "Diphosphate"
+    ],
+    "e_code": "E450",
+    "category": "emülgatör",
+    "additive_group": "Emülgatör",
+    "risk_level": "medium",
+    "short_description": "Işlenmiş et ürünlerinde kıvam sağlayıcı",
+    "long_description": "Işlenmiş et ürünlerinde kıvam sağlayıcı\n\nAşırı tüketim kalsiyum emilimini engelleyebilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Trifosfat",
+    "normalized_name": "trifosfat",
+    "alternative_names": [
+      "Triphosphate"
+    ],
+    "aliases": [
+      "E451",
+      "e451"
+    ],
+    "common_names": [
+      "Trifosfat"
+    ],
+    "english_names": [
+      "Triphosphate"
+    ],
+    "e_code": "E451",
+    "category": "emülgatör",
+    "additive_group": "Emülgatör",
+    "risk_level": "medium",
+    "short_description": "Su tutma ve kıvam sağlayıcı",
+    "long_description": "Su tutma ve kıvam sağlayıcı\n\nYüksek dozda böbrek problemlerine neden olabilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Polifosfat",
+    "normalized_name": "polifosfat",
+    "alternative_names": [
+      "Polyphosphate"
+    ],
+    "aliases": [
+      "E452",
+      "e452"
+    ],
+    "common_names": [
+      "Polifosfat"
+    ],
+    "english_names": [
+      "Polyphosphate"
+    ],
+    "e_code": "E452",
+    "category": "emülgatör",
+    "additive_group": "Emülgatör",
+    "risk_level": "medium",
+    "short_description": "Işlenmiş gıdalarda stabilizatör",
+    "long_description": "Işlenmiş gıdalarda stabilizatör\n\nAşırı tüketim kemik sağlığını olumsuz etkileyebilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Mono ve digliseritler",
+    "normalized_name": "mono ve digliseritler",
+    "alternative_names": [
+      "Mono and diglycerides"
+    ],
+    "aliases": [
+      "E471",
+      "e471"
+    ],
+    "common_names": [
+      "Mono ve digliseritler"
+    ],
+    "english_names": [
+      "Mono and diglycerides"
+    ],
+    "e_code": "E471",
+    "category": "emülgatör",
+    "additive_group": "Emülgatör",
+    "risk_level": "low",
+    "short_description": "Yaygın kullanılan emülgatör",
+    "long_description": "Yaygın kullanılan emülgatör\n\nGüvenli kabul edilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Yağ asidi esterleri",
+    "normalized_name": "yag asidi esterleri",
+    "alternative_names": [
+      "Fatty acid esters"
+    ],
+    "aliases": [
+      "E472E",
+      "e472e"
+    ],
+    "common_names": [
+      "Yağ asidi esterleri"
+    ],
+    "english_names": [
+      "Fatty acid esters"
+    ],
+    "e_code": "E472E",
+    "category": "emülgatör",
+    "additive_group": "Emülgatör",
+    "risk_level": "low",
+    "short_description": "Hamur işlerinde yumuşatıcı",
+    "long_description": "Hamur işlerinde yumuşatıcı\n\nGüvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Sodyum karbonat",
+    "normalized_name": "sodyum karbonat",
+    "alternative_names": [
+      "Sodium carbonate"
+    ],
+    "aliases": [
+      "E500",
+      "e500"
+    ],
+    "common_names": [
+      "Sodyum karbonat"
+    ],
+    "english_names": [
+      "Sodium carbonate"
+    ],
+    "e_code": "E500",
+    "category": "asitlik_düzenleyici",
+    "additive_group": "Asitlik Düzenleyici",
+    "risk_level": "low",
+    "short_description": "Kabartma tozu bileşeni",
+    "long_description": "Kabartma tozu bileşeni\n\nGüvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Amonyum karbonat",
+    "normalized_name": "amonyum karbonat",
+    "alternative_names": [
+      "Ammonium carbonate"
+    ],
+    "aliases": [
+      "E503",
+      "e503"
+    ],
+    "common_names": [
+      "Amonyum karbonat"
+    ],
+    "english_names": [
+      "Ammonium carbonate"
+    ],
+    "e_code": "E503",
+    "category": "kabartıcı",
+    "additive_group": "Kabartma Maddesi",
+    "risk_level": "low",
+    "short_description": "Bisküvi ve kurabiyelerde kabartıcı",
+    "long_description": "Bisküvi ve kurabiyelerde kabartıcı\n\nPişirmede amonyak buharlaşır, güvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Potasyum klorür",
+    "normalized_name": "potasyum klorur",
+    "alternative_names": [
+      "Potassium chloride"
+    ],
+    "aliases": [
+      "E508",
+      "e508"
+    ],
+    "common_names": [
+      "Potasyum klorür"
+    ],
+    "english_names": [
+      "Potassium chloride"
+    ],
+    "e_code": "E508",
+    "category": "lezzet_arttırıcı",
+    "additive_group": "Lezzet Arttırıcı",
+    "risk_level": "low",
+    "short_description": "Tuz yerine kullanılan mineral",
+    "long_description": "Tuz yerine kullanılan mineral\n\nBöbrek hastalarında dikkatli kullanılmalı",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Kalsiyum klorür",
+    "normalized_name": "kalsiyum klorur",
+    "alternative_names": [
+      "Calcium chloride"
+    ],
+    "aliases": [
+      "E509",
+      "e509"
+    ],
+    "common_names": [
+      "Kalsiyum klorür"
+    ],
+    "english_names": [
+      "Calcium chloride"
+    ],
+    "e_code": "E509",
+    "category": "sertleştirici",
+    "additive_group": "Sertleştirici",
+    "risk_level": "low",
+    "short_description": "Sebze ve meyvelerde sertlik sağlayıcı",
+    "long_description": "Sebze ve meyvelerde sertlik sağlayıcı\n\nGüvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Monosodyum glutamat (MSG)",
+    "normalized_name": "monosodyum glutamat msg",
+    "alternative_names": [
+      "Monosodium glutamate"
+    ],
+    "aliases": [
+      "E621",
+      "e621"
+    ],
+    "common_names": [
+      "Monosodyum glutamat (MSG)"
+    ],
+    "english_names": [
+      "Monosodium glutamate"
+    ],
+    "e_code": "E621",
+    "category": "lezzet_arttırıcı",
+    "additive_group": "Lezzet Arttırıcı",
+    "risk_level": "medium",
+    "short_description": "Umami lezzet veren katkı maddesi",
+    "long_description": "Umami lezzet veren katkı maddesi\n\nBazı kişilerde baş ağrısı ve alerjik reaksiyonlara neden olabilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Disodyum guanilat",
+    "normalized_name": "disodyum guanilat",
+    "alternative_names": [
+      "Disodium guanylate"
+    ],
+    "aliases": [
+      "E627",
+      "e627"
+    ],
+    "common_names": [
+      "Disodyum guanilat"
+    ],
+    "english_names": [
+      "Disodium guanylate"
+    ],
+    "e_code": "E627",
+    "category": "lezzet_arttırıcı",
+    "additive_group": "Lezzet Arttırıcı",
+    "risk_level": "medium",
+    "short_description": "MSG ile birlikte kullanılan lezzet güçlendirici",
+    "long_description": "MSG ile birlikte kullanılan lezzet güçlendirici\n\nGut hastalarında sorun yaratabilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Disodyum inosinat",
+    "normalized_name": "disodyum inosinat",
+    "alternative_names": [
+      "Disodium inosinate"
+    ],
+    "aliases": [
+      "E631",
+      "e631"
+    ],
+    "common_names": [
+      "Disodyum inosinat"
+    ],
+    "english_names": [
+      "Disodium inosinate"
+    ],
+    "e_code": "E631",
+    "category": "lezzet_arttırıcı",
+    "additive_group": "Lezzet Arttırıcı",
+    "risk_level": "medium",
+    "short_description": "MSG ile birlikte kullanılan lezzet güçlendirici",
+    "long_description": "MSG ile birlikte kullanılan lezzet güçlendirici\n\nGut hastalarında uygun değil",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Polidimetilsiloksan",
+    "normalized_name": "polidimetilsiloksan",
+    "alternative_names": [
+      "Polydimethylsiloxane"
+    ],
+    "aliases": [
+      "E900",
+      "e900"
+    ],
+    "common_names": [
+      "Polidimetilsiloksan"
+    ],
+    "english_names": [
+      "Polydimethylsiloxane"
+    ],
+    "e_code": "E900",
+    "category": "köpük_önleyici",
+    "additive_group": "Köpük Önleyici",
+    "risk_level": "low",
+    "short_description": "Kızartma yağlarında köpük önleyici",
+    "long_description": "Kızartma yağlarında köpük önleyici\n\nSindirilmeden atılır, güvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Asesülfam K",
+    "normalized_name": "asesulfam k",
+    "alternative_names": [
+      "Acesulfame K"
+    ],
+    "aliases": [
+      "E950",
+      "e950"
+    ],
+    "common_names": [
+      "Asesülfam K"
+    ],
+    "english_names": [
+      "Acesulfame K"
+    ],
+    "e_code": "E950",
+    "category": "tatlandırıcı",
+    "additive_group": "Tatlandırıcı",
+    "risk_level": "medium",
+    "short_description": "Yapay tatlandırıcı, şekerden 200 kat tatlı",
+    "long_description": "Yapay tatlandırıcı, şekerden 200 kat tatlı\n\nUzun vadeli etkileri tartışmalı",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Aspartam",
+    "normalized_name": "aspartam",
+    "alternative_names": [
+      "Aspartame"
+    ],
+    "aliases": [
+      "E951",
+      "e951"
+    ],
+    "common_names": [
+      "Aspartam"
+    ],
+    "english_names": [
+      "Aspartame"
+    ],
+    "e_code": "E951",
+    "category": "tatlandırıcı",
+    "additive_group": "Tatlandırıcı",
+    "risk_level": "medium",
+    "short_description": "Yaygın kullanılan yapay tatlandırıcı",
+    "long_description": "Yaygın kullanılan yapay tatlandırıcı\n\nFenilketonüri hastalarında sakıncalı, bazı kişilerde baş ağrısı yapabilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Siklamat",
+    "normalized_name": "siklamat",
+    "alternative_names": [
+      "Cyclamate"
+    ],
+    "aliases": [
+      "E952",
+      "e952"
+    ],
+    "common_names": [
+      "Siklamat"
+    ],
+    "english_names": [
+      "Cyclamate"
+    ],
+    "e_code": "E952",
+    "category": "tatlandırıcı",
+    "additive_group": "Tatlandırıcı",
+    "risk_level": "high",
+    "short_description": "Yapay tatlandırıcı",
+    "long_description": "Yapay tatlandırıcı\n\nABD'de yasaklı, kanser riski tartışmalı",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Sakarin",
+    "normalized_name": "sakarin",
+    "alternative_names": [
+      "Saccharin"
+    ],
+    "aliases": [
+      "E954",
+      "e954"
+    ],
+    "common_names": [
+      "Sakarin"
+    ],
+    "english_names": [
+      "Saccharin"
+    ],
+    "e_code": "E954",
+    "category": "tatlandırıcı",
+    "additive_group": "Tatlandırıcı",
+    "risk_level": "medium",
+    "short_description": "En eski yapay tatlandırıcı",
+    "long_description": "En eski yapay tatlandırıcı\n\nEski çalışmalarda kanser riski iddiası çürütüldü, ancak sık tüketimi önerilmez",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Sukraloz",
+    "normalized_name": "sukraloz",
+    "alternative_names": [
+      "Sucralose"
+    ],
+    "aliases": [
+      "E955",
+      "e955"
+    ],
+    "common_names": [
+      "Sukraloz"
+    ],
+    "english_names": [
+      "Sucralose"
+    ],
+    "e_code": "E955",
+    "category": "tatlandırıcı",
+    "additive_group": "Tatlandırıcı",
+    "risk_level": "low",
+    "short_description": "Şekerden üretilen yapay tatlandırıcı",
+    "long_description": "Şekerden üretilen yapay tatlandırıcı\n\nGenel olarak güvenli kabul edilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Steviol glikozitleri",
+    "normalized_name": "steviol glikozitleri",
+    "alternative_names": [
+      "Steviol glycosides"
+    ],
+    "aliases": [
+      "E960",
+      "e960"
+    ],
+    "common_names": [
+      "Steviol glikozitleri"
+    ],
+    "english_names": [
+      "Steviol glycosides"
+    ],
+    "e_code": "E960",
+    "category": "tatlandırıcı",
+    "additive_group": "Tatlandırıcı",
+    "risk_level": "low",
+    "short_description": "Stevia bitkisinden elde edilen doğal tatlandırıcı",
+    "long_description": "Stevia bitkisinden elde edilen doğal tatlandırıcı\n\nDoğal ve güvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Polidekstroz",
+    "normalized_name": "polidekstroz",
+    "alternative_names": [
+      "Polydextrose"
+    ],
+    "aliases": [
+      "E1200",
+      "e1200"
+    ],
+    "common_names": [
+      "Polidekstroz"
+    ],
+    "english_names": [
+      "Polydextrose"
+    ],
+    "e_code": "E1200",
+    "category": "şişirici",
+    "additive_group": "Dolgu Maddesi",
+    "risk_level": "low",
+    "short_description": "Düşük kalorili şişirici, prebiyotik lif",
+    "long_description": "Düşük kalorili şişirici, prebiyotik lif\n\nGüvenli, sindirim sistemi için faydalı olabilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Dekstrin",
+    "normalized_name": "dekstrin",
+    "alternative_names": [
+      "Dextrin"
+    ],
+    "aliases": [
+      "E1400",
+      "e1400"
+    ],
+    "common_names": [
+      "Dekstrin"
+    ],
+    "english_names": [
+      "Dextrin"
+    ],
+    "e_code": "E1400",
+    "category": "kıvam_arttırıcı",
+    "additive_group": "Kıvam Arttırıcı",
+    "risk_level": "low",
+    "short_description": "Nişastadan elde edilen karbonhidrat",
+    "long_description": "Nişastadan elde edilen karbonhidrat\n\nGüvenli",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  },
+  {
+    "name": "Modifiye nişasta",
+    "normalized_name": "modifiye nisasta",
+    "alternative_names": [
+      "Modified starch"
+    ],
+    "aliases": [
+      "E1442",
+      "e1442"
+    ],
+    "common_names": [
+      "Modifiye nişasta"
+    ],
+    "english_names": [
+      "Modified starch"
+    ],
+    "e_code": "E1442",
+    "category": "kıvam_arttırıcı",
+    "additive_group": "Kıvam Arttırıcı",
+    "risk_level": "low",
+    "short_description": "Kimyasal işlemle değiştirilmiş nişasta",
+    "long_description": "Kimyasal işlemle değiştirilmiş nişasta\n\nGüvenli kabul edilir",
+    "child_warning": null,
+    "source_references": null,
+    "source_url": null
+  }
+]

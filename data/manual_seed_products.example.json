@@ -1,0 +1,22 @@
+[
+  {
+    "barcode": "8690526069906",
+    "name": "Popkek Bitter Çikolatalı",
+    "brand": "Eti",
+    "category_suggestion": "Kek",
+    "category_tags": ["kek", "cikolata"],
+    "ingredients_text": "buğday unu, şeker, bitkisel yağ, kakao, yumurta, kabartıcı",
+    "nutrition_json": {
+      "energy_kcal_100g": 424,
+      "fat_100g": 20,
+      "saturated_fat_100g": 10,
+      "carbohydrates_100g": 55,
+      "sugars_100g": 35,
+      "proteins_100g": 6,
+      "sodium_100g": 0.32
+    },
+    "image_front_url": "https://example.com/popkek_front.jpg",
+    "source": "manual_seed",
+    "source_url": "https://example.com/popkek"
+  }
+]

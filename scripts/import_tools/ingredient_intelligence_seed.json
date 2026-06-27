@@ -1,0 +1,2695 @@
+[
+  {
+    "canonical_name": "Palmiye Yağı",
+    "aliases": [
+      "palm oil",
+      "palm fat",
+      "palmyağ",
+      "rafine palmyağ"
+    ],
+    "ingredient_type": "Rafine bitkisel yağ",
+    "short_purpose": "Margarin ve kıvam vericinin yapımında, raf ömrü uzatmak için kullanılır.",
+    "short_risk_summary": "Yüksek doymuş yağ içerir. Sık tüketimde kolesterol seviyesini yükseltebilir.",
+    "caution_groups": [
+      "kolesterol problemi olanlar",
+      "kalp hastalığı aile öyküsü"
+    ],
+    "processing_role": "Ultra işlenmiş ürünlerde yaygın olarak kullanılır. Margarinler, kızartmalar, bisküviler.",
+    "risk_level": "medium",
+    "category_tags": [
+      "snacks",
+      "chocolates",
+      "cereals",
+      "bakery"
+    ]
+  },
+  {
+    "canonical_name": "Glikoz Şurubu",
+    "aliases": [
+      "glucose syrup",
+      "corn syrup",
+      "dextrose",
+      "glikoz"
+    ],
+    "ingredient_type": "Rafine karbonhidrat",
+    "short_purpose": "Tatlandırma, yapışkan bileşen sağlama ve kıvam verme amaçlı kullanılır.",
+    "short_risk_summary": "Hızlı emilen şeker türüdür. Sık tüketimde kan şekeri dalgalanmasına neden olabilir.",
+    "caution_groups": [
+      "diyabet hastaları",
+      "çocuklar"
+    ],
+    "processing_role": "Şekerli içecekler, enerji içecekleri, tatlı atıştırmalıklar ve soslar.",
+    "risk_level": "medium",
+    "category_tags": [
+      "soft drinks",
+      "energy drinks",
+      "desserts",
+      "snacks"
+    ]
+  },
+  {
+    "canonical_name": "Fruktoz Şurubu",
+    "aliases": [
+      "high fructose corn syrup",
+      "HFCS",
+      "fruktoz",
+      "mısır şurubu"
+    ],
+    "ingredient_type": "Rafine karbonhidrat",
+    "short_purpose": "Tatlandırma ve duyusal kalite iyileştirme için kullanılır.",
+    "short_risk_summary": "Karaciğer tarafından hızlı işlenir. Yüksek tüketim karaciğer yağlanmasına yol açabilir.",
+    "caution_groups": [
+      "karaciğer problemi",
+      "bilgisayar başında çalışanlar",
+      "hareketsiz yaşam"
+    ],
+    "processing_role": "Enerji içecekleri, gazlı içecekler, meyve aromalı ürünler.",
+    "risk_level": "medium",
+    "category_tags": [
+      "soft drinks",
+      "energy drinks"
+    ]
+  },
+  {
+    "canonical_name": "Asesülam K",
+    "aliases": [
+      "acesulfame K",
+      "E950",
+      "E-950",
+      "asesülam potasyum"
+    ],
+    "ingredient_type": "Sentetik tatlandırıcı",
+    "short_purpose": "Şeker yerine tatlandırma sağlamak için 200 kez daha kuvvetli bir yapay tatlandırıcı.",
+    "short_risk_summary": "Bazı araştırmalarda hormonal etkilerle ilişkilendirilmiştir. Uzun vadeli güvenliği hala tartışılmaktadır.",
+    "caution_groups": [
+      "hamile ve emziren kadınlar",
+      "çocuklar"
+    ],
+    "processing_role": "Diyet içecekleri, aspartam kombinasyonunda kullanılır.",
+    "risk_level": "medium",
+    "category_tags": [
+      "soft drinks",
+      "energy drinks"
+    ]
+  },
+  {
+    "canonical_name": "Sukraloz",
+    "aliases": [
+      "sucralose",
+      "E955",
+      "E-955",
+      "splenda"
+    ],
+    "ingredient_type": "Sentetik tatlandırıcı",
+    "short_purpose": "Şeker yerine tatlandırma sağlamak için 600 kez daha kuvvetli tatlandırıcı.",
+    "short_risk_summary": "Sindirim sisteminde yer alan faydalı bakterileri öldürebilir. Bazı kişilerde deokstrozdan hastalık tanımlanmıştır.",
+    "caution_groups": [
+      "sindirim problemi",
+      "çocuklar",
+      "hamile kadınlar"
+    ],
+    "processing_role": "Diyet içecekleri, yapay tatlandırıcılı ürünler.",
+    "risk_level": "medium",
+    "category_tags": [
+      "soft drinks",
+      "energy drinks"
+    ]
+  },
+  {
+    "canonical_name": "Aspartam",
+    "aliases": [
+      "aspartame",
+      "E951",
+      "E-951",
+      "APM",
+      "methyl ester"
+    ],
+    "ingredient_type": "Sentetik tatlandırıcı",
+    "short_purpose": "Şeker yerine tatlandırma sağlamak için 160 kez daha kuvvetli tatlandırıcı.",
+    "short_risk_summary": "Fenilalanin kaynağıdır. PKU (Fenilketonüri) hastalığı olanlar için güvenli değildir.",
+    "caution_groups": [
+      "PKU hastaları",
+      "çocuklar",
+      "hamile kadınlar"
+    ],
+    "processing_role": "Diyet içecekleri, aspartam kombinasyonunda kullanılır.",
+    "risk_level": "medium",
+    "category_tags": [
+      "soft drinks",
+      "energy drinks"
+    ]
+  },
+  {
+    "canonical_name": "Sodyum Nitrit",
+    "aliases": [
+      "sodium nitrite",
+      "E250",
+      "E-250",
+      "nitrit",
+      "sodyum nitrit"
+    ],
+    "ingredient_type": "Koruyucu katkı maddesi",
+    "short_purpose": "Et ürünlerinde botulizm bakteri büyümesini engellemek ve renk stabilitesi sağlamak için.",
+    "short_risk_summary": "Vücutta nitrozaminlere dönüşebilir. Yüksek tüketimde mide kanseriyle ilişkilendirilebilir.",
+    "caution_groups": [
+      "mide kanser aile öyküsü",
+      "çocuklar",
+      "hamile kadınlar"
+    ],
+    "processing_role": "İşlenmiş etler, sucuk, pastırma, jambon, konserve etler.",
+    "risk_level": "high",
+    "category_tags": [
+      "processed meats"
+    ]
+  },
+  {
+    "canonical_name": "Sodyum Benzoat",
+    "aliases": [
+      "sodium benzoate",
+      "E211",
+      "E-211",
+      "benzoik asit tuzu"
+    ],
+    "ingredient_type": "Koruyucu katkı maddesi",
+    "short_purpose": "Bakteri ve küf büyümesini engellemek için kullanılır. Kütün ömrü uzatır.",
+    "short_risk_summary": "Bazı kişilerde hiperaktiviteye neden olabilir. C vitamini ile birlikte kanserojenik bileşik oluşturabilir.",
+    "caution_groups": [
+      "ADHD bulguları",
+      "çocuklar"
+    ],
+    "processing_role": "Soslar, turşular, meyve suları, limonatalar, kemiklenmiş ürünler.",
+    "risk_level": "medium",
+    "category_tags": [
+      "sauces",
+      "soft drinks"
+    ]
+  },
+  {
+    "canonical_name": "Potasyum Sorbat",
+    "aliases": [
+      "potassium sorbate",
+      "E202",
+      "E-202",
+      "sorbik asit tuzu"
+    ],
+    "ingredient_type": "Koruyucu katkı maddesi",
+    "short_purpose": "Mayalar ve bazı küfleri öldürerek gıdanın raf ömrünü uzatır.",
+    "short_risk_summary": "Genel olarak güvenli kabul edilir ama bazı kişilerde alerjik reaksiyonlar bildirilmiştir.",
+    "caution_groups": [
+      "sorbik asit alerjisi",
+      "sindirim problemleri"
+    ],
+    "processing_role": "Meyve suları, süt ürünleri, ekmek ve pastane ürünleri.",
+    "risk_level": "low",
+    "category_tags": [
+      "bakery",
+      "dairy"
+    ]
+  },
+  {
+    "canonical_name": "Tartrazin",
+    "aliases": [
+      "tartrazine",
+      "E102",
+      "E-102",
+      "FD&C Yellow 5",
+      "sarı 5"
+    ],
+    "ingredient_type": "Sentetik renklendirici",
+    "short_purpose": "Turuncu veya sarı renge boyama amaçlı kullanılır.",
+    "short_risk_summary": "Bazı kişilerde hiperaktiviteye, dönemsel astım nöbetlerine ve alerjik reaksiyonlara neden olabilir.",
+    "caution_groups": [
+      "çocuklar",
+      "astım hastaları",
+      "salisilatlar hassasiyet"
+    ],
+    "processing_role": "Meşrubatlar, tatlı seyreltilmiş ürünler, enerji içecekleri, atıştırmalıklar.",
+    "risk_level": "medium",
+    "category_tags": [
+      "soft drinks",
+      "energy drinks",
+      "snacks"
+    ]
+  },
+  {
+    "canonical_name": "Allura Red AC",
+    "aliases": [
+      "allura red",
+      "FD&C Red No. 40",
+      "E129",
+      "E-129",
+      "kırmızı 40"
+    ],
+    "ingredient_type": "Sentetik renklendirici",
+    "short_purpose": "Kırmızı veya turuncu tonları oluşturmak için boyama.",
+    "short_risk_summary": "Bazı kişilerde hiperaktiviteye ve alerjik reaksiyonlara neden olabilir. Tartrazin ile benzer risk taşır.",
+    "caution_groups": [
+      "çocuklar",
+      "ADHD bulguları"
+    ],
+    "processing_role": "Meşrubatlar, enerji içecekleri, gıda renklendirmesi.",
+    "risk_level": "medium",
+    "category_tags": [
+      "soft drinks",
+      "energy drinks"
+    ]
+  },
+  {
+    "canonical_name": "Monosodyum Glutamat",
+    "aliases": [
+      "MSG",
+      "monosodium glutamate",
+      "E621",
+      "E-621",
+      "tat arttırıcı",
+      "ajinomoto"
+    ],
+    "ingredient_type": "Tat arttırıcı katkı maddesi",
+    "short_purpose": "Savory (tuzlu) tadı 20-30 kat daha yoğun yapmak için kullanılır.",
+    "short_risk_summary": "Bazı kişilerde baş ağrısı, uyuşukluk, başdönmesi ('Çin Restoranı Sendromu') yaşanabilir.",
+    "caution_groups": [
+      "migren hastaları",
+      "sinir sistemine duyarlı",
+      "çocuklar"
+    ],
+    "processing_role": "Çorba ürünleri, sosyal ürünler, işlenmiş et, sıvı ürünler.",
+    "risk_level": "medium",
+    "category_tags": [
+      "sauces",
+      "processed meats"
+    ]
+  },
+  {
+    "canonical_name": "Soya Lesitin",
+    "aliases": [
+      "lecithin",
+      "soy lecithin",
+      "E322",
+      "E-322"
+    ],
+    "ingredient_type": "Emülgatör ve çıkarıcı",
+    "short_purpose": "Yağ ve su karışımını tutmuştur tutarak yumuşak doku yapısı sağlaması.",
+    "short_risk_summary": "Genel olarak güvenli kabul edilse de çoğunlukla genetiği değiştirilmiş soyadır. Bazı kişilerde göğüs şişmesi ve hormonal etkiler rapor edilmiştir.",
+    "caution_groups": [
+      "GMO sensitivesi",
+      "hormon hassasiyeti"
+    ],
+    "processing_role": "Çikolatalar, bisküviler, makaronlar, margarinler.",
+    "risk_level": "low",
+    "category_tags": [
+      "chocolates",
+      "bakery",
+      "snacks"
+    ]
+  },
+  {
+    "canonical_name": "Mono- ve Digliseritler",
+    "aliases": [
+      "mono and diglycerides",
+      "E471",
+      "E-471",
+      "emülgatör",
+      "monoglycerides",
+      "diglycerides"
+    ],
+    "ingredient_type": "Emülgatör",
+    "short_purpose": "Yağ ve su karışımını tutmuştur tutarak istenen doku elde etmek için.",
+    "short_risk_summary": "Genel olarak güvenli ama yapısı geçi net değildir. Bazı formülasyonlar alerjen içerebilir.",
+    "caution_groups": [
+      "bilinmeyen alerjen riskleri"
+    ],
+    "processing_role": "Margarinler, dondurma, ekmek, pastane ve bisküviler.",
+    "risk_level": "low",
+    "category_tags": [
+      "bakery",
+      "dairy",
+      "desserts"
+    ]
+  },
+  {
+    "canonical_name": "Aroma Vericileri",
+    "aliases": [
+      "flavoring agents",
+      "E621-E640",
+      "aromatic compounds",
+      "tatlar"
+    ],
+    "ingredient_type": "Aroma vericiler",
+    "short_purpose": "Ürünün tadını ve kokusunu istenen şekilde ayarlamak için kullanılır.",
+    "short_risk_summary": "Bireysel aromatik bileşiklerin güvenliği tescilli değildir. Kataloğda listelenenler genellikle güvenli kabul edilir.",
+    "caution_groups": [
+      "bilinmeyen aroma hassasiyeti"
+    ],
+    "processing_role": "Hemen hemen tüm işlenmiş ürünlerde, özellikle yapay tat hedefi olan ürünlerde.",
+    "risk_level": "low",
+    "category_tags": [
+      "snacks",
+      "soft drinks",
+      "energy drinks"
+    ]
+  },
+  {
+    "canonical_name": "Modifiye Nişasta",
+    "aliases": [
+      "modified starch",
+      "E1404",
+      "E1422",
+      "E1442",
+      "modified corn starch"
+    ],
+    "ingredient_type": "Kıvam vericisi",
+    "short_purpose": "Ürünün kıvamını, yapısını ve depolama stabilitesini iyileştirmek için.",
+    "short_risk_summary": "Genel olarak güvenli ama vücut tarafından hızlı emilir. Kan şekeri dalgalanması yapabilir.",
+    "caution_groups": [
+      "diyabet hastaları"
+    ],
+    "processing_role": "Soslar, çorbalar, gıda ürünleri, bonbonlar, dondurma.",
+    "risk_level": "low",
+    "category_tags": [
+      "sauces",
+      "desserts"
+    ]
+  },
+  {
+    "canonical_name": "Malt Ekstraktı",
+    "aliases": [
+      "malt extract",
+      "barley extract",
+      "malt syrup"
+    ],
+    "ingredient_type": "Tatlandırıcı (doğal)",
+    "short_purpose": "Tahıldan elde edilen doğal tatlandırıcı ve renk verici.",
+    "short_risk_summary": "Doğal ama yüksek şeker içerir. Şeker zehirlenmesi gibi etkileri vardır.",
+    "caution_groups": [
+      "diyabet hastaları",
+      "çocuklar"
+    ],
+    "processing_role": "Sereal ürünleri, ekmekler, meşrubatlar.",
+    "risk_level": "medium",
+    "category_tags": [
+      "cereals",
+      "bakery"
+    ]
+  },
+  {
+    "canonical_name": "Ksantan Gam",
+    "aliases": [
+      "xanthan gum",
+      "E415",
+      "E-415",
+      "xanthan"
+    ],
+    "ingredient_type": "Kıvam vericisi",
+    "short_purpose": "Ürünün akışkan özelliğini kontrol etmek ve jöleyi istenen kalınlığa getirmek için.",
+    "short_risk_summary": "Genel olarak güvenli ama bazı kişilerde sindirim sorunlarına yol açabilir.",
+    "caution_groups": [
+      "sindirim problemleri",
+      "irritable bowel syndrome"
+    ],
+    "processing_role": "Sos ve krem ürünleri, dondurma, yoğurt.",
+    "risk_level": "low",
+    "category_tags": [
+      "sauces",
+      "dairy"
+    ]
+  },
+  {
+    "canonical_name": "Karagenan",
+    "aliases": [
+      "carrageenan",
+      "E407",
+      "E-407",
+      "carragheenan",
+      "Irish moss extract"
+    ],
+    "ingredient_type": "Kıvam vericisi",
+    "short_purpose": "Deniz yosunundan alınan doğal jöleştirique, kıvam vermek için kullanılır.",
+    "short_risk_summary": "Bazı araştırmalarda diyabet ve obezite artışı ile ilişkilendirilmiştir. Sindirim sistemine etkisi vardır.",
+    "caution_groups": [
+      "sindirim problemleri",
+      "diyabet hastaları"
+    ],
+    "processing_role": "Dondurma, yoğurt, süt ürünleri, meyve suları.",
+    "risk_level": "medium",
+    "category_tags": [
+      "dairy",
+      "soft drinks",
+      "desserts"
+    ]
+  },
+  {
+    "canonical_name": "Kafein",
+    "aliases": [
+      "caffeine",
+      "E150",
+      "E-150",
+      "coffee extract"
+    ],
+    "ingredient_type": "Uyarıcı",
+    "short_purpose": "Uyanıklık ve enerji artırma amaçlı kullanılır.",
+    "short_risk_summary": "Yüksek tüketim uyku problemi, kaygı ve defalı çarpıntılara neden olabilir. Çocuklar için zararlıdır.",
+    "caution_groups": [
+      "çocuklar",
+      "uyku problemleri",
+      "kaygı hastaları",
+      "kalp problemi"
+    ],
+    "processing_role": "Enerji içecekleri, gazlı içecekler, kola içecekleri, kahve ürünleri.",
+    "risk_level": "medium",
+    "category_tags": [
+      "energy drinks",
+      "soft drinks"
+    ]
+  },
+  {
+    "canonical_name": "Yulaf",
+    "aliases": [
+      "oats",
+      "oatmeal",
+      "avena sativa",
+      "yulaf lifi"
+    ],
+    "ingredient_type": "Tam tahıl",
+    "short_purpose": "Besin sağlamak, doyma hissi yaratmak ve kalp sağlığını desteklemek.",
+    "short_risk_summary": "Genel olarak sağlıklı kabul edilir. FODMAPs içerebilir (IBS hastalarında sorun yapabilir).",
+    "caution_groups": [
+      "irritable bowel syndrome"
+    ],
+    "processing_role": "Sereal ürünleri, granola, oatmeal kekler, fındık ezmesi.",
+    "risk_level": "low",
+    "category_tags": [
+      "cereals",
+      "bakery"
+    ]
+  },
+  {
+    "canonical_name": "Tam Tahıl",
+    "aliases": [
+      "whole grain",
+      "whole wheat",
+      "tamamlanmış tahıl"
+    ],
+    "ingredient_type": "Tahıl (işlenmiş)",
+    "short_purpose": "Lif sağlamak, kan şekeri kontrol etmek, hazmayı desteklemek.",
+    "short_risk_summary": "Genel olarak sağlıklı. Gluten intoleransı olanlar için uygun değil.",
+    "caution_groups": [
+      "çölyak hastaları",
+      "gluten hassasiyeti"
+    ],
+    "processing_role": "Ekmekler, tahıllar, pasta ürünleri.",
+    "risk_level": "low",
+    "category_tags": [
+      "cereals",
+      "bakery"
+    ]
+  },
+  {
+    "canonical_name": "Fındık",
+    "aliases": [
+      "hazelnut",
+      "hazel nut",
+      "cob nut",
+      "fındık ezmesi"
+    ],
+    "ingredient_type": "Meyveli tohum",
+    "short_purpose": "Besin, lezzetlendirme ve doyma yaratmak için kullanılır.",
+    "short_risk_summary": "Alerji riski vardır. Fındık alerjileri ciddi şok yapabilir.",
+    "caution_groups": [
+      "fındık alerjileri",
+      "ağaç ürünü alerjileri"
+    ],
+    "processing_role": "Bisküviler, çikolatalar, atıştırmalıklar, yayıklar.",
+    "risk_level": "low",
+    "category_tags": [
+      "chocolates",
+      "snacks"
+    ]
+  },
+  {
+    "canonical_name": "Badem",
+    "aliases": [
+      "almond",
+      "almond butter",
+      "almond milk",
+      "sweet almond"
+    ],
+    "ingredient_type": "Meyveli tohum",
+    "short_purpose": "Kalp sağlığı, lezzet ve beslenme sağlamak için.",
+    "short_risk_summary": "Alerji riski vardır. Kıkırdak tohum alerjileri ciddi reaksiyonlar yapabilir.",
+    "caution_groups": [
+      "badem alerjileri",
+      "ağaç ürünü alerjileri"
+    ],
+    "processing_role": "Kek, bisküvi, granola, fındık ezmesi, süt içecekleri.",
+    "risk_level": "low",
+    "category_tags": [
+      "bakery",
+      "snacks"
+    ]
+  },
+  {
+    "canonical_name": "Kakao",
+    "aliases": [
+      "cacao",
+      "cocoa",
+      "dark chocolate",
+      "kakao tozunu"
+    ],
+    "ingredient_type": "Bitki tozu",
+    "short_purpose": "Lezzet vermek ve antioksidanlar sağlamak için.",
+    "short_risk_summary": "Kafein içerir ve akışkan yapıları etkileyebilir. Büyük miktarlarda terpentin toksikliğine benzer etkiler yapabilir.",
+    "caution_groups": [
+      "kafein hassasiyeti"
+    ],
+    "processing_role": "Çikolatalar, tatlılar, içecekler.",
+    "risk_level": "low",
+    "category_tags": [
+      "chocolates",
+      "desserts"
+    ]
+  },
+  {
+    "canonical_name": "Diyet Lifi",
+    "aliases": [
+      "dietary fiber",
+      "psyllium fiber",
+      "insoluble fiber",
+      "lif takviyesi"
+    ],
+    "ingredient_type": "Beslenme bileşeni",
+    "short_purpose": "Hazim sistemini desteklemek, doyma hissi yaratmak, kan şekeri kontrolü.",
+    "short_risk_summary": "Çok hızlı tüketirilse sindirim sorunları yapabilir. Yeterli su ile almak gerekli.",
+    "caution_groups": [],
+    "processing_role": "Çok tahıllı ürünler, diyetik ürünler, tahıl çubukları.",
+    "risk_level": "low",
+    "category_tags": [
+      "cereals",
+      "bakery"
+    ]
+  },
+  {
+    "canonical_name": "Protein (Peynir Altı Suyu Proteini)",
+    "aliases": [
+      "whey protein",
+      "protein concentrate",
+      "milk protein",
+      "peynir altı suyu"
+    ],
+    "ingredient_type": "Beslenme bileşeni",
+    "short_purpose": "Kasları beslemek, kaslılığı artırmak, doyma hissi yaratmak.",
+    "short_risk_summary": "Genel olarak güvenli ama laktoz-hassas kişilerde sorun yapabilir. Şef formülasyonlar yüksek metal (kurşun, kadmiyum) içerebilir.",
+    "caution_groups": [
+      "laktoz hassasiyeti"
+    ],
+    "processing_role": "Protein çubukları, enerji içecekleri, yoğurt, süt ürünleri.",
+    "risk_level": "low",
+    "category_tags": [
+      "energy drinks",
+      "dairy"
+    ]
+  },
+  {
+    "canonical_name": "Probiyotikler",
+    "aliases": [
+      "probiotics",
+      "live cultures",
+      "lactobacillus",
+      "bifidobacterium"
+    ],
+    "ingredient_type": "Sağlıklı bakteri",
+    "short_purpose": "Bağırsak mikrobiyomunu desteklemek, sindiril hızlandırmak.",
+    "short_risk_summary": "Genel olarak güvenli ama çoğunlukla oda sıcaklığındaki test sonuçları göstermez. Soğuk muhafaza gereklidir.",
+    "caution_groups": [],
+    "processing_role": "Yoğurt, kefir, fermente süt ürünleri, kombucha.",
+    "risk_level": "low",
+    "category_tags": [
+      "dairy",
+      "desserts"
+    ]
+  },
+  {
+    "canonical_name": "Sodyum Karbonat",
+    "aliases": [
+      "sodium carbonate",
+      "soda ash",
+      "washing soda",
+      "E500"
+    ],
+    "ingredient_type": "PH kontrol maddesi",
+    "short_purpose": "PH kontrol etmek, yapı hızlandırmak, tat dengelemek.",
+    "short_risk_summary": "Genel olarak güvenli kullanılan miktarlarda. Çok yüksek miktarlarda sindirim sorunları yapabilir.",
+    "caution_groups": [],
+    "processing_role": "Bisküviler, kekler, yapı çubukları.",
+    "risk_level": "low",
+    "category_tags": [
+      "bakery",
+      "snacks"
+    ]
+  },
+  {
+    "canonical_name": "Sitrik Asit",
+    "aliases": [
+      "citric acid",
+      "E330",
+      "E-330",
+      "lemon acid"
+    ],
+    "ingredient_type": "Koruyucu ve tatlandırıcı",
+    "short_purpose": "Koruma, tat düzeltme, mineral emilimini artırma.",
+    "short_risk_summary": "Genel olarak güvenli ama yüksek tüketimde diş aşınmasına neden olabilir.",
+    "caution_groups": [
+      "diş problemleri"
+    ],
+    "processing_role": "Meşrubatlar, turşular, yoğurt, meyve suları.",
+    "risk_level": "low",
+    "category_tags": [
+      "soft drinks",
+      "sauces"
+    ]
+  },
+  {
+    "canonical_name": "Tart Asiti (Tartarik Asit)",
+    "aliases": [
+      "tartaric acid",
+      "E334",
+      "E-334",
+      "cream of tartar"
+    ],
+    "ingredient_type": "Koruyucu ve tat arttırıcı",
+    "short_purpose": "Kuru gıdaları stabilize etmek, tat dengelemek.",
+    "short_risk_summary": "Genel olarak güvenli. Doğal olarak üzümlerde bulunur.",
+    "caution_groups": [],
+    "processing_role": "Tatlı ürünler, kek hamurudur, meşrubatlar.",
+    "risk_level": "low",
+    "category_tags": [
+      "bakery",
+      "soft drinks"
+    ]
+  },
+  {
+    "canonical_name": "Mısır Şurubu",
+    "aliases": [
+      "corn syrup",
+      "glucose syrup",
+      "dextrose",
+      "mısır nişastası"
+    ],
+    "ingredient_type": "Rafine karbonhidrat",
+    "short_purpose": "Tatlandırma, kıvam verme, yaklaşık kristallizasyon.",
+    "short_risk_summary": "Hızlı emilen şeker. İnsülin direnci ve kilo artışı ile ilişkilendirilir.",
+    "caution_groups": [
+      "diyabet hastaları",
+      "obez kişiler"
+    ],
+    "processing_role": "Tatlılar, şekerli ürünler, meşrubatlar.",
+    "risk_level": "medium",
+    "category_tags": [
+      "desserts",
+      "soft drinks",
+      "snacks"
+    ]
+  },
+  {
+    "canonical_name": "Günlük Madde (Tahıl Baharı)",
+    "aliases": [
+      "nutmeg",
+      "mace",
+      "nutmeg oil",
+      "pala"
+    ],
+    "ingredient_type": "Baharat",
+    "short_purpose": "Tat ve aroma vermek, kızartma geçmişini maskelemek.",
+    "short_risk_summary": "Yüksek miktarlarda myristicin (psikoaktif) içerir. Çok fazla tüketilse halüsinasyon yapabilir.",
+    "caution_groups": [
+      "sadece yemek miktarları güvenli"
+    ],
+    "processing_role": "Tatlılar, meşrubatlar, et ürünleri.",
+    "risk_level": "low",
+    "category_tags": [
+      "sauces",
+      "desserts",
+      "processed meats"
+    ]
+  },
+  {
+    "canonical_name": "Karamel Renklendirici",
+    "aliases": [
+      "caramel coloring",
+      "E150",
+      "E-150",
+      "caramel"
+    ],
+    "ingredient_type": "Renklendirici",
+    "short_purpose": "Kahverengi veya siyah renk vermek.",
+    "short_risk_summary": "E150d sınıfı (ammonyak işlemi) bazı hayvan araştırmalarında kanserojenik etkiler göstermiştir.",
+    "caution_groups": [
+      "hassas kişiler"
+    ],
+    "processing_role": "Kola, gazlı içecekler, soya sosu, meşrubatlar.",
+    "risk_level": "medium",
+    "category_tags": [
+      "soft drinks"
+    ]
+  },
+  {
+    "canonical_name": "Disodyum İnosinat",
+    "aliases": [
+      "disodium inosinate",
+      "E631",
+      "E-631",
+      "inosinate",
+      "tat arttırıcı"
+    ],
+    "ingredient_type": "Tat arttırıcı",
+    "short_purpose": "Savory tadını 30-40 kez daha yoğun yapmak.",
+    "short_risk_summary": "MSG benzeri etkileri vardır. Gıda alerjileri olanlar için sorun yapabilir.",
+    "caution_groups": [
+      "gıda alerjileri"
+    ],
+    "processing_role": "İşlenmiş et, sosyal ürünler, çorba ürünleri.",
+    "risk_level": "medium",
+    "category_tags": [
+      "processed meats",
+      "sauces"
+    ]
+  },
+  {
+    "canonical_name": "Disodyum Guanilat",
+    "aliases": [
+      "disodium guanylate",
+      "E627",
+      "E-627",
+      "guanylate",
+      "tat arttırıcı"
+    ],
+    "ingredient_type": "Tat arttırıcı",
+    "short_purpose": "Savory tadını artırmak, MSG etkisini arttırmak.",
+    "short_risk_summary": "MSG benzeri etkileri ve gıda alerjileri tetikleyebilir.",
+    "caution_groups": [
+      "gıda alerjileri",
+      "astım hastaları"
+    ],
+    "processing_role": "İşlenmiş et, sosyal ürünler.",
+    "risk_level": "medium",
+    "category_tags": [
+      "processed meats"
+    ]
+  },
+  {
+    "canonical_name": "Sorbitol",
+    "aliases": [
+      "sorbitol",
+      "E420",
+      "E-420",
+      "sugar alcohol"
+    ],
+    "ingredient_type": "Tatlandırıcı",
+    "short_purpose": "Şeker yerine tatlandırma, diş bakteri oluşumunu azaltmak.",
+    "short_risk_summary": "Aşırı tüketimde laxatif etkisi ve gastrointestinal sorunlar yapabilir.",
+    "caution_groups": [
+      "irritable bowel syndrome",
+      "sindirim problemleri"
+    ],
+    "processing_role": "Şekersiz tatlılar, sakız, bonbonlar.",
+    "risk_level": "low",
+    "category_tags": [
+      "desserts",
+      "snacks"
+    ]
+  },
+  {
+    "canonical_name": "Maltit",
+    "aliases": [
+      "maltitol",
+      "E965",
+      "E-965",
+      "hexitol"
+    ],
+    "ingredient_type": "Tatlandırıcı",
+    "short_purpose": "Şeker yerine tatlandırma sağlamak.",
+    "short_risk_summary": "Aşırı tüketimde laxatif etkileri vardır. Kan şekeri yükselişi şekere kıyasla daha azdır.",
+    "caution_groups": [
+      "sindirim problemleri"
+    ],
+    "processing_role": "Diyet çikolataları, şekersiz tatlılar.",
+    "risk_level": "low",
+    "category_tags": [
+      "chocolates",
+      "desserts"
+    ]
+  },
+  {
+    "canonical_name": "Stevia",
+    "aliases": [
+      "stevia",
+      "stevia rebaudiana",
+      "stevia extract",
+      "stevioside"
+    ],
+    "ingredient_type": "Doğal tatlandırıcı",
+    "short_purpose": "Stevia bitkisinden elde edilen 300 kez daha güçlü tatlandırıcı.",
+    "short_risk_summary": "Genel olarak güvenli kabul edilir. Bazı çalışmalar fertilite problemleriyle ilişkilendirmiştir.",
+    "caution_groups": [
+      "hamile ve emziren kadınlar"
+    ],
+    "processing_role": "Diyetik içecekler, bahçe ürünleri, tatlandırıcı tabletleri.",
+    "risk_level": "low",
+    "category_tags": [
+      "soft drinks"
+    ]
+  },
+  {
+    "canonical_name": "Buğday Nişastası",
+    "aliases": [
+      "wheat starch",
+      "cornstarch",
+      "wheat flour",
+      "buğday ounu"
+    ],
+    "ingredient_type": "Karbonhidrat",
+    "short_purpose": "Kıvam verme, yapı oluşturma, yapştırıcı etkisi.",
+    "short_risk_summary": "Gluten intoleransı olanlar için uygun değil. Hızlı emilen karbonhidrat.",
+    "caution_groups": [
+      "çölyak hastaları",
+      "gluten hassasiyeti"
+    ],
+    "processing_role": "Ekmekler, tatlılar, atıştırmalıklar.",
+    "risk_level": "low",
+    "category_tags": [
+      "bakery"
+    ]
+  },
+  {
+    "canonical_name": "Yeast (Maya)",
+    "aliases": [
+      "yeast",
+      "baker's yeast",
+      "brewer's yeast",
+      "maya"
+    ],
+    "ingredient_type": "Fermentasyon ajanı",
+    "short_purpose": "Maya fermentasyonu ile yapı oluşturmak, lezzet vermek.",
+    "short_risk_summary": "Genel olarak güvenli. Bazı kişilerde histamin reaksiyonları yapabilir.",
+    "caution_groups": [
+      "histamin intoleransı"
+    ],
+    "processing_role": "Ekmekler, pastane ürünleri, fermente ürünler.",
+    "risk_level": "low",
+    "category_tags": [
+      "bakery"
+    ]
+  },
+  {
+    "canonical_name": "Su",
+    "aliases": [
+      "water",
+      "H2O",
+      "pure water"
+    ],
+    "ingredient_type": "Temel bileşen",
+    "short_purpose": "Hidratasyon, diğer malzemeleri çözmek.",
+    "short_risk_summary": "Genel olarak güvenli. Çok fazla tüketimlerde su zehirlenmesi yapabilir (nadir).",
+    "caution_groups": [],
+    "processing_role": "Bütün gıdaların temel bileşeni.",
+    "risk_level": "low",
+    "category_tags": [
+      "drinks",
+      "all"
+    ]
+  },
+  {
+    "canonical_name": "Tuz",
+    "aliases": [
+      "salt",
+      "sodium chloride",
+      "sea salt",
+      "tuz"
+    ],
+    "ingredient_type": "Mineral",
+    "short_purpose": "Tat arttırma, mikrobial büyümesini kontrol, kıvam.",
+    "short_risk_summary": "Yüksek tüketim yüksek tansiyon ve kalp hastalığı riskini artırır.",
+    "caution_groups": [
+      "hipertansiyon",
+      "kalp hastalığı"
+    ],
+    "processing_role": "Neredeyse tüm işlenmiş ürünlerde, özellikle işlenmiş etlerde.",
+    "risk_level": "medium",
+    "category_tags": [
+      "processed meats",
+      "sauces",
+      "snacks"
+    ]
+  },
+  {
+    "canonical_name": "Şeker",
+    "aliases": [
+      "sugar",
+      "sucrose",
+      "table sugar",
+      "şeker"
+    ],
+    "ingredient_type": "Tatlandırıcı",
+    "short_purpose": "Tatlandırma, yapı oluşturma, fermentasyon.",
+    "short_risk_summary": "Yüksek tüketim obezite, diyabet ve diş çürüğü riskini artırır.",
+    "caution_groups": [
+      "diyabet hastaları",
+      "çocuklar",
+      "obez kişiler"
+    ],
+    "processing_role": "Tatlı ürünler, meşrubatlar, tatlılar, işlenmiş gıdalar.",
+    "risk_level": "medium",
+    "category_tags": [
+      "desserts",
+      "soft drinks",
+      "snacks"
+    ]
+  },
+  {
+    "canonical_name": "Mısır Nişastası",
+    "aliases": [
+      "cornstarch",
+      "corn starch",
+      "maizena"
+    ],
+    "ingredient_type": "Kıvam vericisi",
+    "short_purpose": "Kıvam verme, jöleşme, yapı oluşturma.",
+    "short_risk_summary": "Gluten içermez ama hızlı emilen karbonhidrat. Kan şekeri dalgalanması yapabilir.",
+    "caution_groups": [
+      "diyabet hastaları"
+    ],
+    "processing_role": "Soslar, çorbalar, tatlılar, gluten-free ürünler.",
+    "risk_level": "low",
+    "category_tags": [
+      "sauces",
+      "desserts"
+    ]
+  },
+  {
+    "canonical_name": "Mısır Yağı",
+    "aliases": [
+      "corn oil",
+      "maize oil",
+      "vegetable oil"
+    ],
+    "ingredient_type": "Bitkisel yağ",
+    "short_purpose": "Kızartma, pişirme, emülgatör.",
+    "short_risk_summary": "Yüksek omega-6 yağ asitleri içerir. Iltihap artışı ile ilişkilendirilebilir.",
+    "caution_groups": [
+      "iltihap problemleri"
+    ],
+    "processing_role": "Kızartılmış gıdalar, sos, emülgatör.",
+    "risk_level": "medium",
+    "category_tags": [
+      "snacks",
+      "sauces"
+    ]
+  },
+  {
+    "canonical_name": "Ayçiçek Yağı",
+    "aliases": [
+      "sunflower oil",
+      "sunflower seed oil"
+    ],
+    "ingredient_type": "Bitkisel yağ",
+    "short_purpose": "Pişirme, yemek hazırlama, emülgatör.",
+    "short_risk_summary": "Yüksek omega-6 yağ asitleri. Dengeli raporlanabilir ancak iltihap riski vardır.",
+    "caution_groups": [
+      "iltihap problemleri"
+    ],
+    "processing_role": "Pişirme, salata sos, margarin.",
+    "risk_level": "medium",
+    "category_tags": [
+      "oils",
+      "spreads"
+    ]
+  },
+  {
+    "canonical_name": "Zeytin Yağı",
+    "aliases": [
+      "olive oil",
+      "extra virgin olive oil"
+    ],
+    "ingredient_type": "Bitkisel yağ",
+    "short_purpose": "Pişirme, tat, sağlık faydaları.",
+    "short_risk_summary": "Genellikle sağlıklı kabul edilir. Yüksek sıcaklıkta pişirilmemelidir.",
+    "caution_groups": [],
+    "processing_role": "Salata, dip, pişirme, sos.",
+    "risk_level": "low",
+    "category_tags": [
+      "oils",
+      "sauces"
+    ]
+  },
+  {
+    "canonical_name": "Yağ (Genel)",
+    "aliases": [
+      "fat",
+      "shortening",
+      "butter",
+      "yağ"
+    ],
+    "ingredient_type": "Yağ türü",
+    "short_purpose": "Kızartma, pişirme, yapı oluşturma, tat.",
+    "short_risk_summary": "Yüksek tüketim kalp hastalığı riskini artırır.",
+    "caution_groups": [
+      "kalp hastalığı riskleri"
+    ],
+    "processing_role": "Çoğu işlenmiş gıdada, özellikle pişirilmiş ürünlerde.",
+    "risk_level": "medium",
+    "category_tags": [
+      "oils",
+      "spreads"
+    ]
+  },
+  {
+    "canonical_name": "Tereyağı",
+    "aliases": [
+      "butter",
+      "dairy butter",
+      "sweet cream butter"
+    ],
+    "ingredient_type": "Süt yağı",
+    "short_purpose": "Pişirme, tat, yapı oluşturma.",
+    "short_risk_summary": "Doymuş yağ yüksek. Kolesterol problemi ile ilişkilendirilebilir.",
+    "caution_groups": [
+      "kolesterol problemi"
+    ],
+    "processing_role": "Pişirme, margarin, tatlılar.",
+    "risk_level": "medium",
+    "category_tags": [
+      "spreads",
+      "bakery"
+    ]
+  },
+  {
+    "canonical_name": "Margarin",
+    "aliases": [
+      "margarine",
+      "spread",
+      "soft butter"
+    ],
+    "ingredient_type": "Yağ ikamesi",
+    "short_purpose": "Tereyağı yerine kullanılan yağ, pişirme ve tat.",
+    "short_risk_summary": "Trans yağ içerebilir (yasak olmasına rağmen). Sağlıksız yağ kombinasyonları.",
+    "caution_groups": [
+      "kalp hastalığı riskleri"
+    ],
+    "processing_role": "Pişirme, ekmek, tatlılar.",
+    "risk_level": "medium",
+    "category_tags": [
+      "spreads"
+    ]
+  },
+  {
+    "canonical_name": "Peynir Altı Suyu Tozu",
+    "aliases": [
+      "whey powder",
+      "whey protein",
+      "milk powder"
+    ],
+    "ingredient_type": "Süt ürünü",
+    "short_purpose": "Yapı oluşturma, beslenme, emülgatör.",
+    "short_risk_summary": "Laktoz intolerans kişilerde sorun yapabilir. Bazı formülasyonlar ağır metaller içerebilir.",
+    "caution_groups": [
+      "laktoz hassasiyeti"
+    ],
+    "processing_role": "Protein pudding, çorbalar, tatlılar.",
+    "risk_level": "low",
+    "category_tags": [
+      "dairy"
+    ]
+  },
+  {
+    "canonical_name": "Süt Tozunu",
+    "aliases": [
+      "milk powder",
+      "powdered milk",
+      "dried milk"
+    ],
+    "ingredient_type": "Süt ürünü",
+    "short_purpose": "Beslenme, emülgatör, doku oluşturma.",
+    "short_risk_summary": "Laktoz intolerans ile sorun yapabilir. Oksitleşmiş kolesterol içerebilir.",
+    "caution_groups": [
+      "laktoz hassasiyeti"
+    ],
+    "processing_role": "Çorbalar, soslar, tatlılar, bisküviler.",
+    "risk_level": "low",
+    "category_tags": [
+      "dairy"
+    ]
+  },
+  {
+    "canonical_name": "Peynir Tozu",
+    "aliases": [
+      "cheese powder",
+      "parmesan powder"
+    ],
+    "ingredient_type": "Peynir türevi",
+    "short_purpose": "Tat, umami, aroma.",
+    "short_risk_summary": "Yüksek sodyum. Aşırı tüketim hipertansiyon riskini artırır.",
+    "caution_groups": [
+      "hipertansiyon"
+    ],
+    "processing_role": "Patlamış mısır, atıştırmalıklar, soslar.",
+    "risk_level": "low",
+    "category_tags": [
+      "snacks"
+    ]
+  },
+  {
+    "canonical_name": "Dondurma İstikrarı",
+    "aliases": [
+      "ice cream stabilizer",
+      "emulsifier",
+      "emulsifying agents"
+    ],
+    "ingredient_type": "Emülgatör",
+    "short_purpose": "Dondurmanın yapısını, tanınışını ve bekametriyi kontrol etmek.",
+    "short_risk_summary": "Kompleks formülasyonlar birçok bileşeni içerir. Tanılanan etkileri minimal.",
+    "caution_groups": [],
+    "processing_role": "Dondurma, dondurulmuş tatlılar.",
+    "risk_level": "low",
+    "category_tags": [
+      "desserts"
+    ]
+  },
+  {
+    "canonical_name": "Çikolata Likörü",
+    "aliases": [
+      "cocoa liquor",
+      "chocolate liquor",
+      "cocoa mass"
+    ],
+    "ingredient_type": "Kakao türü",
+    "short_purpose": "Çikolata yapımı, lezzet, renk.",
+    "short_risk_summary": "Kafein ve theobromine içerir. Çok tüketilse uyku ve hiperaktivite yapabilir.",
+    "caution_groups": [
+      "kafein hassasiyeti",
+      "çocuklar"
+    ],
+    "processing_role": "Çikolatalar, şekerlemeler, tatlılar.",
+    "risk_level": "low",
+    "category_tags": [
+      "chocolates"
+    ]
+  },
+  {
+    "canonical_name": "Kakao Tozu",
+    "aliases": [
+      "cocoa powder",
+      "unsweetened cocoa"
+    ],
+    "ingredient_type": "Kakao türü",
+    "short_purpose": "Çikolata tat ve rengi, lezzet arttırma.",
+    "short_risk_summary": "Kafein içerir. Bazı formülasyonlar cadmiyum işlenmiş malzemeler.",
+    "caution_groups": [
+      "kafein hassasiyeti"
+    ],
+    "processing_role": "Çikolatalar, içecekler, tatlılar.",
+    "risk_level": "low",
+    "category_tags": [
+      "chocolates"
+    ]
+  },
+  {
+    "canonical_name": "Vanilya Özü",
+    "aliases": [
+      "vanilla extract",
+      "vanilla essence",
+      "vanillin"
+    ],
+    "ingredient_type": "Aroma vericisi",
+    "short_purpose": "Vanilya aroması ve tadı sağlamak.",
+    "short_risk_summary": "Genel olarak güvenli. Sentetik vanillin içerebilir.",
+    "caution_groups": [],
+    "processing_role": "Tatlılar, pastane, içecekler.",
+    "risk_level": "low",
+    "category_tags": [
+      "desserts",
+      "bakery"
+    ]
+  },
+  {
+    "canonical_name": "Tarih Ekstraktı",
+    "aliases": [
+      "date extract",
+      "date syrup",
+      "date paste"
+    ],
+    "ingredient_type": "Doğal tatlandırıcı",
+    "short_purpose": "Tatlandırma, kepekli tat, beslenme.",
+    "short_risk_summary": "Doğal şeker yüksek. Kan şekeri yükselmesi yapabilir.",
+    "caution_groups": [
+      "diyabet hastaları"
+    ],
+    "processing_role": "Enerji çubukları, tatlılar, bar.",
+    "risk_level": "low",
+    "category_tags": [
+      "snacks",
+      "desserts"
+    ]
+  },
+  {
+    "canonical_name": "Gliserin",
+    "aliases": [
+      "glycerin",
+      "glycerol",
+      "E422",
+      "gliserol"
+    ],
+    "ingredient_type": "NemlendiricI",
+    "short_purpose": "Ürünü yumuşak ve nemli tutmak, şekeri kristallendirmesini önlemek.",
+    "short_risk_summary": "Genel olarak güvenli ancak yüksek miktarlarda laxatif etkileri olabilir.",
+    "caution_groups": [
+      "sindirim problemleri"
+    ],
+    "processing_role": "Şekerli ürünler, tatlılar, sıvı ürünler.",
+    "risk_level": "low",
+    "category_tags": [
+      "desserts",
+      "snacks"
+    ]
+  },
+  {
+    "canonical_name": "Fosfat",
+    "aliases": [
+      "phosphate",
+      "E338-E341",
+      "phosphoric acid"
+    ],
+    "ingredient_type": "Koruyucu ve damla vericisi",
+    "short_purpose": "PH düzenlemek, renk stabilitesi sağlamak, yapı kontrol.",
+    "short_risk_summary": "Yüksek tüketim kemik yoğunluğu kaybı ile ilişkilendirilebilir.",
+    "caution_groups": [],
+    "processing_role": "İçecekler, et ürünleri, peynir.",
+    "risk_level": "medium",
+    "category_tags": [
+      "soft drinks",
+      "processed meats"
+    ]
+  },
+  {
+    "canonical_name": "Sorbik Asit",
+    "aliases": [
+      "sorbic acid",
+      "E200"
+    ],
+    "ingredient_type": "Koruyucu",
+    "short_purpose": "Mayalar ve bazı küfleri öldürmek, raf ömrü uzatmak.",
+    "short_risk_summary": "Genel olarak güvenli ancak bazı ülkelerde kullanımı kısıtlanmıştır.",
+    "caution_groups": [],
+    "processing_role": "Meyve suları, turşular, yoğurt.",
+    "risk_level": "low",
+    "category_tags": [
+      "soft drinks",
+      "dairy"
+    ]
+  },
+  {
+    "canonical_name": "Benzoik Asit",
+    "aliases": [
+      "benzoic acid",
+      "E210"
+    ],
+    "ingredient_type": "Koruyucu",
+    "short_purpose": "Bakteri ve küf büyümesini engel, raf ömrü uzatma.",
+    "short_risk_summary": "Genel olarak güvenli. C vitamini ile kanserojenik bileşik oluşturabilir.",
+    "caution_groups": [],
+    "processing_role": "Turşular, turşu ürünleri, meyve suları.",
+    "risk_level": "low",
+    "category_tags": [
+      "sauces"
+    ]
+  },
+  {
+    "canonical_name": "Kalsiyum Forminat",
+    "aliases": [
+      "calcium formate"
+    ],
+    "ingredient_type": "Koruyucu",
+    "short_purpose": "Ekmekte mayalanma hızını arttırmak.",
+    "short_risk_summary": "Nadir kullanılan. Güvenlik profili sınırlıdır.",
+    "caution_groups": [],
+    "processing_role": "Ekmek ve pastane ürünleri.",
+    "risk_level": "low",
+    "category_tags": [
+      "bakery"
+    ]
+  },
+  {
+    "canonical_name": "Guar Gam",
+    "aliases": [
+      "guar gum",
+      "E412"
+    ],
+    "ingredient_type": "Kıvam vericisi",
+    "short_purpose": "Doku ve kıvam kontrol, stabilitesi arttırma.",
+    "short_risk_summary": "Genel olarak güvenli. Bazı kişilerde sindirim sorunları.",
+    "caution_groups": [
+      "irritable bowel syndrome"
+    ],
+    "processing_role": "Dondurma, yoğurt, soslar.",
+    "risk_level": "low",
+    "category_tags": [
+      "dairy",
+      "sauces"
+    ]
+  },
+  {
+    "canonical_name": "Lokust Fasılya Gam",
+    "aliases": [
+      "locust bean gum",
+      "E410",
+      "carob gum"
+    ],
+    "ingredient_type": "Kıvam vericisi",
+    "short_purpose": "Doku ve stabilitesi sağlamak, kıvam kontrol.",
+    "short_risk_summary": "Genel olarak güvenli. Doğal, lokust fasılyasından yapılır.",
+    "caution_groups": [],
+    "processing_role": "Dondurma, yoğurt, sos.",
+    "risk_level": "low",
+    "category_tags": [
+      "dairy",
+      "sauces"
+    ]
+  },
+  {
+    "canonical_name": "Tween 80",
+    "aliases": [
+      "polysorbate 80",
+      "E435"
+    ],
+    "ingredient_type": "Emülgatör",
+    "short_purpose": "Yağ ve su karışımını tutmak, doku oluşturma.",
+    "short_risk_summary": "Hayvan araştırmalarında intestinal bakteri değişiklikleri göstermiştir.",
+    "caution_groups": [],
+    "processing_role": "Dondurma, çorbalar, emülsiyonlar.",
+    "risk_level": "low",
+    "category_tags": [
+      "dairy",
+      "sauces"
+    ]
+  },
+  {
+    "canonical_name": "Span 80",
+    "aliases": [
+      "sorbitan monooleate",
+      "E491"
+    ],
+    "ingredient_type": "Emülgatör",
+    "short_purpose": "Emülsifikasyon, doku oluşturma.",
+    "short_risk_summary": "Genel olarak güvenli. Sıvı yağlar ile uyumlu.",
+    "caution_groups": [],
+    "processing_role": "Margarin, mayo, sos.",
+    "risk_level": "low",
+    "category_tags": [
+      "sauces",
+      "spreads"
+    ]
+  },
+  {
+    "canonical_name": "Potasyum Karbonati",
+    "aliases": [
+      "potassium carbonate",
+      "potash"
+    ],
+    "ingredient_type": "PH kontrol",
+    "short_purpose": "PH dengelemek, yapı kontrol.",
+    "short_risk_summary": "Genel olarak güvenli. Yüksek miktarlarda kimyasal yakma riski.",
+    "caution_groups": [],
+    "processing_role": "Bisküvi, pasta, çörek.",
+    "risk_level": "low",
+    "category_tags": [
+      "bakery"
+    ]
+  },
+  {
+    "canonical_name": "Magnezyum Sulfat",
+    "aliases": [
+      "magnesium sulphate",
+      "epsom salt"
+    ],
+    "ingredient_type": "Laxatif",
+    "short_purpose": "Dokulu doku oluşturma, mineral takviyesi.",
+    "short_risk_summary": "Laxatif etkiler. Yüksek miktarlarda sindirim sorunları.",
+    "caution_groups": [
+      "sindirim problemleri"
+    ],
+    "processing_role": "Eklem sulama emsali ürünlerde ender.",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Amonyum Karbonat",
+    "aliases": [
+      "ammonium carbonate",
+      "hartshorn"
+    ],
+    "ingredient_type": "Yapı hızlandırıcısı",
+    "short_purpose": "Kekler ve pastaların kabartma.",
+    "short_risk_summary": "Pişirmede gazlaşıp kaybolur. Güvenli miktarlarda.",
+    "caution_groups": [],
+    "processing_role": "Kek ve pastane ürünleri.",
+    "risk_level": "low",
+    "category_tags": [
+      "bakery"
+    ]
+  },
+  {
+    "canonical_name": "Sodyum Metabisülfit",
+    "aliases": [
+      "sodium metabisulfite",
+      "E223"
+    ],
+    "ingredient_type": "Koruyucu",
+    "short_purpose": "Oksidasyonu önlemek, renk stabilitesi.",
+    "short_risk_summary": "Astım tetikleyebilir. Sülfit hassasiyeti olanlar dikkatli olmalı.",
+    "caution_groups": [
+      "astım hastaları",
+      "sülfit alerjisi"
+    ],
+    "processing_role": "Meyve suları, şarap, konserve ürünler.",
+    "risk_level": "medium",
+    "category_tags": [
+      "soft drinks"
+    ]
+  },
+  {
+    "canonical_name": "Potasyum Metabisülfit",
+    "aliases": [
+      "potassium metabisulfite",
+      "E224"
+    ],
+    "ingredient_type": "Koruyucu",
+    "short_purpose": "Oksidasyonu engel, koruma.",
+    "short_risk_summary": "Benzer risk profili sodyum metabisülfite. Astım tetikleyebilir.",
+    "caution_groups": [
+      "astım hastaları"
+    ],
+    "processing_role": "Şarap, meyve suları.",
+    "risk_level": "medium",
+    "category_tags": [
+      "soft drinks"
+    ]
+  },
+  {
+    "canonical_name": "Sodyum Tiosülfit",
+    "aliases": [
+      "sodium thiosulfate",
+      "hypo"
+    ],
+    "ingredient_type": "Koruyucu",
+    "short_purpose": "Sülfit artıklarını kaybolmak, fotoğraf kimyasalı.",
+    "short_risk_summary": "Nadir gıda uygulaması. Kimyasal denatürasyondan sonra güvenli.",
+    "caution_groups": [],
+    "processing_role": "Endüstriyel kullanım, gıdada nadir.",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Kalsiyum Sorbat",
+    "aliases": [
+      "calcium sorbate"
+    ],
+    "ingredient_type": "Koruyucu",
+    "short_purpose": "Mayalar ve küfleri öldür, raf ömrü uzat.",
+    "short_risk_summary": "Sorbik asit ile benzer profil. Genel olarak güvenli.",
+    "caution_groups": [],
+    "processing_role": "Peynir, yoğurt, turşu.",
+    "risk_level": "low",
+    "category_tags": [
+      "dairy",
+      "sauces"
+    ]
+  },
+  {
+    "canonical_name": "Etil Gallate",
+    "aliases": [
+      "ethyl gallate"
+    ],
+    "ingredient_type": "Antioksidan",
+    "short_purpose": "Oksidasyonu önlemek, yağ rancidizasyonunu durdur.",
+    "short_risk_summary": "Nispeten bilinmiş. Toksiklik profilinde kusurlar.",
+    "caution_groups": [],
+    "processing_role": "Fındık ezmesi, deniz ürünleri, yağlı ürünler.",
+    "risk_level": "low",
+    "category_tags": [
+      "snacks"
+    ]
+  },
+  {
+    "canonical_name": "Dodecil Gallate",
+    "aliases": [
+      "dodecyl gallate"
+    ],
+    "ingredient_type": "Antioksidan",
+    "short_purpose": "Yağ oksidasyonunu engel, stabilitesi.",
+    "short_risk_summary": "Hayvan araştırmalarında karaciğer etkileri göstermiştir.",
+    "caution_groups": [],
+    "processing_role": "Yağlı ve hayvansal gıdalar.",
+    "risk_level": "medium",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Octyl Gallate",
+    "aliases": [
+      "octyl gallate"
+    ],
+    "ingredient_type": "Antioksidan",
+    "short_purpose": "Antioksidant, yağ koruma.",
+    "short_risk_summary": "Limited testing. Hayvan araştırmalarında hassaslar.",
+    "caution_groups": [],
+    "processing_role": "Yağlı gıdalar.",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Butillenmiş Hidroksi Anisol",
+    "aliases": [
+      "butylated hydroxyanisole",
+      "BHA",
+      "E320"
+    ],
+    "ingredient_type": "Antioksidan",
+    "short_purpose": "Yağ rancidizasyonunu önlemek.",
+    "short_risk_summary": "Hayvanlarda kanser riski gösterilmiştir. Bazı ülkelerde yasaklı.",
+    "caution_groups": [],
+    "processing_role": "Yağlı ürünler, atıştırmalık.",
+    "risk_level": "high",
+    "category_tags": [
+      "snacks"
+    ]
+  },
+  {
+    "canonical_name": "Butillenmiş Hidroksi Toluol",
+    "aliases": [
+      "butylated hydroxytoluene",
+      "BHT",
+      "E321"
+    ],
+    "ingredient_type": "Antioksidan",
+    "short_purpose": "Yağ stabilizesi, rancidizasyonu engel.",
+    "short_risk_summary": "Hayvan araştırmasında organ etkileri. Nörobehavioral etkileri rapor edilmiştir.",
+    "caution_groups": [],
+    "processing_role": "Helix yağlı ürünler, atıştırmalık.",
+    "risk_level": "high",
+    "category_tags": [
+      "snacks"
+    ]
+  },
+  {
+    "canonical_name": "Myristicin",
+    "aliases": [
+      "myristicin"
+    ],
+    "ingredient_type": "Doğal bileşim",
+    "short_purpose": "Muskatnız nutmeg benzeri baharatlarda doğal olarakta bulunur.",
+    "short_risk_summary": "Yüksek miktarlarda işe yandığında halüsinojenik etkiler.",
+    "caution_groups": [],
+    "processing_role": "Nutmeg, mace ve bu ürünleri içeren yiyecekler.",
+    "risk_level": "low",
+    "category_tags": [
+      "desserts"
+    ]
+  },
+  {
+    "canonical_name": "Safrole",
+    "aliases": [
+      "safrole",
+      "sassafras oil"
+    ],
+    "ingredient_type": "Doğal bileşim",
+    "short_purpose": "Sassafras bitkisinden doğal aromaları.",
+    "short_risk_summary": "Hayvanlarda kanserojenik gösterilmiştir. Kullanımı yasaklanmıştır.",
+    "caution_groups": [],
+    "processing_role": "Yasaklanmış.",
+    "risk_level": "high",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Patent Mavisi",
+    "aliases": [
+      "patent blue",
+      "E131",
+      "FD&C Blue No. 1"
+    ],
+    "ingredient_type": "Sentetik renklendirici",
+    "short_purpose": "Turkuaz veya mavi renkstir vermek.",
+    "short_risk_summary": "Genel olarak güvenli. Bazı kişilerde alerjik reaksiyonlar.",
+    "caution_groups": [],
+    "processing_role": "Meşrubatlar, şekerli ürünler.",
+    "risk_level": "low",
+    "category_tags": [
+      "soft drinks",
+      "snacks"
+    ]
+  },
+  {
+    "canonical_name": "İndigo Karmin",
+    "aliases": [
+      "indigo carmine",
+      "E132",
+      "FD&C Blue No. 2"
+    ],
+    "ingredient_type": "Sentetik renklendirici",
+    "short_purpose": "Mavi reng sağlamak.",
+    "short_risk_summary": "Genel olarak güvenli. Bazı araştırmalarda immunotoksisite.",
+    "caution_groups": [],
+    "processing_role": "Ender kullanılan.",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Litol Rubine",
+    "aliases": [
+      "lithol rubine",
+      "E180"
+    ],
+    "ingredient_type": "Sentetik renklendirici",
+    "short_purpose": "Kırmızı reng.",
+    "short_risk_summary": "Hemen hiç kullanılmaz, toksiklik bilinmemektedir.",
+    "caution_groups": [],
+    "processing_role": "Çoğunlukla ender kullanılan.",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Sentetik İndigo",
+    "aliases": [
+      "synthetic indigo"
+    ],
+    "ingredient_type": "Sentetik renklendirici",
+    "short_purpose": "Mavi boyama.",
+    "short_risk_summary": "Ender kullanılan.",
+    "caution_groups": [],
+    "processing_role": "Çoğunlukla endüstriyel kullanım.",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Saf Parazanlamış Ürünler",
+    "aliases": [
+      "parabenoids"
+    ],
+    "ingredient_type": "Koruyucu",
+    "short_purpose": "Fungal ve bakteri kontrol.",
+    "short_risk_summary": "Endokrin bozucu olabilir. Bazı ülkelerde kısıtlanmış.",
+    "caution_groups": [],
+    "processing_role": "Makyaj, tıbbi ürünler, gıdada ender.",
+    "risk_level": "medium",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Metil Paraben",
+    "aliases": [
+      "methylparaben",
+      "E218"
+    ],
+    "ingredient_type": "Koruyucu",
+    "short_purpose": "Fungal ve bakteri kontrol.",
+    "short_risk_summary": "Endokrin bozucu olabilir. Bazı araştırmalarda estrojenik etkiler.",
+    "caution_groups": [],
+    "processing_role": "Kozmetikler, ender gıdada.",
+    "risk_level": "medium",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Propil Paraben",
+    "aliases": [
+      "propylparaben",
+      "E216"
+    ],
+    "ingredient_type": "Koruyucu",
+    "short_purpose": "Fizungal/bakteri koruma.",
+    "short_risk_summary": "Metil paraben gibi risk. Endokrin etkiler.",
+    "caution_groups": [],
+    "processing_role": "Kozmetik, ender gıdada.",
+    "risk_level": "medium",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Eritorbik Asit",
+    "aliases": [
+      "erythorbic acid",
+      "D-isoascorbic acid"
+    ],
+    "ingredient_type": "Antioksidan",
+    "short_purpose": "Oksidasyonu engel, renk koruması.",
+    "short_risk_summary": "Genel olarak güvenli. Vitamin C yerine kısırdan daha zayıf.",
+    "caution_groups": [],
+    "processing_role": "Meat, türkçe, turşu, meyve ürünleri.",
+    "risk_level": "low",
+    "category_tags": [
+      "processed meats"
+    ]
+  },
+  {
+    "canonical_name": "Sodyum Eritorbat",
+    "aliases": [
+      "sodium erythorbate"
+    ],
+    "ingredient_type": "Antioksidan",
+    "short_purpose": "Antioksidant.",
+    "short_risk_summary": "Genel olarak güvenli. Eritorbik asit tuzu.",
+    "caution_groups": [],
+    "processing_role": "Etrafında, turşu.",
+    "risk_level": "low",
+    "category_tags": [
+      "processed meats"
+    ]
+  },
+  {
+    "canonical_name": "Sodyum Asetat",
+    "aliases": [
+      "sodium acetate",
+      "sodium ethanoate"
+    ],
+    "ingredient_type": "Koruyucu",
+    "short_purpose": "Bakteri kontrol, tatlandırma.",
+    "short_risk_summary": "Genel olarak güvenli.",
+    "caution_groups": [],
+    "processing_role": "Turşu, sos, diş hekimi ürün.",
+    "risk_level": "low",
+    "category_tags": [
+      "sauces"
+    ]
+  },
+  {
+    "canonical_name": "Kalsiyum Asetat",
+    "aliases": [
+      "calcium acetate"
+    ],
+    "ingredient_type": "Koruyucu",
+    "short_purpose": "PH kontrol, bakteri engeli.",
+    "short_risk_summary": "Genel olarak güvenli.",
+    "caution_groups": [],
+    "processing_role": "Turşu, sos.",
+    "risk_level": "low",
+    "category_tags": [
+      "sauces"
+    ]
+  },
+  {
+    "canonical_name": "Potasyum Asetat",
+    "aliases": [
+      "potassium acetate"
+    ],
+    "ingredient_type": "Koruyucu",
+    "short_purpose": "Koruma, tabı kontrol.",
+    "short_risk_summary": "Genel olarak güvenli.",
+    "caution_groups": [],
+    "processing_role": "Turşu ürünleri.",
+    "risk_level": "low",
+    "category_tags": [
+      "sauces"
+    ]
+  },
+  {
+    "canonical_name": "Amonyum Fosfat",
+    "aliases": [
+      "ammonium phosphate"
+    ],
+    "ingredient_type": "Yapı yardımcısı",
+    "short_purpose": "Ekmek kabartma, yapı.",
+    "short_risk_summary": "Endüstriyel kullanım, yüksek miktarlarda sorun.",
+    "caution_groups": [],
+    "processing_role": "Ekmek ve pasta ürünleri.",
+    "risk_level": "low",
+    "category_tags": [
+      "bakery"
+    ]
+  },
+  {
+    "canonical_name": "Magnezyum Karbonat",
+    "aliases": [
+      "magnesium carbonate"
+    ],
+    "ingredient_type": "Anti-kıvılcım",
+    "short_purpose": "İnce tozları önlemek, anti-koruma.",
+    "short_risk_summary": "Genel olarak güvenli. Tatlı tuzu olarak kullanılır.",
+    "caution_groups": [],
+    "processing_role": "Denilmiş tuz, toz ürünleri.",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Sodyum Alüminyum Silikat",
+    "aliases": [
+      "sodium aluminum silicate"
+    ],
+    "ingredient_type": "Anti-kıvılcım",
+    "short_purpose": "Tuz akışını sağlamak.",
+    "short_risk_summary": "Alüminyum kaynaklı - çölyak ve nöroloji endişeleri.",
+    "caution_groups": [],
+    "processing_role": "Tuz, taz ürünleri.",
+    "risk_level": "medium",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Silikon Dioksit",
+    "aliases": [
+      "silicon dioxide",
+      "silica"
+    ],
+    "ingredient_type": "Anti-kıvılcım",
+    "short_purpose": "Toz akışını sağlama.",
+    "short_risk_summary": "Genel olarak güvenli. Soluto risk küçük.",
+    "caution_groups": [],
+    "processing_role": "Tuz, toz ürünleri, vitamin tabletleri.",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Magnezyum Silikat",
+    "aliases": [
+      "magnesium silicate",
+      "talc"
+    ],
+    "ingredient_type": "Anti-kıvılcım",
+    "short_purpose": "Anti-kake, akış sağlama.",
+    "short_risk_summary": "Soluto inhalasyon riski varsa - yemeğe ender.",
+    "caution_groups": [],
+    "processing_role": "Toz ürünleri, tuz.",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Alüminyum Silikat",
+    "aliases": [
+      "aluminum silicate"
+    ],
+    "ingredient_type": "Anti-kıvılcım",
+    "short_purpose": "Tuz ve toz ürünlerine akvış sağla.",
+    "short_risk_summary": "Alüminyum kaynaklı endişeler.",
+    "caution_groups": [],
+    "processing_role": "Tuz, toz.",
+    "risk_level": "medium",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Sodyum Heksamtafosfat",
+    "aliases": [
+      "sodium hexametaphosphate",
+      "E452"
+    ],
+    "ingredient_type": "Emülgatör",
+    "short_purpose": "Yapı tutma, emülgatör.",
+    "short_risk_summary": "Yüksek fosfat tüketimi, kemik sağlığı endişesi.",
+    "caution_groups": [],
+    "processing_role": "Etaflı kasılma, et ürünleri.",
+    "risk_level": "medium",
+    "category_tags": [
+      "processed meats"
+    ]
+  },
+  {
+    "canonical_name": "Trisodyum Fosfat",
+    "aliases": [
+      "trisodium phosphate",
+      "E339"
+    ],
+    "ingredient_type": "Emülgatör",
+    "short_purpose": "PH kontrol, emülgatör.",
+    "short_risk_summary": "Yüksek fosfat gıdalar, kemik riski.",
+    "caution_groups": [],
+    "processing_role": "Peynir, et, sos.",
+    "risk_level": "medium",
+    "category_tags": [
+      "processed meats"
+    ]
+  },
+  {
+    "canonical_name": "Kalp Alanı Yapı",
+    "aliases": [
+      "heart structure ingredients"
+    ],
+    "ingredient_type": "Beslenme bileşeni",
+    "short_purpose": "Kalp sağlığı desteği.",
+    "short_risk_summary": "Kalp hastalıklarına karşı faydalı.",
+    "caution_groups": [],
+    "processing_role": "Sağlıklı ürünler.",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Anti-Enflame Bileşimi",
+    "aliases": [
+      "omega-3 fatty acids"
+    ],
+    "ingredient_type": "Beslenme bileşeni",
+    "short_purpose": "İnflamasyonu azaltmak.",
+    "short_risk_summary": "Genel olarak sağlıklı.",
+    "caution_groups": [],
+    "processing_role": "Balık yağı, çekirdek yağları.",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Lisin",
+    "aliases": [
+      "lysine",
+      "L-lysine"
+    ],
+    "ingredient_type": "Aminoasit",
+    "short_purpose": "Böbrek sağlığı, kas kütlesinde yardım.",
+    "short_risk_summary": "Genel olarak güvenli.",
+    "caution_groups": [],
+    "processing_role": "Beslenme takviyelerine.",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Arginin",
+    "aliases": [
+      "arginine",
+      "L-arginine"
+    ],
+    "ingredient_type": "Aminoasit",
+    "short_purpose": "Kalp sağlığı, kan akışı.",
+    "short_risk_summary": "Genel olarak güvenli.",
+    "caution_groups": [],
+    "processing_role": "Beslenme takviyeleri.",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Glütamin",
+    "aliases": [
+      "glutamine",
+      "L-glutamine"
+    ],
+    "ingredient_type": "Aminoasit",
+    "short_purpose": "Bağırsakları iyileştirme, bağışıklık.",
+    "short_risk_summary": "Genel olarak güvenli.",
+    "caution_groups": [],
+    "processing_role": "Beslenme takviyelerine.",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Glutatyon",
+    "aliases": [
+      "glutathione",
+      "GSH"
+    ],
+    "ingredient_type": "Antioksidan",
+    "short_purpose": "Antioksidant gücü, detoks.",
+    "short_risk_summary": "Genel olarak güvenli.",
+    "caution_groups": [],
+    "processing_role": "Beslenme takviyelerine.",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Koenzim Q10",
+    "aliases": [
+      "coenzyme Q10",
+      "ubiquinone",
+      "CoQ10"
+    ],
+    "ingredient_type": "Beyin kesimi",
+    "short_purpose": "Kalp sağlığı, enerji üretimi.",
+    "short_risk_summary": "Genel olarak güvenli.",
+    "caution_groups": [],
+    "processing_role": "Beslenme takviyelerine, sağlıklı ürünler.",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "L-Carnitine",
+    "aliases": [
+      "L-carnitine",
+      "carnitine"
+    ],
+    "ingredient_type": "Amino turevleri",
+    "short_purpose": "Kalp enerjisi, metabolizme.",
+    "short_risk_summary": "Genel olarak güvenli.",
+    "caution_groups": [],
+    "processing_role": "Beslenme takviyelerine.",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Resveratrol",
+    "aliases": [
+      "resveratrol"
+    ],
+    "ingredient_type": "Polifenol",
+    "short_purpose": "Antioksidant, yaşlanmaya karşı.",
+    "short_risk_summary": "Genel olarak güvenli.",
+    "caution_groups": [],
+    "processing_role": "Beslenme takviyelerine, kırmızı şarap.",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Quercetin",
+    "aliases": [
+      "quercetin"
+    ],
+    "ingredient_type": "Flavonoid",
+    "short_purpose": "Antioksidant, yangı karşı.",
+    "short_risk_summary": "Genel olarak güvenli.",
+    "caution_groups": [],
+    "processing_role": "Beslenme takviyelerine.",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Kırmızı Et",
+    "aliases": [
+      "beef",
+      "kırmızı"
+    ],
+    "ingredient_type": "Protein kaynağı",
+    "short_purpose": "Protein, demir takviyesi",
+    "short_risk_summary": "Aşırı tüketim kalp riski",
+    "caution_groups": [
+      "kolesterol problemi"
+    ],
+    "processing_role": "İşlenmiş et ürünleri",
+    "risk_level": "medium",
+    "category_tags": [
+      "processed meats"
+    ]
+  },
+  {
+    "canonical_name": "Tavuk",
+    "aliases": [
+      "chicken",
+      "poultry"
+    ],
+    "ingredient_type": "Protein kaynağı",
+    "short_purpose": "Proteinkaynağı",
+    "short_risk_summary": "Genel olarak sağlıklı",
+    "caution_groups": [],
+    "processing_role": "İşlenmiş et, sosis",
+    "risk_level": "low",
+    "category_tags": [
+      "processed meats"
+    ]
+  },
+  {
+    "canonical_name": "Hindi",
+    "aliases": [
+      "turkey"
+    ],
+    "ingredient_type": "Protein kaynağı",
+    "short_purpose": "Protein, B vitaminleri",
+    "short_risk_summary": "Genel olarak sağlıklı",
+    "caution_groups": [],
+    "processing_role": "Et ürünleri",
+    "risk_level": "low",
+    "category_tags": [
+      "processed meats"
+    ]
+  },
+  {
+    "canonical_name": "Balık Yağı",
+    "aliases": [
+      "fish oil",
+      "omega-3"
+    ],
+    "ingredient_type": "Beslenme bileşeni",
+    "short_purpose": "Kalp sağlığı, omega-3",
+    "short_risk_summary": "Genel olarak sağlıklı",
+    "caution_groups": [],
+    "processing_role": "Beslenme takviyesi",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Ürün Proteini",
+    "aliases": [
+      "pea protein"
+    ],
+    "ingredient_type": "Protein türü",
+    "short_purpose": "Vegan protein kaynağı",
+    "short_risk_summary": "Genel olarak güvenli",
+    "caution_groups": [],
+    "processing_role": "Protein tozu, energy bar",
+    "risk_level": "low",
+    "category_tags": [
+      "snacks"
+    ]
+  },
+  {
+    "canonical_name": "Soya Proteini",
+    "aliases": [
+      "soy protein",
+      "TVP"
+    ],
+    "ingredient_type": "Protein türü",
+    "short_purpose": "Vegan protein",
+    "short_risk_summary": "GMO kaygısı, hormon etkiler",
+    "caution_groups": [],
+    "processing_role": "Vegan et alternatifi",
+    "risk_level": "medium",
+    "category_tags": [
+      "snacks"
+    ]
+  },
+  {
+    "canonical_name": "Tohum Kabuğu Lifi",
+    "aliases": [
+      "psyllium husk"
+    ],
+    "ingredient_type": "Lif kaynağı",
+    "short_purpose": "Sindirim, lif takviyesi",
+    "short_risk_summary": "Yeterli su ile alınmalı",
+    "caution_groups": [
+      "sindirim problemi"
+    ],
+    "processing_role": "Lif takviyesi",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "İnülin",
+    "aliases": [
+      "inulin",
+      "FOS"
+    ],
+    "ingredient_type": "Prebiyotik lif",
+    "short_purpose": "Sindirim sağlığı, lif",
+    "short_risk_summary": "Bazı kişilerde gazlılık",
+    "caution_groups": [
+      "IBS"
+    ],
+    "processing_role": "Fonksiyonel gıdalar",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Polidekstroz",
+    "aliases": [
+      "polydextrose"
+    ],
+    "ingredient_type": "Yapay lif",
+    "short_purpose": "Kalori azaltma, kıvam",
+    "short_risk_summary": "Bazı kişilerde laxatif etkileri",
+    "caution_groups": [
+      "sindirim problemleri"
+    ],
+    "processing_role": "Düşük kalori ürünler",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Maltodekstrin",
+    "aliases": [
+      "maltodextrin"
+    ],
+    "ingredient_type": "Karbonhidrat türü",
+    "short_purpose": "Enerji ve yapı",
+    "short_risk_summary": "Hızlı emilen karbonhidrat",
+    "caution_groups": [
+      "diyabet"
+    ],
+    "processing_role": "Enerji içecekleri, spor takviyesi",
+    "risk_level": "medium",
+    "category_tags": [
+      "energy drinks"
+    ]
+  },
+  {
+    "canonical_name": "Tafıl Maltoz",
+    "aliases": [
+      "trehalose"
+    ],
+    "ingredient_type": "Şeker türü",
+    "short_purpose": "Tatlandırma",
+    "short_risk_summary": "Genel olarak güvenli",
+    "caution_groups": [],
+    "processing_role": "Tatlılar, içecekler",
+    "risk_level": "low",
+    "category_tags": [
+      "soft drinks"
+    ]
+  },
+  {
+    "canonical_name": "Zeatin",
+    "aliases": [
+      "zaatin"
+    ],
+    "ingredient_type": "Hormon-benzeri plant",
+    "short_purpose": "Bitki proteini bileşeni",
+    "short_risk_summary": "Nadir, endokrin etkiler riski",
+    "caution_groups": [],
+    "processing_role": "Vegan ürünler",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Kakaolu Zehir-Sı Koruması",
+    "aliases": [
+      "cocoa antioxidant"
+    ],
+    "ingredient_type": "Antioksidan",
+    "short_purpose": "Kalp sağlığı",
+    "short_risk_summary": "Genel olarak sağlıklı",
+    "caution_groups": [],
+    "processing_role": "Çikolatalar",
+    "risk_level": "low",
+    "category_tags": [
+      "chocolates"
+    ]
+  },
+  {
+    "canonical_name": "Tatlı Biber Ekstraktı",
+    "aliases": [
+      "red pepper extract",
+      "paprika"
+    ],
+    "ingredient_type": "Tat arttırıcı",
+    "short_purpose": "Tat, renk",
+    "short_risk_summary": "Genel olarak güvenli",
+    "caution_groups": [],
+    "processing_role": "Baharat, tat",
+    "risk_level": "low",
+    "category_tags": [
+      "sauces"
+    ]
+  },
+  {
+    "canonical_name": "Mustarda Tohumu",
+    "aliases": [
+      "mustard seed"
+    ],
+    "ingredient_type": "Baharat",
+    "short_purpose": "Tat, senf sosunda",
+    "short_risk_summary": "Alerji riski",
+    "caution_groups": [
+      "mustarda alerjisi"
+    ],
+    "processing_role": "Soslar, baharat",
+    "risk_level": "low",
+    "category_tags": [
+      "sauces"
+    ]
+  },
+  {
+    "canonical_name": "Kimyon",
+    "aliases": [
+      "cumin"
+    ],
+    "ingredient_type": "Baharat",
+    "short_purpose": "Tat, aroma",
+    "short_risk_summary": "Genel olarak güvenli",
+    "caution_groups": [],
+    "processing_role": "Baharat",
+    "risk_level": "low",
+    "category_tags": [
+      "sauces"
+    ]
+  },
+  {
+    "canonical_name": "Koriander",
+    "aliases": [
+      "coriander"
+    ],
+    "ingredient_type": "Baharat",
+    "short_purpose": "Aroma, tat",
+    "short_risk_summary": "Genel olarak güvenli",
+    "caution_groups": [],
+    "processing_role": "Baharat",
+    "risk_level": "low",
+    "category_tags": [
+      "sauces"
+    ]
+  },
+  {
+    "canonical_name": "Kaya Tuzu",
+    "aliases": [
+      "rock salt"
+    ],
+    "ingredient_type": "Mineral",
+    "short_purpose": "Tat, mineral",
+    "short_risk_summary": "Yüksek tüketimde hipertansiyon",
+    "caution_groups": [
+      "hipertansiyon"
+    ],
+    "processing_role": "Tuz ürünleri",
+    "risk_level": "medium",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Balı",
+    "aliases": [
+      "honey"
+    ],
+    "ingredient_type": "Doğal tatlandırıcı",
+    "short_purpose": "Tatlandırma, antimikrobiyal",
+    "short_risk_summary": "Yüksek şeker, 1 yaşın altı untuk riskli",
+    "caution_groups": [
+      "bebek beslenme"
+    ],
+    "processing_role": "Tatlı, içecek",
+    "risk_level": "low",
+    "category_tags": [
+      "desserts"
+    ]
+  },
+  {
+    "canonical_name": "Agave Nektarı",
+    "aliases": [
+      "agave nectar"
+    ],
+    "ingredient_type": "Doğal tatlandırıcı",
+    "short_purpose": "Tatlandırma",
+    "short_risk_summary": "Yüksek fruktoz",
+    "caution_groups": [
+      "diyabet"
+    ],
+    "processing_role": "Tatlandırıcı",
+    "risk_level": "medium",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Akçaağaç Şurubu",
+    "aliases": [
+      "maple syrup"
+    ],
+    "ingredient_type": "Doğal tatlandırıcı",
+    "short_purpose": "Tatlandırma",
+    "short_risk_summary": "Doğal şeker",
+    "caution_groups": [
+      "diyabet"
+    ],
+    "processing_role": "Tatlandırıcı, tatlı",
+    "risk_level": "low",
+    "category_tags": [
+      "desserts"
+    ]
+  },
+  {
+    "canonical_name": "Çifte Şeker (Treble Şeker)",
+    "aliases": [
+      "evaporated cane juice"
+    ],
+    "ingredient_type": "Tatlandırıcı",
+    "short_purpose": "Tatlandırma",
+    "short_risk_summary": "Genel şeker gibi",
+    "caution_groups": [
+      "diyabet"
+    ],
+    "processing_role": "Tatlılar",
+    "risk_level": "medium",
+    "category_tags": [
+      "desserts"
+    ]
+  },
+  {
+    "canonical_name": "Organik Şeker",
+    "aliases": [
+      "organic sugar"
+    ],
+    "ingredient_type": "Tatlandırıcı",
+    "short_purpose": "Tatlandırma",
+    "short_risk_summary": "Normal şeker gibi",
+    "caution_groups": [
+      "diyabet"
+    ],
+    "processing_role": "Tatlılar",
+    "risk_level": "medium",
+    "category_tags": [
+      "desserts"
+    ]
+  },
+  {
+    "canonical_name": "Hindistan Cevizi Şekeri",
+    "aliases": [
+      "coconut sugar"
+    ],
+    "ingredient_type": "Tatlandırıcı",
+    "short_purpose": "Tatlandırma",
+    "short_risk_summary": "Genel olarak benzer risk",
+    "caution_groups": [
+      "diyabet"
+    ],
+    "processing_role": "Tatlandırıcı",
+    "risk_level": "medium",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Mononatriyum Glutamat",
+    "aliases": [
+      "MSG"
+    ],
+    "ingredient_type": "Tat arttırıcı",
+    "short_purpose": "Umami tat",
+    "short_risk_summary": "Baş ağrısı ve uyuşukluk",
+    "caution_groups": [
+      "migren"
+    ],
+    "processing_role": "Tat arttırma",
+    "risk_level": "medium",
+    "category_tags": [
+      "sauces"
+    ]
+  },
+  {
+    "canonical_name": "Diyasitam",
+    "aliases": [
+      "diacetyl"
+    ],
+    "ingredient_type": "Aroma vericisi",
+    "short_purpose": "Tereyağ aroması",
+    "short_risk_summary": "İşçi sağlığı endişesi, bronşiolit riski",
+    "caution_groups": [],
+    "processing_role": "Yapay tat",
+    "risk_level": "high",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Kondensleme Peyniri",
+    "aliases": [
+      "condensed milk cheese"
+    ],
+    "ingredient_type": "Süt türevi",
+    "short_purpose": "Yapı, emülgatör",
+    "short_risk_summary": "Laktoz ve şeker yüksek",
+    "caution_groups": [
+      "laktoz intoleransı"
+    ],
+    "processing_role": "Tatlılar",
+    "risk_level": "medium",
+    "category_tags": [
+      "dairy",
+      "desserts"
+    ]
+  },
+  {
+    "canonical_name": "Bakır Disülfinat",
+    "aliases": [
+      "copper sulfate"
+    ],
+    "ingredient_type": "Mineral",
+    "short_purpose": "Maviye renklendirme (ender)",
+    "short_risk_summary": "Toksinsite riski",
+    "caution_groups": [],
+    "processing_role": "Ender gıda rengi",
+    "risk_level": "high",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Titanyum Dioksit",
+    "aliases": [
+      "titanium dioxide",
+      "E171"
+    ],
+    "ingredient_type": "Beyazlık arttırıcısı",
+    "short_purpose": "Beyazlık sağla",
+    "short_risk_summary": "Nanometrelik partiküller, sindirim sistemi endişe",
+    "caution_groups": [],
+    "processing_role": "Beyaz renk ürünleri",
+    "risk_level": "medium",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Çinko Oksit",
+    "aliases": [
+      "zinc oxide"
+    ],
+    "ingredient_type": "Mineral",
+    "short_purpose": "beyazlık sağla",
+    "short_risk_summary": "Genel olarak güvenli gıda miktarlarında",
+    "caution_groups": [],
+    "processing_role": "Ender gıda rengi",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Demir Oksit",
+    "aliases": [
+      "iron oxide",
+      "E172"
+    ],
+    "ingredient_type": "Renklendirici",
+    "short_purpose": "Kırmızı, siyah, sarı renkler",
+    "short_risk_summary": "Genel olarak güvenli",
+    "caution_groups": [],
+    "processing_role": "Renklendiril ürünler",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Kadmiyum Klorit",
+    "aliases": [
+      "cadmium chloride"
+    ],
+    "ingredient_type": "Toksin",
+    "short_purpose": "Yasaklı - sağlığa zararlı",
+    "short_risk_summary": "Kanserojenik, toksin",
+    "caution_groups": [],
+    "processing_role": "Yasaklanmış",
+    "risk_level": "high",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Kurşun Asetat",
+    "aliases": [
+      "lead acetate"
+    ],
+    "ingredient_type": "Toksin",
+    "short_purpose": "Yasaklı - sağlığa zararlı",
+    "short_risk_summary": "Nörotoksin, kanser riski",
+    "caution_groups": [],
+    "processing_role": "Yasaklanmış",
+    "risk_level": "high",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Arsenik Trioksit",
+    "aliases": [
+      "arsenic trioxide"
+    ],
+    "ingredient_type": "Toksin",
+    "short_purpose": "Yasaklı",
+    "short_risk_summary": "Kanserojenik toksin",
+    "caution_groups": [],
+    "processing_role": "Yasaklanmış",
+    "risk_level": "high",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Merkür",
+    "aliases": [
+      "mercury"
+    ],
+    "ingredient_type": "Toksin",
+    "short_purpose": "Yasaklı",
+    "short_risk_summary": "Nörotoksin",
+    "caution_groups": [],
+    "processing_role": "Yasaklanmış, balıkta bulunabilir",
+    "risk_level": "high",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Alüminyum",
+    "aliases": [
+      "aluminum",
+      "aluminium"
+    ],
+    "ingredient_type": "Metal",
+    "short_purpose": "Çoğu gıdada doğal olarak",
+    "short_risk_summary": "Yüksek miktarlarda sinir sistemi endişesi",
+    "caution_groups": [],
+    "processing_role": "Doğal bulunan",
+    "risk_level": "medium",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Nikel",
+    "aliases": [
+      "nickel"
+    ],
+    "ingredient_type": "Metal",
+    "short_purpose": "Çoğu gıdada doğal olarak",
+    "short_risk_summary": "Alerji riski",
+    "caution_groups": [
+      "nikel alerjisi"
+    ],
+    "processing_role": "Doğal bulunan",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Selenium",
+    "aliases": [
+      "selenium"
+    ],
+    "ingredient_type": "Mineral",
+    "short_purpose": "Tiroid sağlığı",
+    "short_risk_summary": "Yüksek miktarlarda toksin",
+    "caution_groups": [],
+    "processing_role": "Beslenme elementos",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Çinko",
+    "aliases": [
+      "zinc"
+    ],
+    "ingredient_type": "Mineral",
+    "short_purpose": "İmmün sistem, yara iyileştirme",
+    "short_risk_summary": "Yüksek miktarlarda bakır soğurma bloklar",
+    "caution_groups": [],
+    "processing_role": "Beslenme elements",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Bakır",
+    "aliases": [
+      "copper"
+    ],
+    "ingredient_type": "Mineral",
+    "short_purpose": "Bağ doku, metabolizme",
+    "short_risk_summary": "Yüksek dozda toksin",
+    "caution_groups": [],
+    "processing_role": "Beslenme elements",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Molibden",
+    "aliases": [
+      "molybdenum"
+    ],
+    "ingredient_type": "Mineral",
+    "short_purpose": "Enzim verimliliği",
+    "short_risk_summary": "Genel olarak güvenli",
+    "caution_groups": [],
+    "processing_role": "Beslenme elements",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Mangan",
+    "aliases": [
+      "manganese"
+    ],
+    "ingredient_type": "Mineral",
+    "short_purpose": "Kemikleri, metabolizme",
+    "short_risk_summary": "Yüksek miktarlarda sinir sistemi sorun",
+    "caution_groups": [],
+    "processing_role": "Beslenme elements",
+    "risk_level": "low",
+    "category_tags": []
+  },
+  {
+    "canonical_name": "Boron",
+    "aliases": [
+      "boron"
+    ],
+    "ingredient_type": "Mineral",
+    "short_purpose": "Kemik ve bağ doku sağlığı",
+    "short_risk_summary": "Genel olarak güvenli",
+    "caution_groups": [],
+    "processing_role": "Beslenme elements",
+    "risk_level": "low",
+    "category_tags": []
+  }
+]

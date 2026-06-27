@@ -1,0 +1,39 @@
+{
+  "mode": "dry-run",
+  "candidates": [],
+  "skipped": [
+    {
+      "url": "https://www.migros.com.tr/salam-c-112d6",
+      "reason": "no product links found",
+      "debug": {
+        "html_length": 168911,
+        "href_link_count": 102,
+        "pattern_link_count": 0,
+        "script_count": 9,
+        "script_product_url_count": 0,
+        "json_product_url_count": 0,
+        "first_10_candidate_paths": [],
+        "configured_product_link_patterns": [
+          "-p-"
+        ],
+        "configured_exclude_link_patterns": [
+          "/sepet",
+          "/login",
+          "/arama",
+          "/kampanya",
+          "/yardim",
+          "/hesabim"
+        ],
+        "api_endpoint_hints": []
+      }
+    }
+  ],
+  "errors": [],
+  "source_stats": {
+    "migros": {
+      "pages": 1,
+      "candidates": 0,
+      "errors": 0
+    }
+  }
+}
