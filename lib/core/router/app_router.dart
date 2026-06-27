@@ -27,13 +27,21 @@ import 'package:food_analyzer_app/features/product_staging/models/product_candid
 import 'package:food_analyzer_app/features/submission/models/product_submission.dart';
 import 'package:food_analyzer_app/features/search/models/product_category.dart';
 import 'package:food_analyzer_app/features/search/pages/category_products_page.dart';
+import 'package:food_analyzer_app/features/branding/pages/etiketly_intro_page.dart';
 
 class AppRouter {
   AppRouter._();
 
   static final GoRouter router = GoRouter(
-    initialLocation: '/search',
+    initialLocation: '/intro',
     routes: <RouteBase>[
+      // ── Launch intro — shown once on cold start, replaces itself ────────────
+      GoRoute(
+        name: 'intro',
+        path: '/intro',
+        builder: (context, state) =>
+            EtiketlyIntroPage(onComplete: () => context.go('/search')),
+      ),
       // ── Main shell — bottom navigation bar ──────────────────────────────────
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Exact cream sampled from the Etiketly logo background.
+         Used by the native splash so the transition to the Flutter
+         intro page is seamless (no color flash). -->
+    <color name="splashBackground">#FBF5E9</color>
+</resources>
