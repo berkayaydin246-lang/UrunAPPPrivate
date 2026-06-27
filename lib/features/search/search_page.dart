@@ -22,7 +22,7 @@ class SearchScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('FreshScan'),
+        title: const Text('Etiketly'),
         actions: [
           IconButton(
             tooltip: 'Kitaplığım',

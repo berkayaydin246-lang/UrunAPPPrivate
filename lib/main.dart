@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'FreshScan',
+      title: 'Etiketly',
       theme: AppTheme.lightTheme(),
       routerConfig: AppRouter.router,
       debugShowCheckedModeBanner: false,

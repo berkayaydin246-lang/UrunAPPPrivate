@@ -1,4 +1,4 @@
-package com.freshscan.app
+package com.etiketly.app
 
 import io.flutter.embedding.android.FlutterActivity
 

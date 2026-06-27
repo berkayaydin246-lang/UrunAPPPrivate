@@ -20,7 +20,7 @@ val isReleaseTaskRequested = gradle.startParameter.taskNames.any { taskName ->
 }
 
 android {
-    namespace = "com.freshscan.app"
+    namespace = "com.etiketly.app"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
@@ -71,7 +71,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.freshscan.app"
+        applicationId = "com.etiketly.app"
         minSdk = flutter.minSdkVersion
         targetSdk = 35
         versionCode = flutter.versionCode

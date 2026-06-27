@@ -98,7 +98,7 @@ class _AdminHero extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'FreshScan yönetim alanı',
+            'Etiketly yönetim alanı',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w800,

@@ -382,7 +382,7 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
     shortPurpose:
         'Potasyum sorbat, küf ve maya gelişimini sınırlamak için kullanılan bir koruyucudur.',
     shortRiskSummary:
-        'Mevzuatta izin verilen kullanım koşullarında değerlendirilir. FreshScan bunu katkı yoğunluğunu daha görünür kılmak için bilgi amaçlı gösterir.',
+        'Mevzuatta izin verilen kullanım koşullarında değerlendirilir. Etiketly bunu katkı yoğunluğunu daha görünür kılmak için bilgi amaçlı gösterir.',
     processingRole:
         'Soslar, içecekler, unlu mamuller ve bazı sütlü ürünlerde görülebilir.',
     riskLevel: 'medium',
@@ -402,7 +402,7 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
     shortPurpose:
         'Sorbik asit, ürünün raf ömrünü desteklemek ve maya ile küf gelişimini sınırlamak için kullanılabilir.',
     shortRiskSummary:
-        'Mevzuatta izin verilen kullanım koşullarında değerlendirilir. FreshScan bunu içerik profilini daha anlaşılır göstermek için bilgi amaçlı listeler.',
+        'Mevzuatta izin verilen kullanım koşullarında değerlendirilir. Etiketly bunu içerik profilini daha anlaşılır göstermek için bilgi amaçlı listeler.',
     processingRole: 'Asidik gıdalar ve çeşitli paketli ürünlerde görülebilir.',
     riskLevel: 'medium',
     references: [
@@ -421,7 +421,7 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
     shortPurpose:
         'Sodyum benzoat, belirli ürünlerde mikrobiyal gelişimi sınırlamak için kullanılan bir koruyucudur.',
     shortRiskSummary:
-        'Mevzuatta izin verilen kullanım koşullarında değerlendirilir. FreshScan bunu ürünün katkı yapısını daha şeffaf göstermek için bilgi amaçlı listeler.',
+        'Mevzuatta izin verilen kullanım koşullarında değerlendirilir. Etiketly bunu ürünün katkı yapısını daha şeffaf göstermek için bilgi amaçlı listeler.',
     processingRole: 'İçecek, sos ve çeşitli paketli ürünlerde kullanılabilir.',
     riskLevel: 'medium',
     references: [
@@ -440,7 +440,7 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
     shortPurpose:
         'Benzoik asit, belirli ürünlerde raf ömrünü desteklemek için kullanılan bir koruyucu bileşendir.',
     shortRiskSummary:
-        'Mevzuatta izin verilen kullanım koşullarında değerlendirilir. FreshScan bunu içerik şeffaflığı için bilgi amaçlı gösterir.',
+        'Mevzuatta izin verilen kullanım koşullarında değerlendirilir. Etiketly bunu içerik şeffaflığı için bilgi amaçlı gösterir.',
     processingRole:
         'Asidik içecekler, soslar ve benzeri paketli ürünlerde bulunabilir.',
     riskLevel: 'medium',
@@ -589,7 +589,7 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
     shortPurpose:
         'Mono ve digliseritler, yağ ve su fazını daha kararlı tutmaya yardımcı olan emülgatörlerdir.',
     shortRiskSummary:
-        'Bu bileşen genellikle ürün yapısını desteklemek için kullanılır. FreshScan bunu katkı yoğunluğunu daha anlaşılır göstermek için bilgi amaçlı listeler.',
+        'Bu bileşen genellikle ürün yapısını desteklemek için kullanılır. Etiketly bunu katkı yoğunluğunu daha anlaşılır göstermek için bilgi amaçlı listeler.',
     processingRole:
         'Fırıncılık ürünleri, dondurulmuş tatlılar ve kremalı ürünlerde kullanılabilir.',
     riskLevel: 'medium',
@@ -609,7 +609,7 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
     shortPurpose:
         'Karagenan, kıvamı ve stabiliteyi desteklemek için kullanılan bir jel/kıvam bileşenidir.',
     shortRiskSummary:
-        'FreshScan bunu ürünün katkı yapısını daha görünür kılmak için bilgi amaçlı gösterir. Değerlendirme ürünün tamamı ile birlikte yapılmalıdır.',
+        'Etiketly bunu ürünün katkı yapısını daha görünür kılmak için bilgi amaçlı gösterir. Değerlendirme ürünün tamamı ile birlikte yapılmalıdır.',
     processingRole:
         'Sütlü tatlılar, bitkisel içecekler ve soslarda görülebilir.',
     riskLevel: 'medium',
@@ -629,7 +629,7 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
     shortPurpose:
         'Guar gam, kıvamı ve homojen yapıyı desteklemek için kullanılan bir stabilizatördür.',
     shortRiskSummary:
-        'FreshScan bunu ürünün katkı profiline görünürlük kazandırmak için bilgi amaçlı listeler. Değerlendirme ürünün tamamı ile birlikte yapılmalıdır.',
+        'Etiketly bunu ürünün katkı profiline görünürlük kazandırmak için bilgi amaçlı listeler. Değerlendirme ürünün tamamı ile birlikte yapılmalıdır.',
     processingRole:
         'Dondurma, sos, içecek ve glutensiz karışımlarda görülebilir.',
     riskLevel: 'low',
@@ -649,7 +649,7 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
     shortPurpose:
         'Ksantan gam, kıvamı, akış davranışını ve ürün stabilitesini desteklemek için kullanılan bir bileşendir.',
     shortRiskSummary:
-        'FreshScan bunu katkı yapısına görünürlük kazandırmak için bilgi amaçlı listeler. Değerlendirme ürünün bütünü ile birlikte yapılmalıdır.',
+        'Etiketly bunu katkı yapısına görünürlük kazandırmak için bilgi amaçlı listeler. Değerlendirme ürünün bütünü ile birlikte yapılmalıdır.',
     processingRole:
         'Soslar, içecekler ve glutensiz veya düşük yağlı ürünlerde görülebilir.',
     riskLevel: 'low',
@@ -668,7 +668,7 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
     shortPurpose:
         'Karamel renklendirici, ürüne kahverengi tonlar vermek için kullanılan bir renklendirici grubudur.',
     shortRiskSummary:
-        'Bu ifade birden fazla alt türü kapsayabildiği için E-kodu ancak spesifik alt tür açıkça belirtilirse gösterilmelidir. FreshScan bunu etiket şeffaflığı için bilgi amaçlı listeler.',
+        'Bu ifade birden fazla alt türü kapsayabildiği için E-kodu ancak spesifik alt tür açıkça belirtilirse gösterilmelidir. Etiketly bunu etiket şeffaflığı için bilgi amaçlı listeler.',
     processingRole:
         'Koyu renkli içecekler, soslar, bisküviler ve bazı tatlı ürünlerde görülebilir.',
     riskLevel: 'medium',
@@ -688,7 +688,7 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
     shortPurpose:
         'Palm yağı, bazı paketli gıdalarda doku, kıvam ve raf ömrünü desteklemek için kullanılan bitkisel bir yağdır.',
     shortRiskSummary:
-        'Doymuş yağ oranı yüksek olabildiği için FreshScan bu maddeyi dikkat edilmesi gereken içerikler arasında gösterir. Değerlendirme ürünün tamamı, porsiyon miktarı ve tüketim sıklığı ile birlikte düşünülmelidir.',
+        'Doymuş yağ oranı yüksek olabildiği için Etiketly bu maddeyi dikkat edilmesi gereken içerikler arasında gösterir. Değerlendirme ürünün tamamı, porsiyon miktarı ve tüketim sıklığı ile birlikte düşünülmelidir.',
     cautionGroups: const ['doymuş yağ alımını sınırlayanlar'],
     processingRole:
         'Atıştırmalıklar, kremalı dolgular ve bazı fırıncılık ürünlerinde görülebilir.',
@@ -821,7 +821,7 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
     shortPurpose:
         'Fındık, ürünün tat ve doku profilini etkileyebilen bir kuruyemiş bileşenidir.',
     shortRiskSummary:
-        'Fındık, etiketlerde alerjen olarak belirtilmesi gereken bileşenler arasındadır. FreshScan bunu alerjen görünürlüğü için bilgi amaçlı gösterir.',
+        'Fındık, etiketlerde alerjen olarak belirtilmesi gereken bileşenler arasındadır. Etiketly bunu alerjen görünürlüğü için bilgi amaçlı gösterir.',
     cautionGroups: const ['kuruyemiş bildirimi takip edenler'],
     processingRole:
         'Çikolata, kremalı ürün, atıştırmalık ve kahvaltılık karışımlarda görülebilir.',
@@ -835,7 +835,7 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
     shortPurpose:
         'Yer fıstığı, ürünün tat ve doku profilini etkileyebilen bir kuruyemiş bileşenidir.',
     shortRiskSummary:
-        'Yer fıstığı, etiketlerde alerjen olarak belirtilmesi gereken bileşenler arasındadır. FreshScan bunu alerjen görünürlüğü için bilgi amaçlı gösterir.',
+        'Yer fıstığı, etiketlerde alerjen olarak belirtilmesi gereken bileşenler arasındadır. Etiketly bunu alerjen görünürlüğü için bilgi amaçlı gösterir.',
     cautionGroups: const ['yer fıstığı bildirimi takip edenler'],
     processingRole:
         'Ezme, sos, bar ve çeşitli atıştırmalık ürünlerde görülebilir.',
@@ -848,7 +848,7 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
     shortPurpose:
         'Soya, protein, yağ veya emülgatör kaynağı olarak kullanılan bir bitkisel bileşendir.',
     shortRiskSummary:
-        'Soya, etiketlerde alerjen olarak belirtilmesi gereken bileşenler arasındadır. FreshScan bunu alerjen görünürlüğü için bilgi amaçlı gösterir.',
+        'Soya, etiketlerde alerjen olarak belirtilmesi gereken bileşenler arasındadır. Etiketly bunu alerjen görünürlüğü için bilgi amaçlı gösterir.',
     cautionGroups: const ['soya bildirimi takip edenler'],
     processingRole:
         'İçecekler, soslar, et alternatifleri ve emülgatör kaynaklarında görülebilir.',
@@ -861,7 +861,7 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
     shortPurpose:
         'Susam, ürünün tat ve doku profilini etkileyebilen bir tohum bileşenidir.',
     shortRiskSummary:
-        'Susam, etiketlerde alerjen olarak belirtilmesi gereken bileşenler arasındadır. FreshScan bunu alerjen görünürlüğü için bilgi amaçlı gösterir.',
+        'Susam, etiketlerde alerjen olarak belirtilmesi gereken bileşenler arasındadır. Etiketly bunu alerjen görünürlüğü için bilgi amaçlı gösterir.',
     cautionGroups: const ['susam bildirimi takip edenler'],
     processingRole:
         'Fırıncılık ürünleri, soslar ve karışık atıştırmalıklarda görülebilir.',

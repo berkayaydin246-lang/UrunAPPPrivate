@@ -7,7 +7,7 @@ void main() {
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
     await tester.pumpAndSettle();
 
-    expect(find.text('FreshScan'), findsOneWidget);
+    expect(find.text('Etiketly'), findsOneWidget);
     expect(find.text('Ara'), findsOneWidget);
     expect(find.text('Barkod'), findsOneWidget);
     expect(find.text('Admin'), findsOneWidget);
