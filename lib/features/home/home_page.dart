@@ -48,24 +48,6 @@ class HomeScreen extends StatelessWidget {
               horizontal: true,
               onTap: () => context.goNamed('history'),
             ),
-            const SizedBox(height: 26),
-            Text('Yönetim', style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 10),
-            _AdminLink(
-              label: 'Staging Ürünleri',
-              icon: Icons.inventory_2_outlined,
-              onTap: () => context.goNamed('product_staging_review'),
-            ),
-            _AdminLink(
-              label: 'Ürün İnceleme Kuyruğu',
-              icon: Icons.fact_check_outlined,
-              onTap: () => context.goNamed('product_submission_review'),
-            ),
-            _AdminLink(
-              label: 'OCR Benchmark',
-              icon: Icons.speed_outlined,
-              onTap: () => context.goNamed('ocr_benchmark'),
-            ),
           ],
         ),
       ),
@@ -280,30 +262,6 @@ class _ActionCopy extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _AdminLink extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _AdminLink({
-    required this.label,
-    required this.icon,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: OutlinedButton.icon(
-        onPressed: onTap,
-        icon: Icon(icon),
-        label: Text(label),
-      ),
     );
   }
 }

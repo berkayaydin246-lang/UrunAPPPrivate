@@ -29,6 +29,11 @@ class SearchScreen extends ConsumerWidget {
             icon: const Icon(Icons.bookmarks_outlined),
             onPressed: () => context.pushNamed('history'),
           ),
+          IconButton(
+            tooltip: 'Hakkında',
+            icon: const Icon(Icons.info_outline_rounded),
+            onPressed: () => context.pushNamed('settings'),
+          ),
         ],
       ),
       body: ProductListView(

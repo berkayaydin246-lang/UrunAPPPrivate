@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:food_analyzer_app/core/theme/app_theme.dart';
 import 'package:food_analyzer_app/features/home/home_page.dart';
 import 'package:food_analyzer_app/features/search/search_page.dart';
@@ -28,6 +29,11 @@ import 'package:food_analyzer_app/features/submission/models/product_submission.
 import 'package:food_analyzer_app/features/search/models/product_category.dart';
 import 'package:food_analyzer_app/features/search/pages/category_products_page.dart';
 import 'package:food_analyzer_app/features/branding/pages/etiketly_intro_page.dart';
+import 'package:food_analyzer_app/features/onboarding/pages/onboarding_page.dart';
+import 'package:food_analyzer_app/features/settings/pages/settings_page.dart';
+
+/// SharedPreferences key persisting first-launch onboarding completion.
+const _kOnboardingKey = 'etiketly_onboarding_completed_v1';
 
 class AppRouter {
   AppRouter._();
@@ -35,14 +41,45 @@ class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: '/intro',
     routes: <RouteBase>[
-      // ── Launch intro — shown once on cold start, replaces itself ────────────
+      // ── Launch intro — replaces itself, checks onboarding status ────────────
       GoRoute(
         name: 'intro',
         path: '/intro',
-        builder: (context, state) =>
-            EtiketlyIntroPage(onComplete: () => context.go('/search')),
+        builder: (context, state) => EtiketlyIntroPage(
+          onComplete: () {
+            // Fire-and-forget: read prefs then navigate.
+            // Defaults safely to onboarding on any error.
+            SharedPreferences.getInstance().then(
+              (prefs) {
+                final done = prefs.getBool(_kOnboardingKey) ?? false;
+                if (context.mounted) {
+                  context.go(done ? '/search' : '/onboarding');
+                }
+              },
+              onError: (_) {
+                if (context.mounted) context.go('/onboarding');
+              },
+            );
+          },
+        ),
       ),
-      // ── Main shell — bottom navigation bar ──────────────────────────────────
+
+      // ── First-launch onboarding — replaces itself on completion ─────────────
+      GoRoute(
+        name: 'onboarding',
+        path: '/onboarding',
+        builder: (context, state) => OnboardingPage(
+          onComplete: () {
+            // Persist completion (fire-and-forget) then navigate home.
+            SharedPreferences.getInstance()
+                .then((p) => p.setBool(_kOnboardingKey, true))
+                .ignore();
+            context.go('/search');
+          },
+        ),
+      ),
+
+      // ── Main shell — consumer tabs (Search + Barcode only) ──────────────────
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
             _AppShell(navigationShell: navigationShell),
@@ -67,16 +104,6 @@ class AppRouter {
               ),
             ],
           ),
-          // Branch 2: Admin — secure admin menu
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                name: 'admin_home',
-                path: '/internal/admin',
-                builder: (context, state) => const AdminHomePage(),
-              ),
-            ],
-          ),
         ],
       ),
 
@@ -85,6 +112,11 @@ class AppRouter {
         name: 'home',
         path: '/',
         builder: (context, state) => const HomeScreen(),
+      ),
+      GoRoute(
+        name: 'settings',
+        path: '/settings',
+        builder: (context, state) => const SettingsPage(),
       ),
       GoRoute(
         name: 'product',
@@ -150,15 +182,12 @@ class AppRouter {
         path: '/history',
         builder: (context, state) => const HistoryScreen(),
       ),
+
+      // ── Admin — not in the shell; access via hidden gesture in Settings ───────
       GoRoute(
-        name: 'product_staging_review',
-        path: '/internal/product-staging',
-        builder: (context, state) => const ProductStagingListPage(),
-      ),
-      GoRoute(
-        name: 'product_submission_review',
-        path: '/internal/product-submissions',
-        builder: (context, state) => const ProductSubmissionListPage(),
+        name: 'admin_home',
+        path: '/internal/admin',
+        builder: (context, state) => const AdminHomePage(),
       ),
       GoRoute(
         name: 'admin_product_reports',
@@ -172,16 +201,15 @@ class AppRouter {
           reportId: state.pathParameters['id'] ?? '',
         ),
       ),
-      // Staging detail is a full-screen push (no bottom nav)
       GoRoute(
-        name: 'product_staging_review_detail',
-        path: '/internal/product-staging/:id',
-        builder: (context, state) => ProductStagingDetailPage(
-          stagingId: state.pathParameters['id'] ?? '',
-          candidate: state.extra is ProductCandidate
-              ? state.extra as ProductCandidate
-              : null,
-        ),
+        name: 'product_staging_review',
+        path: '/internal/product-staging',
+        builder: (context, state) => const ProductStagingListPage(),
+      ),
+      GoRoute(
+        name: 'product_submission_review',
+        path: '/internal/product-submissions',
+        builder: (context, state) => const ProductSubmissionListPage(),
       ),
       GoRoute(
         name: 'admin_review',
@@ -199,9 +227,14 @@ class AppRouter {
         ),
       ),
       GoRoute(
-        name: 'ocr_benchmark',
-        path: '/internal/ocr-benchmark',
-        builder: (context, state) => const OcrBenchmarkPage(),
+        name: 'product_staging_review_detail',
+        path: '/internal/product-staging/:id',
+        builder: (context, state) => ProductStagingDetailPage(
+          stagingId: state.pathParameters['id'] ?? '',
+          candidate: state.extra is ProductCandidate
+              ? state.extra as ProductCandidate
+              : null,
+        ),
       ),
       GoRoute(
         name: 'product_submission_review_detail',
@@ -213,14 +246,19 @@ class AppRouter {
               : null,
         ),
       ),
+      GoRoute(
+        name: 'ocr_benchmark',
+        path: '/internal/ocr-benchmark',
+        builder: (context, state) => const OcrBenchmarkPage(),
+      ),
     ],
   );
 }
 
-/// Bottom-navigation shell that wraps the three main tab branches.
+/// Bottom-navigation shell with two consumer tabs (Search and Barcode).
 ///
-/// Tapping a tab that is already active scrolls back to root (by passing
-/// initialLocation: true), matching standard tab-bar behaviour.
+/// Admin is no longer in the shell. It is accessible only through
+/// the hidden gesture in the Settings / About page.
 class _AppShell extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
@@ -242,7 +280,6 @@ class _AppShell extends StatelessWidget {
             currentIndex: navigationShell.currentIndex,
             onTap: (index) => navigationShell.goBranch(
               index,
-              // Re-tapping the active tab resets it to its root route.
               initialLocation: index == navigationShell.currentIndex,
             ),
             items: const [
@@ -255,11 +292,6 @@ class _AppShell extends StatelessWidget {
                 icon: Icon(Icons.qr_code_scanner_rounded),
                 activeIcon: Icon(Icons.qr_code_scanner_rounded),
                 label: 'Barkod',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.admin_panel_settings_outlined),
-                activeIcon: Icon(Icons.admin_panel_settings_rounded),
-                label: 'Admin',
               ),
             ],
           ),
