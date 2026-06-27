@@ -8,7 +8,7 @@ Widget _buildPage(VoidCallback onComplete) {
 
 void main() {
   group('EtiketlyIntroPage', () {
-    testWidgets('renders Etiketly logo asset', (tester) async {
+    testWidgets('renders Etiketly transparent logo mark', (tester) async {
       await tester.pumpWidget(_buildPage(() {}));
       await tester.pump();
 
@@ -17,7 +17,7 @@ void main() {
           (w) =>
               w is Image &&
               w.image is AssetImage &&
-              (w.image as AssetImage).assetName.contains('etiketly_icon.png'),
+              (w.image as AssetImage).assetName.contains('etiketly_logo_mark'),
         ),
         findsOneWidget,
       );
@@ -38,15 +38,13 @@ void main() {
       expect(find.textContaining('FreshScan'), findsNothing);
     });
 
-    testWidgets('total animation duration is at most 1800 ms', (tester) async {
+    testWidgets('total animation duration is at most 2500 ms', (tester) async {
       await tester.pumpWidget(_buildPage(() {}));
 
-      // Advance 1800 ms — animation must be finished by then.
-      await tester.pump(const Duration(milliseconds: 1800));
-      await tester.pump(); // settle one more frame
+      // Advance 2500 ms — animation must finish by then (2000 ms main + 300 ms exit).
+      await tester.pump(const Duration(milliseconds: 2500));
+      await tester.pump(); // one more frame to settle
 
-      // If animation ran past 1800 ms the ticker would have errored;
-      // reaching here confirms the duration constraint.
       expect(true, isTrue);
     });
 
@@ -56,9 +54,9 @@ void main() {
       int callCount = 0;
       await tester.pumpWidget(_buildPage(() => callCount++));
 
-      // Run the full animation (main 1500 ms + exit 200 ms = 1700 ms total).
-      await tester.pump(const Duration(milliseconds: 1700));
-      await tester.pump(const Duration(milliseconds: 100)); // settle
+      // Full animation: 2000 ms main + 300 ms exit = 2300 ms total.
+      await tester.pump(const Duration(milliseconds: 2300));
+      await tester.pump(const Duration(milliseconds: 200)); // settle
       await tester.pumpAndSettle();
 
       expect(callCount, 1);

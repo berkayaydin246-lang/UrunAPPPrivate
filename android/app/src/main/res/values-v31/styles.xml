@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Android 12+ (API 31+) mandatory SplashScreen customisation.
+         Without this, the system wraps ic_launcher in a WHITE rounded
+         container regardless of our LaunchTheme windowBackground. -->
+    <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">@drawable/launch_background</item>
+        <!-- Fill the system-mandated splash background with logo cream -->
+        <item name="android:windowSplashScreenBackground">@color/splashBackground</item>
+        <!-- Show the launcher icon -->
+        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <!-- Colour the icon's rounded container the same cream — eliminates
+             the white rounded-square visible on API 31+ devices -->
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/splashBackground</item>
+    </style>
+    <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="android:windowBackground">@color/splashBackground</item>
+    </style>
+</resources>
