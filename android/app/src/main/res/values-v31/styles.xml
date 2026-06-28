@@ -7,11 +7,10 @@
         <item name="android:windowBackground">@drawable/launch_background</item>
         <!-- Fill the system-mandated splash background with logo cream -->
         <item name="android:windowSplashScreenBackground">@color/splashBackground</item>
-        <!-- Show the launcher icon -->
-        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
-        <!-- Colour the icon's rounded container the same cream — eliminates
-             the white rounded-square visible on API 31+ devices -->
-        <item name="android:windowSplashScreenIconBackgroundColor">@color/splashBackground</item>
+        <!-- High-res transparent splash logo (960×960 @ xxxhdpi, generated
+             from the 2048×2048 source). Replaces the tiny @mipmap/ic_launcher
+             (192 px) that caused severe upscaling blur on API 31+. -->
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/etiketly_splash_logo</item>
     </style>
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">@color/splashBackground</item>

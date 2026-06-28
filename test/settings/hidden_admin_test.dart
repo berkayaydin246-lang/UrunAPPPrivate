@@ -126,9 +126,7 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [
-            adminAuthRepositoryProvider.overrideWithValue(fakeAuth),
-          ],
+          overrides: [adminAuthRepositoryProvider.overrideWithValue(fakeAuth)],
           child: MaterialApp(home: const AdminHomePage()),
         ),
       );
