@@ -988,4 +988,71 @@ void main() {
       );
     });
   });
+
+  // ── image_front_url round-trip (T8–T12) ────────────────────────────────────
+
+  group('staging image field (T8–T12)', () {
+    const cdnUrl =
+        'https://images.migrosone.com/sanalmarket/product/5039483/5039483-26169b-1650x1650.jpg';
+
+    // T8: ProductCandidate.fromJson parses image_front_url correctly.
+    test('T8: fromJson parses image_front_url → imageFrontUrl', () {
+      final json = {
+        'id': 'staging-img-1',
+        'name': 'Mutlu Spagetti Makarna 500 G',
+        'brand': 'Mutlu',
+        'source': 'web_scraper:migros',
+        'status': 'pending',
+        'image_front_url': cdnUrl,
+      };
+      final candidate = ProductCandidate.fromJson(json);
+      expect(candidate.imageFrontUrl, cdnUrl);
+    });
+
+    // T8b: null image_front_url is parsed as null (no fallback injected).
+    test('T8b: fromJson with null image_front_url → imageFrontUrl is null', () {
+      final json = {
+        'id': 'staging-img-2',
+        'name': 'Mutlu Penne Makarna 500 G',
+        'source': 'web_scraper:migros',
+        'status': 'pending',
+        'image_front_url': null,
+      };
+      final candidate = ProductCandidate.fromJson(json);
+      expect(candidate.imageFrontUrl, isNull);
+    });
+
+    // T9: toStagingInsertMap includes image_front_url when present.
+    test('T9: toStagingInsertMap includes image_front_url when set', () {
+      final candidate = webScraped(imageFrontUrl: cdnUrl);
+      final map = candidate.toStagingInsertMap();
+      expect(map['image_front_url'], cdnUrl);
+    });
+
+    // T10: toStagingInsertMap omits image_front_url when null.
+    test('T10: toStagingInsertMap omits image_front_url when null', () {
+      final candidate = webScraped(imageFrontUrl: null);
+      final map = candidate.toStagingInsertMap();
+      expect(map.containsKey('image_front_url'), isFalse);
+    });
+
+    // T11: buildProductInsertMap maps imageFrontUrl → image_url in products table.
+    test('T11: buildProductInsertMap maps imageFrontUrl to image_url', () {
+      final map = ProductStagingApprovalRepository.buildProductInsertMap(
+        webScraped(imageFrontUrl: cdnUrl),
+        const StagingApprovalEdits(),
+      );
+      expect(map['image_url'], cdnUrl);
+    });
+
+    // T12: buildProductInsertMap omits image_url when imageFrontUrl is null.
+    test('T12: buildProductInsertMap omits image_url when imageFrontUrl is null',
+        () {
+      final map = ProductStagingApprovalRepository.buildProductInsertMap(
+        webScraped(imageFrontUrl: null),
+        const StagingApprovalEdits(),
+      );
+      expect(map.containsKey('image_url'), isFalse);
+    });
+  });
 }

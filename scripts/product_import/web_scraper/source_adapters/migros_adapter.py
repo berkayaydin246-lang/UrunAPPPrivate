@@ -379,6 +379,22 @@ _API_BACK_URL_SIGNALS = (
     "label", "nutrition", "besin", "icindekiler", "ingredients",
 )
 
+_MIGROS_BASE = "https://www.migros.com.tr"
+
+
+def _normalize_image_url(url: str) -> str:
+    """Normalize a Migros image URL to absolute HTTPS.
+
+    Handles protocol-relative (//cdn/img.jpg) and root-relative (/images/img.jpg)
+    URLs that may appear in API responses or page HTML.
+    """
+    url = url.strip()
+    if url.startswith("//"):
+        return "https:" + url
+    if url.startswith("/"):
+        return _MIGROS_BASE + url
+    return url
+
 
 def _first_image_url(product: dict) -> str | None:
     """Extract the best front image URL from a Migros API product entry.
@@ -404,13 +420,13 @@ def _first_image_url(product: dict) -> str | None:
                 first_url = url
             url_lower = url.lower()
             if not any(sig in url_lower for sig in _API_BACK_URL_SIGNALS):
-                return url  # first non-back URL wins
+                return _normalize_image_url(url)
     if first_url:
-        return first_url  # all URLs look like labels; return first as fallback
+        return _normalize_image_url(first_url)
     for key in ("imageUrl", "image_url", "photo", "thumbnail"):
         val = product.get(key)
         if val and isinstance(val, str) and val.strip():
-            return val.strip()
+            return _normalize_image_url(val.strip())
     return None
 
 

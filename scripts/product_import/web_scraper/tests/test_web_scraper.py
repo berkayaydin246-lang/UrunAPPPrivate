@@ -1745,6 +1745,176 @@ class ImageSelectionTest(unittest.TestCase):
         self.assertEqual(c["image_quality"], "front_selected")
 
 
+class MigrosDetailImageSelectionTest(unittest.TestCase):
+    """Tests for the gallery-first score guard and URL normalization fixes.
+
+    Regression suite: a Migros detail page may render non-product UI icons as
+    the first gallery image (gallery_index=0).  Those icons score negative
+    (because their URL contains 'icon' → -40 bad-URL penalty) but previously
+    bypassed the score guard in select_primary_image's detail_first branch.
+    """
+
+    # ── core regression: icon at gallery_index=0 must not win ──────────────
+
+    def test_icon_at_gallery_first_does_not_beat_positive_scoring_cdn_image(self):
+        """gallery_index=0 icon (score < 0) must not be selected over a CDN image."""
+        icon = image_scoring.ImageCandidate(
+            url="https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            in_gallery=True,
+            gallery_index=0,
+            source="detail_gallery",
+        )
+        cdn = image_scoring.ImageCandidate(
+            url="https://images.migrosone.com/sanalmarket/product/5039483/5039483-26169b-1650x1650.jpg",
+            in_gallery=True,
+            gallery_index=1,
+            source="detail_gallery",
+        )
+        selection = image_scoring.select_primary_image([icon, cdn])
+        self.assertIsNotNone(selection.selected)
+        self.assertEqual(selection.selected.url, cdn.url)
+
+    def test_ne_pisirsem_icon_is_rejected_in_favor_of_migrosone_cdn_image(self):
+        """Exact replica of the failing Mutlu Spagetti Makarna 500 G scenario."""
+        icon_url = "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp"
+        cdn_url = "https://images.migrosone.com/sanalmarket/product/5039483/5039483-26169b-1650x1650.jpg"
+        pool = [
+            image_scoring.ImageCandidate(
+                url=icon_url, in_gallery=True, gallery_index=0, source="detail_gallery"
+            ),
+            image_scoring.ImageCandidate(
+                url=cdn_url, in_gallery=True, gallery_index=1, source="detail_gallery"
+            ),
+        ]
+        selection = image_scoring.select_primary_image(pool, name="Mutlu Spagetti Makarna 500 G")
+        self.assertIsNotNone(selection.selected, "A usable image must be found")
+        self.assertEqual(selection.selected.url, cdn_url)
+        self.assertNotEqual(selection.selected.url, icon_url)
+
+    def test_icon_scores_negative_cdn_scores_positive(self):
+        """Score sanity: icon URL should score < 0, CDN image should score > 0."""
+        icon = image_scoring.ImageCandidate(
+            url="https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            in_gallery=True, gallery_index=0, source="detail_gallery",
+        )
+        cdn = image_scoring.ImageCandidate(
+            url="https://images.migrosone.com/sanalmarket/product/5039483/5039483-26169b-1650x1650.jpg",
+            in_gallery=True, gallery_index=1, source="detail_gallery",
+        )
+        _, scored = image_scoring.pick_best_image([icon, cdn])
+        icon_scored = next(c for c in scored if "ne-pisirsem" in c.url)
+        cdn_scored = next(c for c in scored if "migrosone.com" in c.url)
+        self.assertLess(icon_scored.score, 0)
+        self.assertGreater(cdn_scored.score, 0)
+
+    def test_api_primary_still_wins_over_gallery_icon(self):
+        """api_primary image must still be preferred over any gallery image."""
+        api_url = "https://images.migrosone.com/sanalmarket/product/1234/1234-front.jpg"
+        icon_url = "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp"
+        pool = [
+            image_scoring.ImageCandidate(
+                url=icon_url, in_gallery=True, gallery_index=0, source="detail_gallery"
+            ),
+            image_scoring.ImageCandidate(
+                url=api_url, is_api_primary=True, in_schema=True,
+                gallery_index=0, source="api_primary"
+            ),
+        ]
+        selection = image_scoring.select_primary_image(pool)
+        self.assertIsNotNone(selection.selected)
+        self.assertEqual(selection.selected.url, api_url)
+
+    # ── URL normalization ────────────────────────────────────────────────────
+
+    def test_root_relative_url_normalized_to_absolute_https(self):
+        """A root-relative image URL must become an absolute HTTPS URL."""
+        from web_scraper.source_adapters.migros_adapter import _normalize_image_url
+        result = _normalize_image_url("/sanalmarket/product/image.jpg")
+        self.assertEqual(result, "https://www.migros.com.tr/sanalmarket/product/image.jpg")
+
+    def test_protocol_relative_url_normalized_to_https(self):
+        """A protocol-relative URL must become HTTPS."""
+        from web_scraper.source_adapters.migros_adapter import _normalize_image_url
+        result = _normalize_image_url("//images.migrosone.com/product/img.jpg")
+        self.assertEqual(result, "https://images.migrosone.com/product/img.jpg")
+
+    def test_absolute_https_url_unchanged(self):
+        """An already-absolute HTTPS URL must pass through unchanged."""
+        from web_scraper.source_adapters.migros_adapter import _normalize_image_url
+        url = "https://images.migrosone.com/sanalmarket/product/5039483/img.jpg"
+        self.assertEqual(_normalize_image_url(url), url)
+
+    def test_whitespace_stripped_during_normalization(self):
+        """Leading/trailing whitespace must be stripped."""
+        from web_scraper.source_adapters.migros_adapter import _normalize_image_url
+        result = _normalize_image_url("  //images.migrosone.com/img.jpg  ")
+        self.assertEqual(result, "https://images.migrosone.com/img.jpg")
+
+    # ── staging payload contains the correct image URL ───────────────────────
+
+    def test_staging_payload_includes_cdn_image_not_icon(self):
+        """After the fix, assemble_candidate must store the CDN image, not the icon."""
+        icon_url = "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp"
+        cdn_url = "https://images.migrosone.com/sanalmarket/product/5039483/5039483-26169b-1650x1650.jpg"
+        pool = [
+            image_scoring.ImageCandidate(
+                url=icon_url, in_gallery=True, gallery_index=0, source="detail_gallery"
+            ),
+            image_scoring.ImageCandidate(
+                url=cdn_url, in_gallery=True, gallery_index=1, source="detail_gallery"
+            ),
+        ]
+        candidate = runner.assemble_candidate(
+            source_id="migros",
+            url="https://www.migros.com.tr/mutlu-spagetti-makarna-500-g-p-d12345",
+            jsonld={"name": "Mutlu Spagetti Makarna 500 G"},
+            meta={},
+            sections={},
+            image_candidates=pool,
+            category="makarna",
+            api_metadata={
+                "api_brand": "Mutlu",
+                "api_name": None,
+                "api_image_url": None,
+                "api_category": None,
+                "api_sku": None,
+                "category_dynamic_brands": [],
+            },
+        )
+        self.assertEqual(candidate["image_front_url"], cdn_url)
+        self.assertNotEqual(candidate.get("image_front_url"), icon_url)
+
+    def test_candidate_image_url_survives_serialization(self):
+        """image_front_url in candidate dict round-trips without truncation or loss."""
+        cdn_url = "https://images.migrosone.com/sanalmarket/product/5039483/5039483-26169b-1650x1650.jpg"
+        pool = [
+            image_scoring.ImageCandidate(
+                url=cdn_url, in_gallery=True, gallery_index=0, source="detail_gallery"
+            ),
+        ]
+        candidate = runner.assemble_candidate(
+            source_id="migros",
+            url="https://www.migros.com.tr/mutlu-penne-makarna-500-g-p-d12346",
+            jsonld={"name": "Mutlu Penne Makarna 500 G"},
+            meta={},
+            sections={},
+            image_candidates=pool,
+            category="makarna",
+            api_metadata={
+                "api_brand": "Mutlu",
+                "api_name": None,
+                "api_image_url": None,
+                "api_category": None,
+                "api_sku": None,
+                "category_dynamic_brands": [],
+            },
+        )
+        self.assertEqual(candidate["image_front_url"], cdn_url)
+        # image_best_score must be positive for a valid CDN image
+        raw = candidate.get("raw_source_payload") or {}
+        self.assertGreater(raw.get("image_best_score", 0), 0)
+
+
 class MigrosImageRepairTest(unittest.TestCase):
     class _FakeResponse:
         def __init__(self, payload=None):

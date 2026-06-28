@@ -267,6 +267,7 @@ def select_primary_image(
             if c.source == "detail_gallery"
             and c.gallery_index == 0
             and not is_label(c)
+            and c.score > 0  # skip icons/placeholders that score negative despite gallery position
         ),
         None,
     )
