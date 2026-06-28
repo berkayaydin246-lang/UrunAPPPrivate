@@ -160,7 +160,7 @@ class DedupeAndMergeTest(unittest.TestCase):
     def test_merge_fills_missing_and_recomputes_quality(self):
         existing = {
             "name": "Gofret", "brand": None, "ingredients_text": None,
-            "nutrition_json": None, "image_url": None,
+            "nutrition_json": None, "image_front_url": None,
             "category_suggestion": None, "barcode": None,
             "source": "web_scraper:retailer", "admin_notes": "checked",
             "raw_source_payload": {"image_best_score": 0},
@@ -178,6 +178,7 @@ class DedupeAndMergeTest(unittest.TestCase):
         }
         merged = runner.merge_fill_missing(existing, incoming)
         self.assertEqual(merged["brand"], "Eti")
+        self.assertEqual(merged["image_front_url"], "https://x/product/front-800x800.jpg")
         self.assertEqual(merged["image_url"], "https://x/product/front-800x800.jpg")
         self.assertEqual(merged["admin_notes"], "checked")  # preserved
         self.assertNotIn("ingredients", merged["missing_fields"])
@@ -185,7 +186,7 @@ class DedupeAndMergeTest(unittest.TestCase):
 
     def test_merge_keeps_better_existing_image(self):
         existing = {
-            "name": "X", "image_url": "https://x/product/good-800x800.jpg",
+            "name": "X", "image_front_url": "https://x/product/good-800x800.jpg",
             "raw_source_payload": {"image_best_score": 60}, "source": "web_scraper:a",
         }
         incoming = {
@@ -193,7 +194,7 @@ class DedupeAndMergeTest(unittest.TestCase):
             "raw_source_payload": {"image_best_score": 5}, "source": "web_scraper:a",
         }
         merged = runner.merge_fill_missing(existing, incoming)
-        self.assertEqual(merged["image_url"], "https://x/product/good-800x800.jpg")
+        self.assertEqual(merged["image_front_url"], "https://x/product/good-800x800.jpg")
 
 
 class QualityScoringWithoutBarcodeTest(unittest.TestCase):
@@ -1881,15 +1882,16 @@ class MigrosDetailImageSelectionTest(unittest.TestCase):
                 "category_dynamic_brands": [],
             },
         )
-        # Candidate dict still uses image_front_url internally.
+        # Candidate dict uses image_front_url internally (the CDN URL, not the icon).
         self.assertEqual(candidate["image_front_url"], cdn_url)
         self.assertNotEqual(candidate.get("image_front_url"), icon_url)
-        # DB payload must map to image_url (the actual product_staging column).
+        # DB payload writes image_front_url (primary) and image_url (alias).
         from web_scraper.runner import _scored_insert_payload
         payload = _scored_insert_payload(candidate)
+        self.assertEqual(payload.get("image_front_url"), cdn_url)
         self.assertEqual(payload.get("image_url"), cdn_url)
-        self.assertNotIn("image_front_url", payload,
-                         "image_front_url must not reach PostgREST; only image_url")
+        self.assertNotIn(icon_url, payload.values(),
+                         "icon URL must not reach any staging DB column")
 
     def test_candidate_image_url_survives_serialization(self):
         """image_front_url in candidate dict and image_url in staging payload are consistent."""
@@ -1921,34 +1923,32 @@ class MigrosDetailImageSelectionTest(unittest.TestCase):
         # image_best_score must be positive for a valid CDN image
         raw = candidate.get("raw_source_payload") or {}
         self.assertGreater(raw.get("image_best_score", 0), 0)
-        # Staging DB payload uses image_url (spec item 8).
+        # Staging DB payload sets image_front_url (primary) and image_url (alias).
         from web_scraper.runner import _scored_insert_payload
         payload = _scored_insert_payload(candidate)
+        self.assertEqual(payload.get("image_front_url"), cdn_url)
         self.assertEqual(payload.get("image_url"), cdn_url)
 
     # ── spec section 6, items 1-8 ────────────────────────────────────────────
 
-    def test_image_front_url_writes_to_staging_image_url_column(self):
-        """Spec item 1: candidate image_front_url is stored as staging image_url."""
+    def test_image_front_url_writes_to_both_staging_columns(self):
+        """Spec item 1: candidate image_front_url writes image_front_url (primary)
+        and image_url (compatibility alias) in the staging payload."""
         from web_scraper.runner import _scored_insert_payload
         cdn_url = "https://images.migrosone.com/sanalmarket/product/9999/img.jpg"
         candidate = {"name": "Ürün", "source": "web_scraper:migros",
                      "image_front_url": cdn_url, "quality_score": 0, "missing_fields": [], "status": "pending"}
         payload = _scored_insert_payload(candidate)
+        self.assertEqual(payload.get("image_front_url"), cdn_url)
         self.assertEqual(payload.get("image_url"), cdn_url)
-        self.assertNotIn("image_front_url", payload)
 
-    def test_image_url_wins_over_image_front_url_in_payload(self):
-        """Spec item 3: if candidate already has image_url, it wins over image_front_url."""
-        from web_scraper.runner import _scored_insert_payload
-        cdn_url = "https://images.migrosone.com/sanalmarket/product/9999/img.jpg"
-        fallback_url = "https://images.migrosone.com/sanalmarket/product/9999/fallback.jpg"
-        candidate = {"name": "Ürün", "source": "web_scraper:migros",
-                     "image_url": cdn_url,
-                     "image_front_url": fallback_url,
-                     "quality_score": 0, "missing_fields": [], "status": "pending"}
-        payload = _scored_insert_payload(candidate)
-        self.assertEqual(payload.get("image_url"), cdn_url)
+    def test_image_front_url_wins_over_image_url_in_selection(self):
+        """Spec item 3: image_front_url is preferred over image_url by _selected_front_image_url."""
+        from web_scraper.runner import _selected_front_image_url
+        primary = "https://images.migrosone.com/sanalmarket/product/9999/primary.jpg"
+        alias = "https://images.migrosone.com/sanalmarket/product/9999/alias.jpg"
+        candidate = {"image_front_url": primary, "image_url": alias}
+        self.assertEqual(_selected_front_image_url(candidate), primary)
 
     def test_og_image_fallback_when_no_front_url(self):
         """Spec item 4: raw_source_payload.meta.og_image used as fallback."""
@@ -1962,6 +1962,7 @@ class MigrosDetailImageSelectionTest(unittest.TestCase):
         selected = _selected_front_image_url(candidate)
         self.assertEqual(selected, og_url)
         payload = _scored_insert_payload(candidate)
+        self.assertEqual(payload.get("image_front_url"), og_url)
         self.assertEqual(payload.get("image_url"), og_url)
 
     def test_icon_and_logo_urls_rejected(self):
@@ -1981,11 +1982,13 @@ class MigrosDetailImageSelectionTest(unittest.TestCase):
                 selected = _selected_front_image_url(candidate)
                 self.assertIsNone(selected, f"junk URL must be rejected: {junk}")
                 payload = _scored_insert_payload(candidate)
-                self.assertIsNone(payload.get("image_url"),
+                self.assertIsNone(payload.get("image_front_url"),
                                   f"junk URL must not reach staging DB: {junk}")
+                self.assertIsNone(payload.get("image_url"),
+                                  f"junk URL alias must not reach staging DB: {junk}")
 
     def test_missing_barcode_does_not_drop_image_url(self):
-        """Spec item 7: no barcode in candidate must not remove image_url from payload."""
+        """Spec item 7: no barcode in candidate must not remove image_front_url from payload."""
         from web_scraper.runner import _scored_insert_payload
         cdn_url = "https://images.migrosone.com/sanalmarket/product/9999/img.jpg"
         candidate = {
@@ -1995,6 +1998,7 @@ class MigrosDetailImageSelectionTest(unittest.TestCase):
             "quality_score": 0, "missing_fields": ["barcode", "ingredients"], "status": "pending",
         }
         payload = _scored_insert_payload(candidate)
+        self.assertEqual(payload.get("image_front_url"), cdn_url)
         self.assertEqual(payload.get("image_url"), cdn_url)
 
 

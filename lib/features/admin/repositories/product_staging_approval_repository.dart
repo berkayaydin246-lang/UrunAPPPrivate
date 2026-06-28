@@ -495,7 +495,7 @@ class ProductStagingApprovalRepository {
   ) => _resolve(e.ingredientsText) ?? _resolve(c.ingredientsText);
 
   static String? _resolveImage(ProductCandidate c) =>
-      _resolve(c.imageFrontUrl) ?? _resolve(c.imageFrontStoragePath);
+      _resolve(c.displayImageUrl) ?? _resolve(c.imageFrontStoragePath);
 
   /// nutrition_json (NutritionData-compatible map) → nutrition_text JSON string.
   static String? _resolveNutritionText(ProductCandidate c) =>

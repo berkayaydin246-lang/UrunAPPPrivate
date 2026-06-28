@@ -86,7 +86,7 @@ class _StagingTile extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _Thumbnail(url: candidate.imageFrontUrl),
+                  _Thumbnail(url: candidate.displayImageUrl),
                   const SizedBox(width: 14),
                   Expanded(
                     child: Column(

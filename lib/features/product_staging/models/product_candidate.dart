@@ -22,9 +22,16 @@ class ProductCandidate {
 
   // Images
   final String? imageFrontUrl;
+  final String? imageUrl;
   final String? imageFrontStoragePath;
   final String? imageIngredientsUrl;
   final String? imageNutritionUrl;
+
+  /// The best available cover image for display.
+  ///
+  /// Prefers the dedicated staging column [imageFrontUrl] (image_front_url),
+  /// falls back to the compatibility alias [imageUrl] (image_url).
+  String? get displayImageUrl => imageFrontUrl ?? imageUrl;
 
   // Extracted data
   final String? ingredientsText;
@@ -62,6 +69,7 @@ class ProductCandidate {
     this.categoryTags,
     this.searchKeywords,
     this.imageFrontUrl,
+    this.imageUrl,
     this.imageFrontStoragePath,
     this.imageIngredientsUrl,
     this.imageNutritionUrl,
@@ -120,8 +128,8 @@ class ProductCandidate {
       categorySuggestion: json['category_suggestion'] as String?,
       categoryTags: _stringList(json['category_tags']),
       searchKeywords: _stringList(json['search_keywords']),
-      imageFrontUrl:
-          (json['image_url'] as String?) ?? (json['image_front_url'] as String?),
+      imageFrontUrl: json['image_front_url'] as String?,
+      imageUrl: json['image_url'] as String?,
       imageFrontStoragePath: json['image_front_storage_path'] as String?,
       imageIngredientsUrl: json['image_ingredients_url'] as String?,
       imageNutritionUrl: json['image_nutrition_url'] as String?,
@@ -156,6 +164,7 @@ class ProductCandidate {
       'category_tags': categoryTags,
       'search_keywords': searchKeywords,
       'image_front_url': imageFrontUrl,
+      'image_url': imageUrl,
       'image_front_storage_path': imageFrontStoragePath,
       'image_ingredients_url': imageIngredientsUrl,
       'image_nutrition_url': imageNutritionUrl,
@@ -206,7 +215,8 @@ class ProductCandidate {
     put('category_suggestion', categorySuggestion);
     put('category_tags', categoryTags);
     put('search_keywords', searchKeywords);
-    put('image_url', imageFrontUrl);
+    put('image_front_url', imageFrontUrl);
+    put('image_url', imageFrontUrl ?? imageUrl);
     put('image_front_storage_path', imageFrontStoragePath);
     put('image_ingredients_url', imageIngredientsUrl);
     put('image_nutrition_url', imageNutritionUrl);
@@ -234,6 +244,7 @@ class ProductCandidate {
     List<String>? categoryTags,
     List<String>? searchKeywords,
     String? imageFrontUrl,
+    String? imageUrl,
     String? imageFrontStoragePath,
     String? imageIngredientsUrl,
     String? imageNutritionUrl,
@@ -264,6 +275,7 @@ class ProductCandidate {
       categoryTags: categoryTags ?? this.categoryTags,
       searchKeywords: searchKeywords ?? this.searchKeywords,
       imageFrontUrl: imageFrontUrl ?? this.imageFrontUrl,
+      imageUrl: imageUrl ?? this.imageUrl,
       imageFrontStoragePath:
           imageFrontStoragePath ?? this.imageFrontStoragePath,
       imageIngredientsUrl: imageIngredientsUrl ?? this.imageIngredientsUrl,

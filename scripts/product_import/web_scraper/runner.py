@@ -194,11 +194,11 @@ _JUNK_IMAGE_SIGNALS = (
 def _selected_front_image_url(candidate: dict) -> str | None:
     """Return the best usable front-of-pack image URL from a candidate dict.
 
-    Checks image_url first (DB column), then image_front_url (internal scraper
-    key), then falls back to the og:image metadata. Rejects URLs containing
-    known Migros icon/placeholder path fragments.
+    Checks image_front_url first (primary staging column), then image_url
+    (compatibility alias), then falls back to the og:image metadata. Rejects
+    URLs containing known Migros icon/placeholder path fragments.
     """
-    for key in ("image_url", "image_front_url"):
+    for key in ("image_front_url", "image_url"):
         url = _resolve_text(candidate.get(key))
         if url and not any(sig in url for sig in _JUNK_IMAGE_SIGNALS):
             return url
@@ -257,17 +257,19 @@ def merge_fill_missing(existing: dict, incoming: dict) -> dict:
                 merged[src_field] = incoming[src_field]
 
     # Image: replace only when incoming scores strictly higher.
-    # incoming is a scraper candidate (uses image_front_url internally);
-    # existing/merged are DB rows (use image_url as the column name).
+    # Both candidate and DB rows use image_front_url as the primary key;
+    # image_url is kept as a compatibility alias.
     incoming_image = _selected_front_image_url(incoming)
     if _image_score_of(incoming) > _image_score_of(existing) and incoming_image:
+        merged["image_front_url"] = incoming_image
         merged["image_url"] = incoming_image
         merged["image_source"] = incoming.get("image_source")
         # keep the best score in payload for future comparisons
         payload = dict(merged.get("raw_source_payload") or {})
         payload["image_best_score"] = _image_score_of(incoming)
         merged["raw_source_payload"] = payload
-    elif _empty(merged.get("image_url")) and incoming_image:
+    elif _empty(merged.get("image_front_url")) and incoming_image:
+        merged["image_front_url"] = incoming_image
         merged["image_url"] = incoming_image
         merged["image_source"] = incoming.get("image_source")
 
@@ -824,7 +826,7 @@ def scrape_product_page(
 # dynamic brand lists) are stored inside raw_source_payload.debug instead.
 _STAGING_COLUMNS = frozenset({
     "barcode", "name", "brand", "category_suggestion", "category_tags",
-    "search_keywords", "image_url", "image_front_storage_path",
+    "search_keywords", "image_front_url", "image_url", "image_front_storage_path",
     "image_ingredients_url", "image_nutrition_url",
     "ingredients_text", "nutrition_json",
     "source", "source_url", "raw_source_payload",
@@ -847,9 +849,9 @@ _CANDIDATE_DEBUG_FIELDS = (
 def _scored_insert_payload(candidate: dict) -> dict:
     """Build a product_staging insert dict with only valid schema columns.
 
-    The candidate dict uses image_front_url internally; the DB column is
-    image_url. This function maps image_front_url → image_url and rejects
-    known icon/placeholder URLs via _selected_front_image_url().
+    image_front_url is the primary staging image column; image_url is written
+    as a compatibility alias for the products table convention. Junk/icon URLs
+    are rejected by _selected_front_image_url().
 
     Debug fields (brand_source_method, ingredient_quality) are moved into
     raw_source_payload.debug so they survive without requiring extra columns.
@@ -858,16 +860,18 @@ def _scored_insert_payload(candidate: dict) -> dict:
         k: v for k, v in candidate.items()
         if not _empty(v) and k in _STAGING_COLUMNS
     }
-    # Map candidate image_front_url → staging DB column image_url.
-    # _STAGING_COLUMNS has "image_url" (not "image_front_url"), so the
-    # comprehension above never picks up image_front_url from the candidate.
-    if "image_url" not in payload or _empty(payload.get("image_url")):
-        image_url = _selected_front_image_url(candidate)
-        if image_url:
-            payload["image_url"] = image_url
-    image_url = payload.get("image_url")
-    print(f"  [image] selected_db_image_url={_url_safe_log(image_url) if image_url else 'none'}")
-    print(f"  [image] staging_payload_has_image_url={'true' if image_url else 'false'}")
+    # Apply junk-URL rejection. The comprehension above may have picked up a
+    # raw junk URL from the candidate dict; override both columns with the
+    # sanitized result of _selected_front_image_url (which rejects icons/logos).
+    front_url = _selected_front_image_url(candidate)
+    if front_url:
+        payload["image_front_url"] = front_url
+        payload["image_url"] = front_url
+    else:
+        payload.pop("image_front_url", None)
+        payload.pop("image_url", None)
+    print(f"  [image] selected_db_image_url={_url_safe_log(front_url) if front_url else 'none'}")
+    print(f"  [image] staging_payload_has_image_front_url={'true' if front_url else 'false'}")
     # Always include the computed review fields even if 0/empty.
     payload["quality_score"] = candidate.get("quality_score", 0)
     payload["missing_fields"] = candidate.get("missing_fields", [])
@@ -1059,11 +1063,11 @@ def _product_insert_map(row: dict) -> dict:
         "verification_status": "pending",
         "source": row.get("source"),
     }
-    # Read from staging DB column image_url; fall back to legacy image_front_url
-    # for rows written before this fix, then to storage path.
+    # image_front_url is the primary staging column; image_url is a compatibility
+    # alias; image_front_storage_path is the ultimate fallback.
     image = (
-        _resolve_text(row.get("image_url"))
-        or _resolve_text(row.get("image_front_url"))
+        _resolve_text(row.get("image_front_url"))
+        or _resolve_text(row.get("image_url"))
         or _resolve_text(row.get("image_front_storage_path"))
     )
     if image:

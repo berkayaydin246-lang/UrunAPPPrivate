@@ -455,7 +455,7 @@ class _ProductStagingDetailPageState
                   ],
                   const SizedBox(height: 16),
 
-                  if (c.imageFrontUrl != null) ...[
+                  if (c.displayImageUrl != null) ...[
                     _label('Ön Görsel'),
                     const SizedBox(height: 8),
                     ClipRRect(
@@ -469,7 +469,7 @@ class _ProductStagingDetailPageState
                           border: Border.all(color: AppColors.border),
                         ),
                         child: Image.network(
-                          c.imageFrontUrl!,
+                          c.displayImageUrl!,
                           fit: BoxFit.contain,
                           errorBuilder: (_, _, _) => Container(
                             color: AppColors.surfaceSoft,
