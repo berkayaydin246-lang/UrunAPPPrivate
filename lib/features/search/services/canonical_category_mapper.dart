@@ -231,8 +231,16 @@ class CanonicalCategoryMapper {
     kHazirDonuk: ['hazir_yemek'],
     kDondurma: ['dondurma_tatli'],
     kBebek: ['bebek_cocuk'],
-    kMeyveSebze: [],
-    kFirinPastane: [],
+    kMeyveSebze: [
+      // Tags assigned when Migros meyve/sebze categories are scraped.
+      // No products with these tags exist yet → query returns empty state.
+      'meyve_sebze',
+      'meyve',
+      'sebze',
+      'taze_meyve',
+      'taze_sebze',
+    ],
+    kFirinPastane: ['firin_pastane', 'ekmek', 'unlu_mamul', 'firin'],
     kOzelBeslenme: [],
     kDiger: [],
   };
@@ -241,6 +249,30 @@ class CanonicalCategoryMapper {
   /// Used to build server-side Supabase `category_tags` overlap filters.
   static List<String> mainCategoryToTags(String mainCategory) =>
       _mainToTags[mainCategory] ?? const [];
+
+  /// Formats [tags] as a PostgreSQL text-array literal suitable for the
+  /// PostgREST `ov` (overlap) operator: e.g. `{biskuvi,cips}`.
+  ///
+  /// Trims whitespace, drops empty strings, and de-duplicates.
+  /// Returns `''` when [tags] is empty — callers must guard against passing an
+  /// empty string to the server (empty-tagged categories must show an empty
+  /// state, not fall back to unfiltered product results).
+  static String toPostgresTextArrayLiteral(List<String> tags) {
+    final seen = <String>{};
+    final clean = StringBuffer('{');
+    var first = true;
+    for (final t in tags) {
+      final s = t.trim();
+      if (s.isNotEmpty && seen.add(s)) {
+        if (!first) clean.write(',');
+        clean.write(s);
+        first = false;
+      }
+    }
+    if (first) return ''; // all tags were empty
+    clean.write('}');
+    return clean.toString();
+  }
 
   // ── Sub-category → specific DB tags (for server-side pre-pagination narrowing) ─
 

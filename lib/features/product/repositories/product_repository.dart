@@ -386,6 +386,11 @@ class ProductRepository {
           'ov',
           '{${plan.categoryTagsAny.join(',')}}',
         );
+      } else {
+        // Category selected but tag list is empty — must never fall back to
+        // an unfiltered scan of all products. Return an empty result so the
+        // UI shows the correct empty-state instead of unrelated products.
+        return (results: <Product>[], hasMore: false);
       }
       if (plan.searchKeywordsAny.isNotEmpty) {
         q = q.filter(

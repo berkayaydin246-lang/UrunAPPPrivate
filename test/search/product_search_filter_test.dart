@@ -51,6 +51,9 @@ class _FakeRepo extends ProductRepository {
           final productTags = p.categoryTags ?? [];
           return productTags.any(plan.categoryTagsAny.contains);
         }).toList();
+      } else {
+        // Mirror real repository: empty tag list → empty result, no fallback.
+        return (results: <Product>[], hasMore: false);
       }
       if (plan.searchKeywordsAny.isNotEmpty) {
         r = r.where((p) {
