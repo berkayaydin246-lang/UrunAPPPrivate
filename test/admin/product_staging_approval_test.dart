@@ -989,18 +989,32 @@ void main() {
     });
   });
 
-  // ── image_front_url round-trip (T8–T12) ────────────────────────────────────
+  // ── image_url round-trip (T8–T12) ─────────────────────────────────────────
+  // product_staging DB column is image_url; image_front_url is a legacy fallback.
 
   group('staging image field (T8–T12)', () {
     const cdnUrl =
         'https://images.migrosone.com/sanalmarket/product/5039483/5039483-26169b-1650x1650.jpg';
 
-    // T8: ProductCandidate.fromJson parses image_front_url correctly.
-    test('T8: fromJson parses image_front_url → imageFrontUrl', () {
+    // T8: fromJson prefers image_url (the actual DB column) over image_front_url.
+    test('T8: fromJson reads image_url → imageFrontUrl', () {
       final json = {
         'id': 'staging-img-1',
         'name': 'Mutlu Spagetti Makarna 500 G',
         'brand': 'Mutlu',
+        'source': 'web_scraper:migros',
+        'status': 'pending',
+        'image_url': cdnUrl,
+      };
+      final candidate = ProductCandidate.fromJson(json);
+      expect(candidate.imageFrontUrl, cdnUrl);
+    });
+
+    // T8b: image_front_url works as legacy fallback when image_url is absent.
+    test('T8b: fromJson falls back to image_front_url when image_url absent', () {
+      final json = {
+        'id': 'staging-img-legacy',
+        'name': 'Mutlu Penne Makarna 500 G',
         'source': 'web_scraper:migros',
         'status': 'pending',
         'image_front_url': cdnUrl,
@@ -1009,34 +1023,49 @@ void main() {
       expect(candidate.imageFrontUrl, cdnUrl);
     });
 
-    // T8b: null image_front_url is parsed as null (no fallback injected).
-    test('T8b: fromJson with null image_front_url → imageFrontUrl is null', () {
+    // T8c: image_url wins over image_front_url when both present.
+    test('T8c: fromJson prefers image_url over image_front_url', () {
       final json = {
-        'id': 'staging-img-2',
-        'name': 'Mutlu Penne Makarna 500 G',
+        'id': 'staging-img-3',
         'source': 'web_scraper:migros',
         'status': 'pending',
+        'image_url': cdnUrl,
+        'image_front_url': 'https://www.migros.com.tr/assets/icons/ne-pisirsem.webp',
+      };
+      final candidate = ProductCandidate.fromJson(json);
+      expect(candidate.imageFrontUrl, cdnUrl);
+    });
+
+    // T8d: both null → imageFrontUrl is null.
+    test('T8d: fromJson with both null → imageFrontUrl is null', () {
+      final json = {
+        'id': 'staging-img-4',
+        'source': 'web_scraper:migros',
+        'status': 'pending',
+        'image_url': null,
         'image_front_url': null,
       };
       final candidate = ProductCandidate.fromJson(json);
       expect(candidate.imageFrontUrl, isNull);
     });
 
-    // T9: toStagingInsertMap includes image_front_url when present.
-    test('T9: toStagingInsertMap includes image_front_url when set', () {
+    // T9: toStagingInsertMap writes image_url (the DB column).
+    test('T9: toStagingInsertMap includes image_url when imageFrontUrl set', () {
       final candidate = webScraped(imageFrontUrl: cdnUrl);
       final map = candidate.toStagingInsertMap();
-      expect(map['image_front_url'], cdnUrl);
+      expect(map['image_url'], cdnUrl);
+      expect(map.containsKey('image_front_url'), isFalse,
+          reason: 'image_front_url is internal; DB column is image_url');
     });
 
-    // T10: toStagingInsertMap omits image_front_url when null.
-    test('T10: toStagingInsertMap omits image_front_url when null', () {
+    // T10: toStagingInsertMap omits image_url when imageFrontUrl is null.
+    test('T10: toStagingInsertMap omits image_url when imageFrontUrl is null', () {
       final candidate = webScraped(imageFrontUrl: null);
       final map = candidate.toStagingInsertMap();
-      expect(map.containsKey('image_front_url'), isFalse);
+      expect(map.containsKey('image_url'), isFalse);
     });
 
-    // T11: buildProductInsertMap maps imageFrontUrl → image_url in products table.
+    // T11: buildProductInsertMap maps imageFrontUrl → products.image_url.
     test('T11: buildProductInsertMap maps imageFrontUrl to image_url', () {
       final map = ProductStagingApprovalRepository.buildProductInsertMap(
         webScraped(imageFrontUrl: cdnUrl),

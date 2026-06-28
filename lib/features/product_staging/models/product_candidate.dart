@@ -120,7 +120,8 @@ class ProductCandidate {
       categorySuggestion: json['category_suggestion'] as String?,
       categoryTags: _stringList(json['category_tags']),
       searchKeywords: _stringList(json['search_keywords']),
-      imageFrontUrl: json['image_front_url'] as String?,
+      imageFrontUrl:
+          (json['image_url'] as String?) ?? (json['image_front_url'] as String?),
       imageFrontStoragePath: json['image_front_storage_path'] as String?,
       imageIngredientsUrl: json['image_ingredients_url'] as String?,
       imageNutritionUrl: json['image_nutrition_url'] as String?,
@@ -205,7 +206,7 @@ class ProductCandidate {
     put('category_suggestion', categorySuggestion);
     put('category_tags', categoryTags);
     put('search_keywords', searchKeywords);
-    put('image_front_url', imageFrontUrl);
+    put('image_url', imageFrontUrl);
     put('image_front_storage_path', imageFrontStoragePath);
     put('image_ingredients_url', imageIngredientsUrl);
     put('image_nutrition_url', imageNutritionUrl);

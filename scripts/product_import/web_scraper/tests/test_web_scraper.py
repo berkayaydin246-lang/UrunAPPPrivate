@@ -160,7 +160,7 @@ class DedupeAndMergeTest(unittest.TestCase):
     def test_merge_fills_missing_and_recomputes_quality(self):
         existing = {
             "name": "Gofret", "brand": None, "ingredients_text": None,
-            "nutrition_json": None, "image_front_url": None,
+            "nutrition_json": None, "image_url": None,
             "category_suggestion": None, "barcode": None,
             "source": "web_scraper:retailer", "admin_notes": "checked",
             "raw_source_payload": {"image_best_score": 0},
@@ -178,14 +178,14 @@ class DedupeAndMergeTest(unittest.TestCase):
         }
         merged = runner.merge_fill_missing(existing, incoming)
         self.assertEqual(merged["brand"], "Eti")
-        self.assertEqual(merged["image_front_url"], "https://x/product/front-800x800.jpg")
+        self.assertEqual(merged["image_url"], "https://x/product/front-800x800.jpg")
         self.assertEqual(merged["admin_notes"], "checked")  # preserved
         self.assertNotIn("ingredients", merged["missing_fields"])
         self.assertGreater(merged["quality_score"], 0)
 
     def test_merge_keeps_better_existing_image(self):
         existing = {
-            "name": "X", "image_front_url": "https://x/product/good-800x800.jpg",
+            "name": "X", "image_url": "https://x/product/good-800x800.jpg",
             "raw_source_payload": {"image_best_score": 60}, "source": "web_scraper:a",
         }
         incoming = {
@@ -193,7 +193,7 @@ class DedupeAndMergeTest(unittest.TestCase):
             "raw_source_payload": {"image_best_score": 5}, "source": "web_scraper:a",
         }
         merged = runner.merge_fill_missing(existing, incoming)
-        self.assertEqual(merged["image_front_url"], "https://x/product/good-800x800.jpg")
+        self.assertEqual(merged["image_url"], "https://x/product/good-800x800.jpg")
 
 
 class QualityScoringWithoutBarcodeTest(unittest.TestCase):
@@ -1881,11 +1881,18 @@ class MigrosDetailImageSelectionTest(unittest.TestCase):
                 "category_dynamic_brands": [],
             },
         )
+        # Candidate dict still uses image_front_url internally.
         self.assertEqual(candidate["image_front_url"], cdn_url)
         self.assertNotEqual(candidate.get("image_front_url"), icon_url)
+        # DB payload must map to image_url (the actual product_staging column).
+        from web_scraper.runner import _scored_insert_payload
+        payload = _scored_insert_payload(candidate)
+        self.assertEqual(payload.get("image_url"), cdn_url)
+        self.assertNotIn("image_front_url", payload,
+                         "image_front_url must not reach PostgREST; only image_url")
 
     def test_candidate_image_url_survives_serialization(self):
-        """image_front_url in candidate dict round-trips without truncation or loss."""
+        """image_front_url in candidate dict and image_url in staging payload are consistent."""
         cdn_url = "https://images.migrosone.com/sanalmarket/product/5039483/5039483-26169b-1650x1650.jpg"
         pool = [
             image_scoring.ImageCandidate(
@@ -1909,10 +1916,86 @@ class MigrosDetailImageSelectionTest(unittest.TestCase):
                 "category_dynamic_brands": [],
             },
         )
+        # Candidate internal key preserved.
         self.assertEqual(candidate["image_front_url"], cdn_url)
         # image_best_score must be positive for a valid CDN image
         raw = candidate.get("raw_source_payload") or {}
         self.assertGreater(raw.get("image_best_score", 0), 0)
+        # Staging DB payload uses image_url (spec item 8).
+        from web_scraper.runner import _scored_insert_payload
+        payload = _scored_insert_payload(candidate)
+        self.assertEqual(payload.get("image_url"), cdn_url)
+
+    # ── spec section 6, items 1-8 ────────────────────────────────────────────
+
+    def test_image_front_url_writes_to_staging_image_url_column(self):
+        """Spec item 1: candidate image_front_url is stored as staging image_url."""
+        from web_scraper.runner import _scored_insert_payload
+        cdn_url = "https://images.migrosone.com/sanalmarket/product/9999/img.jpg"
+        candidate = {"name": "Ürün", "source": "web_scraper:migros",
+                     "image_front_url": cdn_url, "quality_score": 0, "missing_fields": [], "status": "pending"}
+        payload = _scored_insert_payload(candidate)
+        self.assertEqual(payload.get("image_url"), cdn_url)
+        self.assertNotIn("image_front_url", payload)
+
+    def test_image_url_wins_over_image_front_url_in_payload(self):
+        """Spec item 3: if candidate already has image_url, it wins over image_front_url."""
+        from web_scraper.runner import _scored_insert_payload
+        cdn_url = "https://images.migrosone.com/sanalmarket/product/9999/img.jpg"
+        fallback_url = "https://images.migrosone.com/sanalmarket/product/9999/fallback.jpg"
+        candidate = {"name": "Ürün", "source": "web_scraper:migros",
+                     "image_url": cdn_url,
+                     "image_front_url": fallback_url,
+                     "quality_score": 0, "missing_fields": [], "status": "pending"}
+        payload = _scored_insert_payload(candidate)
+        self.assertEqual(payload.get("image_url"), cdn_url)
+
+    def test_og_image_fallback_when_no_front_url(self):
+        """Spec item 4: raw_source_payload.meta.og_image used as fallback."""
+        from web_scraper.runner import _scored_insert_payload, _selected_front_image_url
+        og_url = "https://images.migrosone.com/sanalmarket/product/1234/og.jpg"
+        candidate = {
+            "name": "Ürün", "source": "web_scraper:migros",
+            "raw_source_payload": {"meta": {"og_image": og_url}},
+            "quality_score": 0, "missing_fields": [], "status": "pending",
+        }
+        selected = _selected_front_image_url(candidate)
+        self.assertEqual(selected, og_url)
+        payload = _scored_insert_payload(candidate)
+        self.assertEqual(payload.get("image_url"), og_url)
+
+    def test_icon_and_logo_urls_rejected(self):
+        """Spec item 6: junk/icon/logo URLs are rejected and not written to staging."""
+        from web_scraper.runner import _scored_insert_payload, _selected_front_image_url
+        for junk in [
+            "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "https://www.migros.com.tr/assets/logos/migros.png",
+            "https://www.migros.com.tr/assets/icons/migroskop.webp",
+            "https://example.com/assets/logos/brand.svg",
+            "https://example.com/blindlook-logo.jpg",
+        ]:
+            with self.subTest(junk=junk):
+                candidate = {"name": "Ürün", "source": "web_scraper:migros",
+                             "image_front_url": junk,
+                             "quality_score": 0, "missing_fields": [], "status": "pending"}
+                selected = _selected_front_image_url(candidate)
+                self.assertIsNone(selected, f"junk URL must be rejected: {junk}")
+                payload = _scored_insert_payload(candidate)
+                self.assertIsNone(payload.get("image_url"),
+                                  f"junk URL must not reach staging DB: {junk}")
+
+    def test_missing_barcode_does_not_drop_image_url(self):
+        """Spec item 7: no barcode in candidate must not remove image_url from payload."""
+        from web_scraper.runner import _scored_insert_payload
+        cdn_url = "https://images.migrosone.com/sanalmarket/product/9999/img.jpg"
+        candidate = {
+            "name": "Ürün", "source": "web_scraper:migros",
+            "image_front_url": cdn_url,
+            # no barcode, no ingredients
+            "quality_score": 0, "missing_fields": ["barcode", "ingredients"], "status": "pending",
+        }
+        payload = _scored_insert_payload(candidate)
+        self.assertEqual(payload.get("image_url"), cdn_url)
 
 
 class MigrosImageRepairTest(unittest.TestCase):
@@ -1943,8 +2026,8 @@ class MigrosImageRepairTest(unittest.TestCase):
             self.assertIn("image_url", params.get("select", ""),
                           "select must include image_url for products table")
 
-    def test_bulk_staging_fetch_all_rows_selects_image_front_url_not_image_url(self):
-        """fetch_all_migros_rows_for_table for product_staging: selects image_front_url."""
+    def test_bulk_staging_fetch_all_rows_selects_image_url(self):
+        """fetch_all_migros_rows_for_table for product_staging: selects image_url (aligned with products)."""
         with patch.object(migros_image_fix.requests, "get") as get:
             get.return_value = self._FakeResponse([])
             migros_image_fix.fetch_all_migros_rows_for_table(
@@ -1953,12 +2036,9 @@ class MigrosImageRepairTest(unittest.TestCase):
             )
         for call in get.call_args_list:
             params = call.kwargs.get("params", {})
-            self.assertIn("image_front_url", params.get("select", ""))
-            # image_url must not appear as a standalone column in staging selects
-            select = params.get("select", "")
-            self.assertNotIn(",image_url,", f",{select},",
-                             "product_staging must never select image_url")
-        self.assertNotIn("image_url", migros_image_fix.STAGING_SPEC.select_fields)
+            self.assertIn("image_url", params.get("select", ""),
+                          "product_staging select must include image_url")
+        self.assertEqual(migros_image_fix.STAGING_SPEC.image_field, "image_url")
 
     def test_targeted_query_still_uses_only_source_url_without_bulk_filter(self):
         with patch.object(migros_image_fix.requests, "get") as get:
@@ -2148,7 +2228,7 @@ class MigrosImageRepairTest(unittest.TestCase):
         )
         self.assertNotIn("image_url", patch)
 
-    def test_staging_repair_uses_image_front_url_not_image_url(self):
+    def test_staging_repair_uses_image_url_column(self):
         image_report = {
             "image_candidates": [
                 {
@@ -2171,7 +2251,7 @@ class MigrosImageRepairTest(unittest.TestCase):
             "id": "s1",
             "name": "Migros Ürünü",
             "brand": "Migros",
-            "image_front_url": "https://images.migrosone.com/sanalmarket/product/05080145/05080145_2-abc-1650x1650.jpg",
+            "image_url": "https://images.migrosone.com/sanalmarket/product/05080145/05080145_2-abc-1650x1650.jpg",
             "source_url": "https://www.migros.com.tr/migros-urunu-p-x",
         }
 
@@ -2184,11 +2264,11 @@ class MigrosImageRepairTest(unittest.TestCase):
 
         self.assertEqual(decision.status, "would_update")
         self.assertEqual(
-            decision.patch["image_front_url"],
+            decision.patch["image_url"],
             "https://images.migrosone.com/sanalmarket/product/05080145/05080145-abc-1650x1650.jpg",
         )
         self.assertEqual(decision.patch["image_source"], "web_scraper:migros")
-        self.assertNotIn("image_url", decision.patch)
+        self.assertNotIn("image_front_url", decision.patch)
 
     def test_suspicious_yan_candidate_is_not_selected_when_clean_front_exists(self):
         image_report = {
@@ -2360,23 +2440,21 @@ class BulkSuspiciousFilterTest(unittest.TestCase):
             self.assertIn("image_url", select)
             self.assertNotIn("image_front_url", select)
 
-    def test_python_filtered_staging_selects_image_front_url_not_image_url(self):
-        """fetch_suspicious_rows_python_filtered for 'product_staging' selects image_front_url."""
+    def test_python_filtered_staging_selects_image_url(self):
+        """fetch_suspicious_rows_python_filtered for 'product_staging' selects image_url (aligned with products)."""
         with patch("requests.get", return_value=self._fake_resp([])) as mock_get:
             migros_image_fix.fetch_suspicious_rows_python_filtered(
                 _BASE_URL, _KEY, "product_staging", 10, source=_SOURCE
             )
         for call in mock_get.call_args_list:
             select = call.kwargs.get("params", {}).get("select", "")
-            self.assertIn("image_front_url", select)
-            self.assertNotIn(",image_url,", f",{select},")
+            self.assertIn("image_url", select)
 
-    # ── product_staging.image_url must never be referenced ───────────────────
-
-    def test_staging_spec_select_fields_never_references_bare_image_url(self):
-        """STAGING_SPEC.select_fields contains image_front_url, never bare image_url."""
+    def test_staging_spec_select_fields_references_image_url(self):
+        """STAGING_SPEC.select_fields contains image_url (not image_front_url)."""
         select = migros_image_fix.STAGING_SPEC.select_fields
-        self.assertNotIn(",image_url,", f",{select},")
+        self.assertIn("image_url", select)
+        self.assertNotIn("image_front_url", select)
 
     # ── limit is applied AFTER Python filtering ───────────────────────────────
 
@@ -2459,11 +2537,11 @@ class NonProductAssetFilterTest(unittest.TestCase):
         url = "https://images.migrosone.com/sanalmarket/product/11018028/11018028_2-191052-1650x1650.jpg"
         self.assertTrue(migros_image_fix.is_suspicious_image_url(url))
 
-    # ── STAGING_SPEC uses image_front_url ────────────────────────────────────
+    # ── STAGING_SPEC uses image_url (aligned with products table) ─────────────
 
-    def test_staging_spec_image_field_is_image_front_url(self):
-        """STAGING_SPEC.image_field must be image_front_url, not image_url."""
-        self.assertEqual(migros_image_fix.STAGING_SPEC.image_field, "image_front_url")
+    def test_staging_spec_image_field_is_image_url(self):
+        """STAGING_SPEC.image_field must be image_url (same column name as products)."""
+        self.assertEqual(migros_image_fix.STAGING_SPEC.image_field, "image_url")
 
     # ── _select_repair_front_candidate never picks asset URLs ────────────────
 
@@ -2518,7 +2596,7 @@ class NonProductAssetFilterTest(unittest.TestCase):
             "id": "nazar-uuid",
             "name": "Nazar Sakız",
             "brand": None,
-            "image_front_url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+            "image_url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
             "source_url": "https://www.migros.com.tr/nazar-sakiz-p-abc",
         }
         decision = migros_image_fix.plan_image_update(
@@ -2544,7 +2622,7 @@ class NonProductAssetFilterTest(unittest.TestCase):
                 "id": f"test-{product_name.split()[0].lower()}",
                 "name": product_name,
                 "brand": None,
-                "image_front_url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
+                "image_url": "https://www.migros.com.tr/assets/icons/ne-pisirsem.webp",
                 "source_url": "https://www.migros.com.tr/product-p-abc",
             }
             decision = migros_image_fix.plan_image_update(

@@ -93,9 +93,9 @@ PRODUCT_SPEC = TableSpec(
 )
 STAGING_SPEC = TableSpec(
     table="product_staging",
-    image_field="image_front_url",
+    image_field="image_url",
     select_fields=(
-        "id,name,brand,image_front_url,image_source,source,source_url,"
+        "id,name,brand,image_url,image_source,source,source_url,"
         "category_tags,updated_at"
     ),
     updated_stat="updated_staging",
@@ -206,7 +206,7 @@ def build_image_only_patch(
         image_field: image_url.strip(),
         "updated_at": effective_now,
     }
-    if image_field == "image_front_url" and image_source:
+    if image_source:
         patch["image_source"] = image_source
     return patch
 
@@ -341,7 +341,7 @@ def fetch_suspicious_rows_python_filtered(
 
     Image field mapping:
       products        → image_url
-      product_staging → image_front_url   (never product_staging.image_url)
+      product_staging → image_url  (aligned with products.image_url)
     """
     image_field = get_image_field(table)
     all_rows = fetch_all_migros_rows_for_table(base_url, key, table, source=source)
