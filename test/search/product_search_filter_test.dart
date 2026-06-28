@@ -699,28 +699,30 @@ void main() {
     });
 
     test(
-      'falls back to main-category tags when subcategory has no specific tags',
+      'Meyve Suyu uses specific meyve_suyu tag (not icecekler fallback)',
       () {
-        // Meyve Suyu shares 'icecekler' with other İçecekler subs.
+        // kMeyvesuyu now has its own specific tag; no fallback needed.
         const f = ProductSearchFilter(
           mainCategory: CanonicalCategoryMapper.kIcecekler,
           subCategory: CanonicalCategoryMapper.kMeyvesuyu,
         );
         final tags = f.effectiveCategoryTagsForServer;
-        // Falls back to İçecekler main tags.
-        expect(tags, contains('icecekler'));
+        expect(tags, contains('meyve_suyu'));
         expect(tags, isNotEmpty);
       },
     );
 
-    test('falls back to main-category tags for Temel Gıda / Makarna', () {
-      const f = ProductSearchFilter(
-        mainCategory: CanonicalCategoryMapper.kTemelGida,
-        subCategory: CanonicalCategoryMapper.kMakarna,
-      );
-      final tags = f.effectiveCategoryTagsForServer;
-      expect(tags, contains('makarna_bakliyat'));
-    });
+    test(
+      'Temel Gıda / Makarna uses specific makarna tag (not makarna_bakliyat fallback)',
+      () {
+        const f = ProductSearchFilter(
+          mainCategory: CanonicalCategoryMapper.kTemelGida,
+          subCategory: CanonicalCategoryMapper.kMakarna,
+        );
+        final tags = f.effectiveCategoryTagsForServer;
+        expect(tags, contains('makarna'));
+      },
+    );
   });
 
   // ── Subcategory server-side narrowing (via fake repo) ─────────────────────
@@ -912,31 +914,40 @@ void main() {
     );
 
     test(
-      'Makarna: requiresClientValidation=true (shared makarna_bakliyat tag)',
+      'Makarna: requiresClientValidation=false (has specific makarna tag)',
       () {
         const f = ProductSearchFilter(
           mainCategory: CanonicalCategoryMapper.kTemelGida,
           subCategory: CanonicalCategoryMapper.kMakarna,
         );
-        expect(f.queryPlan.requiresClientValidation, true);
+        expect(f.queryPlan.requiresClientValidation, false);
+        expect(f.queryPlan.categoryTagsAny, contains('makarna'));
       },
     );
 
-    test('Bakliyat: requiresClientValidation=true', () {
-      const f = ProductSearchFilter(
-        mainCategory: CanonicalCategoryMapper.kTemelGida,
-        subCategory: CanonicalCategoryMapper.kBakliyat,
-      );
-      expect(f.queryPlan.requiresClientValidation, true);
-    });
+    test(
+      'Bakliyat: requiresClientValidation=false (has specific bakliyat tag)',
+      () {
+        const f = ProductSearchFilter(
+          mainCategory: CanonicalCategoryMapper.kTemelGida,
+          subCategory: CanonicalCategoryMapper.kBakliyat,
+        );
+        expect(f.queryPlan.requiresClientValidation, false);
+        expect(f.queryPlan.categoryTagsAny, contains('bakliyat'));
+      },
+    );
 
-    test('Meyve Suyu: requiresClientValidation=true (no specific tag)', () {
-      const f = ProductSearchFilter(
-        mainCategory: CanonicalCategoryMapper.kIcecek,
-        subCategory: CanonicalCategoryMapper.kMeyvesuyu,
-      );
-      expect(f.queryPlan.requiresClientValidation, true);
-    });
+    test(
+      'Meyve Suyu: requiresClientValidation=false (has specific meyve_suyu tag)',
+      () {
+        const f = ProductSearchFilter(
+          mainCategory: CanonicalCategoryMapper.kIcecek,
+          subCategory: CanonicalCategoryMapper.kMeyvesuyu,
+        );
+        expect(f.queryPlan.requiresClientValidation, false);
+        expect(f.queryPlan.categoryTagsAny, contains('meyve_suyu'));
+      },
+    );
 
     test('no category → empty plan with hasFilter=false', () {
       expect(const ProductSearchFilter().queryPlan, const CategoryQueryPlan());

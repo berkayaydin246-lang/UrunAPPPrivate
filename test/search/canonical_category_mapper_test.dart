@@ -68,10 +68,11 @@ void main() {
       expect(c.sub, CanonicalCategoryMapper.kSoslar);
     });
 
-    test('hazir_yemek tag → Hazır & Donuk / Hazır Yemek', () {
+    test('hazir_yemek tag → Hazır & Donuk / Pratik Yemek', () {
       final c = map(tags: ['hazir_yemek'], name: 'Hazır Çorba');
       expect(c.main, CanonicalCategoryMapper.kHazirDonuk);
-      expect(c.sub, CanonicalCategoryMapper.kHazirYemek);
+      // hazir_yemek now maps to kPratikYemek (the broad "ready meal" umbrella).
+      expect(c.sub, CanonicalCategoryMapper.kPratikYemek);
     });
 
     test('ton_konserve tag → Et / Balık / Deniz Ürünleri', () {
@@ -128,10 +129,11 @@ void main() {
       expect(c.sub, CanonicalCategoryMapper.kKuruyemis);
     });
 
-    test('bebek_cocuk tag → Bebek Gıda', () {
+    test('bebek_cocuk tag → Bebek Gıda / Bebek Beslenme', () {
       final c = map(tags: ['bebek_cocuk'], name: 'Bebek Maması');
       expect(c.main, CanonicalCategoryMapper.kBebek);
-      expect(c.sub, isNull);
+      // Legacy bebek_cocuk tag now maps to the kBebekBeslenme sub.
+      expect(c.sub, CanonicalCategoryMapper.kBebekBeslenme);
     });
 
     test('dondurma_tatli tag → Dondurma', () {

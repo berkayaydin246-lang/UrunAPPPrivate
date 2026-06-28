@@ -83,8 +83,42 @@ class CanonicalCategoryMapper {
   static const String kBakliyat = 'Bakliyat';
   static const String kYag = 'Yağ';
   static const String kUnSeker = 'Un / Şeker / Tuz';
-  // Hazır & Donuk
-  static const String kHazirYemek = 'Hazır Yemek';
+  // İçecek (additional subs)
+  static const String kCay = 'Çay';
+  static const String kKahve = 'Kahve';
+  static const String kMadenSuyu = 'Maden Suyu';
+  // Süt & Kahvaltılık (additional sub)
+  static const String kZeytin = 'Zeytin';
+  // Temel Gıda (additional subs — new Migros tags)
+  static const String kTuzBaharat = 'Tuz & Baharat';
+  static const String kHamurMalz = 'Hamur/Pasta Malz.';
+  // Fırın & Pastane subs
+  static const String kEkmekSub = 'Ekmek';
+  static const String kKuruPasta = 'Kuru Pasta';
+  static const String kGaleta = 'Galeta & Grissini';
+  static const String kTatli = 'Tatlı';
+  static const String kPasta = 'Pasta';
+  // Hazır & Donuk subs
+  static const String kHazirYemek = 'Hazır Yemek'; // backward-compat
+  static const String kPratikYemek = 'Pratik Yemek';
+  static const String kMeze = 'Meze';
+  static const String kManti = 'Mantı';
+  static const String kSandvic = 'Sandviç';
+  static const String kDonukPizza = 'Donuk Pizza';
+  static const String kDonukPatates = 'Donuk Patates';
+  static const String kDonukSebze = 'Donuk Sebze';
+  static const String kDonukBorek = 'Donuk Börek';
+  static const String kPideLahmacun = 'Pide/Lahmacun';
+  static const String kDonukTatli = 'Donuk Tatlı';
+  static const String kDonukFirin = 'Donuk Fırın';
+  static const String kDonukHazirYemek = 'Donuk Hazır Yemek';
+  // Dondurma subs
+  static const String kKapDondurma = 'Kap Dondurma';
+  static const String kTekDondurma = 'Tekli Dondurma';
+  // Bebek subs
+  static const String kBebekBeslenme = 'Bebek Beslenme';
+  static const String kBebekIcecegi = 'Bebek İçeceği';
+  static const String kBebekAtistirmalik = 'Bebek Atıştırmalık';
 
   // ── All canonical main categories (for filter UI) ─────────────────────────
 
@@ -143,6 +177,7 @@ class CanonicalCategoryMapper {
       kYogurt,
       kPeynir,
       kSutluTatli,
+      kZeytin,
       kBalRecel,
       kTahinHelva,
       kKremCikolata,
@@ -162,13 +197,35 @@ class CanonicalCategoryMapper {
       kKuruMeyve,
       kSakiz,
     ],
-    kIcecek: [kGazli, kGazsiz, kMeyvesuyu],
-    kTemelGida: [kSoslar, kKonserve, kMakarna, kBakliyat, kYag, kUnSeker],
-    kHazirDonuk: [kHazirYemek],
+    kIcecek: [kGazli, kGazsiz, kCay, kKahve, kMadenSuyu, kMeyvesuyu],
+    kTemelGida: [
+      kSoslar,
+      kKonserve,
+      kMakarna,
+      kBakliyat,
+      kYag,
+      kTuzBaharat,
+      kHamurMalz,
+      kOzelBeslenme,
+    ],
+    kHazirDonuk: [
+      kPratikYemek,
+      kMeze,
+      kManti,
+      kSandvic,
+      kDonukPizza,
+      kDonukPatates,
+      kDonukSebze,
+      kDonukBorek,
+      kPideLahmacun,
+      kDonukTatli,
+      kDonukFirin,
+      kDonukHazirYemek,
+    ],
+    kFirinPastane: [kEkmekSub, kKuruPasta, kGaleta, kTatli, kPasta],
+    kDondurma: [kKapDondurma, kTekDondurma],
+    kBebek: [kBebekBeslenme, kBebekIcecegi, kBebekAtistirmalik],
     kMeyveSebze: [],
-    kDondurma: [],
-    kFirinPastane: [],
-    kBebek: [],
     kOzelBeslenme: [],
     kDiger: [],
   };
@@ -226,21 +283,64 @@ class CanonicalCategoryMapper {
       'enerji_icecekleri',
       'gazli_icecek',
       'gazsiz_icecek',
+      'cay',
+      'maden_suyu',
+      'meyve_suyu',
+      'kahve',
     ],
-    kTemelGida: ['makarna_bakliyat', 'soslar', 'sos', 'konserve'],
-    kHazirDonuk: ['hazir_yemek'],
-    kDondurma: ['dondurma_tatli'],
-    kBebek: ['bebek_cocuk'],
+    kTemelGida: [
+      'makarna_bakliyat',
+      'soslar',
+      'sos',
+      'konserve',
+      'makarna',
+      'bakliyat',
+      'sivi_yag',
+      'tuz_baharat_harc',
+      'hamur_pasta_malzemeleri',
+      'ozel_beslenme_urunleri',
+    ],
+    kHazirDonuk: [
+      'hazir_yemek',
+      'pratik_yemek',
+      'meze',
+      'hazir_manti',
+      'paketli_sandvic',
+      'dondurulmus_pizza',
+      'dondurulmus_patates',
+      'dondurulmus_sebze',
+      'dondurulmus_sushi',
+      'dondurulmus_meyve',
+      'dondurulmus_borek',
+      'dondurulmus_manti',
+      'pide_lahmacun',
+      'dondurulmus_tatli',
+      'dondurulmus_firin_urunleri',
+      'dondurulmus_hazir_yemek',
+    ],
+    kDondurma: ['dondurma_tatli', 'kap_dondurma', 'tek_dondurma'],
+    kBebek: [
+      'bebek_cocuk',
+      'bebek_beslenme',
+      'bebek_icecegi',
+      'bebek_atistirmalik',
+    ],
     kMeyveSebze: [
-      // Tags assigned when Migros meyve/sebze categories are scraped.
-      // No products with these tags exist yet → query returns empty state.
-      'meyve_sebze',
-      'meyve',
-      'sebze',
-      'taze_meyve',
-      'taze_sebze',
+      // Strict fresh-produce tags only. Frozen products (dondurulmus_meyve)
+      // belong under Hazır & Donuk. Until fresh produce is imported this
+      // category intentionally returns empty state.
+      'meyve_sebze', 'meyve', 'sebze', 'taze_meyve', 'taze_sebze',
     ],
-    kFirinPastane: ['firin_pastane', 'ekmek', 'unlu_mamul', 'firin'],
+    kFirinPastane: [
+      'firin_pastane',
+      'ekmek',
+      'unlu_mamul',
+      'firin',
+      'kuru_pasta',
+      'galeta_grissini_gevrek',
+      'tatli',
+      'pasta',
+    ],
     kOzelBeslenme: [],
     kDiger: [],
   };
@@ -278,16 +378,13 @@ class CanonicalCategoryMapper {
 
   static const Map<String, Map<String, List<String>>> _subToTags = {
     kSutKahvaltilik: {
-      // Use only the precise Migros scraper tag for each sub.
-      // The broad OFT grouping tags (sut_urunleri, peynir_yogurt) covered ALL
-      // dairy and caused the server to return full-dairy pages, forcing the
-      // client loop to scan hundreds of rows before finding the right subcategory.
       kSutSub: ['sut'],
       kYogurt: ['yogurt'],
       kPeynir: ['peynir'],
       kSutluTatli: ['sutlu_tatli_krema'],
+      kZeytin: ['zeytin'],
       // Breakfast spreads share kahvaltiliklar/kahvaltilik — server returns all,
-      // name-based client disambiguation picks the right sub (kBalRecel vs kGevrek).
+      // name-based client disambiguation picks the right sub.
       kBalRecel: ['kahvaltiliklar', 'kahvaltilik'],
       kTahinHelva: ['kahvaltiliklar', 'kahvaltilik'],
       kKremCikolata: ['findik_ezmesi', 'kahvaltiliklar', 'kahvaltilik'],
@@ -310,9 +407,6 @@ class CanonicalCategoryMapper {
       kBalik: ['balik_deniz_urunleri', 'ton_konserve'],
     },
     kAtistirmalik: {
-      // Use the single precise Migros tag per sub.  The compound OFT tags
-      // (biskuvi_kek, cips_kraker, cikolata_gofret) span two subcategories each
-      // and were leaking products from one sub into another sub's server filter.
       kBiskuvi: ['biskuvi'],
       kCips: ['cips'],
       kCikolata: ['cikolata', 'bar_kaplamalilar'],
@@ -328,24 +422,51 @@ class CanonicalCategoryMapper {
     kIcecek: {
       kGazli: ['gazli_icecek', 'enerji_icecekleri'],
       kGazsiz: ['gazsiz_icecek'],
-      // kMeyvesuyu shares 'icecekler' tag — server narrowing not possible.
+      kCay: ['cay'],
+      kKahve: ['kahve'],
+      kMadenSuyu: ['maden_suyu'],
+      kMeyvesuyu: ['meyve_suyu'],
     },
     kTemelGida: {
-      // CRITICAL: 'makarna_bakliyat' was here before; it caused the server to
-      // return hundreds of pasta/legume rows when filtering for Soslar, forcing
-      // the empty-page loop to scan them all before finding any sos products.
       kSoslar: ['sos'],
       kKonserve: ['konserve'],
-      kMakarna: ['makarna_bakliyat'],
-      kBakliyat: ['makarna_bakliyat'],
-      kYag: ['makarna_bakliyat'],
-      kUnSeker: ['makarna_bakliyat'],
+      kMakarna: ['makarna'],
+      kBakliyat: ['bakliyat'],
+      kYag: ['sivi_yag'],
+      kTuzBaharat: ['tuz_baharat_harc'],
+      kHamurMalz: ['hamur_pasta_malzemeleri'],
+      kOzelBeslenme: ['ozel_beslenme_urunleri'],
     },
     kHazirDonuk: {
-      kHazirYemek: ['hazir_yemek'],
+      kPratikYemek: ['pratik_yemek', 'hazir_yemek'],
+      kMeze: ['meze'],
+      kManti: ['hazir_manti', 'dondurulmus_manti'],
+      kSandvic: ['paketli_sandvic'],
+      kDonukPizza: ['dondurulmus_pizza'],
+      kDonukPatates: ['dondurulmus_patates'],
+      kDonukSebze: ['dondurulmus_sebze'],
+      kDonukBorek: ['dondurulmus_borek'],
+      kPideLahmacun: ['pide_lahmacun'],
+      kDonukTatli: ['dondurulmus_tatli'],
+      kDonukFirin: ['dondurulmus_firin_urunleri'],
+      kDonukHazirYemek: ['dondurulmus_hazir_yemek'],
     },
-    // kDondurma: single tag 'dondurma_tatli' — no sub narrowing needed.
-    // kBebek: single tag 'bebek_cocuk' — no sub narrowing needed.
+    kFirinPastane: {
+      kEkmekSub: ['ekmek', 'firin'],
+      kKuruPasta: ['kuru_pasta'],
+      kGaleta: ['galeta_grissini_gevrek'],
+      kTatli: ['tatli'],
+      kPasta: ['pasta'],
+    },
+    kDondurma: {
+      kKapDondurma: ['kap_dondurma'],
+      kTekDondurma: ['tek_dondurma'],
+    },
+    kBebek: {
+      kBebekBeslenme: ['bebek_beslenme', 'bebek_cocuk'],
+      kBebekIcecegi: ['bebek_icecegi'],
+      kBebekAtistirmalik: ['bebek_atistirmalik'],
+    },
   };
 
   /// Returns the specific DB `category_tags` values for [subCategory] under
@@ -399,13 +520,11 @@ class CanonicalCategoryMapper {
     },
   };
 
-  // Subcategories where tag + keyword server filtering cannot distinguish the
-  // sub from its siblings (all share one broad tag, no distinguishing keywords).
-  // The client-side subcategory pass is still required for these.
-  static const Set<String> _clientValidationRequired = {
-    kMakarna, kBakliyat, kYag, kUnSeker, // all share makarna_bakliyat
-    kMeyvesuyu, // no specific tag; falls back to all İçecek
-  };
+  // Subcategories where the server tag filter alone cannot distinguish the sub
+  // from siblings sharing the same broad tag.  These require a client-side pass.
+  // kMakarna/kBakliyat/kYag/kMeyvesuyu now have specific tags and are removed.
+  // kUnSeker is kept as a backward-compat safety net (not shown in UI).
+  static const Set<String> _clientValidationRequired = {kUnSeker};
 
   /// Returns the `search_keywords` values used to narrow a broad-tag subcategory
   /// server-side (AND-ed with the tag overlap filter before `.range()`).
@@ -571,7 +690,46 @@ class CanonicalCategoryMapper {
 
     // ── Hazır & Donuk ─────────────────────────────────────────────────────
     if (_hasTag(tags, 'hazir_yemek')) {
-      return const CanonicalCategory(main: kHazirDonuk, sub: kHazirYemek);
+      return const CanonicalCategory(main: kHazirDonuk, sub: kPratikYemek);
+    }
+    if (_hasTag(tags, 'pratik_yemek')) {
+      return const CanonicalCategory(main: kHazirDonuk, sub: kPratikYemek);
+    }
+    if (_hasTag(tags, 'meze')) {
+      return const CanonicalCategory(main: kHazirDonuk, sub: kMeze);
+    }
+    if (_hasAnyTag(tags, ['hazir_manti', 'dondurulmus_manti'])) {
+      return const CanonicalCategory(main: kHazirDonuk, sub: kManti);
+    }
+    if (_hasTag(tags, 'paketli_sandvic')) {
+      return const CanonicalCategory(main: kHazirDonuk, sub: kSandvic);
+    }
+    if (_hasTag(tags, 'dondurulmus_pizza')) {
+      return const CanonicalCategory(main: kHazirDonuk, sub: kDonukPizza);
+    }
+    if (_hasTag(tags, 'dondurulmus_patates')) {
+      return const CanonicalCategory(main: kHazirDonuk, sub: kDonukPatates);
+    }
+    if (_hasTag(tags, 'dondurulmus_sebze')) {
+      return const CanonicalCategory(main: kHazirDonuk, sub: kDonukSebze);
+    }
+    if (_hasAnyTag(tags, ['dondurulmus_sushi', 'dondurulmus_meyve'])) {
+      return const CanonicalCategory(main: kHazirDonuk);
+    }
+    if (_hasTag(tags, 'dondurulmus_borek')) {
+      return const CanonicalCategory(main: kHazirDonuk, sub: kDonukBorek);
+    }
+    if (_hasTag(tags, 'pide_lahmacun')) {
+      return const CanonicalCategory(main: kHazirDonuk, sub: kPideLahmacun);
+    }
+    if (_hasTag(tags, 'dondurulmus_tatli')) {
+      return const CanonicalCategory(main: kHazirDonuk, sub: kDonukTatli);
+    }
+    if (_hasTag(tags, 'dondurulmus_firin_urunleri')) {
+      return const CanonicalCategory(main: kHazirDonuk, sub: kDonukFirin);
+    }
+    if (_hasTag(tags, 'dondurulmus_hazir_yemek')) {
+      return const CanonicalCategory(main: kHazirDonuk, sub: kDonukHazirYemek);
     }
 
     // ── Süt & Kahvaltılık (breakfast spreads) ────────────────────────────
@@ -585,9 +743,81 @@ class CanonicalCategoryMapper {
       );
     }
 
+    // ── İçecek (new Migros specific tags) ────────────────────────────────
+    if (_hasTag(tags, 'cay')) {
+      return const CanonicalCategory(main: kIcecek, sub: kCay);
+    }
+    if (_hasTag(tags, 'kahve')) {
+      return const CanonicalCategory(main: kIcecek, sub: kKahve);
+    }
+    if (_hasTag(tags, 'maden_suyu')) {
+      return const CanonicalCategory(main: kIcecek, sub: kMadenSuyu);
+    }
+    if (_hasTag(tags, 'meyve_suyu')) {
+      return const CanonicalCategory(main: kIcecek, sub: kMeyvesuyu);
+    }
+
+    // ── Temel Gıda (new Migros specific tags) ────────────────────────────
+    if (_hasTag(tags, 'makarna')) {
+      return const CanonicalCategory(main: kTemelGida, sub: kMakarna);
+    }
+    if (_hasTag(tags, 'bakliyat')) {
+      return const CanonicalCategory(main: kTemelGida, sub: kBakliyat);
+    }
+    if (_hasTag(tags, 'sivi_yag')) {
+      return const CanonicalCategory(main: kTemelGida, sub: kYag);
+    }
+    if (_hasTag(tags, 'tuz_baharat_harc')) {
+      return const CanonicalCategory(main: kTemelGida, sub: kTuzBaharat);
+    }
+    if (_hasTag(tags, 'hamur_pasta_malzemeleri')) {
+      return const CanonicalCategory(main: kTemelGida, sub: kHamurMalz);
+    }
+    if (_hasTag(tags, 'ozel_beslenme_urunleri')) {
+      return const CanonicalCategory(main: kTemelGida, sub: kOzelBeslenme);
+    }
+
+    // ── Süt & Kahvaltılık (new tag) ───────────────────────────────────────
+    if (_hasTag(tags, 'zeytin')) {
+      return const CanonicalCategory(main: kSutKahvaltilik, sub: kZeytin);
+    }
+
+    // ── Fırın & Pastane (new Migros specific tags) ────────────────────────
+    if (_hasTag(tags, 'kuru_pasta')) {
+      return const CanonicalCategory(main: kFirinPastane, sub: kKuruPasta);
+    }
+    if (_hasTag(tags, 'galeta_grissini_gevrek')) {
+      return const CanonicalCategory(main: kFirinPastane, sub: kGaleta);
+    }
+    if (_hasTag(tags, 'tatli')) {
+      return const CanonicalCategory(main: kFirinPastane, sub: kTatli);
+    }
+    if (_hasTag(tags, 'pasta')) {
+      return const CanonicalCategory(main: kFirinPastane, sub: kPasta);
+    }
+
+    // ── Dondurma (new specific tags) ─────────────────────────────────────
+    if (_hasTag(tags, 'kap_dondurma')) {
+      return const CanonicalCategory(main: kDondurma, sub: kKapDondurma);
+    }
+    if (_hasTag(tags, 'tek_dondurma')) {
+      return const CanonicalCategory(main: kDondurma, sub: kTekDondurma);
+    }
+
+    // ── Bebek (new specific tags) ─────────────────────────────────────────
+    if (_hasTag(tags, 'bebek_beslenme')) {
+      return const CanonicalCategory(main: kBebek, sub: kBebekBeslenme);
+    }
+    if (_hasTag(tags, 'bebek_icecegi')) {
+      return const CanonicalCategory(main: kBebek, sub: kBebekIcecegi);
+    }
+    if (_hasTag(tags, 'bebek_atistirmalik')) {
+      return const CanonicalCategory(main: kBebek, sub: kBebekAtistirmalik);
+    }
+
     // ── Dedicated main categories ─────────────────────────────────────────
     if (_hasTag(tags, 'bebek_cocuk')) {
-      return const CanonicalCategory(main: kBebek);
+      return const CanonicalCategory(main: kBebek, sub: kBebekBeslenme);
     }
     if (_hasTag(tags, 'dondurma_tatli')) {
       return const CanonicalCategory(main: kDondurma);
@@ -808,8 +1038,18 @@ class CanonicalCategoryMapper {
     if (_any(n, ['yağ', 'yag', 'oil', 'margarin'])) {
       return kYag;
     }
-    if (_any(n, ['un', 'flour', 'şeker', 'seker', 'sugar', 'tuz', 'salt'])) {
-      return kUnSeker;
+    if (_any(n, [
+      'un',
+      'flour',
+      'şeker',
+      'seker',
+      'sugar',
+      'tuz',
+      'salt',
+      'baharat',
+      'spice',
+    ])) {
+      return kTuzBaharat;
     }
     return kMakarna;
   }

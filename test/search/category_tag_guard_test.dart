@@ -403,4 +403,300 @@ void main() {
       );
     },
   );
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // New taxonomy tests (imported Migros categories, batch 1 + batch 2)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  // ── T1: Temel Gıda includes all new batch tags ─────────────────────────
+
+  test('T1: Temel Gıda main tags include all new Migros batch tags', () {
+    final tags = CanonicalCategoryMapper.mainCategoryToTags(
+      CanonicalCategoryMapper.kTemelGida,
+    );
+    expect(
+      tags,
+      containsAll([
+        'makarna',
+        'bakliyat',
+        'sivi_yag',
+        'tuz_baharat_harc',
+        'hamur_pasta_malzemeleri',
+        'ozel_beslenme_urunleri',
+      ]),
+    );
+  });
+
+  // ── T2: Makarna subcategory uses specific tag ─────────────────────────
+
+  test('T2: Makarna subcategory queries only the makarna tag', () {
+    const filter = ProductSearchFilter(
+      mainCategory: CanonicalCategoryMapper.kTemelGida,
+      subCategory: CanonicalCategoryMapper.kMakarna,
+    );
+    final plan = filter.queryPlan;
+    expect(plan.categoryTagsAny, contains('makarna'));
+    expect(plan.categoryTagsAny, isNot(contains('bakliyat')));
+    expect(plan.categoryTagsAny, isNot(contains('sivi_yag')));
+    expect(plan.categoryTagsAny, isNot(contains('tuz_baharat_harc')));
+  });
+
+  // ── T3: Bakliyat subcategory uses specific tag ────────────────────────
+
+  test('T3: Bakliyat subcategory queries only the bakliyat tag', () {
+    const filter = ProductSearchFilter(
+      mainCategory: CanonicalCategoryMapper.kTemelGida,
+      subCategory: CanonicalCategoryMapper.kBakliyat,
+    );
+    final plan = filter.queryPlan;
+    expect(plan.categoryTagsAny, contains('bakliyat'));
+    expect(plan.categoryTagsAny, isNot(contains('makarna')));
+    expect(plan.categoryTagsAny, isNot(contains('sivi_yag')));
+  });
+
+  // ── T4: İçecek includes new drink tags ───────────────────────────────
+
+  test('T4: İçecek main tags include cay, kahve, maden_suyu, meyve_suyu', () {
+    final tags = CanonicalCategoryMapper.mainCategoryToTags(
+      CanonicalCategoryMapper.kIcecek,
+    );
+    expect(tags, containsAll(['cay', 'kahve', 'maden_suyu', 'meyve_suyu']));
+  });
+
+  // ── T5: Fırın & Pastane includes new bakery tags ──────────────────────
+
+  test(
+    'T5: Fırın & Pastane includes ekmek, kuru_pasta, galeta, tatli, pasta',
+    () {
+      final tags = CanonicalCategoryMapper.mainCategoryToTags(
+        CanonicalCategoryMapper.kFirinPastane,
+      );
+      expect(
+        tags,
+        containsAll([
+          'ekmek',
+          'kuru_pasta',
+          'galeta_grissini_gevrek',
+          'tatli',
+          'pasta',
+        ]),
+      );
+    },
+  );
+
+  // ── T6: Hazır & Donuk includes all frozen/ready tags ─────────────────
+
+  test('T6: Hazır & Donuk includes all frozen and ready-meal tags', () {
+    final tags = CanonicalCategoryMapper.mainCategoryToTags(
+      CanonicalCategoryMapper.kHazirDonuk,
+    );
+    expect(
+      tags,
+      containsAll([
+        'pratik_yemek',
+        'meze',
+        'hazir_manti',
+        'paketli_sandvic',
+        'dondurulmus_pizza',
+        'dondurulmus_patates',
+        'dondurulmus_sebze',
+        'dondurulmus_borek',
+        'pide_lahmacun',
+        'dondurulmus_tatli',
+        'dondurulmus_firin_urunleri',
+        'dondurulmus_hazir_yemek',
+        'dondurulmus_manti',
+      ]),
+    );
+  });
+
+  // ── T7: Dondurma includes kap/tek tags ───────────────────────────────
+
+  test('T7: Dondurma main tags include kap_dondurma and tek_dondurma', () {
+    final tags = CanonicalCategoryMapper.mainCategoryToTags(
+      CanonicalCategoryMapper.kDondurma,
+    );
+    expect(tags, containsAll(['kap_dondurma', 'tek_dondurma']));
+  });
+
+  // ── T8: Bebek includes all baby tags ─────────────────────────────────
+
+  test(
+    'T8: Bebek main tags include bebek_beslenme, bebek_icecegi, bebek_atistirmalik',
+    () {
+      final tags = CanonicalCategoryMapper.mainCategoryToTags(
+        CanonicalCategoryMapper.kBebek,
+      );
+      expect(
+        tags,
+        containsAll(['bebek_beslenme', 'bebek_icecegi', 'bebek_atistirmalik']),
+      );
+    },
+  );
+
+  // ── T9: Meyve & Sebze does NOT include frozen/snack/drink tags ───────
+
+  test(
+    'T9: Meyve & Sebze excludes frozen, snack, drink, and dondurma tags',
+    () {
+      const forbidden = [
+        'dondurulmus_meyve',
+        'dondurulmus_sebze',
+        'atistirmalik',
+        'biskuvi_kek',
+        'cips_kraker',
+        'sekerleme',
+        'gazli_icecek',
+        'gazsiz_icecek',
+        'kahve',
+        'cay',
+        'kap_dondurma',
+        'tek_dondurma',
+        'dondurma_tatli',
+        'hazir_yemek',
+        'pratik_yemek',
+      ];
+      final meyveTags = CanonicalCategoryMapper.mainCategoryToTags(
+        CanonicalCategoryMapper.kMeyveSebze,
+      );
+      for (final tag in forbidden) {
+        expect(
+          meyveTags,
+          isNot(contains(tag)),
+          reason: 'Meyve & Sebze must not include "$tag"',
+        );
+      }
+    },
+  );
+
+  // ── T10: No category falls back to all products ───────────────────────
+
+  test(
+    'T10: Categories with empty tag list never return unfiltered products',
+    () async {
+      final unrelated = [
+        _p('x1', 'Ürün 1', categoryTags: ['atistirmalik']),
+        _p('x2', 'Ürün 2', categoryTags: ['gazli_icecek']),
+      ];
+      // All main categories must either have tags (→ filtered results) or
+      // return empty (→ never unfiltered).
+      for (final main in CanonicalCategoryMapper.visibleMainCategories) {
+        final mainTags = CanonicalCategoryMapper.mainCategoryToTags(main);
+        if (mainTags.isEmpty) {
+          // Categories with no tags must always return empty, not unfiltered.
+          final state = await _run(
+            unrelated,
+            ProductSearchFilter(mainCategory: main),
+          );
+          expect(
+            state.products,
+            isEmpty,
+            reason:
+                '$main has no tags but returned products (unfiltered fallback)',
+          );
+        }
+      }
+    },
+  );
+
+  // ── T11: Subcategory tags appear in queryPlan ─────────────────────────
+
+  test(
+    'T11: Selecting a subcategory uses its specific tags in the query plan',
+    () {
+      // Çay subcategory should use ['cay'], not all İçecek tags.
+      const cay = ProductSearchFilter(
+        mainCategory: CanonicalCategoryMapper.kIcecek,
+        subCategory: CanonicalCategoryMapper.kCay,
+      );
+      final cayPlan = cay.queryPlan;
+      expect(cayPlan.categoryTagsAny, equals(['cay']));
+
+      // Donuk Pizza should use ['dondurulmus_pizza']
+      const pizza = ProductSearchFilter(
+        mainCategory: CanonicalCategoryMapper.kHazirDonuk,
+        subCategory: CanonicalCategoryMapper.kDonukPizza,
+      );
+      final pizzaPlan = pizza.queryPlan;
+      expect(pizzaPlan.categoryTagsAny, contains('dondurulmus_pizza'));
+      expect(pizzaPlan.categoryTagsAny, isNot(contains('hazir_yemek')));
+
+      // Bebek Atıştırmalık should use ['bebek_atistirmalik']
+      const bebekSnack = ProductSearchFilter(
+        mainCategory: CanonicalCategoryMapper.kBebek,
+        subCategory: CanonicalCategoryMapper.kBebekAtistirmalik,
+      );
+      final bebekPlan = bebekSnack.queryPlan;
+      expect(bebekPlan.categoryTagsAny, contains('bebek_atistirmalik'));
+    },
+  );
+
+  // ── T12: Category product list renders tagged products correctly ───────
+
+  test(
+    'T12: Product grid renders products matching new category tags',
+    () async {
+      final products = [
+        _p('m1', 'Penne Makarna', categoryTags: ['makarna']),
+        _p('b1', 'Kırmızı Mercimek', categoryTags: ['bakliyat']),
+        _p('c1', 'Türk Çayı', categoryTags: ['cay']),
+        _p('k1', 'Magnum Kap', categoryTags: ['kap_dondurma']),
+        _p('bb1', 'Aptamil Mama', categoryTags: ['bebek_beslenme']),
+        _p('p1', 'Margherita Pizza', categoryTags: ['dondurulmus_pizza']),
+        _p('e1', 'Köy Ekmeği', categoryTags: ['ekmek']),
+        _p('s1', 'Sütaş Süt', categoryTags: ['sut']), // unrelated
+      ];
+
+      // Temel Gıda → Makarna
+      final makarna = await _run(
+        products,
+        const ProductSearchFilter(
+          mainCategory: CanonicalCategoryMapper.kTemelGida,
+          subCategory: CanonicalCategoryMapper.kMakarna,
+        ),
+      );
+      expect(makarna.products.map((p) => p.id), contains('m1'));
+      expect(makarna.products.map((p) => p.id), isNot(contains('b1')));
+
+      // İçecek → Çay
+      final cay = await _run(
+        products,
+        const ProductSearchFilter(
+          mainCategory: CanonicalCategoryMapper.kIcecek,
+          subCategory: CanonicalCategoryMapper.kCay,
+        ),
+      );
+      expect(cay.products.map((p) => p.id), contains('c1'));
+      expect(cay.products.map((p) => p.id), isNot(contains('s1')));
+
+      // Dondurma (main)
+      final dondurma = await _run(
+        products,
+        const ProductSearchFilter(
+          mainCategory: CanonicalCategoryMapper.kDondurma,
+        ),
+      );
+      expect(dondurma.products.map((p) => p.id), contains('k1'));
+
+      // Bebek → Bebek Beslenme
+      final bebek = await _run(
+        products,
+        const ProductSearchFilter(
+          mainCategory: CanonicalCategoryMapper.kBebek,
+          subCategory: CanonicalCategoryMapper.kBebekBeslenme,
+        ),
+      );
+      expect(bebek.products.map((p) => p.id), contains('bb1'));
+
+      // Hazır & Donuk → Donuk Pizza
+      final pizza = await _run(
+        products,
+        const ProductSearchFilter(
+          mainCategory: CanonicalCategoryMapper.kHazirDonuk,
+          subCategory: CanonicalCategoryMapper.kDonukPizza,
+        ),
+      );
+      expect(pizza.products.map((p) => p.id), contains('p1'));
+    },
+  );
 }

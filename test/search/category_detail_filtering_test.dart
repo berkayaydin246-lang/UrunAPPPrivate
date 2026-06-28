@@ -204,27 +204,19 @@ void main() {
 
   group('Category detail filtering', () {
     test(
-      'skips empty first raw page for shared-tag subcategory (requiresClientValidation=true)',
+      'Makarna subcategory uses specific makarna tag; server pre-filters results',
       () async {
-        // kMakarna and kBakliyat both share the makarna_bakliyat tag, so the
-        // server returns both; the client-side pass distinguishes them.
-        // Page 0 has a bakliyat product (rejected by kMakarna client filter).
-        // Page 1 has a makarna product (accepted by kMakarna client filter).
-        // The controller must loop past the empty page 0 and return page 1.
+        // kMakarna now has a specific 'makarna' tag.  _PagedRepo represents what
+        // the server returns AFTER the `category_tags ov {makarna}` filter:
+        // only the makarna-tagged product is present; nohut (makarna_bakliyat) is
+        // absent because the real server would not include it.
         final state = await _runSearch(
           _PagedRepo({
             0: [
               _product(
-                id: 'nohut',
-                name: 'Nohut 500g',
-                categoryTags: const ['makarna_bakliyat'],
-              ),
-            ],
-            1: [
-              _product(
                 id: 'makarna',
                 name: 'Penne Makarna 500g',
-                categoryTags: const ['makarna_bakliyat'],
+                categoryTags: const ['makarna'],
               ),
             ],
           }),
@@ -234,8 +226,29 @@ void main() {
           ),
         );
 
-        expect(state.products.map((p) => p.id), ['makarna']);
+        expect(state.products.map((p) => p.id), contains('makarna'));
         expect(state.hasMore, false);
+
+        // Legacy makarna_bakliyat product is not matched for Makarna sub.
+        expect(
+          CanonicalCategoryMapper.matchesSubCategory(
+            mainCategory: CanonicalCategoryMapper.kTemelGida,
+            subCategory: CanonicalCategoryMapper.kMakarna,
+            categoryTags: const ['makarna_bakliyat'],
+            name: 'Nohut 500g',
+          ),
+          isFalse,
+          reason: 'nohut/bakliyat name should not match Makarna sub',
+        );
+        expect(
+          CanonicalCategoryMapper.matchesSubCategory(
+            mainCategory: CanonicalCategoryMapper.kTemelGida,
+            subCategory: CanonicalCategoryMapper.kMakarna,
+            categoryTags: const ['makarna'],
+            name: 'Penne Makarna',
+          ),
+          isTrue,
+        );
       },
     );
 

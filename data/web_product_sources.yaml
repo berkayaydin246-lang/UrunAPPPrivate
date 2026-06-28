@@ -65,6 +65,78 @@ sources:
     url: https://www.migros.com.tr/kuru-meyve-c-441
   - category: sakiz
     url: https://www.migros.com.tr/sakiz-c-443
+  - category: makarna
+    url: https://www.migros.com.tr/makarnalar-c-425
+  - category: bakliyat
+    url: https://www.migros.com.tr/bakliyat-c-428
+  - category: sivi_yag
+    url: https://www.migros.com.tr/sivi-yag-c-76
+  - category: tuz_baharat_harc
+    url: https://www.migros.com.tr/tuz-baharat-harc-c-77
+  - category: hamur_pasta_malzemeleri
+    url: https://www.migros.com.tr/hamur-pasta-malzemeleri-c-45e
+  - category: ozel_beslenme_urunleri
+    url: https://www.migros.com.tr/ozel-beslenme-urunleri-c-7f
+  - category: cay
+    url: https://www.migros.com.tr/cay-c-475
+  - category: maden_suyu
+    url: https://www.migros.com.tr/maden-suyu-c-85
+  - category: meyve_suyu
+    url: https://www.migros.com.tr/meyve-suyu-c-46c
+  - category: kahve
+    url: https://www.migros.com.tr/kahve-c-476
+  - category: zeytin
+    url: https://www.migros.com.tr/zeytin-c-71
+  - category: ekmek
+    url: https://www.migros.com.tr/ekmek-c-455
+  - category: kuru_pasta
+    url: https://www.migros.com.tr/kuru-pasta-c-457
+  - category: galeta_grissini_gevrek
+    url: https://www.migros.com.tr/galeta-grissini-gevrek-c-45a
+  - category: tatli
+    url: https://www.migros.com.tr/tatli-c-45b
+  - category: pratik_yemek
+    url: https://www.migros.com.tr/pratik-yemek-c-44f
+  - category: meze
+    url: https://www.migros.com.tr/meze-c-44e
+  - category: hazir_manti
+    url: https://www.migros.com.tr/hazir-manti-c-2875
+  - category: paketli_sandvic
+    url: https://www.migros.com.tr/paketli-sandvic-c-2837
+  - category: dondurulmus_pizza
+    url: https://www.migros.com.tr/dondurulmus-pizza-c-2829
+  - category: dondurulmus_patates
+    url: https://www.migros.com.tr/dondurulmus-patates-c-282c
+  - category: dondurulmus_sebze
+    url: https://www.migros.com.tr/dondurulmus-sebze-c-282d
+  - category: dondurulmus_sushi
+    url: https://www.migros.com.tr/dondurulmus-sushi-c-12c1e
+  - category: dondurulmus_meyve
+    url: https://www.migros.com.tr/dondurulmus-meyve-c-282b
+  - category: dondurulmus_borek
+    url: https://www.migros.com.tr/dondurulmus-borek-c-2826
+  - category: dondurulmus_manti
+    url: https://www.migros.com.tr/dondurulmus-manti-c-2827
+  - category: pide_lahmacun
+    url: https://www.migros.com.tr/pide-lahmacun-c-1191d
+  - category: dondurulmus_tatli
+    url: https://www.migros.com.tr/dondurulmus-tatli-c-282a
+  - category: dondurulmus_firin_urunleri
+    url: https://www.migros.com.tr/dondurulmus-firin-urunleri-c-44a
+  - category: dondurulmus_hazir_yemek
+    url: https://www.migros.com.tr/dondurulmus-hazir-yemek-c-2842
+  - category: kap_dondurma
+    url: https://www.migros.com.tr/kap-dondurma-c-2763
+  - category: tek_dondurma
+    url: https://www.migros.com.tr/tek-dondurma-c-2764
+  - category: pasta
+    url: https://www.migros.com.tr/pasta-c-459
+  - category: bebek_beslenme
+    url: https://www.migros.com.tr/bebek-beslenme-c-4e4
+  - category: bebek_icecegi
+    url: https://www.migros.com.tr/bebek-icecegi-c-299c
+  - category: bebek_atistirmalik
+    url: https://www.migros.com.tr/bebek-atistirmalik-c-299e
   adapter_config:
     api_url_template: https://www.migros.com.tr/rest/search/screens/{category_slug}
     max_pages: 25
