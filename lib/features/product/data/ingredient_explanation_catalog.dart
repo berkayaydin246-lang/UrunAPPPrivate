@@ -103,6 +103,69 @@ IngredientRiskReference _commissionDatabaseReference({
   );
 }
 
+final IngredientRiskReference
+_efsaColourSafetyReference = IngredientRiskReference(
+  authority: 'EFSA',
+  title:
+      'Scientific Opinion on the re-evaluation of six food colours (E102, E104, E110, E122, E129, E160e)',
+  url: 'https://www.efsa.europa.eu/en/efsajournal/pub/2306',
+  accessedAt: _catalogAccessedAt,
+);
+
+final IngredientRiskReference _efsaE133Reference = IngredientRiskReference(
+  authority: 'EFSA',
+  title: 'Re-evaluation of Brilliant Blue FCF (E133)',
+  url: 'https://www.efsa.europa.eu/en/efsajournal/pub/3433',
+  accessedAt: _catalogAccessedAt,
+);
+
+final IngredientRiskReference _efsaNitriteReference = IngredientRiskReference(
+  authority: 'EFSA',
+  title:
+      'Re-evaluation of sodium nitrite (E 250), potassium nitrite (E 249), sodium nitrate (E 251) and potassium nitrate (E 252)',
+  url: 'https://www.efsa.europa.eu/en/efsajournal/pub/5235',
+  accessedAt: _catalogAccessedAt,
+);
+
+final IngredientRiskReference
+_whoProcessedMeatReference = IngredientRiskReference(
+  authority: 'WHO/IARC',
+  title: 'Carcinogenicity of consumption of red and processed meat',
+  url:
+      'https://www.thelancet.com/journals/lanonc/article/PIIS1470-2045(15)00444-1/fulltext',
+  accessedAt: _catalogAccessedAt,
+);
+
+final IngredientRiskReference _efsaMsgReference = IngredientRiskReference(
+  authority: 'EFSA',
+  title:
+      'Re-evaluation of glutamic acid (E620), sodium glutamate (E621), potassium glutamate (E622), calcium glutamate (E623), ammonium glutamate (E624) and magnesium glutamate (E625) as food additives',
+  url: 'https://www.efsa.europa.eu/en/efsajournal/pub/4910',
+  accessedAt: _catalogAccessedAt,
+);
+
+final IngredientRiskReference _efsaMaltodextrinReference =
+    IngredientRiskReference(
+      authority: 'EFSA',
+      title: 'Scientific Opinion on the safety of maltodextrin as a novel food',
+      url: 'https://www.efsa.europa.eu/en/efsajournal/pub/5526',
+      accessedAt: _catalogAccessedAt,
+    );
+
+final IngredientRiskReference _efsaE120Reference = IngredientRiskReference(
+  authority: 'EFSA',
+  title: 'Re-evaluation of cochineal, carminic acid, carmines (E 120)',
+  url: 'https://www.efsa.europa.eu/en/efsajournal/pub/3995',
+  accessedAt: _catalogAccessedAt,
+);
+
+final IngredientRiskReference _efsaCyclamateReference = IngredientRiskReference(
+  authority: 'EFSA',
+  title: 'Scientific Opinion on the safety of cyclamates as food additives',
+  url: 'https://www.efsa.europa.eu/en/efsajournal/pub/4784',
+  accessedAt: _catalogAccessedAt,
+);
+
 Ingredient enrichIngredientKnowledge(Ingredient ingredient) {
   final entry = _ingredientCatalogEntryForIngredient(ingredient);
   if (entry == null) {
@@ -134,6 +197,9 @@ Ingredient enrichIngredientKnowledge(Ingredient ingredient) {
     englishNames: ingredient.englishNames,
     eCode: resolvedECode,
     category: ingredient.category,
+    // Preserve DB riskLevel when it's explicitly set; fall back to catalog only
+    // for 'unknown'. The severity badge is resolved separately via
+    // canonicalRiskLevelForIngredient() which looks up the spec function.
     riskLevel: ingredient.riskLevel == 'unknown'
         ? entry.riskLevel
         : ingredient.riskLevel,
@@ -144,21 +210,26 @@ Ingredient enrichIngredientKnowledge(Ingredient ingredient) {
     sourceReferences: mergedReferenceStrings,
     sourceReferenceEntries: mergedReferences,
     sourceUrl: ingredient.sourceUrl,
+    // Catalog wins for educational content — DB may contain auto-generated text.
+    // Fall back to DB content only when the catalog has nothing for that field.
     ingredientType: _preferExisting(
-      ingredient.ingredientType,
       entry.ingredientType,
+      ingredient.ingredientType ?? '',
     ),
-    shortPurpose: _preferExisting(ingredient.shortPurpose, entry.shortPurpose),
+    shortPurpose: _preferExisting(
+      entry.shortPurpose,
+      ingredient.shortPurpose ?? '',
+    ),
     shortRiskSummary: _preferExisting(
-      ingredient.shortRiskSummary,
       entry.shortRiskSummary,
+      ingredient.shortRiskSummary ?? '',
     ),
-    cautionGroups: (ingredient.cautionGroups?.isNotEmpty ?? false)
-        ? ingredient.cautionGroups
-        : entry.cautionGroups,
+    cautionGroups: (entry.cautionGroups?.isNotEmpty ?? false)
+        ? entry.cautionGroups
+        : ingredient.cautionGroups,
     processingRole: _preferExistingNullable(
-      ingredient.processingRole,
       entry.processingRole,
+      ingredient.processingRole,
     ),
     createdAt: ingredient.createdAt,
     updatedAt: ingredient.updatedAt,
@@ -449,6 +520,97 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
       _commissionDatabaseReference(
         documentCode: 'E210',
         note: 'Benzoik asit için AB katkı maddesi veri tabanı girişi.',
+      ),
+    ],
+  ),
+  _IngredientCatalogEntry(
+    aliases: const [
+      'bht',
+      'b.h.t.',
+      'butil hidroksi toluen',
+      'bütillenmiş hidroksitoluen',
+      'butylated hydroxytoluene',
+    ],
+    containsAny: const [
+      'bht',
+      'b.h.t',
+      'butil hidroksi toluen',
+      'bütillenmiş hidroksi toluen',
+      'butylated hydroxytoluene',
+    ],
+    eCode: 'E321',
+    ingredientType: 'Yapay antioksidan',
+    shortPurpose:
+        'BHT, yağların ve yağ içeren ürünlerin bozulmasını yavaşlatmak için kullanılan yapay bir antioksidandır.',
+    shortRiskSummary:
+        'Türk Gıda Kodeksi ve AB mevzuatında izin verilen sınır değerler çerçevesinde kullanılır. Sık paketli ürün tüketiminde toplam katkı alımına dikkat edilmesi önerilir. Bilgilendirme amaçlıdır; tıbbi tavsiye değildir.',
+    cautionGroups: const ['sık paketli ürün tüketicileri'],
+    processingRole:
+        'Cips, bisküvi, gıda ambalaj malzemeleri ve yağlı işlenmiş ürünlerde görülebilir.',
+    riskLevel: 'medium',
+    references: [
+      _commissionAdditivesOverviewReference,
+      _commissionDatabaseReference(
+        documentCode: 'E321',
+        note: 'BHT için AB katkı maddesi veri tabanı girişi.',
+      ),
+    ],
+  ),
+  _IngredientCatalogEntry(
+    aliases: const [
+      'bha',
+      'b.h.a.',
+      'butil hidroksi anizol',
+      'bütillenmiş hidroksianizol',
+      'butylated hydroxyanisole',
+    ],
+    containsAny: const [
+      'bha',
+      'b.h.a',
+      'butil hidroksi anizol',
+      'butylated hydroxyanisole',
+    ],
+    eCode: 'E320',
+    ingredientType: 'Yapay antioksidan',
+    shortPurpose:
+        'BHA, yağ içeren gıdalarda oksidasyonu yavaşlatmak ve raf ömrünü uzatmak için kullanılan yapay bir antioksidandır.',
+    shortRiskSummary:
+        'Türk Gıda Kodeksi ve AB mevzuatında izin verilen sınır değerler çerçevesinde kullanılır. Sık paketli ürün tüketiminde toplam katkı alımına dikkat edilmesi önerilir. Bilgilendirme amaçlıdır; tıbbi tavsiye değildir.',
+    cautionGroups: const ['sık paketli ürün tüketicileri'],
+    processingRole:
+        'Yağlı atıştırmalıklar, bisküvi ve bazı işlenmiş gıdalarda bulunabilir.',
+    riskLevel: 'medium',
+    references: [
+      _commissionAdditivesOverviewReference,
+      _commissionDatabaseReference(
+        documentCode: 'E320',
+        note: 'BHA için AB katkı maddesi veri tabanı girişi.',
+      ),
+    ],
+  ),
+  _IngredientCatalogEntry(
+    aliases: const [
+      'tbhq',
+      'tersiyer butil hidrokikinon',
+      'tersiyer bütilhidrokinon',
+      'tertiary butylhydroquinone',
+    ],
+    containsAny: const ['tbhq', 'tersiyer butil', 'tertiary butyl'],
+    eCode: 'E319',
+    ingredientType: 'Yapay antioksidan',
+    shortPurpose:
+        'TBHQ, bitkisel yağlar ve yağ içeren işlenmiş gıdalarda bozulmayı önlemek için kullanılan yapay bir antioksidandır.',
+    shortRiskSummary:
+        'Türk Gıda Kodeksi ve AB mevzuatında izin verilen sınır değerler çerçevesinde kullanılır. Sık paketli ürün tüketiminde toplam katkı alımına dikkat edilmesi önerilir. Bilgilendirme amaçlıdır; tıbbi tavsiye değildir.',
+    cautionGroups: const ['sık paketli ürün tüketicileri'],
+    processingRole:
+        'Bitkisel yağlar, hazır yemekler ve çeşitli işlenmiş atıştırmalıklarda görülebilir.',
+    riskLevel: 'medium',
+    references: [
+      _commissionAdditivesOverviewReference,
+      _commissionDatabaseReference(
+        documentCode: 'E319',
+        note: 'TBHQ için AB katkı maddesi veri tabanı girişi.',
       ),
     ],
   ),
@@ -867,5 +1029,270 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
         'Fırıncılık ürünleri, soslar ve karışık atıştırmalıklarda görülebilir.',
     riskLevel: 'medium',
     references: [_fdaFoodAllergiesReference],
+  ),
+
+  // ── Artificial colours ───────────────────────────────────────────────────
+  _IngredientCatalogEntry(
+    aliases: const [
+      'brilliant blue',
+      'brilliant blue fcf',
+      'parlak mavi',
+      'fd&c blue no. 1',
+    ],
+    containsAny: const ['brilliant blue', 'parlak mavi', 'fd&c blue'],
+    eCode: 'E133',
+    ingredientType: 'Yapay renklendirici',
+    shortPurpose:
+        'Brilliant Blue FCF, gıdalara mavi renk vermek için kullanılan yapay bir renklendiricidir.',
+    shortRiskSummary:
+        'AB mevzuatı bu renklendiriciyi içeren ürünlere çocukların dikkat ve aktivitesini olumsuz etkileyebilir uyarısı eklenmesini zorunlu kılmaktadır. EFSA değerlendirmesine göre ürünlerde kullanımı AB\'de izin verilen sınırlar içindedir. Etiketly bu nedenle yüksek dikkat kategorisinde gösterir. Bilgilendirme amaçlıdır; tıbbi tavsiye değildir.',
+    cautionGroups: const [
+      'çocuklar',
+      'yapay renklendirici içeriklerine dikkat edenler',
+    ],
+    processingRole:
+        'Şekerleme, dondurma, içecek ve bazı atıştırmalıklarda görülebilir.',
+    riskLevel: 'high',
+    references: [_efsaE133Reference, _commissionAdditivesOverviewReference],
+  ),
+  _IngredientCatalogEntry(
+    aliases: const ['tartrazin', 'tartrazine', 'fd&c yellow no. 5'],
+    containsAny: const ['tartrazin', 'tartrazine'],
+    eCode: 'E102',
+    ingredientType: 'Yapay renklendirici',
+    shortPurpose:
+        'Tartrazin, gıdalara sarı renk vermek için kullanılan yapay bir renklendiricidir.',
+    shortRiskSummary:
+        'AB mevzuatı bu renklendiriciyi içeren ürünlere çocukların dikkat ve aktivitesini olumsuz etkileyebilir uyarısı eklenmesini zorunlu kılmaktadır. EFSA değerlendirmesine göre ürünlerde kullanımı AB\'de izin verilen sınırlar içindedir. Etiketly bu nedenle yüksek dikkat kategorisinde gösterir. Bilgilendirme amaçlıdır; tıbbi tavsiye değildir.',
+    cautionGroups: const [
+      'çocuklar',
+      'yapay renklendirici içeriklerine dikkat edenler',
+    ],
+    processingRole:
+        'Şekerleme, içecek, hazır jöle ve bazı atıştırmalıklarda görülebilir.',
+    riskLevel: 'high',
+    references: [
+      _efsaColourSafetyReference,
+      _commissionAdditivesOverviewReference,
+    ],
+  ),
+  _IngredientCatalogEntry(
+    aliases: const [
+      'allura red',
+      'allura red ac',
+      'fd&c red no. 40',
+      'kırmızı renklendirici',
+    ],
+    containsAny: const ['allura red'],
+    eCode: 'E129',
+    ingredientType: 'Yapay renklendirici',
+    shortPurpose:
+        'Allura Red AC, gıdalara kırmızı renk vermek için kullanılan yapay bir renklendiricidir.',
+    shortRiskSummary:
+        'AB mevzuatı bu renklendiriciyi içeren ürünlere çocukların dikkat ve aktivitesini olumsuz etkileyebilir uyarısı eklenmesini zorunlu kılmaktadır. EFSA değerlendirmesine göre ürünlerde kullanımı AB\'de izin verilen sınırlar içindedir. Etiketly bu nedenle yüksek dikkat kategorisinde gösterir. Bilgilendirme amaçlıdır; tıbbi tavsiye değildir.',
+    cautionGroups: const [
+      'çocuklar',
+      'yapay renklendirici içeriklerine dikkat edenler',
+    ],
+    processingRole:
+        'Şekerleme, meşrubat, bazı içecek ve atıştırmalıklarda görülebilir.',
+    riskLevel: 'high',
+    references: [
+      _efsaColourSafetyReference,
+      _commissionAdditivesOverviewReference,
+    ],
+  ),
+  _IngredientCatalogEntry(
+    aliases: const ['sunset yellow', 'sunset yellow fcf', 'fd&c yellow no. 6'],
+    containsAny: const ['sunset yellow'],
+    eCode: 'E110',
+    ingredientType: 'Yapay renklendirici',
+    shortPurpose:
+        'Sunset Yellow FCF, gıdalara turuncu-sarı renk vermek için kullanılan yapay bir renklendiricidir.',
+    shortRiskSummary:
+        'AB mevzuatı bu renklendiriciyi içeren ürünlere çocukların dikkat ve aktivitesini olumsuz etkileyebilir uyarısı eklenmesini zorunlu kılmaktadır. EFSA değerlendirmesine göre ürünlerde kullanımı AB\'de izin verilen sınırlar içindedir. Etiketly bu nedenle yüksek dikkat kategorisinde gösterir. Bilgilendirme amaçlıdır; tıbbi tavsiye değildir.',
+    cautionGroups: const [
+      'çocuklar',
+      'yapay renklendirici içeriklerine dikkat edenler',
+    ],
+    processingRole:
+        'Şekerleme, aromalı içecek ve bazı atıştırmalıklarda görülebilir.',
+    riskLevel: 'high',
+    references: [
+      _efsaColourSafetyReference,
+      _commissionAdditivesOverviewReference,
+    ],
+  ),
+  _IngredientCatalogEntry(
+    aliases: const [
+      'karmin',
+      'karminik asit',
+      'kırmızı 4',
+      'cochineal',
+      'carminic acid',
+      'carmines',
+    ],
+    containsAny: const ['karmin', 'karminik', 'cochineal', 'carminic'],
+    eCode: 'E120',
+    ingredientType: 'Doğal kaynaklı renklendirici',
+    shortPurpose:
+        'Karmin, koşinil böceğinden elde edilen doğal kaynaklı bir renklendiricidir. Gıdalara kırmızı ve pembe tonlar verir.',
+    shortRiskSummary:
+        'EFSA değerlendirmesine göre nadiren alerjik ve anaflaktik tepkiye yol açabilir. Vejetaryen ve vegan diyette hayvansal kaynaklı olması nedeniyle özel değerlendirme gerektirebilir. Etiketly bu nedenle orta dikkat kategorisinde gösterir. Bilgilendirme amaçlıdır; tıbbi tavsiye değildir.',
+    cautionGroups: const [
+      'alerjisi olanlar',
+      'vejetaryen / vegan diyeti izleyenler',
+    ],
+    processingRole:
+        'Şekerleme, yoğurt, meyve ürünleri ve bazı içeceklerde görülebilir.',
+    riskLevel: 'medium',
+    references: [_efsaE120Reference, _commissionAdditivesOverviewReference],
+  ),
+
+  // ── Preservatives ───────────────────────────────────────────────────────
+  _IngredientCatalogEntry(
+    aliases: const ['sodyum nitrit', 'sodium nitrite'],
+    containsAny: const ['sodyum nitrit', 'sodium nitrite'],
+    eCode: 'E250',
+    ingredientType: 'Koruyucu / renk sabitleme maddesi',
+    shortPurpose:
+        'Sodyum nitrit, işlenmiş et ürünlerinde rengi sabitlemek, bozulmayı önlemek ve Clostridium botulinum bakterisinin oluşumunu engellemek için kullanılır.',
+    shortRiskSummary:
+        'EFSA ve IARC değerlendirmelerine göre işlenmiş et ürünlerinin sık tüketiminin belirli kanser türleriyle ilişkili olduğuna dair epidemiyolojik kanıtlar mevcuttur; bu ilişkide nitrit/nitrattan oluşan N-nitroso bileşiklerinin rol oynadığı düşünülmektedir. Yasal sınırlar içinde kullanılır. Etiketly bunu yüksek dikkat kategorisinde gösterir. Bilgilendirme amaçlıdır; tıbbi tavsiye değildir.',
+    cautionGroups: const [
+      'işlenmiş et tüketimini sınırlayanlar',
+      'çocuklar için sık tüketimde dikkat önerilir',
+    ],
+    processingRole:
+        'Sucuk, sosis, jambon ve diğer işlenmiş et ürünlerinde görülebilir.',
+    riskLevel: 'high',
+    references: [_efsaNitriteReference, _whoProcessedMeatReference],
+  ),
+  _IngredientCatalogEntry(
+    aliases: const ['sodyum nitrat', 'sodium nitrate'],
+    containsAny: const ['sodyum nitrat', 'sodium nitrate'],
+    eCode: 'E251',
+    ingredientType: 'Koruyucu',
+    shortPurpose:
+        'Sodyum nitrat, bazı işlenmiş gıdalarda bozulmayı yavaşlatmak ve rengi korumak için kullanılır.',
+    shortRiskSummary:
+        'EFSA değerlendirmesine göre nitrattan nitrit oluşumu nedeniyle işlenmiş et ürünlerinde sık tüketimde dikkat önerilir. Yasal sınırlar içinde kullanılır. Etiketly bunu yüksek dikkat kategorisinde gösterir. Bilgilendirme amaçlıdır; tıbbi tavsiye değildir.',
+    cautionGroups: const ['işlenmiş et tüketimini sınırlayanlar'],
+    processingRole: 'Kürlenmiş et ve bazı hazır gıda ürünlerinde görülebilir.',
+    riskLevel: 'high',
+    references: [_efsaNitriteReference, _whoProcessedMeatReference],
+  ),
+
+  // ── Flavor enhancers ────────────────────────────────────────────────────
+  _IngredientCatalogEntry(
+    aliases: const ['monosodyum glutamat', 'msg', 'monosodium glutamate'],
+    containsAny: const ['monosodyum glutamat', 'monosodium glutamate'],
+    eCode: 'E621',
+    ingredientType: 'Çeşni artırıcı (lezzet kuvvetlendirici)',
+    shortPurpose:
+        'Monosodyum glutamat (MSG), yiyeceklerdeki umami tadını yoğunlaştırmak için kullanılan bir çeşni artırıcıdır.',
+    shortRiskSummary:
+        'EFSA değerlendirmesine göre günlük alım düzeylerine bağlı olarak yüksek miktardaki tüketime dikkat edilmesi önerilmektedir. Yasal sınırlar içinde kullanılır; genel nüfus için standart porsiyon değerlerinde risk görülmemiştir. Etiketly bunu bilgi amaçlı orta dikkat kategorisinde gösterir. Bilgilendirme amaçlıdır; tıbbi tavsiye değildir.',
+    cautionGroups: const ['MSG hassasiyeti bildirenler'],
+    processingRole:
+        'Hazır çorba, sos, cips ve çeşitli tuzlu atıştırmalıklarda görülebilir.',
+    riskLevel: 'medium',
+    references: [_efsaMsgReference, _commissionAdditivesOverviewReference],
+  ),
+
+  // ── Carbohydrates ───────────────────────────────────────────────────────
+  _IngredientCatalogEntry(
+    aliases: const ['maltodekstrin', 'maltodextrin'],
+    containsAny: const ['maltodekstrin', 'maltodextrin'],
+    ingredientType: 'Hızlı sindirilen karbonhidrat / dolgu maddesi',
+    shortPurpose:
+        'Maltodekstrin, ürünlerin dokusunu, kıvamını ve raf ömrünü desteklemek için kullanılan bir karbonhidrat bileşenidir.',
+    shortRiskSummary:
+        'Glisemik indeksi yüksek olduğundan hızla kana karışabilir. Tek başına risk teşkil etmez; ancak ultra işlenmiş ürünlerin tipik bir bileşeni olduğu için tüketim sıklığına dikkat edilmesi önerilir. Bilgilendirme amaçlıdır; tıbbi tavsiye değildir.',
+    cautionGroups: const ['kan şekeri dengesine dikkat edenler'],
+    processingRole:
+        'Hazır içecekler, bar, bisküvi, sos ve aromalı atıştırmalıklarda görülebilir.',
+    riskLevel: 'medium',
+    references: [_efsaMaltodextrinReference, _whoHealthyDietReference],
+  ),
+
+  // ── Sugar alcohols ──────────────────────────────────────────────────────
+  _IngredientCatalogEntry(
+    aliases: const ['maltitol', 'maltitol syrup'],
+    containsAny: const ['maltitol'],
+    eCode: 'E965',
+    ingredientType: 'Tatlandırıcı / şeker alkolü',
+    shortPurpose:
+        'Maltitol, şekersiz veya azaltılmış şekerli ürünlerde tat ve hacim sağlamak için kullanılan bir şeker alkolüdür.',
+    shortRiskSummary:
+        'Fazla tüketimde sindirim rahatsızlığı (gaz, ishal) yapabilir. Glisemik indeksi şekerden düşük olmakla birlikte sıfır değildir. Etiketly bunu bilgi amaçlı orta dikkat kategorisinde gösterir. Bilgilendirme amaçlıdır; tıbbi tavsiye değildir.',
+    cautionGroups: const [
+      'irritabl bağırsak sendromu olanlar',
+      'kan şekeri dengesine dikkat edenler',
+    ],
+    processingRole:
+        'Şekersiz şekerleme, çikolata ve bazı diyabetik ürünlerde görülebilir.',
+    riskLevel: 'medium',
+    references: [
+      _fdaSweetenerOverviewReference,
+      _commissionDatabaseReference(
+        documentCode: 'E965',
+        note:
+            'Maltitol ve maltitol şurubu için AB katkı maddesi veri tabanı girişi.',
+      ),
+    ],
+  ),
+
+  // ── Sweeteners ──────────────────────────────────────────────────────────
+  _IngredientCatalogEntry(
+    aliases: const [
+      'siklamat',
+      'sodyum siklamat',
+      'cyclamate',
+      'sodium cyclamate',
+    ],
+    containsAny: const ['siklamat', 'cyclamate'],
+    eCode: 'E952',
+    ingredientType: 'Yoğun tatlandırıcı',
+    shortPurpose:
+        'Siklamat, şekerden yaklaşık 30–50 kat daha tatlı olan yapay bir tatlandırıcıdır. Düşük kalorili ürünlerde şeker yerine kullanılır.',
+    shortRiskSummary:
+        'EFSA değerlendirmesine göre güvenlik verileri yeterli bulunarak AB\'de izin verilmiştir; ancak bazı ülkelerde (örn. ABD) hâlâ kısıtlıdır. Tatlandırıcı içeren ürünler değerlendirilirken ürünün genel beslenme profili ve tüketim alışkanlığı birlikte düşünülmelidir. Bilgilendirme amaçlıdır; tıbbi tavsiye değildir.',
+    processingRole:
+        'Şekersiz içecekler, şekerleme ve bazı düşük kalorili ürünlerde görülebilir.',
+    riskLevel: 'medium',
+    references: [
+      _efsaCyclamateReference,
+      _commissionDatabaseReference(
+        documentCode: 'E952',
+        note: 'Siklamatlar için AB katkı maddesi veri tabanı girişi.',
+      ),
+    ],
+  ),
+
+  // ── Oils ────────────────────────────────────────────────────────────────
+  _IngredientCatalogEntry(
+    aliases: const [
+      'hidrojenize yağ',
+      'kısmen hidrojenize yağ',
+      'hydrogenated oil',
+      'partially hydrogenated oil',
+    ],
+    containsAny: const [
+      'hidrojenize yağ',
+      'kısmen hidrojenize',
+      'hydrogenated oil',
+      'partially hydrogenated',
+    ],
+    ingredientType: 'İşlenmiş yağ',
+    shortPurpose:
+        'Hidrojenize yağ, sıvı bitkisel yağların katı/yarı katı hale getirilmesi işlemiyle üretilir. Ürünün raf ömrünü ve dokusunu iyileştirmek için kullanılır.',
+    shortRiskSummary:
+        'Kısmen hidrojenize yağlar trans yağ asitleri içerebilir. WHO ve EFSA, trans yağ alımının kardiyovasküler sağlık açısından sınırlandırılmasını önermektedir. Tam hidrojenize yağlar çok az trans yağ içerir; değerlendirme etiket bilgisiyle yapılmalıdır. Etiketly bunu orta dikkat kategorisinde gösterir. Bilgilendirme amaçlıdır; tıbbi tavsiye değildir.',
+    cautionGroups: const ['toplam yağ alımını sınırlayanlar'],
+    processingRole:
+        'Bisküvi, kek, hazır dolgular ve bazı atıştırmalıklarda görülebilir.',
+    riskLevel: 'medium',
+    references: [_whoSatFatGuidelineReference, _whoHealthyDietReference],
   ),
 ];

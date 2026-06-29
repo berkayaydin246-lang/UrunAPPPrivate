@@ -10,6 +10,10 @@ import 'package:food_analyzer_app/features/ocr/models/ocr_result.dart';
 import 'package:food_analyzer_app/features/ocr/models/structured_ingredient_extraction_result.dart';
 import 'package:food_analyzer_app/features/ocr/widgets/ocr_text_editor.dart';
 
+// Set --dart-define=SHOW_OCR_DEBUG_JSON=true to reveal the raw JSON panel
+// in debug builds. Never shown in profile or release builds.
+const bool _showOcrDebugJson = bool.fromEnvironment('SHOW_OCR_DEBUG_JSON');
+
 /// OCR flow for Turkish packaged food labels.
 ///
 /// CRITICAL: User editable correction is MANDATORY. This screen must always
@@ -510,7 +514,7 @@ class _OcrResultView extends StatelessWidget {
               ),
             ),
           const SizedBox(height: 16),
-          if (ocrState.isLowQualityText)
+          if (ocrState.isLowQualityText && !isAdvanced)
             Column(
               children: [
                 _WarningCard(
@@ -587,7 +591,7 @@ class _OcrResultView extends StatelessWidget {
               ],
             ),
           ),
-          if (kDebugMode && isAdvanced) ...[
+          if (kDebugMode && _showOcrDebugJson && isAdvanced) ...[
             const SizedBox(height: 8),
             _DebugJsonSection(result: ocrState.structuredExtractionResult!),
           ],
@@ -607,7 +611,7 @@ class _OcrResultView extends StatelessWidget {
               onPressed: onEditText,
             ),
           ),
-          if (ocrState.shouldOfferServerFallback) ...[
+          if (ocrState.shouldOfferServerFallback && !isAdvanced) ...[
             const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
@@ -623,7 +627,7 @@ class _OcrResultView extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton.icon(
               icon: const Icon(Icons.check),
-              label: const Text('Devam Et'),
+              label: const Text('İçeriği Analiz Et'),
               onPressed: onContinue,
             ),
           ),

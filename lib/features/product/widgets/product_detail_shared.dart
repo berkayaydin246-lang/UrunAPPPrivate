@@ -7,6 +7,18 @@ import 'package:food_analyzer_app/features/product/models/ingredient.dart';
 import 'package:food_analyzer_app/features/product/models/nutrition_data.dart';
 import 'package:food_analyzer_app/features/product/widgets/ingredient_detail_sections.dart';
 
+/// Returns the canonical severity for [ingredient] as defined by the app's
+/// spec registry, falling back to the DB-stored riskLevel when no spec exists.
+/// Use this for any severity badge that must stay in sync with list rows.
+String canonicalRiskLevelForIngredient(Ingredient ingredient) {
+  final key = normalizeIngredientDisplayKey(
+    ingredient.normalizedName.trim().isNotEmpty
+        ? ingredient.normalizedName
+        : ingredient.name,
+  );
+  return productRiskSpecForKey(key)?.riskLevel ?? ingredient.riskLevel;
+}
+
 String riskLabelForUser(String riskLevel) {
   switch (riskLevel) {
     case 'high':
@@ -623,6 +635,30 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
           'Hızlı sindirilen bir karbonhidrattır; sık tüketimde dikkat edilebilir.',
     );
   }
+  if (normalized.contains('maltitol')) {
+    return const ProductRiskSpec(
+      groupId: 'maltitol',
+      displayName: 'Maltitol (E965)',
+      category: ProductRiskCategory.sweetener,
+      riskLevel: 'medium',
+      riskSummary:
+          'Fazla tüketimde sindirim rahatsızlığı yapabilir; kan şekerini tamamen etkilemez ancak sıfır değildir.',
+    );
+  }
+  if (normalized.contains('siklamat') ||
+      normalized.contains('cyclamate') ||
+      normalized == 'e952' ||
+      normalized.contains('e-952') ||
+      normalized.contains('e 952')) {
+    return const ProductRiskSpec(
+      groupId: 'cyclamate',
+      displayName: 'Siklamat (E952)',
+      category: ProductRiskCategory.sweetener,
+      riskLevel: 'medium',
+      riskSummary:
+          'AB\'de izin verilmiştir; tatlandırıcı içeren ürünlerde tüketim alışkanlığı ve ürün profili birlikte değerlendirilmelidir.',
+    );
+  }
   if (normalized.contains('şeker') || normalized.contains('seker')) {
     return const ProductRiskSpec(
       groupId: 'sugar',
@@ -705,7 +741,60 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
           'Yağın türü net belirtilmediğinde kalite değerlendirmesi sınırlıdır; toplam yağ alımına dikkat edilmelidir.',
     );
   }
-  if (normalized.contains('nitrit') || normalized.contains('nitrat')) {
+  if (normalized == 'bht' ||
+      normalized.contains('b.h.t') ||
+      normalized.contains('e321') ||
+      normalized.contains('e-321') ||
+      normalized.contains('e 321') ||
+      normalized.contains('butil hidroksi toluen') ||
+      normalized.contains('bütillenmiş hidroksi toluen') ||
+      normalized.contains('butylated hydroxytoluene')) {
+    return const ProductRiskSpec(
+      groupId: 'bht',
+      displayName: 'BHT (E321) antioksidan',
+      category: ProductRiskCategory.preservative,
+      riskLevel: 'medium',
+      riskSummary:
+          'Yasal sınırlar içinde kullanılır; sık paketli tüketimde toplam alım miktarına dikkat edilmesi önerilir.',
+    );
+  }
+  if (normalized == 'bha' ||
+      normalized.contains('b.h.a') ||
+      normalized.contains('e320') ||
+      normalized.contains('e-320') ||
+      normalized.contains('e 320') ||
+      normalized.contains('butil hidroksi anizol') ||
+      normalized.contains('butylated hydroxyanisole')) {
+    return const ProductRiskSpec(
+      groupId: 'bha',
+      displayName: 'BHA (E320) antioksidan',
+      category: ProductRiskCategory.preservative,
+      riskLevel: 'medium',
+      riskSummary:
+          'Yasal sınırlar içinde kullanılır; sık paketli tüketimde toplam alım miktarına dikkat edilmesi önerilir.',
+    );
+  }
+  if (normalized == 'tbhq' ||
+      normalized.contains('e319') ||
+      normalized.contains('e-319') ||
+      normalized.contains('e 319') ||
+      normalized.contains('tersiyer butil') ||
+      normalized.contains('tertiary butyl')) {
+    return const ProductRiskSpec(
+      groupId: 'tbhq',
+      displayName: 'TBHQ (E319) antioksidan',
+      category: ProductRiskCategory.preservative,
+      riskLevel: 'medium',
+      riskSummary:
+          'Yasal sınırlar içinde kullanılır; sık paketli tüketimde toplam alım miktarına dikkat edilmesi önerilir.',
+    );
+  }
+  if (normalized.contains('nitrit') ||
+      normalized.contains('nitrat') ||
+      normalized.contains('e250') ||
+      normalized.contains('e251') ||
+      normalized.contains('e249') ||
+      normalized.contains('e252')) {
     return const ProductRiskSpec(
       groupId: 'nitrite',
       displayName: 'Nitrit/Nitrat koruyucu',
@@ -761,6 +850,30 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
     return const ProductRiskSpec(
       groupId: 'sunset_yellow',
       displayName: 'Sunset Yellow',
+      category: ProductRiskCategory.color,
+      riskLevel: 'high',
+      riskSummary:
+          'Hassas kişilerde tepkiye yol açabilir; çocukların sık tüketiminde dikkat edilmelidir.',
+    );
+  }
+  if (normalized.contains('karmin') ||
+      normalized.contains('cochineal') ||
+      normalized.contains('e120')) {
+    return const ProductRiskSpec(
+      groupId: 'carmine',
+      displayName: 'Karmin (E120)',
+      category: ProductRiskCategory.color,
+      riskLevel: 'medium',
+      riskSummary:
+          'Hassas kişilerde alerjik tepkiye yol açabilir; vejetaryen/vegan diyette kullanımına dikkat edilmelidir.',
+    );
+  }
+  if (normalized.contains('brilliant blue') ||
+      normalized.contains('parlak mavi') ||
+      normalized.contains('e133')) {
+    return const ProductRiskSpec(
+      groupId: 'brilliant_blue',
+      displayName: 'Brilliant Blue (E133)',
       category: ProductRiskCategory.color,
       riskLevel: 'high',
       riskSummary:
@@ -836,6 +949,33 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
           'Genel olarak düşük dikkat düzeyindedir; ultra işlenmiş ürün göstergesi olabilir.',
     );
   }
+  if (normalized.contains('karragenan') ||
+      normalized.contains('karagenan') ||
+      normalized.contains('karraginan') ||
+      normalized.contains('carrageenan') ||
+      normalized.contains('e407')) {
+    return const ProductRiskSpec(
+      groupId: 'carrageenan',
+      displayName: 'Karragenan (E407)',
+      category: ProductRiskCategory.emulsifier,
+      riskLevel: 'medium',
+      riskSummary:
+          'Sindirim sistemi hassasiyeti olanlarda dikkat edilmesi önerilir; sık tüketimde toplam katkı yüküne dikkat edilebilir.',
+    );
+  }
+  if (normalized.contains('soya lesitini') ||
+      normalized.contains('soya lesitin') ||
+      normalized.contains('soy lecithin') ||
+      normalized.contains('e322')) {
+    return const ProductRiskSpec(
+      groupId: 'soy_lecithin',
+      displayName: 'Soya lesitini (E322)',
+      category: ProductRiskCategory.emulsifier,
+      riskLevel: 'low',
+      riskSummary:
+          'Soya alerjisi olanlar için dikkat gerektirmektedir; genel tüketimde düşük risk düzeyindedir.',
+    );
+  }
   if (normalized == 'tuz') {
     return const ProductRiskSpec(
       groupId: 'salt',
@@ -892,8 +1032,9 @@ void showIngredientDetailSheet(BuildContext context, Ingredient ingredient) {
     ),
     builder: (context) {
       final maxHeight = MediaQuery.of(context).size.height * 0.82;
-      final riskLabel = riskLabelForUser(resolvedIngredient.riskLevel);
-      final riskColor = riskColorForUser(resolvedIngredient.riskLevel);
+      final canonicalRisk = canonicalRiskLevelForIngredient(ingredient);
+      final riskLabel = riskLabelForUser(canonicalRisk);
+      final riskColor = riskColorForUser(canonicalRisk);
 
       return ConstrainedBox(
         constraints: BoxConstraints(maxHeight: maxHeight),

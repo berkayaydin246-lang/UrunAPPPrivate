@@ -67,3 +67,6 @@ __pycache__/
 
 # tmp scratch directories
 tmp/
+
+# Product scraper outputs
+scripts/product_import/output/web_scrape_*.json

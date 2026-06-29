@@ -718,6 +718,36 @@ _AttentionSpec? _attentionSpecForKey(String key) {
           'Hızlı sindirilen bir karbonhidrattır; sık tüketimde dikkat edilebilir.',
     );
   }
+  if (k.contains('maltitol')) {
+    return const _AttentionSpec(
+      groupId: 'maltitol',
+      displayName: 'Maltitol (E965)',
+      category: _AttentionCategory.sweetener,
+      risk: 'medium',
+      technicalNote: 'Maltitol / Maltitol şurubu (E965)',
+      purpose:
+          'Şekersiz veya azaltılmış şekerli ürünlerde tat ve hacim sağlamak için kullanılan şeker alkolüdür.',
+      riskSummary:
+          'Fazla tüketimde sindirim rahatsızlığı yapabilir; kan şekerini tamamen etkilemez ancak sıfır değildir.',
+    );
+  }
+  if (k.contains('siklamat') ||
+      k.contains('cyclamate') ||
+      k == 'e952' ||
+      k.contains('e-952') ||
+      k.contains('e 952')) {
+    return const _AttentionSpec(
+      groupId: 'cyclamate',
+      displayName: 'Siklamat (E952)',
+      category: _AttentionCategory.sweetener,
+      risk: 'medium',
+      technicalNote: 'Sodyum siklamat (E952)',
+      purpose:
+          'Şekerden çok daha tatlı olan yapay tatlandırıcı; düşük kalorili ürünlerde kullanılır.',
+      riskSummary:
+          'AB\'de izin verilmiştir; tatlandırıcı içeren ürünlerde tüketim alışkanlığı ve ürün profili birlikte değerlendirilmelidir.',
+    );
+  }
   if (k.contains('şeker') || k.contains('seker')) {
     return const _AttentionSpec(
       groupId: 'sugar',
@@ -815,7 +845,69 @@ _AttentionSpec? _attentionSpecForKey(String key) {
   }
 
   // ── Preservatives ────────────────────────────────────────────────────────
-  if (k.contains('nitrit') || k.contains('nitrat')) {
+  if (k == 'bht' ||
+      k.contains('b.h.t') ||
+      k.contains('e321') ||
+      k.contains('e-321') ||
+      k.contains('e 321') ||
+      k.contains('butil hidroksi toluen') ||
+      k.contains('bütillenmiş hidroksi toluen') ||
+      k.contains('butylated hydroxytoluene')) {
+    return const _AttentionSpec(
+      groupId: 'bht',
+      displayName: 'BHT (E321) antioksidan',
+      category: _AttentionCategory.preservative,
+      risk: 'medium',
+      technicalNote: 'Bütillenmiş hidroksitoluen (E321)',
+      purpose:
+          'Yağların ve yağlı besinlerin bozulmasını önlemek için kullanılan yapay antioksidandır.',
+      riskSummary:
+          'Yasal sınırlar içinde kullanılır; sık paketli tüketimde toplam alım miktarına dikkat edilmesi önerilir. Bilgilendirme amaçlıdır; tıbbi tavsiye değildir.',
+    );
+  }
+  if (k == 'bha' ||
+      k.contains('b.h.a') ||
+      k.contains('e320') ||
+      k.contains('e-320') ||
+      k.contains('e 320') ||
+      k.contains('butil hidroksi anizol') ||
+      k.contains('butylated hydroxyanisole')) {
+    return const _AttentionSpec(
+      groupId: 'bha',
+      displayName: 'BHA (E320) antioksidan',
+      category: _AttentionCategory.preservative,
+      risk: 'medium',
+      technicalNote: 'Bütillenmiş hidroksianizol (E320)',
+      purpose:
+          'Yağların oksidasyonunu yavaşlatmak için paketli ürünlerde kullanılan yapay antioksidandır.',
+      riskSummary:
+          'Yasal sınırlar içinde kullanılır; sık paketli tüketimde toplam alım miktarına dikkat edilmesi önerilir. Bilgilendirme amaçlıdır; tıbbi tavsiye değildir.',
+    );
+  }
+  if (k == 'tbhq' ||
+      k.contains('e319') ||
+      k.contains('e-319') ||
+      k.contains('e 319') ||
+      k.contains('tersiyer butil') ||
+      k.contains('tertiary butyl')) {
+    return const _AttentionSpec(
+      groupId: 'tbhq',
+      displayName: 'TBHQ (E319) antioksidan',
+      category: _AttentionCategory.preservative,
+      risk: 'medium',
+      technicalNote: 'Tersiyer bütilhidrokinon (E319)',
+      purpose:
+          'Yağ ve yağlı ürünlerde raf ömrünü uzatmak için kullanılan yapay antioksidandır.',
+      riskSummary:
+          'Yasal sınırlar içinde kullanılır; sık paketli tüketimde toplam alım miktarına dikkat edilmesi önerilir. Bilgilendirme amaçlıdır; tıbbi tavsiye değildir.',
+    );
+  }
+  if (k.contains('nitrit') ||
+      k.contains('nitrat') ||
+      k.contains('e250') ||
+      k.contains('e251') ||
+      k.contains('e249') ||
+      k.contains('e252')) {
     return const _AttentionSpec(
       groupId: 'nitrite',
       displayName: 'Nitrit/Nitrat koruyucu',
@@ -889,6 +981,33 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       technicalNote: 'Sunset Yellow FCF (E110)',
       purpose:
           'Ürüne turuncu/sarı renk vermek için kullanılan yapay renklendiricidir.',
+      riskSummary:
+          'Hassas kişilerde tepkiye yol açabilir; çocukların sık tüketiminde dikkat edilmelidir.',
+    );
+  }
+  if (k.contains('karmin') || k.contains('cochineal') || k.contains('e120')) {
+    return const _AttentionSpec(
+      groupId: 'carmine',
+      displayName: 'Karmin (E120)',
+      category: _AttentionCategory.color,
+      risk: 'medium',
+      technicalNote: 'Karmin / Koşinil ekstresi (E120)',
+      purpose:
+          'Ürüne kırmızı/pembe renk vermek için kullanılan doğal kaynaklı renklendiricidir.',
+      riskSummary:
+          'Hassas kişilerde alerjik tepkiye yol açabilir; vejetaryen/vegan diyette kullanımına dikkat edilmelidir.',
+    );
+  }
+  if (k.contains('brilliant blue') ||
+      k.contains('parlak mavi') ||
+      k.contains('e133')) {
+    return const _AttentionSpec(
+      groupId: 'brilliant_blue',
+      displayName: 'Brilliant Blue (E133)',
+      category: _AttentionCategory.color,
+      risk: 'high',
+      technicalNote: 'Brilliant Blue FCF (E133)',
+      purpose: 'Ürüne mavi renk vermek için kullanılan yapay renklendiricidir.',
       riskSummary:
           'Hassas kişilerde tepkiye yol açabilir; çocukların sık tüketiminde dikkat edilmelidir.',
     );
@@ -977,6 +1096,40 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       purpose: 'Ürünün kıvamını ve stabilitesini korumak için kullanılır.',
       riskSummary:
           'Genel olarak düşük dikkat düzeyindedir; ultra işlenmiş ürün göstergesi olabilir.',
+    );
+  }
+  if (k.contains('karragenan') ||
+      k.contains('karagenan') ||
+      k.contains('karraginan') ||
+      k.contains('carrageenan') ||
+      k.contains('e407')) {
+    return const _AttentionSpec(
+      groupId: 'carrageenan',
+      displayName: 'Karragenan (E407)',
+      category: _AttentionCategory.emulsifier,
+      risk: 'medium',
+      technicalNote: 'Karragenan (E407)',
+      purpose:
+          'Süt ürünleri ve işlenmiş gıdalarda kıvam ve stabilite sağlamak için kullanılır.',
+      riskSummary:
+          'Sindirim sistemi hassasiyeti olanlarda dikkat edilmesi önerilir; sık tüketimde toplam katkı yüküne dikkat edilebilir.',
+    );
+  }
+  if (k.contains('soya lesitini') ||
+      k.contains('soya lesitini') ||
+      k.contains('soya lesitin') ||
+      k.contains('soy lecithin') ||
+      k.contains('e322')) {
+    return const _AttentionSpec(
+      groupId: 'soy_lecithin',
+      displayName: 'Soya lesitini (E322)',
+      category: _AttentionCategory.emulsifier,
+      risk: 'low',
+      technicalNote: 'Soya lesitini (E322)',
+      purpose:
+          'Yağ ve su fazını karıştırmak, ürün dokusunu düzenlemek için kullanılır.',
+      riskSummary:
+          'Soya alerjisi olanlar için dikkat gerektirmektedir; genel tüketimde düşük risk düzeyindedir.',
     );
   }
 
@@ -2076,14 +2229,16 @@ class _UnifiedIngredientSectionState extends State<_UnifiedIngredientSection> {
                         width: 10,
                         height: 10,
                         decoration: BoxDecoration(
-                          color: riskColorForUser(resolvedIngredient.riskLevel),
+                          color: riskColorForUser(
+                            canonicalRiskLevelForIngredient(ingredient),
+                          ),
                           shape: BoxShape.circle,
                         ),
                       ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          '${riskLabelForUser(resolvedIngredient.riskLevel)}${(resolvedIngredient.ingredientType?.trim().isNotEmpty ?? false) ? ' · ${resolvedIngredient.ingredientType!}' : ''}',
+                          '${riskLabelForUser(canonicalRiskLevelForIngredient(ingredient))}${(resolvedIngredient.ingredientType?.trim().isNotEmpty ?? false) ? ' · ${resolvedIngredient.ingredientType!}' : ''}',
                           style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(color: Colors.grey[800]),
                         ),

@@ -73,6 +73,17 @@ bool isReleaseSafeHttpsBackendUrl(String value) {
   return !isLocalBackendUrl(raw);
 }
 
+/// Returns an error message if [apiKey] must not be embedded in a release
+/// build, or null when the key is absent (safe for release).
+@visibleForTesting
+String? ocrApiKeyReleaseError(String apiKey) {
+  if (apiKey.trim().isNotEmpty) {
+    return 'Release yapılandırması geçersiz. Flutter istemcisine OCR_BACKEND_API_KEY gömülmemelidir. '
+        'Sunucu kimlik doğrulaması backend tarafında tutulmalıdır.';
+  }
+  return null;
+}
+
 void validateReleaseEnvironment() {
   if (!kReleaseMode) {
     return;
@@ -86,11 +97,10 @@ void validateReleaseEnvironment() {
     );
   }
 
-  final ocrBackendApiKey = (dotenv.env['OCR_BACKEND_API_KEY'] ?? '').trim();
-  if (ocrBackendApiKey.isNotEmpty) {
-    throw const AppEnvironmentValidationException(
-      'Release yapılandırması geçersiz. Flutter istemcisine OCR_BACKEND_API_KEY gömülmemelidir. '
-      'Sunucu kimlik doğrulaması backend tarafında tutulmalıdır.',
-    );
+  final apiKeyError = ocrApiKeyReleaseError(
+    dotenv.env['OCR_BACKEND_API_KEY'] ?? '',
+  );
+  if (apiKeyError != null) {
+    throw AppEnvironmentValidationException(apiKeyError);
   }
 }

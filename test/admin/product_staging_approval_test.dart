@@ -1039,21 +1039,27 @@ void main() {
       final candidate = ProductCandidate.fromJson(json);
       expect(candidate.imageFrontUrl, cdnUrl);
       expect(candidate.imageUrl, aliasUrl);
-      expect(candidate.displayImageUrl, cdnUrl,
-          reason: 'image_front_url must take priority over image_url');
+      expect(
+        candidate.displayImageUrl,
+        cdnUrl,
+        reason: 'image_front_url must take priority over image_url',
+      );
     });
 
     // T8d: displayImageUrl falls back to imageUrl when imageFrontUrl is null.
-    test('T8d: displayImageUrl falls back to image_url when image_front_url absent', () {
-      final json = {
-        'id': 'staging-img-4',
-        'source': 'web_scraper:migros',
-        'status': 'pending',
-        'image_url': aliasUrl,
-      };
-      final candidate = ProductCandidate.fromJson(json);
-      expect(candidate.displayImageUrl, aliasUrl);
-    });
+    test(
+      'T8d: displayImageUrl falls back to image_url when image_front_url absent',
+      () {
+        final json = {
+          'id': 'staging-img-4',
+          'source': 'web_scraper:migros',
+          'status': 'pending',
+          'image_url': aliasUrl,
+        };
+        final candidate = ProductCandidate.fromJson(json);
+        expect(candidate.displayImageUrl, aliasUrl);
+      },
+    );
 
     // T8e: placeholder (null) only when both fields absent (spec item 5).
     test('T8e: displayImageUrl is null when both image fields are absent', () {
@@ -1072,52 +1078,76 @@ void main() {
     test('T9: toStagingInsertMap includes image_front_url and image_url', () {
       final candidate = webScraped(imageFrontUrl: cdnUrl);
       final map = candidate.toStagingInsertMap();
-      expect(map['image_front_url'], cdnUrl,
-          reason: 'image_front_url is the primary staging column');
-      expect(map['image_url'], cdnUrl,
-          reason: 'image_url is the compatibility alias');
+      expect(
+        map['image_front_url'],
+        cdnUrl,
+        reason: 'image_front_url is the primary staging column',
+      );
+      expect(
+        map['image_url'],
+        cdnUrl,
+        reason: 'image_url is the compatibility alias',
+      );
     });
 
     // T10: toStagingInsertMap omits both image fields when imageFrontUrl is null.
-    test('T10: toStagingInsertMap omits image fields when imageFrontUrl is null', () {
-      final candidate = webScraped(imageFrontUrl: null);
-      final map = candidate.toStagingInsertMap();
-      expect(map.containsKey('image_front_url'), isFalse);
-      expect(map.containsKey('image_url'), isFalse);
-    });
+    test(
+      'T10: toStagingInsertMap omits image fields when imageFrontUrl is null',
+      () {
+        final candidate = webScraped(imageFrontUrl: null);
+        final map = candidate.toStagingInsertMap();
+        expect(map.containsKey('image_front_url'), isFalse);
+        expect(map.containsKey('image_url'), isFalse);
+      },
+    );
 
     // T11: manual approval maps image_front_url → products.image_url (spec item 7).
-    test('T11: buildProductInsertMap maps image_front_url to products.image_url', () {
-      final map = ProductStagingApprovalRepository.buildProductInsertMap(
-        webScraped(imageFrontUrl: cdnUrl),
-        const StagingApprovalEdits(),
-      );
-      expect(map['image_url'], cdnUrl,
-          reason: 'staging.image_front_url must map to products.image_url');
-    });
+    test(
+      'T11: buildProductInsertMap maps image_front_url to products.image_url',
+      () {
+        final map = ProductStagingApprovalRepository.buildProductInsertMap(
+          webScraped(imageFrontUrl: cdnUrl),
+          const StagingApprovalEdits(),
+        );
+        expect(
+          map['image_url'],
+          cdnUrl,
+          reason: 'staging.image_front_url must map to products.image_url',
+        );
+      },
+    );
 
     // T11b: image_url alias is used as fallback when imageFrontUrl is null (spec item 8).
-    test('T11b: buildProductInsertMap uses image_url alias when image_front_url absent', () {
-      final candidate = ProductCandidate.fromJson({
-        'source': 'web_scraper:migros',
-        'status': 'pending',
-        'image_url': aliasUrl,
-      });
-      final map = ProductStagingApprovalRepository.buildProductInsertMap(
-        candidate,
-        const StagingApprovalEdits(),
-      );
-      expect(map['image_url'], aliasUrl,
-          reason: 'displayImageUrl fallback must reach products.image_url');
-    });
+    test(
+      'T11b: buildProductInsertMap uses image_url alias when image_front_url absent',
+      () {
+        final candidate = ProductCandidate.fromJson({
+          'source': 'web_scraper:migros',
+          'status': 'pending',
+          'image_url': aliasUrl,
+        });
+        final map = ProductStagingApprovalRepository.buildProductInsertMap(
+          candidate,
+          const StagingApprovalEdits(),
+        );
+        expect(
+          map['image_url'],
+          aliasUrl,
+          reason: 'displayImageUrl fallback must reach products.image_url',
+        );
+      },
+    );
 
     // T12: buildProductInsertMap omits image_url when both image fields are null.
-    test('T12: buildProductInsertMap omits image_url when both image fields null', () {
-      final map = ProductStagingApprovalRepository.buildProductInsertMap(
-        webScraped(imageFrontUrl: null),
-        const StagingApprovalEdits(),
-      );
-      expect(map.containsKey('image_url'), isFalse);
-    });
+    test(
+      'T12: buildProductInsertMap omits image_url when both image fields null',
+      () {
+        final map = ProductStagingApprovalRepository.buildProductInsertMap(
+          webScraped(imageFrontUrl: null),
+          const StagingApprovalEdits(),
+        );
+        expect(map.containsKey('image_url'), isFalse);
+      },
+    );
   });
 }
