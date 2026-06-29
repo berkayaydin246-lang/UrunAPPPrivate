@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:food_analyzer_app/core/legal/legal_link_launcher.dart';
+import 'package:food_analyzer_app/core/legal/legal_links.dart';
 import 'package:food_analyzer_app/core/theme/app_theme.dart';
 
 /// Data for a single onboarding slide.
@@ -202,14 +204,24 @@ class _LegalFooter extends StatelessWidget {
     final style = Theme.of(
       context,
     ).textTheme.labelSmall?.copyWith(color: AppColors.textSecondary);
+    final linkStyle = style?.copyWith(
+      decoration: TextDecoration.underline,
+      decorationColor: AppColors.textSecondary,
+    );
 
     return Wrap(
       alignment: WrapAlignment.center,
       spacing: 8,
       children: [
-        Text('Gizlilik Politikası', style: style),
+        GestureDetector(
+          onTap: () => openLegalLink(context, LegalLinks.privacy),
+          child: Text('Gizlilik Politikası', style: linkStyle),
+        ),
         Text('·', style: style),
-        Text('Kullanım Şartları', style: style),
+        GestureDetector(
+          onTap: () => openLegalLink(context, LegalLinks.terms),
+          child: Text('Kullanım Şartları', style: linkStyle),
+        ),
         Text('·', style: style),
         Text('Bilgilendirme amaçlıdır', style: style),
       ],

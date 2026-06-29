@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:food_analyzer_app/core/legal/legal_link_launcher.dart';
+import 'package:food_analyzer_app/core/legal/legal_links.dart';
 import 'package:food_analyzer_app/core/theme/app_theme.dart';
 
 /// About / settings page.
@@ -128,15 +130,23 @@ class _SettingsPageState extends State<SettingsPage> {
 
             const SizedBox(height: 28),
 
-            // ── Legal links (non-clickable placeholders) ───────────────────
+            // ── Legal links ────────────────────────────────────────────────
             _LegalRow(
               label: 'Gizlilik Politikası',
               icon: Icons.shield_outlined,
+              onTap: () => openLegalLink(context, LegalLinks.privacy),
             ),
             const Divider(color: AppColors.border, height: 1),
             _LegalRow(
               label: 'Kullanım Şartları',
               icon: Icons.description_outlined,
+              onTap: () => openLegalLink(context, LegalLinks.terms),
+            ),
+            const Divider(color: AppColors.border, height: 1),
+            _LegalRow(
+              label: 'İletişim / Veri Silme Talebi',
+              icon: Icons.mail_outline_rounded,
+              onTap: () => openLegalLink(context, LegalLinks.contact),
             ),
           ],
         ),
@@ -146,35 +156,41 @@ class _SettingsPageState extends State<SettingsPage> {
 }
 
 class _LegalRow extends StatelessWidget {
-  const _LegalRow({required this.label, required this.icon});
+  const _LegalRow({
+    required this.label,
+    required this.icon,
+    required this.onTap,
+  });
 
   final String label;
   final IconData icon;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 14),
-      child: Row(
-        children: [
-          Icon(icon, size: 20, color: AppColors.textSecondary),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              label,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        child: Row(
+          children: [
+            Icon(icon, size: 20, color: AppColors.textSecondary),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                label,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              ),
             ),
-          ),
-          // Placeholder: link not yet implemented
-          Text(
-            'Yakında',
-            style: Theme.of(
-              context,
-            ).textTheme.labelSmall?.copyWith(color: AppColors.neutral),
-          ),
-        ],
+            const Icon(
+              Icons.open_in_new_rounded,
+              size: 16,
+              color: AppColors.textSecondary,
+            ),
+          ],
+        ),
       ),
     );
   }

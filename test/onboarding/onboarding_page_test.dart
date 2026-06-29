@@ -76,7 +76,9 @@ void main() {
       expect(indicators, findsWidgets);
     });
 
-    testWidgets('disclaimer text appears on last page', (tester) async {
+    testWidgets('legal footer appears on last page with all three segments', (
+      tester,
+    ) async {
       await tester.pumpWidget(_buildPage(() {}));
       await tester.pump();
 
@@ -86,6 +88,46 @@ void main() {
       expect(find.text('Kullanım Şartları'), findsOneWidget);
       expect(find.text('Bilgilendirme amaçlıdır'), findsOneWidget);
     });
+
+    testWidgets('legal footer links are wrapped in GestureDetector', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_buildPage(() {}));
+      await tester.pump();
+      await _swipeToPage(tester, 3);
+
+      expect(
+        find.ancestor(
+          of: find.text('Gizlilik Politikası'),
+          matching: find.byType(GestureDetector),
+        ),
+        findsWidgets,
+      );
+      expect(
+        find.ancestor(
+          of: find.text('Kullanım Şartları'),
+          matching: find.byType(GestureDetector),
+        ),
+        findsWidgets,
+      );
+    });
+
+    // url_launcher silently succeeds in the test environment (no platform mock),
+    // so we verify no crash instead of the SnackBar.
+    testWidgets(
+      'tapping Gizlilik Politikası on last page does not crash',
+      (tester) async {
+        await tester.pumpWidget(_buildPage(() {}));
+        await tester.pump();
+        await _swipeToPage(tester, 3);
+
+        await tester.tap(find.text('Gizlilik Politikası'));
+        await tester.pump();
+        await tester.pumpAndSettle();
+
+        expect(tester.takeException(), isNull);
+      },
+    );
 
     testWidgets('no FreshScan text appears in onboarding', (tester) async {
       await tester.pumpWidget(_buildPage(() {}));

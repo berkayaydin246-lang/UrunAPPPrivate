@@ -76,12 +76,57 @@ void main() {
       expect(find.text('Sürüm 1.0.0'), findsOneWidget); // still on settings
     });
 
-    testWidgets('legal placeholder rows are visible', (tester) async {
+    testWidgets('legal rows are visible and "Yakında" is gone', (tester) async {
       await tester.pumpWidget(_buildSettings());
       await tester.pumpAndSettle();
 
       expect(find.text('Gizlilik Politikası'), findsOneWidget);
       expect(find.text('Kullanım Şartları'), findsOneWidget);
+      expect(find.text('İletişim / Veri Silme Talebi'), findsOneWidget);
+      expect(find.text('Yakında'), findsNothing);
+    });
+
+    testWidgets('legal rows have trailing open-in-new icon', (tester) async {
+      await tester.pumpWidget(_buildSettings());
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.open_in_new_rounded), findsWidgets);
+    });
+
+    // url_launcher silently succeeds in the test environment (no platform mock),
+    // so SnackBar assertions are not practical. We verify no crash instead.
+    testWidgets('tapping Gizlilik Politikası does not crash', (tester) async {
+      await tester.pumpWidget(_buildSettings());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Gizlilik Politikası'));
+      await tester.pump();
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('tapping Kullanım Şartları does not crash', (tester) async {
+      await tester.pumpWidget(_buildSettings());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Kullanım Şartları'));
+      await tester.pump();
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('tapping İletişim / Veri Silme Talebi does not crash',
+        (tester) async {
+      await tester.pumpWidget(_buildSettings());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('İletişim / Veri Silme Talebi'));
+      await tester.pump();
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
     });
   });
 
