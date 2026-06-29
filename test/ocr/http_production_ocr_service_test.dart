@@ -3,12 +3,21 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:food_analyzer_app/core/config/app_environment.dart';
 import 'package:food_analyzer_app/features/ocr/services/production_ocr_service.dart';
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+const _directUrl = 'http://localhost:8000';
+const _edgeUrl = 'https://dzsmkmwatwvuxigynimq.supabase.co/functions/v1';
+
 HttpProductionOcrService _service({
   String apiKey = '',
-  String baseUrl = 'http://localhost:8000',
-}) {
-  return HttpProductionOcrService(dio: Dio(), baseUrl: baseUrl, apiKey: apiKey);
-}
+  String baseUrl = _directUrl,
+  String supabaseAnonKey = '',
+}) => HttpProductionOcrService(
+  dio: Dio(),
+  baseUrl: baseUrl,
+  apiKey: apiKey,
+  supabaseAnonKey: supabaseAnonKey,
+);
 
 RequestOptions _fakeRequest() => RequestOptions(path: '/ocr/ingredients');
 
@@ -31,31 +40,50 @@ DioException _dioException({
   );
 }
 
-void main() {
-  // ── Authorization header ────────────────────────────────────────────────────
+// ── Tests ─────────────────────────────────────────────────────────────────────
 
-  group('Authorization header', () {
-    test('sends Bearer token when OCR_BACKEND_API_KEY is non-empty', () {
-      final headers = _service(apiKey: 'secret-key-123').headersForTest();
-      expect(headers['Authorization'], 'Bearer secret-key-123');
+void main() {
+  // ── Mode A: direct backend (OCR_BACKEND_API_KEY present) ──────────────────
+
+  group('Mode A — direct backend (OCR_BACKEND_API_KEY)', () {
+    test('sends Bearer token when key is non-empty', () {
+      final h = _service(apiKey: 'secret-key-123').headersForTest();
+      expect(h['Authorization'], 'Bearer secret-key-123');
     });
 
     test('trims surrounding whitespace from the key', () {
-      final headers = _service(apiKey: '  my-key  ').headersForTest();
-      expect(headers['Authorization'], 'Bearer my-key');
+      final h = _service(apiKey: '  my-key  ').headersForTest();
+      expect(h['Authorization'], 'Bearer my-key');
     });
 
+    test('does NOT send apikey header in direct mode', () {
+      final h = _service(apiKey: 'secret').headersForTest();
+      expect(h.containsKey('apikey'), isFalse);
+    });
+
+    test(
+      'OCR_BACKEND_API_KEY takes precedence — anon key not sent even if present',
+      () {
+        final h = _service(
+          apiKey: 'direct-secret',
+          supabaseAnonKey: 'anon-jwt',
+        ).headersForTest();
+        expect(h['Authorization'], 'Bearer direct-secret');
+        expect(h.containsKey('apikey'), isFalse);
+      },
+    );
+
     test('omits Authorization header when key is empty', () {
-      final headers = _service(apiKey: '').headersForTest();
-      expect(headers.containsKey('Authorization'), isFalse);
+      final h = _service(apiKey: '').headersForTest();
+      expect(h.containsKey('Authorization'), isFalse);
     });
 
     test('omits Authorization header when key is only whitespace', () {
-      final headers = _service(apiKey: '   ').headersForTest();
-      expect(headers.containsKey('Authorization'), isFalse);
+      final h = _service(apiKey: '   ').headersForTest();
+      expect(h.containsKey('Authorization'), isFalse);
     });
 
-    test('always includes Content-Type regardless of key', () {
+    test('always includes Content-Type', () {
       expect(
         _service(apiKey: '').headersForTest()['Content-Type'],
         'application/json',
@@ -67,22 +95,133 @@ void main() {
     });
   });
 
-  // ── HTTP error mapping ──────────────────────────────────────────────────────
+  // ── Mode B: Supabase Edge Function (SUPABASE_ANON_KEY) ────────────────────
+
+  group('Mode B — Supabase Edge Function', () {
+    test(
+      'isSupabaseFunctionsUrl is true for .supabase.co/functions/v1 URL',
+      () {
+        expect(
+          _service(baseUrl: _edgeUrl).isSupabaseFunctionsUrlForTest,
+          isTrue,
+        );
+      },
+    );
+
+    test('isSupabaseFunctionsUrl matches /functions/v1 path segment', () {
+      expect(
+        _service(
+          baseUrl: 'https://example.com/functions/v1',
+        ).isSupabaseFunctionsUrlForTest,
+        isTrue,
+      );
+    });
+
+    test('isSupabaseFunctionsUrl is false for direct backend URL', () {
+      expect(
+        _service(baseUrl: _directUrl).isSupabaseFunctionsUrlForTest,
+        isFalse,
+      );
+    });
+
+    test('sends apikey and Authorization: Bearer <anonKey>', () {
+      final h = _service(
+        baseUrl: _edgeUrl,
+        supabaseAnonKey: 'anon-jwt-value',
+      ).headersForTest();
+      expect(h['apikey'], 'anon-jwt-value');
+      expect(h['Authorization'], 'Bearer anon-jwt-value');
+    });
+
+    test(
+      'does not require OCR_BACKEND_API_KEY — anon key alone is sufficient',
+      () {
+        final h = _service(
+          baseUrl: _edgeUrl,
+          apiKey: '', // no direct key
+          supabaseAnonKey: 'anon-jwt',
+        ).headersForTest();
+        expect(h.containsKey('Authorization'), isTrue);
+        expect(h['Authorization'], 'Bearer anon-jwt');
+      },
+    );
+
+    test('trims whitespace from anon key', () {
+      final h = _service(
+        baseUrl: _edgeUrl,
+        supabaseAnonKey: '  trimmed-key  ',
+      ).headersForTest();
+      expect(h['apikey'], 'trimmed-key');
+      expect(h['Authorization'], 'Bearer trimmed-key');
+    });
+
+    test(
+      'no apikey or Authorization header when anon key is empty in edge mode',
+      () {
+        final h = _service(
+          baseUrl: _edgeUrl,
+          supabaseAnonKey: '',
+        ).headersForTest();
+        expect(h.containsKey('apikey'), isFalse);
+        expect(h.containsKey('Authorization'), isFalse);
+      },
+    );
+
+    test('Content-Type is always present in edge function mode', () {
+      final h = _service(
+        baseUrl: _edgeUrl,
+        supabaseAnonKey: 'anon',
+      ).headersForTest();
+      expect(h['Content-Type'], 'application/json');
+    });
+  });
+
+  // ── Secret hygiene ─────────────────────────────────────────────────────────
+
+  group('Secret hygiene', () {
+    test('CLAUDE_API_KEY is never in headers', () {
+      for (final h in [
+        _service(apiKey: 'backend-key').headersForTest(),
+        _service(baseUrl: _edgeUrl, supabaseAnonKey: 'anon').headersForTest(),
+      ]) {
+        expect(h.containsKey('CLAUDE_API_KEY'), isFalse);
+        expect(h.keys.any((k) => k.toLowerCase().contains('claude')), isFalse);
+      }
+    });
+
+    test('service-role key is never in headers', () {
+      for (final h in [
+        _service(apiKey: 'backend-key').headersForTest(),
+        _service(baseUrl: _edgeUrl, supabaseAnonKey: 'anon').headersForTest(),
+      ]) {
+        expect(h.keys.any((k) => k.toLowerCase().contains('service')), isFalse);
+      }
+    });
+  });
+
+  // ── HTTP error mapping ─────────────────────────────────────────────────────
 
   group('HTTP error mapping', () {
-    test('401 maps to Turkish auth error', () {
+    test('401 maps to short Turkish auth error', () {
       final msg = HttpProductionOcrService.mapDioError(
         _dioException(statusCode: 401),
       );
       expect(msg, contains('yetkilendirmesi başarısız'));
-      expect(msg, contains('OCR yapılandırmasını kontrol et'));
     });
 
-    test('403 maps to Turkish auth error', () {
+    test('403 maps to short Turkish auth error', () {
       final msg = HttpProductionOcrService.mapDioError(
         _dioException(statusCode: 403),
       );
       expect(msg, contains('yetkilendirmesi başarısız'));
+    });
+
+    test('404 maps to address-not-found Turkish message', () {
+      final msg = HttpProductionOcrService.mapDioError(
+        _dioException(statusCode: 404),
+      );
+      expect(msg, contains('bulunamadı'));
+      expect(msg, contains('yapılandırmayı kontrol et'));
     });
 
     test('500 maps to server unavailable message', () {
@@ -120,14 +259,14 @@ void main() {
       expect(msg, contains('zaman aşımına uğradı'));
     });
 
-    test('connectionError maps to Turkish network error', () {
+    test('connectionError maps to Turkish network-unreachable message', () {
       final msg = HttpProductionOcrService.mapDioError(
         _dioException(type: DioExceptionType.connectionError),
       );
       expect(msg, contains('ulaşılamadı'));
     });
 
-    test('error messages contain no raw Dio/Mozilla technical text', () {
+    test('no raw DioException/Mozilla/SocketException text in any error', () {
       for (final type in [
         DioExceptionType.receiveTimeout,
         DioExceptionType.connectionError,
@@ -143,10 +282,10 @@ void main() {
     });
   });
 
-  // ── Release environment validation ─────────────────────────────────────────
+  // ── Release validation ────────────────────────────────────────────────────
 
-  group('Release environment: OCR_BACKEND_API_KEY must not be embedded', () {
-    test('non-empty key produces a Turkish rejection message', () {
+  group('Release validation: OCR_BACKEND_API_KEY must not be embedded', () {
+    test('non-empty key returns Turkish rejection message', () {
       final error = ocrApiKeyReleaseError('some-backend-secret');
       expect(error, isNotNull);
       expect(error, contains('OCR_BACKEND_API_KEY'));
@@ -162,8 +301,10 @@ void main() {
     });
 
     test('rejection message mentions backend-side auth', () {
-      final error = ocrApiKeyReleaseError('key');
-      expect(error, contains('backend tarafında tutulmalıdır'));
+      expect(
+        ocrApiKeyReleaseError('key'),
+        contains('backend tarafında tutulmalıdır'),
+      );
     });
   });
 }

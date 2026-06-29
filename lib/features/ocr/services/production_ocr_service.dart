@@ -20,32 +20,41 @@ class HttpProductionOcrService implements ProductionOcrService {
   final Dio _dio;
   final String _baseUrl;
   final String _endpointPath;
+  // Direct-backend secret (local/Render dev). Release validator rejects this in
+  // .env.client for production builds — see app_environment.dart.
   final String _apiKey;
+  // Supabase anon key used when routing through Supabase Edge Functions.
+  // This is the public JWT, not a secret — safe to embed in the client.
+  final String _supabaseAnonKey;
 
   const HttpProductionOcrService({
     required Dio dio,
     required String baseUrl,
     String endpointPath = '/ocr/ingredients',
     String apiKey = '',
+    String supabaseAnonKey = '',
   }) : _dio = dio,
        _baseUrl = baseUrl,
        _endpointPath = endpointPath,
-       _apiKey = apiKey;
+       _apiKey = apiKey,
+       _supabaseAnonKey = supabaseAnonKey;
 
-  // TODO(production): Flutter must not call the OCR backend directly with a
-  // client-embedded secret. Preferred production flow:
-  //   Flutter → Supabase Edge Function (secure proxy) → OCR backend → Claude
-  // Until the Edge Function proxy is implemented, production builds use the
-  // OCR_BACKEND_URL without an embedded key. The release validator already
-  // rejects OCR_BACKEND_API_KEY in .env.client for release/profile builds.
   factory HttpProductionOcrService.fromEnv() {
     return HttpProductionOcrService(
       dio: Dio(),
       baseUrl: dotenv.env['OCR_BACKEND_URL'] ?? '',
       endpointPath: '/ocr/ingredients',
       apiKey: dotenv.env['OCR_BACKEND_API_KEY'] ?? '',
+      supabaseAnonKey: dotenv.env['SUPABASE_ANON_KEY'] ?? '',
     );
   }
+
+  // True when OCR_BACKEND_URL points at a Supabase Edge Function.
+  // In that case, authentication uses the Supabase anon JWT, not a backend
+  // secret. CLAUDE_API_KEY and service-role keys are never read here.
+  bool get _isSupabaseFunctionsUrl =>
+      _baseUrl.contains('.supabase.co/functions/v1') ||
+      _baseUrl.contains('/functions/v1');
 
   @override
   Future<StructuredIngredientExtractionResult> extractIngredients(
@@ -54,6 +63,12 @@ class HttpProductionOcrService implements ProductionOcrService {
   }) async {
     if (_baseUrl.trim().isEmpty) {
       throw StateError('Gelişmiş OCR servisi henüz yapılandırılmadı.');
+    }
+
+    if (_isSupabaseFunctionsUrl &&
+        _apiKey.trim().isEmpty &&
+        _supabaseAnonKey.trim().isEmpty) {
+      throw StateError('Gelişmiş OCR yapılandırması eksik.');
     }
 
     final bytes = Uint8List.fromList(await imageFile.readAsBytes());
@@ -106,15 +121,37 @@ class HttpProductionOcrService implements ProductionOcrService {
     }
   }
 
-  Map<String, dynamic> _buildHeaders() => {
-    'Content-Type': 'application/json',
-    if (_apiKey.trim().isNotEmpty) 'Authorization': 'Bearer ${_apiKey.trim()}',
-  };
+  // Mode A — direct backend: sends only the backend API key.
+  // Mode B — Supabase Edge Function: sends Supabase anon JWT in both the
+  //          standard apikey header and the Authorization Bearer header.
+  // Neither mode sends CLAUDE_API_KEY or any service-role key.
+  Map<String, dynamic> _buildHeaders() {
+    final headers = <String, dynamic>{'Content-Type': 'application/json'};
+
+    final backendKey = _apiKey.trim();
+    if (backendKey.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $backendKey';
+      return headers;
+    }
+
+    if (_isSupabaseFunctionsUrl) {
+      final anonKey = _supabaseAnonKey.trim();
+      if (anonKey.isNotEmpty) {
+        headers['apikey'] = anonKey;
+        headers['Authorization'] = 'Bearer $anonKey';
+      }
+    }
+
+    return headers;
+  }
 
   static String _mapDioError(DioException e) {
     final status = e.response?.statusCode;
     if (status == 401 || status == 403) {
-      return 'Gelişmiş OCR yetkilendirmesi başarısız. Lütfen OCR yapılandırmasını kontrol et.';
+      return 'Gelişmiş OCR yetkilendirmesi başarısız.';
+    }
+    if (status == 404) {
+      return 'Gelişmiş OCR adresi bulunamadı. Lütfen yapılandırmayı kontrol et.';
     }
     if (status != null && status >= 500) {
       return 'Gelişmiş OCR servisi şu anda yanıt veremiyor.';
@@ -132,6 +169,9 @@ class HttpProductionOcrService implements ProductionOcrService {
 
   @visibleForTesting
   Map<String, dynamic> headersForTest() => _buildHeaders();
+
+  @visibleForTesting
+  bool get isSupabaseFunctionsUrlForTest => _isSupabaseFunctionsUrl;
 
   @visibleForTesting
   static String mapDioError(DioException e) => _mapDioError(e);
