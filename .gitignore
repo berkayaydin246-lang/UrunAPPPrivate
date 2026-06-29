@@ -71,3 +71,5 @@ tmp/
 # Product scraper outputs
 scripts/product_import/output/web_scrape_*.json
 supabase/.env.ocr-edge.local
+android/app/*.jks
+android/app/*.jks.*
