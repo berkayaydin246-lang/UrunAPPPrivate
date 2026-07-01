@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:food_analyzer_app/core/errors/user_message.dart';
 import 'package:food_analyzer_app/features/product/models/product.dart';
 import 'package:food_analyzer_app/features/product/models/product_review.dart';
 import 'package:food_analyzer_app/features/product/models/ingredient.dart';
@@ -77,7 +78,10 @@ class ProductDetailNotifier extends StateNotifier<ProductDetailState> {
         isLoading: false,
       );
     } catch (e) {
-      state = state.copyWith(error: e.toString(), isLoading: false);
+      state = state.copyWith(
+        error: UserMessage.forGeneric(e),
+        isLoading: false,
+      );
     }
   }
 

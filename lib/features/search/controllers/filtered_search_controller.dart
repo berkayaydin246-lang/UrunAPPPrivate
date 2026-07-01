@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:food_analyzer_app/core/errors/user_message.dart';
 import 'package:food_analyzer_app/features/product/models/nutrition_data.dart';
 import 'package:food_analyzer_app/features/product/models/product.dart';
 import 'package:food_analyzer_app/features/product/repositories/product_repository.dart';
@@ -144,7 +145,7 @@ class FilteredSearchNotifier extends StateNotifier<FilteredSearchState> {
       state = state.copyWith(
         isLoading: false,
         isLoadingMore: false,
-        error: e.toString(),
+        error: UserMessage.forGeneric(e),
       );
     }
   }

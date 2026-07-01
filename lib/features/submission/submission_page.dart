@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:food_analyzer_app/core/errors/user_message.dart';
 import 'package:food_analyzer_app/features/submission/repositories/submission_repository.dart';
 
 class SubmissionPage extends StatefulWidget {
@@ -49,7 +50,12 @@ class _SubmissionPageState extends State<SubmissionPage> {
 
   Future<void> _pickImage(bool isFront) async {
     final picker = ImagePicker();
-    final file = await picker.pickImage(source: ImageSource.camera);
+    final file = await picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 85,
+      maxWidth: 2000,
+      maxHeight: 2000,
+    );
     if (file == null) return;
     final bytes = await file.readAsBytes();
     setState(() {
@@ -102,7 +108,7 @@ class _SubmissionPageState extends State<SubmissionPage> {
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Gönderim başarısız: $e')));
+      ).showSnackBar(SnackBar(content: Text(UserMessage.forGeneric(e))));
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
     }

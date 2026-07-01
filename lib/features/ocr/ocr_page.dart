@@ -402,7 +402,7 @@ class _OcrPreviewView extends StatelessWidget {
           if (warningMessage != null) ...[
             const SizedBox(height: 12),
             _WarningCard(
-              message: 'Gelişmiş OCR servisi henüz yapılandırılmadı.',
+              message: 'Gelişmiş OCR tamamlanamadı.',
               subMessage: warningMessage!,
             ),
           ],

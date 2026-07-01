@@ -123,8 +123,10 @@ class OcrService {
         warnings: const <String>[],
         languageHint: 'tr',
       );
-    } catch (e) {
-      throw Exception('ML Kit ile metin tanımlanamadı: $e');
+    } catch (_) {
+      // Corrupt/unreadable image files land here. Throw a clean domain message;
+      // the controller boundary maps it to a friendly, user-safe string.
+      throw StateError('Metin tanımlanamadı.');
     }
   }
 

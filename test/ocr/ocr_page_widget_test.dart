@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:food_analyzer_app/core/errors/user_message.dart';
 import 'package:food_analyzer_app/features/ocr/controllers/ocr_controller.dart';
 import 'package:food_analyzer_app/features/ocr/models/ocr_quality_assessment.dart';
 import 'package:food_analyzer_app/features/ocr/models/ocr_result.dart';
@@ -222,6 +223,78 @@ void main() {
         OcrState(error: 'Gelişmiş OCR zaman aşımına uğradı.'),
       );
       expect(find.text('Tekrar Dene'), findsOneWidget);
+    });
+  });
+
+  // ── No raw developer errors reach the UI ─────────────────────────────────────
+
+  group('No raw developer errors visible', () {
+    const forbidden = [
+      'Bad state',
+      'No element',
+      'Exception',
+      'StackTrace',
+      'Instance of',
+      'StateError',
+    ];
+
+    void expectNoForbiddenText() {
+      for (final fragment in forbidden) {
+        expect(
+          find.textContaining(fragment),
+          findsNothing,
+          reason: 'UI leaked forbidden fragment "$fragment"',
+        );
+      }
+    }
+
+    testWidgets('friendly OCR error message shows, no developer text', (
+      tester,
+    ) async {
+      await pumpOcrScreen(tester, OcrState(error: UserMessage.ocrUnreadable));
+      expect(
+        find.textContaining('İçindekiler metni okunamadı'),
+        findsOneWidget,
+      );
+      expect(find.text('Tekrar Dene'), findsOneWidget); // clear next action
+      expectNoForbiddenText();
+    });
+
+    testWidgets('no-label message on result view shows, no developer text', (
+      tester,
+    ) async {
+      // Local text present + remoteError set → result view renders the warning.
+      await pumpOcrScreen(
+        tester,
+        _successState().copyWith(remoteError: UserMessage.ocrNoLabel),
+      );
+      expect(find.textContaining('içerik etiketi bulunamadı'), findsOneWidget);
+      expectNoForbiddenText();
+    });
+
+    testWidgets('remoteError on preview view shows, no developer text', (
+      tester,
+    ) async {
+      // Image only (no extracted text) + remoteError → preview view warning.
+      await pumpOcrScreen(
+        tester,
+        OcrState(
+          imageFile: _fakeImageFile,
+          remoteError: UserMessage.ocrNoLabel,
+        ),
+      );
+      expect(find.textContaining('bulunamadı'), findsWidgets);
+      expectNoForbiddenText();
+    });
+
+    testWidgets('a raw "Bad state: No element" would never be a valid state', (
+      tester,
+    ) async {
+      // Defense-in-depth: even if a raw string slipped into state, the test
+      // suite documents that the UI must not contain it. Controllers sanitize
+      // via UserMessage, so production states never carry this text.
+      await pumpOcrScreen(tester, OcrState(error: UserMessage.ocrUnreadable));
+      expectNoForbiddenText();
     });
   });
 

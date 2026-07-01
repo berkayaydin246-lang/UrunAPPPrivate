@@ -117,8 +117,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('tapping İletişim / Veri Silme Talebi does not crash',
-        (tester) async {
+    testWidgets('tapping İletişim / Veri Silme Talebi does not crash', (
+      tester,
+    ) async {
       await tester.pumpWidget(_buildSettings());
       await tester.pumpAndSettle();
 

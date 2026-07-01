@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'package:food_analyzer_app/core/errors/user_message.dart';
 import 'package:food_analyzer_app/features/ocr/models/ocr_result.dart';
 import 'package:food_analyzer_app/features/ocr/services/ocr_providers.dart';
 import 'package:food_analyzer_app/features/ocr/services/ocr_quality_evaluator.dart';
@@ -20,12 +21,19 @@ class OcrNotifier extends StateNotifier<OcrState> {
   OcrNotifier(this._repository, this._productionOcrService, this._imagePicker)
     : super(OcrState());
 
+  // Cap the long edge so a 12MP phone photo doesn't upload as a multi-megabyte
+  // file. ~2000px keeps label text legible for OCR while cutting pixels ~4x,
+  // reducing upload size, memory use, and battery/heat on both OCR paths.
+  static const double _maxPickDimension = 2000;
+
   /// Pick an image from gallery.
   Future<void> pickImageFromGallery() async {
     try {
       final pickedFile = await _imagePicker.pickImage(
         source: ImageSource.gallery,
         imageQuality: 85,
+        maxWidth: _maxPickDimension,
+        maxHeight: _maxPickDimension,
       );
 
       if (pickedFile == null) {
@@ -33,8 +41,8 @@ class OcrNotifier extends StateNotifier<OcrState> {
       }
 
       state = OcrState(imageFile: pickedFile);
-    } catch (e) {
-      state = state.copyWith(error: 'Galeri açılırken hata oluştu: $e');
+    } catch (_) {
+      state = state.copyWith(error: 'Galeri açılamadı. Lütfen tekrar deneyin.');
     }
   }
 
@@ -44,6 +52,8 @@ class OcrNotifier extends StateNotifier<OcrState> {
       final pickedFile = await _imagePicker.pickImage(
         source: ImageSource.camera,
         imageQuality: 85,
+        maxWidth: _maxPickDimension,
+        maxHeight: _maxPickDimension,
       );
 
       if (pickedFile == null) {
@@ -51,8 +61,8 @@ class OcrNotifier extends StateNotifier<OcrState> {
       }
 
       state = OcrState(imageFile: pickedFile);
-    } catch (e) {
-      state = state.copyWith(error: 'Kamera açılırken hata oluştu: $e');
+    } catch (_) {
+      state = state.copyWith(error: 'Kamera açılamadı. Lütfen tekrar deneyin.');
     }
   }
 
@@ -60,6 +70,8 @@ class OcrNotifier extends StateNotifier<OcrState> {
   Future<void> processCurrentImage() async {
     final imageFile = state.imageFile;
     if (imageFile == null) return;
+    // Guard against duplicate/double-tap submissions while OCR is running.
+    if (state.isBusy) return;
 
     state = state.copyWith(
       isProcessing: true,
@@ -71,6 +83,15 @@ class OcrNotifier extends StateNotifier<OcrState> {
 
     try {
       final result = await _repository.recognizeLocally(imageFile);
+      // Blank / black / unrelated images produce empty text: never proceed to
+      // analysis with nothing — show a clear, friendly retry message instead.
+      if (result.result.text.trim().isEmpty) {
+        state = state.copyWith(
+          error: UserMessage.ocrUnreadable,
+          isProcessing: false,
+        );
+        return;
+      }
       state = state.copyWith(
         extractedText: result.result,
         editableText: result.result.text,
@@ -78,10 +99,7 @@ class OcrNotifier extends StateNotifier<OcrState> {
         qualityAssessment: result.quality,
       );
     } catch (e) {
-      state = state.copyWith(
-        error: 'Metin tanımlanamadı: $e',
-        isProcessing: false,
-      );
+      state = state.copyWith(error: UserMessage.forOcr(e), isProcessing: false);
     }
   }
 
@@ -89,6 +107,8 @@ class OcrNotifier extends StateNotifier<OcrState> {
   Future<void> processCurrentImageWithProductionOcr() async {
     final imageFile = state.imageFile;
     if (imageFile == null) return;
+    // Guard against duplicate/double-tap submissions while OCR is running.
+    if (state.isBusy) return;
 
     state = state.copyWith(
       isUploading: true,
@@ -102,10 +122,24 @@ class OcrNotifier extends StateNotifier<OcrState> {
         imageFile,
       );
       final result = structured.toOcrTextResult();
+      final displayText = _pickProductionDisplayText(structured);
+      // Backend responded but found no usable ingredient text (blank/black/
+      // unrelated photo). Surface a friendly message instead of an empty screen.
+      final hasUsableText =
+          result.text.trim().isNotEmpty ||
+          (displayText != null && displayText.trim().isNotEmpty);
+      if (!hasUsableText && structured.ingredients.isEmpty) {
+        state = state.copyWith(
+          remoteError: UserMessage.ocrNoLabel,
+          isUploading: false,
+          isRemoteProcessing: false,
+        );
+        return;
+      }
       state = state.copyWith(
         extractedText: result,
         structuredExtractionResult: structured,
-        editableText: _pickProductionDisplayText(structured),
+        editableText: displayText,
         isUploading: false,
         isRemoteProcessing: false,
         qualityAssessment: OcrQualityAssessment(
@@ -115,7 +149,7 @@ class OcrNotifier extends StateNotifier<OcrState> {
       );
     } catch (e) {
       state = state.copyWith(
-        remoteError: e.toString().replaceFirst('StateError: ', ''),
+        remoteError: UserMessage.forOcr(e),
         isUploading: false,
         isRemoteProcessing: false,
       );

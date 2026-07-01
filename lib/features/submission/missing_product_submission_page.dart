@@ -48,6 +48,8 @@ class _MissingProductSubmissionPageState
       final file = await _picker.pickImage(
         source: ImageSource.camera,
         imageQuality: 85,
+        maxWidth: 2000,
+        maxHeight: 2000,
       );
       if (file == null) return;
 

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:food_analyzer_app/core/errors/user_message.dart';
 import 'package:food_analyzer_app/features/analysis/engines/analysis_engine.dart';
 import 'package:food_analyzer_app/features/analysis/models/ingredient_match.dart';
 import 'package:food_analyzer_app/features/analysis/models/analysis_route_args.dart';
@@ -99,7 +100,7 @@ class AnalysisNotifier extends StateNotifier<AnalysisState> {
       );
     } catch (e) {
       state = state.copyWith(
-        error: 'Analiz yapılamadı: $e',
+        error: UserMessage.forAnalysis(e),
         isProcessing: false,
       );
     }

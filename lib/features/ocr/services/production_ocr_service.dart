@@ -153,6 +153,12 @@ class HttpProductionOcrService implements ProductionOcrService {
     if (status == 404) {
       return 'Gelişmiş OCR adresi bulunamadı. Lütfen yapılandırmayı kontrol et.';
     }
+    if (status == 429) {
+      return 'Çok fazla deneme yapıldı. Lütfen biraz sonra tekrar deneyin.';
+    }
+    if (status == 400 || status == 422) {
+      return 'Görsel işlenemedi. Lütfen daha net ve okunur bir fotoğraf çekin.';
+    }
     if (status != null && status >= 500) {
       return 'Gelişmiş OCR servisi şu anda yanıt veremiyor.';
     }

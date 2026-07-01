@@ -224,6 +224,27 @@ void main() {
       expect(msg, contains('yapılandırmayı kontrol et'));
     });
 
+    test('429 maps to rate-limit Turkish message', () {
+      final msg = HttpProductionOcrService.mapDioError(
+        _dioException(statusCode: 429),
+      );
+      expect(msg, contains('Çok fazla deneme'));
+    });
+
+    test('400 maps to unreadable-image Turkish message', () {
+      final msg = HttpProductionOcrService.mapDioError(
+        _dioException(statusCode: 400),
+      );
+      expect(msg, contains('Görsel işlenemedi'));
+    });
+
+    test('422 maps to unreadable-image Turkish message', () {
+      final msg = HttpProductionOcrService.mapDioError(
+        _dioException(statusCode: 422),
+      );
+      expect(msg, contains('Görsel işlenemedi'));
+    });
+
     test('500 maps to server unavailable message', () {
       final msg = HttpProductionOcrService.mapDioError(
         _dioException(statusCode: 500),
@@ -278,6 +299,18 @@ void main() {
         expect(msg, isNot(contains('DioException')));
         expect(msg, isNot(contains('Mozilla')));
         expect(msg, isNot(contains('SocketException')));
+      }
+    });
+
+    test('no raw developer text in any HTTP status mapping', () {
+      for (final status in [400, 401, 403, 404, 422, 429, 500, 502, 503]) {
+        final msg = HttpProductionOcrService.mapDioError(
+          _dioException(statusCode: status),
+        );
+        expect(msg, isNot(contains('DioException')));
+        expect(msg, isNot(contains('Bad state')));
+        expect(msg, isNot(contains('Exception')));
+        expect(msg.trim(), isNotEmpty);
       }
     });
   });

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'package:food_analyzer_app/core/errors/user_message.dart';
 import 'package:food_analyzer_app/features/ocr/controllers/ocr_controller.dart';
 import 'package:food_analyzer_app/features/ocr/models/ocr_engine_type.dart';
 import 'package:food_analyzer_app/features/ocr/services/ocr_repository.dart';
@@ -42,9 +43,9 @@ class _OcrBenchmarkPageState extends ConsumerState<OcrBenchmarkPage> {
         _localResult = null;
         _remoteResult = null;
       });
-    } catch (e) {
+    } catch (_) {
       setState(() {
-        _error = 'Görsel seçilemedi: $e';
+        _error = 'Görsel seçilemedi. Lütfen tekrar deneyin.';
       });
     }
   }
@@ -83,7 +84,7 @@ class _OcrBenchmarkPageState extends ConsumerState<OcrBenchmarkPage> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = 'Benchmark çalıştırılamadı: $e';
+        _error = UserMessage.forOcr(e);
         _isRunning = false;
       });
     }

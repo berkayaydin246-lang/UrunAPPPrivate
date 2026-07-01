@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:food_analyzer_app/core/errors/user_message.dart';
 import 'package:food_analyzer_app/features/analysis/models/ingredient_match.dart';
 import 'package:food_analyzer_app/features/analysis/services/ingredient_matcher_service.dart';
 import 'package:food_analyzer_app/features/product/models/ingredient.dart';
@@ -68,7 +69,7 @@ class IngredientMatchingNotifier
       );
     } catch (e) {
       state = state.copyWith(
-        error: 'İçerikler eşleştirilemedi: $e',
+        error: UserMessage.forAnalysis(e),
         isProcessing: false,
       );
     }

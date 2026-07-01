@@ -114,20 +114,19 @@ void main() {
 
     // url_launcher silently succeeds in the test environment (no platform mock),
     // so we verify no crash instead of the SnackBar.
-    testWidgets(
-      'tapping Gizlilik Politikası on last page does not crash',
-      (tester) async {
-        await tester.pumpWidget(_buildPage(() {}));
-        await tester.pump();
-        await _swipeToPage(tester, 3);
+    testWidgets('tapping Gizlilik Politikası on last page does not crash', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_buildPage(() {}));
+      await tester.pump();
+      await _swipeToPage(tester, 3);
 
-        await tester.tap(find.text('Gizlilik Politikası'));
-        await tester.pump();
-        await tester.pumpAndSettle();
+      await tester.tap(find.text('Gizlilik Politikası'));
+      await tester.pump();
+      await tester.pumpAndSettle();
 
-        expect(tester.takeException(), isNull);
-      },
-    );
+      expect(tester.takeException(), isNull);
+    });
 
     testWidgets('no FreshScan text appears in onboarding', (tester) async {
       await tester.pumpWidget(_buildPage(() {}));
