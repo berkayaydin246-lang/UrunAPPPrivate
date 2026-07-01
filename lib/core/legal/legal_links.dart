@@ -10,6 +10,6 @@ class LegalLinks {
   );
 
   static final contact = Uri.parse(
-    'mailto:hamdiyeaksu.bjk@gmail.com?subject=Etiketly%20Veri%20Talebi',
+    'mailto:berkayaydin246@gmail.com?subject=Etiketly%20Veri%20Talebi',
   );
 }
