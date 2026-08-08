@@ -281,10 +281,14 @@ class AnalysisEngine {
       negative.add('Nitrit / nitrata işaret eden içerik bulundu');
     }
     if (highRisk.isNotEmpty) {
-      negative.add('${highRisk.length} adet yüksek riskli içerik');
+      negative.add(
+        'Etiketly değerlendirmesinde ${highRisk.length} yüksek düzey içerik',
+      );
     }
     if (mediumRisk.isNotEmpty) {
-      negative.add('${mediumRisk.length} adet orta riskli içerik');
+      negative.add(
+        'Etiketly değerlendirmesinde ${mediumRisk.length} orta düzey içerik',
+      );
     }
 
     final String advice = _buildAdvice(score, isProcessedMeat, containsNitrite);
@@ -313,7 +317,7 @@ class AnalysisEngine {
       scoreLabel: score,
       summary: summary,
       warningText: (highRisk.isNotEmpty || containsHighSugar)
-          ? 'Dikkat: bazı içerikler sağlık açısından risk taşıyabilir.'
+          ? 'Bazı içerikler Etiketly değerlendirmesinde daha fazla dikkat gerektiren düzeydedir.'
           : null,
       positivePoints: positive,
       negativePoints: negative,
@@ -409,9 +413,9 @@ class AnalysisEngine {
       case AnalysisScoreLabel.orta:
         return 'Orta düzeyde dikkat gerektiren içerikler var.';
       case AnalysisScoreLabel.dikkatliTuket:
-        return 'Dikkatli olunması önerilir; bazı içerikler risk oluşturabilir.';
+        return 'İçerik profilinde daha fazla dikkat gerektiren noktalar bulunuyor.';
       case AnalysisScoreLabel.sikTuketme:
-        return 'Bu ürün sık tüketim için uygun olmayabilir.';
+        return 'İçerik profili daha fazla dikkat gerektiriyor.';
     }
   }
 

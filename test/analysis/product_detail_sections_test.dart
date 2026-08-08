@@ -121,7 +121,7 @@ void main() {
       tester,
     ) async {
       await pumpBarcode(tester, barcodeResult(parsedTokens: popkekTokens));
-      expect(find.text('Alerjenler'), findsOneWidget);
+      expect(find.text('Etikette tespit edilen alerjenler'), findsOneWidget);
       expect(find.text('Gluten / Buğday'), findsOneWidget);
       // Yumurta appears exactly once → only in allergens, never in main list.
       expect(find.text('Yumurta'), findsOneWidget);

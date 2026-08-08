@@ -555,7 +555,10 @@ void main() {
       final result = const AnalysisEngine().analyze(matching);
 
       expect(result.detectedRiskIngredients, hasLength(1));
-      expect(result.negativePoints, contains('1 adet yüksek riskli içerik'));
+      expect(
+        result.negativePoints,
+        contains('Etiketly değerlendirmesinde 1 yüksek düzey içerik'),
+      );
       expect(result.additiveAssessment!.highRiskCount, 1);
     });
 

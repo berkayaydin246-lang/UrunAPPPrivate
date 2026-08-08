@@ -93,8 +93,8 @@ class ComparisonProductData {
       }
       if (item.riskLevelName == 'high' || item.riskLevelName == 'medium') {
         final label = item.riskLevelName == 'high'
-            ? 'Yüksek Risk'
-            : 'Orta Risk';
+            ? 'Etiketly değerlendirmesi: yüksek düzey'
+            : 'Etiketly değerlendirmesi: orta düzey';
         labels.add('$name: $label');
       }
     }

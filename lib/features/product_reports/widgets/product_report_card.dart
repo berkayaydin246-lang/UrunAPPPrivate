@@ -47,7 +47,7 @@ class ProductReportCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Bu üründe bir hata mı var?',
+                        'Ürün verisinde hata mı var?',
                         style: Theme.of(context).textTheme.labelMedium
                             ?.copyWith(
                               color: AppColors.textPrimary,
@@ -115,7 +115,7 @@ class ProductReportCard extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.w700),
               ),
               SizedBox(height: 2),
-              Text('İnceledikten sonra ürün bilgilerini güncelleyeceğiz.'),
+              Text('Bildirim incelemeye alınır; veriyi doğrudan değiştirmez.'),
             ],
           ),
           duration: const Duration(seconds: 5),

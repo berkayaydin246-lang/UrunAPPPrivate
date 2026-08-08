@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_analyzer_app/core/legal/public_legal_copy.dart';
 import 'package:food_analyzer_app/core/theme/app_theme.dart';
 import 'package:food_analyzer_app/features/scoring/presentation/etiketly_score_presentation.dart';
 
@@ -62,8 +63,8 @@ class _CalculatedScoreContent extends StatelessWidget {
       container: true,
       label:
           'Etiketly Puanı $score üzerinden 100. İçerik profili: $qualityLabel. '
-          'Beslenme kalitesi ${state.nutritionDisplayScore} üzerinden 100. '
-          'Katkı kalitesi ${state.additiveDisplayScore} üzerinden 100.',
+          'Beslenme bileşeni ${state.nutritionDisplayScore} üzerinden 100. '
+          'Katkı bileşeni ${state.additiveDisplayScore} üzerinden 100.',
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(18),
@@ -126,7 +127,7 @@ class _CalculatedScoreContent extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppRadius.chip),
                   ),
                   child: Text(
-                    '$qualityLabel içerik profili',
+                    'İçerik profili: $qualityLabel',
                     style: Theme.of(
                       context,
                     ).textTheme.labelLarge?.copyWith(color: style.foreground),
@@ -179,13 +180,13 @@ class _ComponentScores extends StatelessWidget {
       _ComponentScore(
         key: const ValueKey('etiketly-nutrition-component'),
         icon: Icons.restaurant_menu_rounded,
-        label: 'Beslenme kalitesi',
+        label: 'Beslenme bileşeni',
         value: state.nutritionDisplayScore!,
       ),
       _ComponentScore(
         key: const ValueKey('etiketly-additive-component'),
         icon: Icons.science_outlined,
-        label: 'Katkı kalitesi',
+        label: 'Katkı bileşeni',
         value: state.additiveDisplayScore!,
       ),
     ];
@@ -509,27 +510,39 @@ class _ScoreMethodologySheet extends StatelessWidget {
             ),
             const SizedBox(height: 18),
             Text(
-              'Etiketly Puanı nasıl hesaplanır?',
+              'Etiketly Puanı metodolojisi v1',
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 12),
             Text(
-              'Etiketly Puanı, doğrulanmış besin değerleri ve doğrulanmış katkı '
-              'değerlendirmesinden deterministik olarak hesaplanır.',
+              PublicLegalCopy.scoreDefinition,
               style: Theme.of(
                 context,
               ).textTheme.bodyMedium?.copyWith(height: 1.5),
             ),
             const SizedBox(height: 14),
-            const _MethodologyWeight(label: 'Beslenme kalitesi', value: '%80'),
+            const _MethodologyWeight(label: 'Beslenme bileşeni', value: '%80'),
             const SizedBox(height: 8),
-            const _MethodologyWeight(
-              label: 'Katkı değerlendirmesi',
-              value: '%20',
-            ),
+            const _MethodologyWeight(label: 'Katkı bileşeni', value: '%20'),
             const SizedBox(height: 14),
             Text(
-              'Puan bir tıbbi değerlendirme veya kişisel beslenme önerisi değildir.',
+              PublicLegalCopy.scoreMethodologyNote,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppColors.textSecondary,
+                height: 1.45,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              PublicLegalCopy.scoreChangeNote,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppColors.textSecondary,
+                height: 1.45,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              PublicLegalCopy.healthDisclaimer,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: AppColors.textSecondary,
                 height: 1.45,

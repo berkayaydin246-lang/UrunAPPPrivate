@@ -292,8 +292,8 @@ void main() {
 
     await pumpResultWidget(tester, result);
 
-    // Green color for low risk - should see "Az dikkat" label
-    expect(find.text('Az dikkat'), findsOneWidget);
+    // The canonical low level remains visible alongside its green indicator.
+    expect(find.text('Etiketly değerlendirmesi: Düşük düzey'), findsOneWidget);
   });
 
   testWidgets('combined ingredients from risk and recognized lists', (
@@ -579,7 +579,7 @@ void main() {
     expect(find.text('Palm yağı'), findsOneWidget);
     expect(find.text('Şeker'), findsOneWidget);
     expect(find.text('Buğday unu'), findsNothing);
-    expect(find.text('Alerjenler'), findsOneWidget);
+    expect(find.text('Etikette tespit edilen alerjenler'), findsOneWidget);
     expect(find.text('Gluten / Buğday'), findsOneWidget);
     expect(find.text('Dir'), findsNothing);
     expect(find.text('Koruyucu'), findsNothing);
@@ -682,7 +682,10 @@ void main() {
     expect(find.text('Teknik adı'), findsOneWidget);
     expect(find.text('Ne için kullanılır?'), findsOneWidget);
     expect(find.text('Neden dikkat edilmeli?'), findsOneWidget);
-    expect(find.textContaining('Orta dikkat'), findsOneWidget);
+    expect(
+      find.textContaining('Etiketly değerlendirmesi: Orta düzey'),
+      findsOneWidget,
+    );
   });
 
   testWidgets(
@@ -768,7 +771,7 @@ void main() {
     expect(find.textContaining('pirofosfat'), findsNothing);
     expect(find.textContaining('oligliserol'), findsNothing);
 
-    expect(find.text('Alerjenler'), findsOneWidget);
+    expect(find.text('Etikette tespit edilen alerjenler'), findsOneWidget);
     expect(find.text('Gluten / Buğday'), findsOneWidget);
     expect(find.text('Yumurta'), findsOneWidget);
     expect(find.text('Süt'), findsOneWidget);

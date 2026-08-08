@@ -876,7 +876,7 @@ class _AllergenPreviewColumn extends StatelessWidget {
 
     if (allergens.isEmpty) {
       return Text(
-        'Belirgin alerjen eşleşmesi yok.',
+        'Etiket metninde alerjen eşleşmesi tespit edilmedi. Güncel ambalajı kontrol edin.',
         style: Theme.of(
           context,
         ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
@@ -954,7 +954,7 @@ class _AllergenPreviewColumn extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                'Alerjenler',
+                'Etikette tespit edilen alerjenler',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: AppColors.textSecondary,
                   fontWeight: FontWeight.w700,

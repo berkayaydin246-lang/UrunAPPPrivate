@@ -80,8 +80,13 @@ void main() {
       await tester.pumpWidget(_buildSettings());
       await tester.pumpAndSettle();
 
+      expect(find.textContaining('tıbbi cihaz değildir'), findsOneWidget);
       expect(find.text('Gizlilik Politikası'), findsOneWidget);
       expect(find.text('Kullanım Şartları'), findsOneWidget);
+
+      await tester.drag(find.byType(ListView), const Offset(0, -400));
+      await tester.pumpAndSettle();
+
       expect(find.text('İletişim / Veri Silme Talebi'), findsOneWidget);
       expect(find.text('Yakında'), findsNothing);
     });
@@ -99,7 +104,10 @@ void main() {
       await tester.pumpWidget(_buildSettings());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Gizlilik Politikası'));
+      final privacyLink = find.text('Gizlilik Politikası');
+      await tester.ensureVisible(privacyLink);
+      await tester.pumpAndSettle();
+      await tester.tap(privacyLink);
       await tester.pump();
       await tester.pumpAndSettle();
 
@@ -110,7 +118,10 @@ void main() {
       await tester.pumpWidget(_buildSettings());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Kullanım Şartları'));
+      final termsLink = find.text('Kullanım Şartları');
+      await tester.ensureVisible(termsLink);
+      await tester.pumpAndSettle();
+      await tester.tap(termsLink);
       await tester.pump();
       await tester.pumpAndSettle();
 
@@ -123,6 +134,8 @@ void main() {
       await tester.pumpWidget(_buildSettings());
       await tester.pumpAndSettle();
 
+      await tester.drag(find.byType(ListView), const Offset(0, -400));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('İletişim / Veri Silme Talebi'));
       await tester.pump();
       await tester.pumpAndSettle();

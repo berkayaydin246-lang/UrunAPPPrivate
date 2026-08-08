@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:food_analyzer_app/core/legal/legal_link_launcher.dart';
 import 'package:food_analyzer_app/core/legal/legal_links.dart';
+import 'package:food_analyzer_app/core/legal/public_legal_copy.dart';
 import 'package:food_analyzer_app/core/theme/app_theme.dart';
 
 /// About / settings page.
@@ -116,9 +117,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Etiketly içerik bilgilendirmesi sunar. '
-                    'Uygulama tıbbi veya diyetetik tavsiye yerine geçmez. '
-                    'Sağlık kararları için uzman görüşü alınız.',
+                    PublicLegalCopy.healthDisclaimer,
                     style: textTheme.bodySmall?.copyWith(
                       color: AppColors.warningText,
                       height: 1.45,

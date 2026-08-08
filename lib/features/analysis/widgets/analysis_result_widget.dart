@@ -208,7 +208,7 @@ class AnalysisResultWidget extends StatelessWidget {
             productDetailSections.allergens.isNotEmpty) ...[
           const SizedBox(height: 10),
           _SectionCard(
-            title: 'Alerjenler',
+            title: 'Etikette tespit edilen alerjenler',
             icon: Icons.warning_amber_outlined,
             accentColor: Colors.amber,
             child: _AllergenSection(allergens: productDetailSections.allergens),

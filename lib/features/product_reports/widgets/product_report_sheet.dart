@@ -213,6 +213,16 @@ class _ProductReportSheetState extends ConsumerState<ProductReportSheet> {
                   ),
                 ),
 
+                const SizedBox(height: 8),
+                Text(
+                  'Bildirimler incelemeye alınır. Gönderim, ürün verisini veya '
+                  'Etiketly Puanını doğrudan değiştirmez.',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppColors.textSecondary,
+                    height: 1.4,
+                  ),
+                ),
+
                 // Error message
                 if (formState.errorMessage != null) ...[
                   const SizedBox(height: 10),

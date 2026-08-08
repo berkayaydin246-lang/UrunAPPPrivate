@@ -141,11 +141,11 @@ class Ingredient {
   String getRiskLevelTurkish() {
     switch (riskLevel) {
       case 'low':
-        return 'Düşük Risk';
+        return 'Düşük düzey';
       case 'medium':
-        return 'Orta Risk';
+        return 'Orta düzey';
       case 'high':
-        return 'Yüksek Risk';
+        return 'Yüksek düzey';
       case 'unknown':
         return 'Bilinmiyor';
       default:

@@ -166,7 +166,7 @@ class IngredientMatchItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
-                'Risk: ${canonicalIngredient?.getRiskLevelTurkish() ?? 'Bilinmiyor'}',
+                'Etiketly değerlendirmesi: ${canonicalIngredient?.getRiskLevelTurkish() ?? 'Bilinmiyor'}',
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   color: canonicalIngredient?.getRiskLevelColor(),
                 ),

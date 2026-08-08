@@ -552,7 +552,7 @@ void main() {
       );
 
       expect(find.byKey(const Key('product-report-card')), findsOneWidget);
-      expect(find.text('Bu üründe bir hata mı var?'), findsOneWidget);
+      expect(find.text('Ürün verisinde hata mı var?'), findsOneWidget);
       expect(find.text('Hata bildir'), findsOneWidget);
     });
 
@@ -582,6 +582,10 @@ void main() {
 
       expect(find.byKey(const Key('report-sheet')), findsOneWidget);
       expect(find.text('Ürün bilgisi bildir'), findsOneWidget);
+      expect(
+        find.textContaining('ürün verisini veya Etiketly Puanını doğrudan'),
+        findsOneWidget,
+      );
     });
   });
 

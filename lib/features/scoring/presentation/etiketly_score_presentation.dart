@@ -141,14 +141,16 @@ class EtiketlyScorePresentationMapper {
     required int highCount,
   }) {
     final total = lowCount + mediumCount + highCount;
-    if (total == 0) return 'İncelenen katkı maddesi bulunmadı.';
+    if (total == 0) {
+      return 'Etiketly katkı değerlendirmesi: puanlamaya dahil edilen katkı bulunmadı.';
+    }
 
     final counts = <String>[
       if (highCount > 0) '$highCount yüksek',
       if (mediumCount > 0) '$mediumCount orta',
       if (lowCount > 0) '$lowCount düşük',
     ];
-    return '${counts.join(', ')} düzey katkı değerlendirildi.';
+    return 'Etiketly katkı değerlendirmesi: ${counts.join(', ')} düzey.';
   }
 }
 

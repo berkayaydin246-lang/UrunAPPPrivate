@@ -75,7 +75,10 @@ void main() {
 
       expect(state.displayScore, expected);
       expect(_displayedScore(tester), '$expected');
-      expect(find.text('1 orta düzey katkı değerlendirildi.'), findsOneWidget);
+      expect(
+        find.text('Etiketly katkı değerlendirmesi: 1 orta düzey.'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('23. incomplete nutrition evidence is unavailable', (
@@ -228,7 +231,12 @@ void main() {
       await _pumpScoreCard(tester, state);
 
       expect(state.isCalculated, isTrue);
-      expect(find.text('İncelenen katkı maddesi bulunmadı.'), findsOneWidget);
+      expect(
+        find.text(
+          'Etiketly katkı değerlendirmesi: puanlamaya dahil edilen katkı bulunmadı.',
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('31. qualifying beverage NNS is not double penalized', (

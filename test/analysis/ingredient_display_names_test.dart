@@ -98,7 +98,10 @@ void main() {
     await pumpBarcode(tester, ['potasyum sorbat']);
     await tester.tap(find.text('Sorbat koruyucu'));
     await tester.pumpAndSettle();
-    expect(find.textContaining('Bilgi amaçlı'), findsOneWidget);
+    expect(
+      find.textContaining('Etiketly değerlendirmesi: Bilgi yok'),
+      findsOneWidget,
+    );
     expect(find.textContaining('Koruyucu'), findsWidgets);
   });
 
@@ -106,9 +109,9 @@ void main() {
 
   testWidgets('rows do not render risk subtitle text', (tester) async {
     await pumpBarcode(tester, ['palm yağı', 'şeker', 'potasyum sorbat']);
-    expect(find.text('Orta dikkat'), findsNothing);
-    expect(find.text('Az dikkat'), findsNothing);
-    expect(find.text('Yüksek dikkat'), findsNothing);
+    expect(find.text('Etiketly değerlendirmesi: Orta düzey'), findsNothing);
+    expect(find.text('Etiketly değerlendirmesi: Düşük düzey'), findsNothing);
+    expect(find.text('Etiketly değerlendirmesi: Yüksek düzey'), findsNothing);
   });
 
   // ── Test 5: max 3 per group ─────────────────────────────────────────────────
@@ -168,7 +171,10 @@ void main() {
       expect(find.text('Teknik adı'), findsOneWidget);
       expect(find.text('Ne için kullanılır?'), findsOneWidget);
       expect(find.text('Neden dikkat edilmeli?'), findsOneWidget);
-      expect(find.textContaining('Bilgi amaçlı'), findsOneWidget);
+      expect(
+        find.textContaining('Etiketly değerlendirmesi: Bilgi yok'),
+        findsOneWidget,
+      );
     },
   );
 }

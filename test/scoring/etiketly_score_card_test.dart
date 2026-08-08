@@ -36,49 +36,49 @@ void main() {
     testWidgets('4. score 80 uses Çok iyi', (tester) async {
       await _pumpCard(tester, _calculatedState(80));
 
-      expect(find.text('Çok iyi içerik profili'), findsOneWidget);
+      expect(find.text('İçerik profili: Çok iyi'), findsOneWidget);
     });
 
     testWidgets('5. score 79 uses İyi', (tester) async {
       await _pumpCard(tester, _calculatedState(79));
 
-      expect(find.text('İyi içerik profili'), findsOneWidget);
+      expect(find.text('İçerik profili: İyi'), findsOneWidget);
     });
 
     testWidgets('6. score 60 uses İyi', (tester) async {
       await _pumpCard(tester, _calculatedState(60));
 
-      expect(find.text('İyi içerik profili'), findsOneWidget);
+      expect(find.text('İçerik profili: İyi'), findsOneWidget);
     });
 
     testWidgets('7. score 59 uses Orta', (tester) async {
       await _pumpCard(tester, _calculatedState(59));
 
-      expect(find.text('Orta içerik profili'), findsOneWidget);
+      expect(find.text('İçerik profili: Orta'), findsOneWidget);
     });
 
     testWidgets('8. score 40 uses Orta', (tester) async {
       await _pumpCard(tester, _calculatedState(40));
 
-      expect(find.text('Orta içerik profili'), findsOneWidget);
+      expect(find.text('İçerik profili: Orta'), findsOneWidget);
     });
 
     testWidgets('9. score 39 uses Zayıf', (tester) async {
       await _pumpCard(tester, _calculatedState(39));
 
-      expect(find.text('Zayıf içerik profili'), findsOneWidget);
+      expect(find.text('İçerik profili: Zayıf'), findsOneWidget);
     });
 
     testWidgets('10. score 20 uses Zayıf', (tester) async {
       await _pumpCard(tester, _calculatedState(20));
 
-      expect(find.text('Zayıf içerik profili'), findsOneWidget);
+      expect(find.text('İçerik profili: Zayıf'), findsOneWidget);
     });
 
     testWidgets('11. score 19 uses Çok zayıf', (tester) async {
       await _pumpCard(tester, _calculatedState(19));
 
-      expect(find.text('Çok zayıf içerik profili'), findsOneWidget);
+      expect(find.text('İçerik profili: Çok zayıf'), findsOneWidget);
     });
 
     testWidgets('12. calculated zero is shown as a real 0/100 score', (
@@ -97,7 +97,7 @@ void main() {
       await _pumpCard(tester, _calculatedState(100));
 
       expect(_scoreText(tester), '100');
-      expect(find.text('Çok iyi içerik profili'), findsOneWidget);
+      expect(find.text('İçerik profili: Çok iyi'), findsOneWidget);
     });
 
     testWidgets('14. unavailable state contains no fake numeric score', (
@@ -144,7 +144,7 @@ void main() {
     ) async {
       await _pumpCard(tester, _calculatedState(78.4));
 
-      expect(find.text('Beslenme kalitesi'), findsOneWidget);
+      expect(find.text('Beslenme bileşeni'), findsOneWidget);
       expect(
         find.byKey(const ValueKey('etiketly-nutrition-component')),
         findsOneWidget,
@@ -156,7 +156,7 @@ void main() {
     ) async {
       await _pumpCard(tester, _calculatedState(78.4));
 
-      expect(find.text('Katkı kalitesi'), findsOneWidget);
+      expect(find.text('Katkı bileşeni'), findsOneWidget);
       expect(
         find.byKey(const ValueKey('etiketly-additive-component')),
         findsOneWidget,
@@ -168,7 +168,7 @@ void main() {
       (tester) async {
         await _pumpCard(tester, _calculatedState(78.4));
 
-        expect(find.text('İyi içerik profili'), findsOneWidget);
+        expect(find.text('İçerik profili: İyi'), findsOneWidget);
         final semantics = tester.getSemantics(
           find.byKey(const ValueKey('etiketly-score-calculated')),
         );
@@ -177,7 +177,7 @@ void main() {
       },
     );
 
-    testWidgets('methodology sheet discloses weights and non-medical scope', (
+    testWidgets('methodology sheet discloses scope, inputs and independence', (
       tester,
     ) async {
       await _pumpCard(tester, _calculatedState(78.4));
@@ -189,7 +189,53 @@ void main() {
 
       expect(find.text('%80'), findsOneWidget);
       expect(find.text('%20'), findsOneWidget);
-      expect(find.textContaining('tıbbi değerlendirme'), findsOneWidget);
+      expect(find.text('Etiketly Puanı metodolojisi v1'), findsOneWidget);
+      expect(
+        find.textContaining('0-100 arası bir içerik profili'),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('yapay zeka, kullanıcı oyu veya üretici'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('puan gösterilmez'), findsOneWidget);
+      expect(find.textContaining('tıbbi cihaz değildir'), findsOneWidget);
+      expect(find.textContaining('güvenliği sertifikası'), findsOneWidget);
+      expect(find.textContaining('ambalajı kontrol edin'), findsWidgets);
+    });
+
+    testWidgets('public score UI avoids absolute health and safety claims', (
+      tester,
+    ) async {
+      await _pumpCard(tester, _calculatedState(78.4));
+
+      for (final prohibitedClaim in const [
+        'sağlıklı ürün',
+        'sağlıksız ürün',
+        'güvenli ürün',
+        'tehlikeli ürün',
+        'toksik',
+        'kanserojen',
+        'tıbbi tavsiye sunar',
+      ]) {
+        expect(find.textContaining(prohibitedClaim), findsNothing);
+      }
+    });
+
+    test('presentation hardening does not change score calculation', () {
+      final result = calculateSyntheticScore(
+        nutritionQuality: 75,
+        additiveQuality: 35,
+      );
+      final scoreBeforePresentation = result.score;
+
+      final state = const EtiketlyScorePresentationMapper().fromResult(result);
+
+      expect(EtiketlyScoreCalculator.nutritionWeight, 0.80);
+      expect(EtiketlyScoreCalculator.additiveWeight, 0.20);
+      expect(scoreBeforePresentation, 67);
+      expect(result.score, scoreBeforePresentation);
+      expect(state.displayScore, 67);
     });
 
     testWidgets('card remains overflow-free on a small Android width', (
@@ -205,7 +251,7 @@ void main() {
       await _pumpCard(tester, _calculatedState(78.4));
 
       expect(tester.takeException(), isNull);
-      expect(find.text('İyi içerik profili'), findsOneWidget);
+      expect(find.text('İçerik profili: İyi'), findsOneWidget);
     });
 
     testWidgets('card remains overflow-free with large text', (tester) async {
@@ -216,7 +262,7 @@ void main() {
       );
 
       expect(tester.takeException(), isNull);
-      expect(find.text('Beslenme kalitesi'), findsOneWidget);
+      expect(find.text('Beslenme bileşeni'), findsOneWidget);
     });
   });
 }

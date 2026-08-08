@@ -18,13 +18,13 @@ String canonicalRiskLevelForIngredient(Ingredient ingredient) {
 String riskLabelForUser(String riskLevel) {
   switch (riskLevel) {
     case 'high':
-      return 'Yüksek dikkat';
+      return 'Etiketly değerlendirmesi: Yüksek düzey';
     case 'medium':
-      return 'Orta dikkat';
+      return 'Etiketly değerlendirmesi: Orta düzey';
     case 'low':
-      return 'Az dikkat';
+      return 'Etiketly değerlendirmesi: Düşük düzey';
     default:
-      return 'Bilgi amaçlı';
+      return 'Etiketly değerlendirmesi: Bilgi yok';
   }
 }
 

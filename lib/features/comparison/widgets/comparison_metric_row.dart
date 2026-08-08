@@ -123,8 +123,12 @@ class ComparisonMetricRow extends StatelessWidget {
   }
 
   String _semanticLabel() {
-    final leftStatus = metric.highlightsProductA ? ', daha iyi seçenek' : '';
-    final rightStatus = metric.highlightsProductB ? ', daha iyi seçenek' : '';
+    final leftStatus = metric.highlightsProductA
+        ? ', bu ölçütte vurgulanan değer'
+        : '';
+    final rightStatus = metric.highlightsProductB
+        ? ', bu ölçütte vurgulanan değer'
+        : '';
     final status = metric.centralStatusLabel.isNotEmpty
         ? ' ${metric.centralStatusLabel}.'
         : '';
