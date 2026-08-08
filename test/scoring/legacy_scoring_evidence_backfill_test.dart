@@ -12,7 +12,7 @@ void main() {
   const recovery = LegacyScoringEvidenceRecoveryService();
 
   group('legacy evidence recovery', () {
-    test('accepts explicit per_100 with conservative provenance', () async {
+    test('source-complete legacy snack can become final-score ready', () async {
       final result = await recovery.recover(
         product: _product(),
         stagingMatches: [_staging()],
@@ -21,8 +21,28 @@ void main() {
 
       expect(result.explicitPer100, isTrue);
       expect(result.basisReady, isTrue);
+      expect(result.classificationReady, isTrue);
+      expect(result.fvlReady, isTrue);
+      expect(result.additiveReady, isTrue);
+      expect(result.finalScoreReady, isTrue);
       expect(result.canWrite, isTrue);
-      expect(result.evidence!.nutritionBasis, NutritionBasis.per100ml);
+      expect(result.evidence!.nutritionBasis, NutritionBasis.per100g);
+      expect(
+        result.evidence!.categoryEvidence.resolvedCategory,
+        ScoringCategory.generalFood,
+      );
+      expect(
+        result.evidence!.nutritionProductState,
+        NutritionProductState.asSold,
+      );
+      expect(
+        result.evidence!.ingredientEvidenceCompleteness,
+        IngredientEvidenceCompleteness.complete,
+      );
+      expect(
+        result.evidence!.fvlEvidence.state,
+        CompositionPercentageState.provenAbsent,
+      );
       expect(
         result.evidence!.nutritionBasisEvidence!.provenance,
         EvidenceProvenance.databaseImport,
@@ -33,13 +53,14 @@ void main() {
       );
       expect(
         result.evidence!.nutrition.energyKj.provenance,
-        EvidenceProvenance.databaseImport,
+        EvidenceProvenance.declaredLabel,
       );
       expect(
         result.evidence!.nutrition.energyKj.verification,
-        EvidenceVerification.unverified,
+        EvidenceVerification.verified,
       );
       expect(result.evidence!.adminVerification, isNull);
+      expect(result.blockerReasons, isEmpty);
     });
 
     test('rejects unknown nutrition basis', () async {
@@ -87,27 +108,86 @@ void main() {
       expect(result.blockerReasons, contains('basis_unit_ambiguous'));
     });
 
-    test('FVL stays unknown without qualifying percentage evidence', () async {
-      final result = await _recover();
+    test(
+      'qualifying FVL ingredient without a percentage stays blocked',
+      () async {
+        final result = await _recover(
+          product: _product(ingredientsText: 'yulaf, elma püresi, şeker'),
+        );
 
-      expect(result.fvlReady, isFalse);
-      expect(
-        result.evidence!.fvlEvidence.state,
-        CompositionPercentageState.unknown,
+        expect(result.fvlReady, isFalse);
+        expect(
+          result.evidence!.fvlEvidence.state,
+          CompositionPercentageState.unknown,
+        );
+        expect(result.blockerReasons, contains('fvl_unknown'));
+      },
+    );
+
+    test('literal qualifying FVL percentage is recovered', () async {
+      final result = await _recover(
+        product: _product(ingredientsText: 'yulaf, elma püresi %20, şeker'),
       );
-      expect(result.blockerReasons, contains('fvl_unknown'));
+
+      expect(result.fvlReady, isTrue);
+      expect(result.evidence!.fvlEvidence.percentage, 20);
+      expect(
+        result.evidence!.fvlEvidence.provenance,
+        EvidenceProvenance.declaredLabel,
+      );
     });
 
     test(
-      'beverage NNS presence is retained but absence is not inferred',
+      'factor-dependent dried FVL stays unknown even with a percentage',
       () async {
-        final present = await _recover(
-          product: _product(ingredientsText: 'su, aspartam, aroma'),
-        );
-        final unknown = await _recover(
-          product: _product(ingredientsText: 'su, şeker, aroma'),
+        final result = await _recover(
+          product: _product(ingredientsText: 'yulaf, kuru üzüm %20, şeker'),
         );
 
+        expect(result.fvlReady, isFalse);
+        expect(result.blockerReasons, contains('fvl_unknown'));
+      },
+    );
+
+    test(
+      'mismatched staging nutrition is not upgraded to declared label',
+      () async {
+        final product = _product();
+        final mismatchedNutrition = _nutrition()..['energy_kj'] = 999;
+        final result = await _recover(
+          product: product,
+          staging: _staging(
+            product: product,
+            nutritionJson: mismatchedNutrition,
+          ),
+        );
+
+        expect(result.finalScoreReady, isFalse);
+        expect(
+          result.evidence!.nutrition.energyKj.provenance,
+          EvidenceProvenance.databaseImport,
+        );
+        expect(result.blockerReasons, contains('nutrition_source_unverified'));
+      },
+    );
+
+    test(
+      'source-complete beverage resolves per100ml and NNS presence or absence',
+      () async {
+        final present = await _recover(
+          product: _product(
+            categoryTags: const ['gazli_icecek'],
+            ingredientsText: 'su, şeker, aspartam',
+          ),
+        );
+        final absent = await _recover(
+          product: _product(
+            categoryTags: const ['gazli_icecek'],
+            ingredientsText: 'su, şeker, doğal aroma',
+          ),
+        );
+
+        expect(present.evidence!.nutritionBasis, NutritionBasis.per100ml);
         expect(present.nnsReady, isTrue);
         expect(
           present.evidence!.nnsEvidence.state,
@@ -117,14 +197,79 @@ void main() {
           present.evidence!.nnsEvidence.provenance,
           EvidenceProvenance.databaseImport,
         );
-        expect(unknown.nnsReady, isFalse);
+        expect(absent.nnsReady, isTrue);
         expect(
-          unknown.evidence!.nnsEvidence.state,
-          PresenceEvidenceState.unknown,
+          absent.evidence!.nnsEvidence.state,
+          PresenceEvidenceState.absent,
         );
-        expect(unknown.blockerReasons, contains('nns_unknown'));
+        expect(absent.blockerReasons, isNot(contains('nns_unknown')));
       },
     );
+
+    test(
+      'unverified ingredient metadata cannot prove FVL or NNS absence',
+      () async {
+        final product = _product(
+          categoryTags: const ['gazli_icecek'],
+          ingredientsText: 'su, şeker, doğal aroma',
+        );
+        final result = await _recover(
+          product: product,
+          staging: _staging(
+            product: product,
+            ingredientsQuality: 'ingredients_suspicious',
+          ),
+        );
+
+        expect(
+          result.evidence!.ingredientEvidenceCompleteness,
+          IngredientEvidenceCompleteness.unknown,
+        );
+        expect(result.fvlReady, isFalse);
+        expect(result.nnsReady, isFalse);
+        expect(result.blockerReasons, contains('ingredients_incomplete'));
+      },
+    );
+
+    test(
+      'ordinary unmatched ingredients do not block additive quality',
+      () async {
+        final result = await _recover(
+          product: _product(ingredientsText: 'mısır unu, ayçiçek yağı, tuz'),
+        );
+
+        expect(result.additiveReady, isTrue);
+        expect(
+          result.blockerReasons,
+          isNot(contains('canonical_additive_unresolved')),
+        );
+      },
+    );
+
+    test('unknown additive-like ingredient remains a blocker', () async {
+      final result = await _recover(
+        product: _product(
+          ingredientsText: 'mısır unu, bilinmeyen koruyucu, tuz',
+        ),
+      );
+
+      expect(result.additiveReady, isFalse);
+      expect(result.blockerReasons, contains('canonical_additive_unresolved'));
+    });
+
+    test('product name never supplies legacy classification', () async {
+      final result = await _recover(
+        product: _product(
+          name: 'Gazlı İçecek Cips Peynir',
+          categoryTags: const [],
+          canonicalCategory: null,
+        ),
+      );
+
+      expect(result.classificationReady, isFalse);
+      expect(result.evidence!.nutritionBasis, NutritionBasis.unknown);
+      expect(result.blockerReasons, contains('missing_classification'));
+    });
 
     test('identical duplicate staging evidence is deterministic', () async {
       final result = await recovery.recover(
@@ -266,9 +411,10 @@ Future<LegacyScoringEvidenceRecoveryResult> _recover({
   Product? product,
   LegacyStagingScoringEvidence? staging,
 }) {
+  final target = product ?? _product();
   return const LegacyScoringEvidenceRecoveryService().recover(
-    product: product ?? _product(),
-    stagingMatches: [staging ?? _staging()],
+    product: target,
+    stagingMatches: [staging ?? _staging(product: target)],
     ingredientCatalogue: const [],
   );
 }
@@ -291,22 +437,25 @@ Future<LegacyScoringEvidenceBackfillSummary> _run(
 
 Product _product({
   String id = '0001',
+  String name = 'Legacy product',
   Map<String, dynamic>? nutrition,
-  List<String>? categoryTags = const ['gazli_icecek'],
-  String ingredientsText = 'su, şeker, aroma',
+  List<String>? categoryTags = const ['cips_kraker'],
+  String? canonicalCategory,
+  String ingredientsText = 'mısır unu, bitkisel yağ, tuz',
   ScoringEvidenceSnapshot? scoringEvidence,
 }) {
   final now = DateTime.utc(2026, 8, 8);
   return Product(
     id: id,
     barcode: '8690000000000',
-    name: 'Legacy product',
+    name: name,
     ingredientsText: ingredientsText,
     nutritionText: jsonEncode(nutrition ?? _nutrition()),
     source: 'web_scraper:migros',
     sourceUrl: 'https://www.migros.com.tr/product-$id',
     verificationStatus: 'imported',
     categoryTags: categoryTags,
+    canonicalCategory: canonicalCategory,
     scoringEvidence: scoringEvidence,
     createdAt: now,
     updatedAt: now,
@@ -329,13 +478,24 @@ LegacyStagingScoringEvidence _staging({
   String id = 'staging-1',
   String? basis = 'per_100',
   List<String> warnings = const [],
+  Product? product,
+  String ingredientsQuality = 'ingredients_ok',
+  Map<String, dynamic>? nutritionJson,
 }) {
+  final target = product ?? _product();
   return LegacyStagingScoringEvidence(
     id: id,
-    sourceUrl: 'https://www.migros.com.tr/product-0001',
+    sourceUrl: target.sourceUrl!,
     nutritionBasis: basis,
     nutritionWarnings: warnings,
-    nutritionProductState: 'as_sold',
+    source: 'web_scraper:migros',
+    ingredientsSource: 'web_scraper:migros',
+    ingredientsRaw: 'İçindekiler: ${target.ingredientsText}',
+    ingredientsText: target.ingredientsText,
+    ingredientsQuality: ingredientsQuality,
+    nutritionSource: 'web_scraper:migros',
+    nutritionStrategy: 'dom',
+    nutritionJson: nutritionJson ?? target.nutrition?.toMap(),
   );
 }
 
@@ -385,11 +545,11 @@ class _FakeDataSource implements LegacyScoringEvidenceBackfillDataSource {
     return {
       for (final sourceUrl in sourceUrls)
         sourceUrl: [
-          LegacyStagingScoringEvidence(
+          _staging(
             id: 'staging-$sourceUrl',
-            sourceUrl: sourceUrl,
-            nutritionBasis: 'per_100',
-            nutritionProductState: 'as_sold',
+            product: products.firstWhere(
+              (product) => product.sourceUrl == sourceUrl,
+            ),
           ),
         ],
     };

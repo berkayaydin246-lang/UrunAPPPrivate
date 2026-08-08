@@ -10,6 +10,7 @@ class ScoringCategoryResolverInput {
   final EvidenceVerification taxonomyVerification;
   final EvidenceValue<ScoringCategory>? explicitCategory;
   final ScoringClassificationFacts facts;
+  final bool allowLegacyCompatibility;
 
   ScoringCategoryResolverInput({
     Iterable<String> categoryTags = const [],
@@ -19,5 +20,6 @@ class ScoringCategoryResolverInput {
     this.taxonomyVerification = EvidenceVerification.unknown,
     this.explicitCategory,
     this.facts = const ScoringClassificationFacts(),
+    this.allowLegacyCompatibility = false,
   }) : categoryTags = List.unmodifiable(categoryTags);
 }

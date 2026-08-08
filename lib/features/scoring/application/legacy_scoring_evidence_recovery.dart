@@ -1,10 +1,11 @@
+import 'dart:convert';
+
 import 'package:food_analyzer_app/features/analysis/services/canonical_ingredient_risk_service.dart';
 import 'package:food_analyzer_app/features/analysis/services/ingredient_matcher_service.dart';
 import 'package:food_analyzer_app/features/product/models/ingredient.dart';
 import 'package:food_analyzer_app/features/product/models/nutrition_data.dart';
 import 'package:food_analyzer_app/features/product/models/product.dart';
 import 'package:food_analyzer_app/features/scoring/application/product_etiketly_score_orchestrator.dart';
-import 'package:food_analyzer_app/features/scoring/domain/models/composition_percentage_evidence.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/etiketly_score_readiness_result.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/evidence_value.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/presence_evidence.dart';
@@ -13,6 +14,7 @@ import 'package:food_analyzer_app/features/scoring/domain/models/scoring_classif
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_evidence_snapshot.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_nutrition_data.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_types.dart';
+import 'package:food_analyzer_app/features/scoring/domain/services/legacy_fvl_evidence_resolver.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/nns_evidence_detector.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/scoring_category_resolver.dart';
 
@@ -23,28 +25,95 @@ class LegacyStagingScoringEvidence {
     required this.nutritionBasis,
     Iterable<String> nutritionWarnings = const [],
     this.nutritionProductState,
+    this.source,
+    this.ingredientsSource,
+    this.ingredientsRaw,
+    this.ingredientsText,
+    this.ingredientsQuality,
+    this.nutritionSource,
+    this.nutritionStrategy,
+    Map<String, dynamic>? nutritionJson,
   }) : nutritionWarnings = List.unmodifiable(
          nutritionWarnings
              .map((value) => value.trim())
              .where((value) => value.isNotEmpty),
-       );
+       ),
+       nutritionJson = nutritionJson == null
+           ? null
+           : Map.unmodifiable(nutritionJson);
 
   final String id;
   final String sourceUrl;
   final String? nutritionBasis;
   final List<String> nutritionWarnings;
   final String? nutritionProductState;
+  final String? source;
+  final String? ingredientsSource;
+  final String? ingredientsRaw;
+  final String? ingredientsText;
+  final String? ingredientsQuality;
+  final String? nutritionSource;
+  final String? nutritionStrategy;
+  final Map<String, dynamic>? nutritionJson;
 
   String get evidenceSignature {
     final warnings = nutritionWarnings.toSet().toList()..sort();
     return [
       _normalized(nutritionBasis),
       _normalized(nutritionProductState),
+      _normalized(source),
+      _normalized(ingredientsSource),
+      _normalizedText(ingredientsRaw),
+      _normalizedText(ingredientsText),
+      _normalized(ingredientsQuality),
+      _normalized(nutritionSource),
+      _normalized(nutritionStrategy),
+      jsonEncode(nutritionJson ?? const <String, dynamic>{}),
       warnings.join(','),
     ].join('|');
   }
 
+  bool hasSourceCompleteIngredients(String? productIngredientsText) {
+    return _normalized(ingredientsQuality) == 'ingredients_ok' &&
+        _isWebScraperSource(ingredientsSource ?? source) &&
+        _normalizedText(ingredientsRaw).isNotEmpty &&
+        _normalizedText(ingredientsText).isNotEmpty &&
+        _normalizedText(ingredientsText) ==
+            _normalizedText(productIngredientsText);
+  }
+
+  bool hasSourceVerifiedNutrition(NutritionData productNutrition) {
+    final strategy = _normalized(nutritionStrategy);
+    final sourceNutrition = nutritionJson == null
+        ? null
+        : NutritionData.fromMap(nutritionJson!);
+    return _isWebScraperSource(nutritionSource ?? source) &&
+        const {'dom', 'json', 'text'}.contains(strategy) &&
+        sourceNutrition != null &&
+        sourceNutrition.hasAnyData &&
+        _sameNutrition(sourceNutrition, productNutrition);
+  }
+
   static String _normalized(String? value) => value?.trim().toLowerCase() ?? '';
+
+  static String _normalizedText(String? value) =>
+      _normalized(value).replaceAll(RegExp(r'\s+'), ' ');
+
+  static bool _isWebScraperSource(String? value) =>
+      _normalized(value).startsWith('web_scraper:');
+
+  static bool _sameNutrition(NutritionData left, NutritionData right) {
+    return left.energyKj == right.energyKj &&
+        left.energyKcal == right.energyKcal &&
+        left.fat == right.fat &&
+        left.saturatedFat == right.saturatedFat &&
+        left.carbohydrates == right.carbohydrates &&
+        left.sugars == right.sugars &&
+        left.fiber == right.fiber &&
+        left.proteins == right.proteins &&
+        left.salt == right.salt &&
+        left.sodium == right.sodium;
+  }
 }
 
 class LegacyScoringEvidenceRecoveryResult {
@@ -84,6 +153,7 @@ class LegacyScoringEvidenceRecoveryService {
   const LegacyScoringEvidenceRecoveryService({
     this.categoryResolver = const ScoringCategoryResolver(),
     this.nnsDetector = const NnsEvidenceDetector(),
+    this.fvlResolver = const LegacyFvlEvidenceResolver(),
     this.matcher = const IngredientMatcherService(),
     this.riskService = const CanonicalIngredientRiskService(),
     this.orchestrator = const ProductEtiketlyScoreOrchestrator(),
@@ -94,6 +164,7 @@ class LegacyScoringEvidenceRecoveryService {
 
   final ScoringCategoryResolver categoryResolver;
   final NnsEvidenceDetector nnsDetector;
+  final LegacyFvlEvidenceResolver fvlResolver;
   final IngredientMatcherService matcher;
   final CanonicalIngredientRiskService riskService;
   final ProductEtiketlyScoreOrchestrator orchestrator;
@@ -167,6 +238,7 @@ class LegacyScoringEvidenceRecoveryService {
         taxonomyProvenance: EvidenceProvenance.databaseImport,
         taxonomyVerification: EvidenceVerification.unverified,
         facts: facts,
+        allowLegacyCompatibility: true,
       ),
     );
     final resolvedCategory = categoryEvidence.resolvedCategory;
@@ -175,13 +247,39 @@ class LegacyScoringEvidenceRecoveryService {
         resolvedCategory != ScoringCategory.outOfScope &&
         categoryEvidence.isSufficient;
     final recoveredBasis = _basisForCategory(resolvedCategory);
-    final productState = _productState(staging.nutritionProductState);
-    final scoringNutrition = _nutrition(nutrition);
+    final retainedProductState = _productState(staging.nutritionProductState);
+    final productState = retainedProductState != NutritionProductState.unknown
+        ? retainedProductState
+        : classificationReady
+        ? NutritionProductState.asSold
+        : NutritionProductState.unknown;
+    final sourceVerifiedNutrition = staging.hasSourceVerifiedNutrition(
+      nutrition,
+    );
+    final scoringNutrition = _nutrition(
+      nutrition,
+      sourceVerified: sourceVerifiedNutrition,
+    );
+    final ingredientsComplete = staging.hasSourceCompleteIngredients(
+      product.ingredientsText,
+    );
+    final fvl = fvlResolver.resolve(
+      ingredientsText: product.ingredientsText,
+      sourceComplete: ingredientsComplete,
+      category: resolvedCategory,
+    );
     final nns = nnsDetector.detect(product.ingredientsText);
     final nnsEvidence = nns.hasQualifyingMatch
-        ? const PresenceEvidence.present(
+        ? PresenceEvidence.present(
             provenance: EvidenceProvenance.databaseImport,
-            verification: EvidenceVerification.unverified,
+            verification: ingredientsComplete
+                ? EvidenceVerification.verified
+                : EvidenceVerification.unverified,
+          )
+        : ingredientsComplete
+        ? const PresenceEvidence.absent(
+            provenance: EvidenceProvenance.databaseImport,
+            verification: EvidenceVerification.verified,
           )
         : const PresenceEvidence.unknown();
 
@@ -204,9 +302,11 @@ class LegacyScoringEvidenceRecoveryService {
               verification: EvidenceVerification.verified,
             ),
       nutrition: scoringNutrition,
-      fvlEvidence: const CompositionPercentageEvidence.unknown(),
+      fvlEvidence: fvl.evidence,
       nnsEvidence: nnsEvidence,
-      ingredientEvidenceCompleteness: IngredientEvidenceCompleteness.unknown,
+      ingredientEvidenceCompleteness: ingredientsComplete
+          ? IngredientEvidenceCompleteness.complete
+          : IngredientEvidenceCompleteness.unknown,
       categoryEvidence: categoryEvidence,
       classificationFacts: facts,
     );
@@ -220,11 +320,14 @@ class LegacyScoringEvidenceRecoveryService {
       blockers.add('product_state_unknown');
     }
     _addMissingNutritionBlockers(nutrition, blockers);
-    blockers.add('fvl_unknown');
+    if (!sourceVerifiedNutrition) {
+      blockers.add('nutrition_source_unverified');
+    }
+    if (!fvl.isReady) blockers.add('fvl_unknown');
     if (resolvedCategory == ScoringCategory.beverage && !nnsEvidence.isKnown) {
       blockers.add('nns_unknown');
     }
-    blockers.add('ingredients_incomplete');
+    if (!ingredientsComplete) blockers.add('ingredients_incomplete');
 
     final temporaryProduct = _withEvidence(product, evidence);
     final tokens = matcher.parseIngredients(product.ingredientsText ?? '');
@@ -236,6 +339,8 @@ class LegacyScoringEvidenceRecoveryService {
     final assessment = riskService.assess(
       matching,
       scoringCategory: resolvedCategory,
+      unresolvedIngredientPolicy:
+          CanonicalUnresolvedIngredientPolicy.additiveCandidatesOnly,
     );
     final evaluation = orchestrator.calculate(
       product: temporaryProduct,
@@ -264,7 +369,7 @@ class LegacyScoringEvidenceRecoveryService {
       basisReady: recoveredBasis != NutritionBasis.unknown,
       nutritionComplete: _nutritionComplete(nutrition),
       classificationReady: classificationReady,
-      fvlReady: false,
+      fvlReady: fvl.isReady,
       nnsReady:
           resolvedCategory != ScoringCategory.beverage || nnsEvidence.isKnown,
       additiveReady: additiveReady,
@@ -316,13 +421,20 @@ class LegacyScoringEvidenceRecoveryService {
     };
   }
 
-  ScoringNutritionData _nutrition(NutritionData value) {
+  ScoringNutritionData _nutrition(
+    NutritionData value, {
+    required bool sourceVerified,
+  }) {
     EvidenceValue<double> imported(double? raw) => raw == null
         ? const EvidenceValue<double>.unknown()
         : EvidenceValue<double>(
             value: raw,
-            provenance: EvidenceProvenance.databaseImport,
-            verification: EvidenceVerification.unverified,
+            provenance: sourceVerified
+                ? EvidenceProvenance.declaredLabel
+                : EvidenceProvenance.databaseImport,
+            verification: sourceVerified
+                ? EvidenceVerification.verified
+                : EvidenceVerification.unverified,
           );
     return ScoringNutritionData(
       energyKj: imported(value.energyKj),

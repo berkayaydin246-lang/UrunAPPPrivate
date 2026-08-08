@@ -301,7 +301,9 @@ class _RestLegacyScoringEvidenceDataSource
           .map(_postgrestQuoted)
           .join(',');
       final rows = await _getRows('product_staging', {
-        'select': 'id,source_url,raw_source_payload',
+        'select':
+            'id,source_url,source,ingredients_source,ingredients_text,'
+            'nutrition_source,nutrition_json,raw_source_payload',
         'source_url': 'in.($filter)',
         'order': 'id.asc',
       });
@@ -321,6 +323,14 @@ class _RestLegacyScoringEvidenceDataSource
               ? warnings.map((value) => value.toString())
               : const [],
           nutritionProductState: _string(payload?['nutrition_product_state']),
+          source: _string(row['source']),
+          ingredientsSource: _string(row['ingredients_source']),
+          ingredientsRaw: _string(payload?['ingredients_raw']),
+          ingredientsText: _string(row['ingredients_text']),
+          ingredientsQuality: _string(payload?['ingredients_quality']),
+          nutritionSource: _string(row['nutrition_source']),
+          nutritionStrategy: _string(payload?['nutrition_strategy']),
+          nutritionJson: _map(row['nutrition_json']),
         );
         matches.putIfAbsent(normalizedSourceUrl, () => []).add(evidence);
       }

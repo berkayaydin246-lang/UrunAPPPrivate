@@ -11,21 +11,35 @@ not make an incomplete legacy product publicly scorable.
 - Duplicate rows are accepted only when their relevant evidence is identical.
 - Only an explicit `nutrition_basis: per_100` without the historical assumed
   per-100 warning is eligible.
-- The current category resolver must distinguish `per100g` from `per100ml`.
-  Generic per-100 metadata otherwise remains `basis_unit_ambiguous`.
+- The category resolver's opt-in legacy policy maps deterministic persisted
+  beverage taxonomy to `per100ml` and other resolved in-scope categories to
+  `per100g`. Ordinary known food tags may resolve `generalFood`; unresolved
+  special-category evidence never falls through to that default.
 - Existing `NutritionData` parsing supplies only values present in
   `products.nutrition_text`; missing values remain unknown.
-- Exact positive NNS matches use the current deterministic detector. No match
-  remains unknown because legacy ingredient completeness is not established.
-- FVL and ingredient completeness remain unknown. Product state remains
-  unknown unless retained metadata explicitly supplies a supported value.
-- Existing canonical ingredient matching and risk assessment determine the
-  additive blockers. No independent additive classification is performed.
+- Nutrition becomes source-verified declared-label evidence only when the
+  staging nutrition JSON matches the product, its extraction strategy is
+  retained, and web-scraper provenance is present.
+- Ingredient completeness requires `ingredients_ok`, retained raw text,
+  web-scraper provenance, and exact normalized staging/product text equality.
+- A source-complete list with no qualifying FVL signal proves FVL absence. An
+  explicit qualifying percentage is retained; qualifying but insufficient or
+  factor-dependent evidence remains unknown.
+- Exact NNS detection becomes present. Absence is emitted only for a
+  source-complete list.
+- A resolved in-scope legacy product defaults to the as-sold state unless
+  retained metadata explicitly supplies another supported state.
+- Existing canonical ingredient matching and risk assessment determine
+  additive results. Legacy assessment ignores unresolved ordinary food tokens,
+  but unresolved additive-like tokens, fuzzy/review matches, conflicts, and
+  unknown canonical risks remain blockers.
 - Existing non-null `products.scoring_evidence` is never merged or overwritten.
 
-Explicit retained metadata uses `databaseImport + verified`. Imported
-nutrition values and positive NNS detections use
-`databaseImport + unverified`. The tool never emits `adminVerified` evidence.
+Explicit retained metadata, derived state, completeness-dependent absence, and
+NNS evidence use `databaseImport + verified`. Source-matched nutrition and
+literal FVL percentages use `declaredLabel + verified`. Unsupported partial
+nutrition remains `databaseImport + unverified` and cannot pass strict energy
+readiness. The tool never emits `adminVerified` evidence.
 
 ## Safe operation
 

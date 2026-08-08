@@ -14,6 +14,83 @@ class ScoringCategoryResolver {
     'maden_suyu',
   };
 
+  static const _legacyDirectBeverageTags = {'sut'};
+
+  static const _legacyGeneralFoodTags = {
+    'yogurt',
+    'sutlu_tatli_krema',
+    'kahvaltilik',
+    'kahvaltiliklar',
+    'beyaz_et',
+    'balik_deniz_urunleri',
+    'ton_konserve',
+    'biskuvi_kek',
+    'cips_kraker',
+    'cikolata_gofret',
+    'atistirmalik',
+    'saglikli_protein',
+    'biskuvi',
+    'cips',
+    'cikolata',
+    'bar_kaplamalilar',
+    'kek',
+    'kraker',
+    'sekerleme',
+    'misir_pirinc_patlagi',
+    'kuru_meyve',
+    'sakiz',
+    'makarna_bakliyat',
+    'soslar',
+    'sos',
+    'konserve',
+    'makarna',
+    'bakliyat',
+    'tuz_baharat_harc',
+    'hamur_pasta_malzemeleri',
+    'ozel_beslenme_urunleri',
+    'hazir_yemek',
+    'pratik_yemek',
+    'meze',
+    'hazir_manti',
+    'paketli_sandvic',
+    'dondurulmus_pizza',
+    'dondurulmus_patates',
+    'dondurulmus_sebze',
+    'dondurulmus_sushi',
+    'dondurulmus_meyve',
+    'dondurulmus_borek',
+    'dondurulmus_manti',
+    'pide_lahmacun',
+    'dondurulmus_tatli',
+    'dondurulmus_firin_urunleri',
+    'dondurulmus_hazir_yemek',
+    'dondurma_tatli',
+    'kap_dondurma',
+    'tek_dondurma',
+    'bebek_cocuk',
+    'bebek_beslenme',
+    'bebek_atistirmalik',
+    'firin_pastane',
+    'ekmek',
+    'unlu_mamul',
+    'firin',
+    'kuru_pasta',
+    'galeta_grissini_gevrek',
+    'tatli',
+    'pasta',
+  };
+
+  static const _legacyGeneralFoodCanonicalCategories = {
+    'atıştırmalık',
+    'kahvaltılıklar',
+    'sos / konserve / hazır gıda',
+    'temel gıda',
+    'hazır & donuk',
+    'dondurma',
+    'fırın & pastane',
+    'bebek gıda',
+  };
+
   static const _redMeatTags = {
     'kirmizi_et',
     'sucuk',
@@ -123,7 +200,10 @@ class ScoringCategoryResolver {
 
     if (taxonomyTrusted) {
       final tags = input.categoryTags.map(_normalize).toSet();
-      for (final tag in tags.intersection(_directBeverageTags)) {
+      final beverageTags = input.allowLegacyCompatibility
+          ? {..._directBeverageTags, ..._legacyDirectBeverageTags}
+          : _directBeverageTags;
+      for (final tag in tags.intersection(beverageTags)) {
         addCandidate(
           ScoringCategory.beverage,
           CategoryEvidenceSource.trustedCategoryTag,
@@ -133,25 +213,44 @@ class ScoringCategoryResolver {
       }
 
       if (tags.contains('peynir')) {
-        _resolveCheeseCandidate(
-          facts: facts,
-          addCandidate: addCandidate,
-          unresolvedReasons: unresolvedReasons,
-          source: CategoryEvidenceSource.trustedCategoryTag,
-          value: 'peynir',
-          reason: CategoryResolutionReason.resolvedFromTrustedTag,
-        );
+        if (input.allowLegacyCompatibility) {
+          addCandidate(
+            ScoringCategory.cheese,
+            CategoryEvidenceSource.trustedCategoryTag,
+            'peynir',
+            CategoryResolutionReason.resolvedFromLegacyTaxonomy,
+          );
+        } else {
+          _resolveCheeseCandidate(
+            facts: facts,
+            addCandidate: addCandidate,
+            unresolvedReasons: unresolvedReasons,
+            source: CategoryEvidenceSource.trustedCategoryTag,
+            value: 'peynir',
+            reason: CategoryResolutionReason.resolvedFromTrustedTag,
+          );
+        }
       }
 
       if (tags.intersection(_redMeatTags).isNotEmpty) {
-        _resolveRedMeatCandidate(
-          input: input,
-          addCandidate: addCandidate,
-          unresolvedReasons: unresolvedReasons,
-          source: CategoryEvidenceSource.trustedCategoryTag,
-          value: tags.intersection(_redMeatTags).first,
-          reason: CategoryResolutionReason.resolvedFromTrustedTag,
-        );
+        final redMeatTag = tags.intersection(_redMeatTags).first;
+        if (input.allowLegacyCompatibility && redMeatTag == 'kirmizi_et') {
+          addCandidate(
+            ScoringCategory.redMeat,
+            CategoryEvidenceSource.trustedCategoryTag,
+            redMeatTag,
+            CategoryResolutionReason.resolvedFromLegacyTaxonomy,
+          );
+        } else {
+          _resolveRedMeatCandidate(
+            input: input,
+            addCandidate: addCandidate,
+            unresolvedReasons: unresolvedReasons,
+            source: CategoryEvidenceSource.trustedCategoryTag,
+            value: redMeatTag,
+            reason: CategoryResolutionReason.resolvedFromTrustedTag,
+          );
+        }
       }
 
       if (tags.contains('sivi_yag') &&
@@ -185,25 +284,43 @@ class ScoringCategoryResolver {
             CategoryResolutionReason.resolvedFromTrustedCanonicalSubcategory,
           );
         } else if (subcategory == 'peynir') {
-          _resolveCheeseCandidate(
-            facts: facts,
-            addCandidate: addCandidate,
-            unresolvedReasons: unresolvedReasons,
-            source: CategoryEvidenceSource.trustedCanonicalSubcategory,
-            value: subcategory,
-            reason: CategoryResolutionReason
-                .resolvedFromTrustedCanonicalSubcategory,
-          );
+          if (input.allowLegacyCompatibility) {
+            addCandidate(
+              ScoringCategory.cheese,
+              CategoryEvidenceSource.trustedCanonicalSubcategory,
+              subcategory,
+              CategoryResolutionReason.resolvedFromLegacyTaxonomy,
+            );
+          } else {
+            _resolveCheeseCandidate(
+              facts: facts,
+              addCandidate: addCandidate,
+              unresolvedReasons: unresolvedReasons,
+              source: CategoryEvidenceSource.trustedCanonicalSubcategory,
+              value: subcategory,
+              reason: CategoryResolutionReason
+                  .resolvedFromTrustedCanonicalSubcategory,
+            );
+          }
         } else if (subcategory == 'kırmızı et') {
-          _resolveRedMeatCandidate(
-            input: input,
-            addCandidate: addCandidate,
-            unresolvedReasons: unresolvedReasons,
-            source: CategoryEvidenceSource.trustedCanonicalSubcategory,
-            value: subcategory,
-            reason: CategoryResolutionReason
-                .resolvedFromTrustedCanonicalSubcategory,
-          );
+          if (input.allowLegacyCompatibility) {
+            addCandidate(
+              ScoringCategory.redMeat,
+              CategoryEvidenceSource.trustedCanonicalSubcategory,
+              subcategory,
+              CategoryResolutionReason.resolvedFromLegacyTaxonomy,
+            );
+          } else {
+            _resolveRedMeatCandidate(
+              input: input,
+              addCandidate: addCandidate,
+              unresolvedReasons: unresolvedReasons,
+              source: CategoryEvidenceSource.trustedCanonicalSubcategory,
+              value: subcategory,
+              reason: CategoryResolutionReason
+                  .resolvedFromTrustedCanonicalSubcategory,
+            );
+          }
         } else if (subcategory == 'kuruyemiş') {
           _resolveNutSeedCandidate(
             input: input,
@@ -222,6 +339,36 @@ class ScoringCategoryResolver {
             subcategory,
             CategoryResolutionReason.resolvedFromTrustedCanonicalSubcategory,
           );
+        }
+      }
+
+      if (input.allowLegacyCompatibility &&
+          candidates.isEmpty &&
+          !_hasUnresolvedSpecialCategory(unresolvedReasons)) {
+        final ordinaryTag = tags
+            .intersection(_legacyGeneralFoodTags)
+            .firstOrNull;
+        if (ordinaryTag != null) {
+          addCandidate(
+            ScoringCategory.generalFood,
+            CategoryEvidenceSource.trustedCategoryTag,
+            ordinaryTag,
+            CategoryResolutionReason.resolvedFromLegacyTaxonomy,
+          );
+        } else {
+          final canonicalCategory = _clean(input.canonicalCategory);
+          if (tags.isEmpty &&
+              canonicalCategory != null &&
+              _legacyGeneralFoodCanonicalCategories.contains(
+                canonicalCategory,
+              )) {
+            addCandidate(
+              ScoringCategory.generalFood,
+              CategoryEvidenceSource.trustedCanonicalCategory,
+              canonicalCategory,
+              CategoryResolutionReason.resolvedFromLegacyTaxonomy,
+            );
+          }
         }
       }
     }
@@ -368,6 +515,13 @@ class ScoringCategoryResolver {
 
   static bool _validPercentage(double? value) =>
       value != null && value.isFinite && value >= 0 && value <= 100;
+
+  static bool _hasUnresolvedSpecialCategory(
+    Set<CategoryResolutionReason> reasons,
+  ) =>
+      reasons.contains(CategoryResolutionReason.redMeatEvidenceIncomplete) ||
+      reasons.contains(CategoryResolutionReason.nutSeedPercentageUnknown) ||
+      reasons.contains(CategoryResolutionReason.cheeseEvidenceIncomplete);
 
   static String _normalize(String value) => value.trim().toLowerCase();
 

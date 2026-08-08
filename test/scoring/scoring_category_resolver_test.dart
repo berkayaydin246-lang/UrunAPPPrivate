@@ -12,15 +12,19 @@ void main() {
 
   ScoringCategoryResolverInput trustedInput({
     List<String> tags = const [],
+    String? canonicalCategory,
     String? canonicalSubcategory,
     ScoringClassificationFacts facts = const ScoringClassificationFacts(),
+    bool allowLegacyCompatibility = false,
   }) {
     return ScoringCategoryResolverInput(
       categoryTags: tags,
+      canonicalCategory: canonicalCategory,
       canonicalSubcategory: canonicalSubcategory,
       taxonomyProvenance: EvidenceProvenance.databaseImport,
       taxonomyVerification: EvidenceVerification.unverified,
       facts: facts,
+      allowLegacyCompatibility: allowLegacyCompatibility,
     );
   }
 
@@ -43,6 +47,44 @@ void main() {
             value: ScoringCategory.generalFood,
             provenance: EvidenceProvenance.unknown,
           ),
+        ),
+      );
+
+      expect(result.resolvedCategory, ScoringCategory.unknown);
+    });
+
+    test('ordinary tags need the opt-in legacy compatibility policy', () {
+      final strict = resolver.resolve(trustedInput(tags: ['cips_kraker']));
+      final legacy = resolver.resolve(
+        trustedInput(tags: ['cips_kraker'], allowLegacyCompatibility: true),
+      );
+
+      expect(strict.resolvedCategory, ScoringCategory.unknown);
+      expect(legacy.resolvedCategory, ScoringCategory.generalFood);
+      expect(
+        legacy.reasons,
+        contains(CategoryResolutionReason.resolvedFromLegacyTaxonomy),
+      );
+    });
+
+    test('legacy broad ordinary canonical category resolves general food', () {
+      final result = resolver.resolve(
+        trustedInput(
+          canonicalCategory: 'Atıştırmalık',
+          allowLegacyCompatibility: true,
+        ),
+      );
+
+      expect(result.resolvedCategory, ScoringCategory.generalFood);
+      expect(result.source, CategoryEvidenceSource.trustedCanonicalCategory);
+    });
+
+    test('legacy canonical fallback does not override an unknown tag', () {
+      final result = resolver.resolve(
+        trustedInput(
+          tags: ['unrecognized_special_category'],
+          canonicalCategory: 'Atıştırmalık',
+          allowLegacyCompatibility: true,
         ),
       );
 

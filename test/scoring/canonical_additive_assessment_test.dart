@@ -53,10 +53,13 @@ IngredientMatch _match({
 CanonicalAdditiveAssessment _assess(
   List<IngredientMatch> matches, {
   ScoringCategory category = ScoringCategory.unknown,
+  CanonicalUnresolvedIngredientPolicy unresolvedIngredientPolicy =
+      CanonicalUnresolvedIngredientPolicy.retainAll,
 }) {
   return const CanonicalIngredientRiskService().assess(
     IngredientMatchingResult(matches: matches),
     scoringCategory: category,
+    unresolvedIngredientPolicy: unresolvedIngredientPolicy,
   );
 }
 
@@ -213,6 +216,35 @@ void main() {
         'tanimsiz katkı',
       ]);
     });
+
+    test(
+      'legacy policy drops ordinary unresolved but retains additive-like',
+      () {
+        final matches = [
+          _match(
+            token: 'buğday unu',
+            ingredient: null,
+            type: MatchType.unmatched,
+            affectsAnalysis: false,
+          ),
+          _match(
+            token: 'E9999',
+            ingredient: null,
+            type: MatchType.unmatched,
+            affectsAnalysis: false,
+          ),
+        ];
+
+        expect(_assess(matches).unresolvedIngredients, hasLength(2));
+        final legacy = _assess(
+          matches,
+          unresolvedIngredientPolicy:
+              CanonicalUnresolvedIngredientPolicy.additiveCandidatesOnly,
+        );
+        expect(legacy.unresolvedIngredients, hasLength(1));
+        expect(legacy.unresolvedIngredients.single.sourceTokens, ['E9999']);
+      },
+    );
   });
 
   group('canonical risk authority', () {

@@ -6,6 +6,8 @@ import 'package:food_analyzer_app/features/product/models/ingredient.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_types.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/nns_evidence_detector.dart';
 
+enum CanonicalUnresolvedIngredientPolicy { retainAll, additiveCandidatesOnly }
+
 /// The only production API that resolves canonical ingredient identity and risk.
 ///
 /// Matching remains the responsibility of [IngredientMatcherService]. Once
@@ -17,6 +19,8 @@ class CanonicalIngredientRiskService {
   CanonicalAdditiveAssessment assess(
     IngredientMatchingResult matchingResult, {
     ScoringCategory scoringCategory = ScoringCategory.unknown,
+    CanonicalUnresolvedIngredientPolicy unresolvedIngredientPolicy =
+        CanonicalUnresolvedIngredientPolicy.retainAll,
   }) {
     final recognized = <String, _CanonicalItemBuilder>{};
     final unresolved = <String, _UnresolvedBuilder>{};
@@ -27,6 +31,11 @@ class CanonicalIngredientRiskService {
       if (ingredient == null ||
           match.matchType == MatchType.unmatched ||
           match.isRejected) {
+        if (unresolvedIngredientPolicy ==
+                CanonicalUnresolvedIngredientPolicy.additiveCandidatesOnly &&
+            !_isPotentialAdditive(match)) {
+          continue;
+        }
         final key = match.normalizedText.trim().isEmpty
             ? IngredientCanonicalizer.normalizeToken(match.originalToken)
             : match.normalizedText.trim();
@@ -215,6 +224,34 @@ class CanonicalIngredientRiskService {
       raw,
     ).toUpperCase();
     return isValidFoodAdditiveCode(normalized) ? normalized : null;
+  }
+
+  static final _additiveCodeCandidate = RegExp(
+    r'\be\s*[-:]?\s*\d{2,4}\b',
+    caseSensitive: false,
+  );
+
+  static final _additiveFunctionCandidate = RegExp(
+    r'\b(?:katkı|katki|koruyucu|renklendirici|tatlandırıcı|tatlandirici|emülgatör|emulgator|stabilizör|stabilizor|antioksidan|kabartıcı|kabartici|sekestran|parlatıcı|parlatici|köpük önleyici|kopuk onleyici|nem tutucu|sertleştirici|sertlestirici|asitlik düzenleyici|asitlik duzenleyici|kıvam artırıcı|kivam artirici|topaklanma önleyici|topaklanma onleyici|modifiye nişasta|modifiye nisasta|aroma verici)\b',
+    caseSensitive: false,
+  );
+
+  static final _knownAdditiveCandidate = RegExp(
+    r'\b(?:benzoat|nitrit|nitrat|sülfit|sulfit|sorbat|tartrazin|aspartam|sukraloz|asesülfam|asesulfam|monosodyum glutamat|karmin|lesitin|digliserit|guar gam|ksantan gam)\b',
+    caseSensitive: false,
+  );
+
+  static bool _isPotentialAdditive(IngredientMatch match) {
+    final ingredient = match.matchedIngredient;
+    if (ingredient != null &&
+        (_normalizedECode(ingredient.eCode) != null ||
+            ingredient.additiveGroup?.trim().isNotEmpty == true)) {
+      return true;
+    }
+    final text = '${match.originalToken} ${match.normalizedText}';
+    return _additiveCodeCandidate.hasMatch(text) ||
+        _additiveFunctionCandidate.hasMatch(text) ||
+        _knownAdditiveCandidate.hasMatch(text);
   }
 }
 

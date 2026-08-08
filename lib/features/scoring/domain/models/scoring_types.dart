@@ -56,6 +56,7 @@ enum CategoryResolutionReason {
   conflictingEvidence,
   untrustedTaxonomyEvidence,
   insufficientEvidence,
+  resolvedFromLegacyTaxonomy,
 }
 
 enum ScoringRequirement {
