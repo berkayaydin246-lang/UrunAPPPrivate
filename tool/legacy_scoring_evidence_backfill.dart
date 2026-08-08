@@ -1,0 +1,439 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:food_analyzer_app/features/product/models/ingredient.dart';
+import 'package:food_analyzer_app/features/product/models/product.dart';
+import 'package:food_analyzer_app/features/scoring/application/legacy_scoring_evidence_backfill.dart';
+import 'package:food_analyzer_app/features/scoring/application/legacy_scoring_evidence_recovery.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/scoring_evidence_snapshot.dart';
+
+Future<void> main(List<String> arguments) async {
+  late final _CliOptions options;
+  try {
+    options = _CliOptions.parse(arguments);
+  } on FormatException catch (error) {
+    stderr.writeln('error=${error.message}');
+    _printUsage();
+    exitCode = 64;
+    return;
+  }
+  if (options.help) {
+    _printUsage();
+    return;
+  }
+
+  final environment = Platform.environment;
+  final supabaseUrl = environment['SUPABASE_URL']?.trim() ?? '';
+  final serviceRoleKey = environment['SUPABASE_SERVICE_ROLE_KEY']?.trim() ?? '';
+  if (supabaseUrl.isEmpty || serviceRoleKey.isEmpty) {
+    stderr.writeln(
+      'error=SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be supplied '
+      'through the process environment',
+    );
+    exitCode = 78;
+    return;
+  }
+  final baseUri = Uri.tryParse(supabaseUrl);
+  final expectedHost = '${options.projectRef}.supabase.co';
+  if (baseUri == null ||
+      baseUri.scheme != 'https' ||
+      baseUri.host != expectedHost) {
+    stderr.writeln('error=SUPABASE_URL does not match project ref');
+    exitCode = 78;
+    return;
+  }
+
+  final dataSource = _RestLegacyScoringEvidenceDataSource(
+    baseUri: baseUri,
+    serviceRoleKey: serviceRoleKey,
+  );
+  const formatter = LegacyScoringEvidenceBackfillFormatter();
+  try {
+    if (options.runBackfill) {
+      final summary =
+          await LegacyScoringEvidenceBackfillRunner(dataSource: dataSource).run(
+            LegacyScoringEvidenceBackfillOptions(
+              dryRun: options.dryRun,
+              batchSize: options.batchSize,
+              startAfterProductId: options.startAfterProductId,
+              maxProducts: options.maxProducts,
+            ),
+            onBatchComplete: (summary) {
+              stdout.writeln(
+                '[batch] examined=${summary.totalProductsExamined} '
+                'last_cursor=${summary.lastExaminedCursor ?? '-'} '
+                'safe_resume_cursor=${summary.safeResumeCursor ?? '-'} '
+                'errors=${summary.errors}',
+              );
+            },
+          );
+      stdout.writeln(formatter.formatSummary(summary));
+      if (summary.errors > 0 || summary.halted) exitCode = 1;
+    }
+
+    if (options.sampleProductIds.isNotEmpty) {
+      final inspections = await LegacyScoringEvidenceSampleInspector(
+        dataSource: dataSource,
+      ).inspect(options.sampleProductIds);
+      for (final inspection in inspections) {
+        stdout.writeln(formatter.formatSample(inspection));
+      }
+      if (inspections.any((inspection) => inspection.error != null)) {
+        exitCode = 1;
+      }
+    }
+  } on Object catch (error) {
+    // Report only the type: remote errors can contain request metadata.
+    stderr.writeln('error=${error.runtimeType}');
+    exitCode = 1;
+  } finally {
+    dataSource.close();
+  }
+}
+
+class _CliOptions {
+  const _CliOptions({
+    required this.help,
+    required this.dryRun,
+    required this.runBackfill,
+    required this.projectRef,
+    required this.batchSize,
+    required this.startAfterProductId,
+    required this.maxProducts,
+    required this.sampleProductIds,
+  });
+
+  final bool help;
+  final bool dryRun;
+  final bool runBackfill;
+  final String projectRef;
+  final int batchSize;
+  final String? startAfterProductId;
+  final int? maxProducts;
+  final List<String> sampleProductIds;
+
+  static _CliOptions parse(List<String> arguments) {
+    _validateArguments(arguments);
+    if (arguments.contains('--help') || arguments.contains('-h')) {
+      return const _CliOptions(
+        help: true,
+        dryRun: true,
+        runBackfill: false,
+        projectRef: '',
+        batchSize: 50,
+        startAfterProductId: null,
+        maxProducts: null,
+        sampleProductIds: [],
+      );
+    }
+    final dryRun = arguments.contains('--dry-run');
+    final apply = arguments.contains('--apply');
+    if (dryRun && apply) {
+      throw const FormatException('choose exactly one of --dry-run or --apply');
+    }
+    if (apply && !arguments.contains('--confirm-write-scoring-evidence')) {
+      throw const FormatException(
+        '--apply requires --confirm-write-scoring-evidence',
+      );
+    }
+    final sampleProductIds = (_value(arguments, '--sample-product-ids') ?? '')
+        .split(',')
+        .map((value) => value.trim())
+        .where((value) => value.isNotEmpty)
+        .toList(growable: false);
+    final runBackfill = dryRun || apply;
+    if (!runBackfill && sampleProductIds.isEmpty) {
+      throw const FormatException(
+        'select --dry-run, --apply, or --sample-product-ids',
+      );
+    }
+    final projectRef = _requiredValue(arguments, '--project-ref');
+    final batchSize = _intValue(arguments, '--batch-size') ?? 50;
+    final maxProducts = _intValue(arguments, '--max-products');
+    if (batchSize < 1 || batchSize > 100) {
+      throw const FormatException('--batch-size must be between 1 and 100');
+    }
+    if (maxProducts != null && maxProducts < 1) {
+      throw const FormatException('--max-products must be positive');
+    }
+    if (apply && maxProducts == null) {
+      throw const FormatException('--apply requires --max-products');
+    }
+    return _CliOptions(
+      help: false,
+      dryRun: dryRun,
+      runBackfill: runBackfill,
+      projectRef: projectRef,
+      batchSize: batchSize,
+      startAfterProductId: _value(arguments, '--start-after'),
+      maxProducts: maxProducts,
+      sampleProductIds: sampleProductIds,
+    );
+  }
+
+  static String _requiredValue(List<String> arguments, String name) {
+    final value = _value(arguments, name);
+    if (value == null || value.isEmpty) {
+      throw FormatException('$name is required');
+    }
+    return value;
+  }
+
+  static int? _intValue(List<String> arguments, String name) {
+    final raw = _value(arguments, name);
+    if (raw == null) return null;
+    final value = int.tryParse(raw);
+    if (value == null) throw FormatException('$name must be an integer');
+    return value;
+  }
+
+  static String? _value(List<String> arguments, String name) {
+    final index = arguments.indexOf(name);
+    if (index < 0) return null;
+    if (index + 1 >= arguments.length ||
+        arguments[index + 1].startsWith('--')) {
+      throw FormatException('$name requires a value');
+    }
+    return arguments[index + 1];
+  }
+
+  static void _validateArguments(List<String> arguments) {
+    const flags = {
+      '--help',
+      '-h',
+      '--dry-run',
+      '--apply',
+      '--confirm-write-scoring-evidence',
+    };
+    const valueOptions = {
+      '--project-ref',
+      '--batch-size',
+      '--start-after',
+      '--max-products',
+      '--sample-product-ids',
+    };
+    for (var index = 0; index < arguments.length; index++) {
+      final argument = arguments[index];
+      if (flags.contains(argument)) continue;
+      if (!valueOptions.contains(argument)) {
+        throw FormatException('unknown argument: $argument');
+      }
+      if (index + 1 >= arguments.length ||
+          arguments[index + 1].startsWith('-')) {
+        throw FormatException('$argument requires a value');
+      }
+      index++;
+    }
+  }
+}
+
+class _RestLegacyScoringEvidenceDataSource
+    implements LegacyScoringEvidenceBackfillDataSource {
+  _RestLegacyScoringEvidenceDataSource({
+    required this.baseUri,
+    required this.serviceRoleKey,
+  });
+
+  final Uri baseUri;
+  final String serviceRoleKey;
+  final HttpClient _client = HttpClient();
+
+  void close() => _client.close(force: true);
+
+  @override
+  Future<List<Ingredient>> fetchIngredientCatalogue() async {
+    final ingredients = <Ingredient>[];
+    String? cursor;
+    while (true) {
+      final rows = await _getRows('ingredients', {
+        'select': '*',
+        'order': 'id.asc',
+        'limit': '500',
+        if (cursor != null) 'id': 'gt.$cursor',
+      });
+      if (rows.isEmpty) break;
+      ingredients.addAll(rows.map(Ingredient.fromJson));
+      cursor = ingredients.last.id;
+    }
+    return ingredients;
+  }
+
+  @override
+  Future<List<Product>> fetchProductsAfter({
+    required String? afterProductId,
+    required int limit,
+  }) async {
+    final rows = await _getRows('products', {
+      'select': '*',
+      'order': 'id.asc',
+      'limit': '$limit',
+      if (afterProductId != null) 'id': 'gt.$afterProductId',
+    });
+    return rows.map(Product.fromJson).toList(growable: false);
+  }
+
+  @override
+  Future<Product?> fetchProductById(String productId) async {
+    final rows = await _getRows('products', {
+      'select': '*',
+      'id': 'eq.$productId',
+      'limit': '1',
+    });
+    return rows.isEmpty ? null : Product.fromJson(rows.single);
+  }
+
+  @override
+  Future<Map<String, List<LegacyStagingScoringEvidence>>> fetchStagingMatches(
+    Set<String> sourceUrls,
+  ) async {
+    final matches = <String, List<LegacyStagingScoringEvidence>>{};
+    final orderedUrls =
+        sourceUrls
+            .map((value) => value.trim())
+            .where((value) => value.isNotEmpty)
+            .toSet()
+            .toList()
+          ..sort();
+    for (var offset = 0; offset < orderedUrls.length; offset += 20) {
+      final end = (offset + 20).clamp(0, orderedUrls.length);
+      final filter = orderedUrls
+          .sublist(offset, end)
+          .map(_postgrestQuoted)
+          .join(',');
+      final rows = await _getRows('product_staging', {
+        'select': 'id,source_url,raw_source_payload',
+        'source_url': 'in.($filter)',
+        'order': 'id.asc',
+      });
+      for (final row in rows) {
+        final id = row['id'];
+        final sourceUrl = row['source_url'];
+        if (id is! String || sourceUrl is! String) continue;
+        final normalizedSourceUrl = sourceUrl.trim();
+        if (normalizedSourceUrl.isEmpty) continue;
+        final payload = _map(row['raw_source_payload']);
+        final warnings = payload?['nutrition_warnings'];
+        final evidence = LegacyStagingScoringEvidence(
+          id: id,
+          sourceUrl: normalizedSourceUrl,
+          nutritionBasis: _string(payload?['nutrition_basis']),
+          nutritionWarnings: warnings is List
+              ? warnings.map((value) => value.toString())
+              : const [],
+          nutritionProductState: _string(payload?['nutrition_product_state']),
+        );
+        matches.putIfAbsent(normalizedSourceUrl, () => []).add(evidence);
+      }
+    }
+    for (final entries in matches.values) {
+      entries.sort((left, right) => left.id.compareTo(right.id));
+    }
+    return matches;
+  }
+
+  @override
+  Future<bool> writeScoringEvidence(
+    String productId,
+    ScoringEvidenceSnapshot evidence,
+  ) async {
+    final response = await _request(
+      'PATCH',
+      _uri('products', {
+        'id': 'eq.$productId',
+        'scoring_evidence': 'is.null',
+        'select': 'id',
+      }),
+      body: {'scoring_evidence': evidence.toJson()},
+      prefer: 'return=representation',
+    );
+    if (response is! List) {
+      throw const FormatException('Expected a row list after evidence write.');
+    }
+    if (response.length > 1) {
+      throw StateError('Evidence write changed more than one row.');
+    }
+    return response.length == 1;
+  }
+
+  static Map<String, dynamic>? _map(Object? value) {
+    if (value is! Map) return null;
+    return Map<String, dynamic>.from(value);
+  }
+
+  static String? _string(Object? value) => value is String ? value : null;
+
+  static String _postgrestQuoted(String value) {
+    final escaped = value.replaceAll(r'\', r'\\').replaceAll('"', r'\"');
+    return '"$escaped"';
+  }
+
+  Future<List<Map<String, dynamic>>> _getRows(
+    String table,
+    Map<String, String> query,
+  ) async {
+    final response = await _request('GET', _uri(table, query));
+    if (response is! List) {
+      throw const FormatException('Expected a row list.');
+    }
+    return response
+        .map((row) => Map<String, dynamic>.from(row as Map))
+        .toList(growable: false);
+  }
+
+  Uri _uri(String path, [Map<String, String>? query]) {
+    return baseUri.replace(path: '/rest/v1/$path', queryParameters: query);
+  }
+
+  Future<Object?> _request(
+    String method,
+    Uri uri, {
+    Map<String, Object?>? body,
+    String? prefer,
+  }) async {
+    final request = await _client.openUrl(method, uri);
+    request.headers
+      ..set(HttpHeaders.authorizationHeader, 'Bearer $serviceRoleKey')
+      ..set('apikey', serviceRoleKey)
+      ..set(HttpHeaders.acceptHeader, 'application/json')
+      ..set(
+        HttpHeaders.userAgentHeader,
+        'etiketly-legacy-scoring-evidence-backfill/1',
+      );
+    if (prefer != null) request.headers.set('Prefer', prefer);
+    if (body != null) {
+      request.headers.contentType = ContentType.json;
+      request.write(jsonEncode(body));
+    }
+    final response = await request.close();
+    final responseBody = await utf8.decoder.bind(response).join();
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw HttpException(
+        'Remote request failed with HTTP ${response.statusCode}.',
+      );
+    }
+    if (responseBody.trim().isEmpty) return null;
+    return jsonDecode(responseBody);
+  }
+}
+
+void _printUsage() {
+  stdout.writeln(r'''
+Usage:
+  dart run tool/legacy_scoring_evidence_backfill.dart --project-ref REF \
+    --dry-run [options]
+  dart run tool/legacy_scoring_evidence_backfill.dart --project-ref REF \
+    --apply --confirm-write-scoring-evidence --max-products N [options]
+  dart run tool/legacy_scoring_evidence_backfill.dart --project-ref REF \
+    --sample-product-ids ID[,ID...]
+
+Options:
+  --batch-size N          Product page size, 1-100 (default: 50)
+  --start-after UUID      Resume strictly after this product ID
+  --max-products N        Bound the number of products examined
+  --sample-product-ids    Read-only product evidence inspection
+
+Credentials are read only from SUPABASE_URL and
+SUPABASE_SERVICE_ROLE_KEY. They are never printed or loaded from a file.
+Apply mode requires both explicit confirmation and --max-products.
+''');
+}
