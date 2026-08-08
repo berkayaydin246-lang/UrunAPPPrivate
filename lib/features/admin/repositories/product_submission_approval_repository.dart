@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:food_analyzer_app/core/services/supabase_service.dart';
 import 'package:food_analyzer_app/features/product/models/product.dart';
+import 'package:food_analyzer_app/features/product/models/nutrition_data.dart';
 import 'package:food_analyzer_app/features/submission/models/product_submission.dart';
 
 enum ApproveProductResult {
@@ -54,6 +55,8 @@ class ProductSubmissionApprovalRepository {
     String? editedProductName,
     String? editedBrand,
     String? editedIngredientsText,
+    Map<String, dynamic>? editedNutrition,
+    bool nutritionWasReviewed = false,
   }) async {
     final client = SupabaseService.client;
     _debugSubmissionApprovalLog(
@@ -95,24 +98,20 @@ class ProductSubmissionApprovalRepository {
       return ApproveProductResult.invalidBarcode;
     }
 
-    // Resolve final field values: admin edits > extracted > fallback.
-    final productName =
-        _resolve(editedProductName) ??
-        _resolve(submission.productName) ??
-        'İsimsiz Ürün';
-    final brand = _resolve(editedBrand) ?? _resolve(submission.brand);
-    final ingredientsText =
-        _resolve(editedIngredientsText) ??
-        _resolve(submission.extractedIngredientsText);
-    final nutritionText = submission.extractedNutrition != null
-        ? jsonEncode(submission.extractedNutrition)
-        : null;
-    final imageUrl =
-        _resolve(submission.frontImageUrl) ?? _resolve(submission.imageUrl);
+    final insertMap = buildProductInsertMap(
+      submission,
+      editedProductName: editedProductName,
+      editedBrand: editedBrand,
+      editedIngredientsText: editedIngredientsText,
+      editedNutrition: editedNutrition,
+      nutritionWasReviewed: nutritionWasReviewed,
+    );
 
     _debugSubmissionApprovalLog(
-      '[Approval] resolved fields — name=$productName brand=$brand '
-      'ingredientsText=${ingredientsText != null} nutritionText=${nutritionText != null}',
+      '[Approval] resolved fields — name=${insertMap['name']} '
+      'brand=${insertMap.containsKey('brand')} '
+      'ingredientsText=${insertMap.containsKey('ingredients_text')} '
+      'nutritionText=${insertMap.containsKey('nutrition_text')}',
     );
 
     // 2. Check for existing product.
@@ -132,16 +131,7 @@ class ProductSubmissionApprovalRepository {
       _debugSubmissionApprovalLog(
         '[Approval] no existing product — inserting new product row',
       );
-      await client.from('products').insert({
-        'barcode': barcode,
-        'name': productName,
-        'source': 'user_submission',
-        'verification_status': 'user_submitted',
-        ...?_entry('brand', brand),
-        ...?_entry('image_url', imageUrl),
-        ...?_entry('ingredients_text', ingredientsText),
-        ...?_entry('nutrition_text', nutritionText),
-      });
+      await client.from('products').insert(insertMap);
       _debugSubmissionApprovalLog('[Approval] product insert succeeded');
       result = ApproveProductResult.approved;
     } else {
@@ -150,19 +140,7 @@ class ProductSubmissionApprovalRepository {
         '[Approval] existing product found — patching missing fields',
       );
       final existing = Product.fromJson(existingRow);
-      final patch = <String, dynamic>{};
-
-      if (_isEmpty(existing.name)) patch['name'] = productName;
-      if (existing.brand == null) patch.addAll(_entry('brand', brand) ?? {});
-      if (existing.imageUrl == null) {
-        patch.addAll(_entry('image_url', imageUrl) ?? {});
-      }
-      if (existing.ingredientsText == null) {
-        patch.addAll(_entry('ingredients_text', ingredientsText) ?? {});
-      }
-      if (existing.nutritionText == null) {
-        patch.addAll(_entry('nutrition_text', nutritionText) ?? {});
-      }
+      final patch = buildProductEnrichPatch(existing, insertMap);
 
       if (patch.isNotEmpty) {
         _debugSubmissionApprovalLog(
@@ -212,6 +190,70 @@ class ProductSubmissionApprovalRepository {
   }
 
   // ── helpers ───────────────────────────────────────────────────────────────
+
+  /// Builds the final `products` row from a submission and reviewed admin data.
+  static Map<String, dynamic> buildProductInsertMap(
+    ProductSubmission submission, {
+    String? editedProductName,
+    String? editedBrand,
+    String? editedIngredientsText,
+    Map<String, dynamic>? editedNutrition,
+    bool nutritionWasReviewed = false,
+  }) {
+    final nutritionSource = nutritionWasReviewed
+        ? editedNutrition
+        : editedNutrition ?? submission.extractedNutrition;
+    final normalizedNutrition = normalizeNutritionMap(nutritionSource);
+    final nutritionText = normalizedNutrition == null
+        ? null
+        : jsonEncode(normalizedNutrition);
+
+    return {
+      'barcode': submission.barcode.trim(),
+      'name':
+          _resolve(editedProductName) ??
+          _resolve(submission.productName) ??
+          'İsimsiz Ürün',
+      'source': 'user_submission',
+      'verification_status': 'user_submitted',
+      ...?_entry('brand', _resolve(editedBrand) ?? _resolve(submission.brand)),
+      ...?_entry(
+        'image_url',
+        _resolve(submission.frontImageUrl) ?? _resolve(submission.imageUrl),
+      ),
+      ...?_entry(
+        'ingredients_text',
+        _resolve(editedIngredientsText) ??
+            _resolve(submission.extractedIngredientsText),
+      ),
+      ...?_entry('nutrition_text', nutritionText),
+    };
+  }
+
+  /// Fills only missing product fields; existing nutrition is never replaced.
+  static Map<String, dynamic> buildProductEnrichPatch(
+    Product existing,
+    Map<String, dynamic> reviewedInsertMap,
+  ) {
+    final patch = <String, dynamic>{};
+    if (_isEmpty(existing.name)) patch['name'] = reviewedInsertMap['name'];
+    if (existing.brand == null && reviewedInsertMap.containsKey('brand')) {
+      patch['brand'] = reviewedInsertMap['brand'];
+    }
+    if (existing.imageUrl == null &&
+        reviewedInsertMap.containsKey('image_url')) {
+      patch['image_url'] = reviewedInsertMap['image_url'];
+    }
+    if (existing.ingredientsText == null &&
+        reviewedInsertMap.containsKey('ingredients_text')) {
+      patch['ingredients_text'] = reviewedInsertMap['ingredients_text'];
+    }
+    if (existing.nutritionText == null &&
+        reviewedInsertMap.containsKey('nutrition_text')) {
+      patch['nutrition_text'] = reviewedInsertMap['nutrition_text'];
+    }
+    return patch;
+  }
 
   static String? _resolve(String? value) {
     final v = value?.trim();

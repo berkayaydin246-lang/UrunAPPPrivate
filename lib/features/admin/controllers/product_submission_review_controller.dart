@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:food_analyzer_app/core/errors/user_message.dart';
 import 'package:food_analyzer_app/features/admin/repositories/product_submission_approval_repository.dart';
 import 'package:food_analyzer_app/features/submission/models/product_submission.dart';
 
@@ -61,6 +62,8 @@ class ProductSubmissionReviewNotifier
     String? editedProductName,
     String? editedBrand,
     String? editedIngredientsText,
+    Map<String, dynamic>? editedNutrition,
+    bool nutritionWasReviewed = false,
   }) async {
     state = state.copyWith(isProcessing: true, clearError: true);
     try {
@@ -69,12 +72,17 @@ class ProductSubmissionReviewNotifier
         editedProductName: editedProductName,
         editedBrand: editedBrand,
         editedIngredientsText: editedIngredientsText,
+        editedNutrition: editedNutrition,
+        nutritionWasReviewed: nutritionWasReviewed,
       );
       _removeFromList(submissionId);
       state = state.copyWith(isProcessing: false);
       return result;
     } catch (e) {
-      state = state.copyWith(isProcessing: false, error: e.toString());
+      state = state.copyWith(
+        isProcessing: false,
+        error: UserMessage.forGeneric(e),
+      );
       return null;
     }
   }
@@ -88,7 +96,10 @@ class ProductSubmissionReviewNotifier
       state = state.copyWith(isProcessing: false);
       return true;
     } catch (e) {
-      state = state.copyWith(isProcessing: false, error: e.toString());
+      state = state.copyWith(
+        isProcessing: false,
+        error: UserMessage.forGeneric(e),
+      );
       return false;
     }
   }

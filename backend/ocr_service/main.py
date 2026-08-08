@@ -5,6 +5,7 @@ import base64
 import io
 import json
 import logging
+import math
 import os
 import re
 import traceback
@@ -1471,7 +1472,9 @@ def _parse_nutrition_section(lines: list[str]) -> dict[str, Any]:
             # Normalise comma decimal separator.
             val_norm = val.replace(",", ".").split()[0]
             try:
-                result[canonical] = float(val_norm)
+                parsed = float(val_norm)
+                if math.isfinite(parsed) and parsed >= 0:
+                    result[canonical] = parsed
             except ValueError:
                 pass
 

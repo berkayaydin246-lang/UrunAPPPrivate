@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:food_analyzer_app/core/services/storage_service.dart';
 import 'package:food_analyzer_app/features/ocr/models/structured_ingredient_extraction_result.dart';
+import 'package:food_analyzer_app/features/ocr/services/ocr_request_headers.dart';
 
 abstract class ProductionOcrService {
   Future<StructuredIngredientExtractionResult> extractIngredients(
@@ -52,9 +53,7 @@ class HttpProductionOcrService implements ProductionOcrService {
   // True when OCR_BACKEND_URL points at a Supabase Edge Function.
   // In that case, authentication uses the Supabase anon JWT, not a backend
   // secret. CLAUDE_API_KEY and service-role keys are never read here.
-  bool get _isSupabaseFunctionsUrl =>
-      _baseUrl.contains('.supabase.co/functions/v1') ||
-      _baseUrl.contains('/functions/v1');
+  bool get _isSupabaseFunctionsUrl => isSupabaseFunctionsUrl(_baseUrl);
 
   @override
   Future<StructuredIngredientExtractionResult> extractIngredients(
@@ -65,9 +64,11 @@ class HttpProductionOcrService implements ProductionOcrService {
       throw StateError('Gelişmiş OCR servisi henüz yapılandırılmadı.');
     }
 
-    if (_isSupabaseFunctionsUrl &&
-        _apiKey.trim().isEmpty &&
-        _supabaseAnonKey.trim().isEmpty) {
+    if (_isSupabaseFunctionsUrl && _supabaseAnonKey.trim().isEmpty) {
+      throw StateError('Gelişmiş OCR yapılandırması eksik.');
+    }
+
+    if (!_isSupabaseFunctionsUrl && _apiKey.trim().isEmpty) {
       throw StateError('Gelişmiş OCR yapılandırması eksik.');
     }
 
@@ -126,23 +127,11 @@ class HttpProductionOcrService implements ProductionOcrService {
   //          standard apikey header and the Authorization Bearer header.
   // Neither mode sends CLAUDE_API_KEY or any service-role key.
   Map<String, dynamic> _buildHeaders() {
-    final headers = <String, dynamic>{'Content-Type': 'application/json'};
-
-    final backendKey = _apiKey.trim();
-    if (backendKey.isNotEmpty) {
-      headers['Authorization'] = 'Bearer $backendKey';
-      return headers;
-    }
-
-    if (_isSupabaseFunctionsUrl) {
-      final anonKey = _supabaseAnonKey.trim();
-      if (anonKey.isNotEmpty) {
-        headers['apikey'] = anonKey;
-        headers['Authorization'] = 'Bearer $anonKey';
-      }
-    }
-
-    return headers;
+    return buildOcrRequestHeaders(
+      baseUrl: _baseUrl,
+      backendApiKey: _apiKey,
+      supabaseAnonKey: _supabaseAnonKey,
+    );
   }
 
   static String _mapDioError(DioException e) {

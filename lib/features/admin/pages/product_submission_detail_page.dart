@@ -1,10 +1,23 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:food_analyzer_app/core/errors/user_message.dart';
+import 'package:food_analyzer_app/core/theme/app_theme.dart';
 import 'package:food_analyzer_app/features/admin/controllers/product_submission_review_controller.dart';
 import 'package:food_analyzer_app/features/admin/repositories/product_submission_approval_repository.dart';
+import 'package:food_analyzer_app/features/product/models/nutrition_data.dart';
 import 'package:food_analyzer_app/features/submission/models/product_submission.dart';
+
+const _nutritionFieldSpecs = <_NutritionFieldSpec>[
+  _NutritionFieldSpec('energy_kcal', 'Enerji', 'kcal'),
+  _NutritionFieldSpec('fat', 'Yağ', 'g'),
+  _NutritionFieldSpec('saturated_fat', 'Doymuş Yağ', 'g'),
+  _NutritionFieldSpec('carbohydrates', 'Karbonhidrat', 'g'),
+  _NutritionFieldSpec('sugars', 'Şeker', 'g'),
+  _NutritionFieldSpec('fiber', 'Lif', 'g'),
+  _NutritionFieldSpec('proteins', 'Protein', 'g'),
+  _NutritionFieldSpec('salt', 'Tuz', 'g'),
+  _NutritionFieldSpec('sodium', 'Sodyum', 'g'),
+];
 
 class ProductSubmissionDetailPage extends ConsumerStatefulWidget {
   final String submissionId;
@@ -26,6 +39,10 @@ class _ProductSubmissionDetailPageState
   final _nameController = TextEditingController();
   final _brandController = TextEditingController();
   final _ingredientsController = TextEditingController();
+  final _servingSizeController = TextEditingController();
+  late final Map<String, TextEditingController> _nutritionControllers = {
+    for (final spec in _nutritionFieldSpecs) spec.key: TextEditingController(),
+  };
 
   ProductSubmission? _resolved;
   bool _loaded = false;
@@ -41,6 +58,10 @@ class _ProductSubmissionDetailPageState
     _nameController.dispose();
     _brandController.dispose();
     _ingredientsController.dispose();
+    _servingSizeController.dispose();
+    for (final controller in _nutritionControllers.values) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -77,12 +98,32 @@ class _ProductSubmissionDetailPageState
     _nameController.text = sub.productName ?? '';
     _brandController.text = sub.brand ?? '';
     _ingredientsController.text = sub.extractedIngredientsText ?? '';
+    final nutrition = normalizeNutritionMap(sub.extractedNutrition);
+    for (final spec in _nutritionFieldSpecs) {
+      _nutritionControllers[spec.key]!.text = _formatNutritionValue(
+        nutrition?[spec.key],
+      );
+    }
+    _servingSizeController.text = nutrition?['serving_size']?.toString() ?? '';
     _loaded = true;
   }
 
   // ── actions ───────────────────────────────────────────────────────────────
 
   Future<void> _approve() async {
+    final nutritionDraft = _readNutritionDraft();
+    if (nutritionDraft.invalidLabel != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '${nutritionDraft.invalidLabel} için sıfır veya daha büyük sayısal bir değer girin.',
+          ),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+      return;
+    }
+
     final confirmed = await _confirmDialog(
       title: 'Ürünü Onayla',
       content: 'Bu gönderi onaylanacak ve ürün veritabanına eklenecek.',
@@ -98,6 +139,8 @@ class _ProductSubmissionDetailPageState
           editedProductName: _nameController.text.trim(),
           editedBrand: _brandController.text.trim(),
           editedIngredientsText: _ingredientsController.text.trim(),
+          editedNutrition: nutritionDraft.nutrition,
+          nutritionWasReviewed: true,
         );
 
     if (!mounted) return;
@@ -117,11 +160,31 @@ class _ProductSubmissionDetailPageState
       final error = ref.read(productSubmissionReviewProvider).error;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Hata: ${error ?? 'Bilinmeyen hata'}'),
+          content: Text(
+            error == null ? UserMessage.generic : UserMessage.forGeneric(error),
+          ),
           backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
     }
+  }
+
+  ({Map<String, dynamic>? nutrition, String? invalidLabel})
+  _readNutritionDraft() {
+    final values = <String, dynamic>{};
+    for (final spec in _nutritionFieldSpecs) {
+      final raw = _nutritionControllers[spec.key]!.text.trim();
+      if (raw.isEmpty) continue;
+      final value = double.tryParse(raw.replaceAll(',', '.'));
+      if (value == null || !value.isFinite || value < 0) {
+        return (nutrition: null, invalidLabel: spec.label);
+      }
+      values[spec.key] = value;
+    }
+
+    final servingSize = _servingSizeController.text.trim();
+    if (servingSize.isNotEmpty) values['serving_size'] = servingSize;
+    return (nutrition: normalizeNutritionMap(values), invalidLabel: null);
   }
 
   Future<void> _reject() async {
@@ -185,7 +248,9 @@ class _ProductSubmissionDetailPageState
       final error = ref.read(productSubmissionReviewProvider).error;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Hata: ${error ?? 'Bilinmeyen hata'}'),
+          content: Text(
+            error == null ? UserMessage.generic : UserMessage.forGeneric(error),
+          ),
           backgroundColor: Theme.of(context).colorScheme.error,
         ),
       );
@@ -310,13 +375,25 @@ class _ProductSubmissionDetailPageState
                   ),
                   const SizedBox(height: 16),
 
-                  // Nutrition (read-only JSON — passed as-is on approve)
-                  if (sub.extractedNutrition != null) ...[
-                    _SectionLabel('Besin Değerleri (OCR)'),
-                    const SizedBox(height: 6),
-                    _NutritionCard(nutrition: sub.extractedNutrition!),
-                    const SizedBox(height: 16),
+                  _SectionLabel('Besin Değerleri'),
+                  const SizedBox(height: 2),
+                  Text(
+                    '100 g / 100 ml başına',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  if (normalizeNutritionMap(sub.extractedNutrition) ==
+                      null) ...[
+                    const _MissingNutritionNotice(),
+                    const SizedBox(height: 8),
                   ],
+                  _NutritionEditorCard(
+                    controllers: _nutritionControllers,
+                    servingSizeController: _servingSizeController,
+                  ),
+                  const SizedBox(height: 16),
 
                   // Extraction status
                   _ExtractionStatusCard(
@@ -329,7 +406,10 @@ class _ProductSubmissionDetailPageState
                   if (sub.frontImageUrl != null) ...[
                     _SectionLabel('Ön Görsel'),
                     const SizedBox(height: 8),
-                    _ImageCard(url: sub.frontImageUrl!),
+                    _ImageCard(
+                      key: const ValueKey('submission-front-image'),
+                      url: sub.frontImageUrl!,
+                    ),
                     const SizedBox(height: 16),
                   ],
 
@@ -337,7 +417,20 @@ class _ProductSubmissionDetailPageState
                   if (sub.labelImageUrl != null) ...[
                     _SectionLabel('Etiket Görseli'),
                     const SizedBox(height: 8),
-                    _ImageCard(url: sub.labelImageUrl!),
+                    _ImageCard(
+                      key: const ValueKey('submission-label-image'),
+                      url: sub.labelImageUrl!,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+
+                  if (sub.nutritionImageUrl != null) ...[
+                    _SectionLabel('Besin Değeri Görseli'),
+                    const SizedBox(height: 8),
+                    _ImageCard(
+                      key: const ValueKey('submission-nutrition-image'),
+                      url: sub.nutritionImageUrl!,
+                    ),
                     const SizedBox(height: 16),
                   ],
                 ],
@@ -417,70 +510,109 @@ class _ReadOnlyField extends StatelessWidget {
   }
 }
 
-class _NutritionCard extends StatelessWidget {
-  final Map<String, dynamic> nutrition;
-  const _NutritionCard({required this.nutrition});
+class _NutritionFieldSpec {
+  final String key;
+  final String label;
+  final String unit;
 
-  static const _labels = {
-    'energy_kcal': 'Enerji (kcal)',
-    'fat': 'Yağ (g)',
-    'saturated_fat': 'Doymuş Yağ (g)',
-    'carbohydrates': 'Karbonhidrat (g)',
-    'sugars': 'Şeker (g)',
-    'fiber': 'Lif (g)',
-    'proteins': 'Protein (g)',
-    'salt': 'Tuz (g)',
-    'sodium': 'Sodyum (g)',
-    'serving_size': 'Porsiyon',
-  };
+  const _NutritionFieldSpec(this.key, this.label, this.unit);
+}
+
+String _formatNutritionValue(dynamic value) {
+  if (value is! num || !value.isFinite || value < 0) return '';
+  final number = value.toDouble();
+  return number == number.roundToDouble()
+      ? number.toInt().toString()
+      : number.toString();
+}
+
+class _MissingNutritionNotice extends StatelessWidget {
+  const _MissingNutritionNotice();
 
   @override
   Widget build(BuildContext context) {
-    final rows = <Widget>[];
-    for (final key in _labels.keys) {
-      final value = nutrition[key];
-      if (value == null) continue;
-      rows.add(
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  _labels[key]!,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ),
-              Text(
-                value.toString(),
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ],
-          ),
-        ),
-      );
-    }
+    return Container(
+      key: const ValueKey('submission-missing-nutrition'),
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.warningBg,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.warning.withValues(alpha: 0.25)),
+      ),
+      child: const Text(
+        'Besin değerleri otomatik olarak çıkarılamadı. Bilgileri manuel olarak kontrol edebilirsiniz.',
+        style: TextStyle(color: AppColors.warningText, height: 1.35),
+      ),
+    );
+  }
+}
 
-    if (rows.isEmpty) {
-      rows.add(
-        Text(
-          jsonEncode(nutrition),
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-      );
-    }
+class _NutritionEditorCard extends StatelessWidget {
+  final Map<String, TextEditingController> controllers;
+  final TextEditingController servingSizeController;
 
+  const _NutritionEditorCard({
+    required this.controllers,
+    required this.servingSizeController,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(8),
+        color: AppColors.surfaceSoft,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: rows,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final fieldWidth = (constraints.maxWidth - 10) / 2;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Wrap(
+                spacing: 10,
+                runSpacing: 10,
+                children: [
+                  for (final spec in _nutritionFieldSpecs)
+                    SizedBox(
+                      width: fieldWidth,
+                      child: TextField(
+                        key: ValueKey('submission-nutrition-${spec.key}'),
+                        controller: controllers[spec.key],
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        decoration: InputDecoration(
+                          labelText: spec.label,
+                          suffixText: spec.unit,
+                          isDense: true,
+                          filled: true,
+                          fillColor: AppColors.surface,
+                          border: const OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                key: const ValueKey('submission-nutrition-serving-size'),
+                controller: servingSizeController,
+                decoration: const InputDecoration(
+                  labelText: 'Porsiyon bilgisi (isteğe bağlı)',
+                  hintText: 'Örn. 30 g',
+                  isDense: true,
+                  filled: true,
+                  fillColor: AppColors.surface,
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -504,11 +636,7 @@ class _ExtractionStatusCard extends StatelessWidget {
     // A successful re-extraction may leave a stale error string in the DB;
     // displaying it alongside "OCR başarılı" would be misleading.
     final showError = status == 'failed';
-    final errorMessage = showError
-        ? (error?.trim().isNotEmpty == true
-              ? error!
-              : 'Otomatik okuma başarısız oldu.')
-        : null;
+    final errorMessage = showError ? UserMessage.forSubmissionOcr(error) : null;
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -545,7 +673,7 @@ class _ExtractionStatusCard extends StatelessWidget {
 
 class _ImageCard extends StatelessWidget {
   final String url;
-  const _ImageCard({required this.url});
+  const _ImageCard({super.key, required this.url});
 
   @override
   Widget build(BuildContext context) {

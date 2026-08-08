@@ -133,6 +133,17 @@ void main() {
       expect(h['Authorization'], 'Bearer anon-jwt-value');
     });
 
+    test('Edge Function always uses anon key even if backend key is set', () {
+      final h = _service(
+        baseUrl: _edgeUrl,
+        apiKey: 'direct-backend-secret',
+        supabaseAnonKey: 'anon-jwt-value',
+      ).headersForTest();
+      expect(h['apikey'], 'anon-jwt-value');
+      expect(h['Authorization'], 'Bearer anon-jwt-value');
+      expect(h.values, isNot(contains('Bearer direct-backend-secret')));
+    });
+
     test(
       'does not require OCR_BACKEND_API_KEY — anon key alone is sufficient',
       () {

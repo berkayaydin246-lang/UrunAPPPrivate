@@ -4,7 +4,7 @@ import types
 if 'dotenv' not in sys.modules:
     sys.modules['dotenv'] = types.SimpleNamespace(load_dotenv=lambda: None)
 
-from main import parse_ingredient_text_to_items
+from main import _parse_nutrition_section, parse_ingredient_text_to_items
 
 
 def test_complex_label():
@@ -43,6 +43,44 @@ def test_complex_label():
     # ensure unwanted fragments absent
     for bad in ['palm', '(%12)', '%12', '%44', '7 yağı', 'pirinç unu ()']:
         assert not any(bad in p for p in parsed)
+
+
+def test_nutrition_section_uses_canonical_numeric_fields():
+    parsed = _parse_nutrition_section([
+        "energy_kcal: 193 kcal",
+        "fat: 3,4 g",
+        "saturated_fat: 1.2",
+        "carbohydrates: 27",
+        "sugars: 5.5",
+        "fiber: not_visible",
+        "proteins: 8",
+        "salt: 0.7",
+        "sodium: 0.28",
+        "serving_size: 30 g",
+    ])
+
+    assert parsed == {
+        "energy_kcal": 193.0,
+        "fat": 3.4,
+        "saturated_fat": 1.2,
+        "carbohydrates": 27.0,
+        "sugars": 5.5,
+        "proteins": 8.0,
+        "salt": 0.7,
+        "sodium": 0.28,
+        "serving_size": "30 g",
+    }
+
+
+def test_nutrition_section_rejects_non_finite_and_negative_values():
+    parsed = _parse_nutrition_section([
+        "energy_kcal: NaN",
+        "fat: inf",
+        "sugars: -1",
+        "salt: not_visible",
+    ])
+
+    assert parsed == {}
 
 
 if __name__ == '__main__':

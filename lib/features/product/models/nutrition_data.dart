@@ -45,7 +45,7 @@ class NutritionData {
       proteins: _toDouble(map['proteins']),
       salt: _toDouble(map['salt']),
       sodium: _toDouble(map['sodium']),
-      servingSize: map['serving_size'] as String?,
+      servingSize: _cleanText(map['serving_size']),
     );
   }
 
@@ -66,9 +66,27 @@ class NutritionData {
 
   static double? _toDouble(dynamic value) {
     if (value == null) return null;
-    if (value is double) return value;
-    if (value is int) return value.toDouble();
-    if (value is String) return double.tryParse(value);
-    return null;
+    final parsed = switch (value) {
+      num number => number.toDouble(),
+      String text => double.tryParse(text.trim().replaceAll(',', '.')),
+      _ => null,
+    };
+    if (parsed == null || !parsed.isFinite || parsed < 0) return null;
+    return parsed;
   }
+
+  static String? _cleanText(dynamic value) {
+    if (value == null) return null;
+    final text = value.toString().trim();
+    return text.isEmpty || text.toLowerCase() == 'null' ? null : text;
+  }
+}
+
+/// Returns the app's canonical nutrition map or null when no numeric nutrient
+/// is available. Invalid, non-finite, negative, and unit-bearing values are
+/// discarded rather than reaching product storage or UI.
+Map<String, dynamic>? normalizeNutritionMap(Map<String, dynamic>? raw) {
+  if (raw == null) return null;
+  final nutrition = NutritionData.fromMap(raw);
+  return nutrition.hasAnyData ? nutrition.toMap() : null;
 }

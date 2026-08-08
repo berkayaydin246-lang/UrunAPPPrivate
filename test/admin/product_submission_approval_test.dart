@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:food_analyzer_app/features/admin/repositories/product_submission_approval_repository.dart';
+import 'package:food_analyzer_app/core/errors/user_message.dart';
 import 'package:food_analyzer_app/features/admin/controllers/product_submission_review_controller.dart';
+import 'package:food_analyzer_app/features/admin/repositories/product_submission_approval_repository.dart';
+import 'package:food_analyzer_app/features/product/models/product.dart';
+import 'package:food_analyzer_app/features/submission/models/product_submission.dart';
 
 // Unit tests for the approval repository helpers and controller state
 // that do NOT require a Supabase connection.
@@ -13,6 +18,44 @@ import 'package:food_analyzer_app/features/admin/controllers/product_submission_
 // verify the pure-Dart logic that surrounds those DB calls.
 
 void main() {
+  final now = DateTime(2026, 8, 8);
+
+  ProductSubmission submission({
+    Map<String, dynamic>? nutrition = const {
+      'energy_kcal': 193.0,
+      'fat': 3.4,
+      'sugars': 9.2,
+      'salt': 0.7,
+    },
+  }) {
+    return ProductSubmission(
+      id: 'submission-1',
+      barcode: '8690000000001',
+      productName: 'Test Ürünü',
+      brand: 'Test Marka',
+      frontImageUrl: 'https://cdn.example/front.jpg',
+      extractedIngredientsText: 'su, şeker',
+      extractedNutrition: nutrition,
+      extractionStatus: 'success',
+      status: 'pending',
+      source: 'barcode_missing',
+      createdAt: now,
+      updatedAt: now,
+    );
+  }
+
+  Product existingProduct({String? nutritionText}) {
+    return Product(
+      id: 'product-1',
+      barcode: '8690000000001',
+      name: 'Mevcut Ürün',
+      nutritionText: nutritionText,
+      verificationStatus: 'verified',
+      createdAt: now,
+      updatedAt: now,
+    );
+  }
+
   // ── ApproveProductResult enum ─────────────────────────────────────────────
 
   group('ApproveProductResult', () {
@@ -45,6 +88,89 @@ void main() {
         contains(ApproveProductResult.alreadyProcessed),
       );
     });
+  });
+
+  group('submission nutrition approval mapping', () {
+    test('reviewed nutrition survives into the final Product model', () {
+      final insertMap =
+          ProductSubmissionApprovalRepository.buildProductInsertMap(
+            submission(),
+            editedNutrition: const {
+              'energy_kcal': 201,
+              'fat': '4,5',
+              'fiber': 2.1,
+              'proteins': 7,
+              'serving_size': '30 g',
+            },
+            nutritionWasReviewed: true,
+          );
+
+      final decoded = jsonDecode(insertMap['nutrition_text'] as String);
+      expect(decoded, {
+        'energy_kcal': 201.0,
+        'fat': 4.5,
+        'fiber': 2.1,
+        'proteins': 7.0,
+        'serving_size': '30 g',
+      });
+
+      final product = Product.fromJson({
+        ...insertMap,
+        'id': 'product-1',
+        'created_at': now.toIso8601String(),
+        'updated_at': now.toIso8601String(),
+      });
+      expect(product.hasNutrition, isTrue);
+      expect(product.nutrition?.energyKcal, 201.0);
+      expect(product.nutrition?.fat, 4.5);
+      expect(product.nutrition?.servingSize, '30 g');
+    });
+
+    test('unreviewed approval falls back to extracted nutrition', () {
+      final insertMap =
+          ProductSubmissionApprovalRepository.buildProductInsertMap(
+            submission(),
+          );
+      final decoded = jsonDecode(insertMap['nutrition_text'] as String);
+
+      expect(decoded['energy_kcal'], 193.0);
+      expect(decoded['salt'], 0.7);
+    });
+
+    test('admin can clear invalid extracted nutrition during review', () {
+      final insertMap =
+          ProductSubmissionApprovalRepository.buildProductInsertMap(
+            submission(),
+            editedNutrition: null,
+            nutritionWasReviewed: true,
+          );
+
+      expect(insertMap.containsKey('nutrition_text'), isFalse);
+    });
+
+    test(
+      'enrichment fills missing nutrition without overwriting existing data',
+      () {
+        final reviewed =
+            ProductSubmissionApprovalRepository.buildProductInsertMap(
+              submission(),
+            );
+
+        final missingPatch =
+            ProductSubmissionApprovalRepository.buildProductEnrichPatch(
+              existingProduct(),
+              reviewed,
+            );
+        expect(missingPatch['nutrition_text'], reviewed['nutrition_text']);
+
+        final existingPatch =
+            ProductSubmissionApprovalRepository.buildProductEnrichPatch(
+              existingProduct(nutritionText: '{"energy_kcal":100.0}'),
+              reviewed,
+            );
+        expect(existingPatch.containsKey('nutrition_text'), isFalse);
+      },
+    );
   });
 
   // ── ProductSubmissionReviewState ──────────────────────────────────────────
@@ -129,10 +255,7 @@ void main() {
 
   String? errorMessage(String status, String? error) {
     if (status != 'failed') return null;
-    final trimmed = error?.trim();
-    return (trimmed != null && trimmed.isNotEmpty)
-        ? trimmed
-        : 'Otomatik okuma başarısız oldu.';
+    return UserMessage.forSubmissionOcr(error);
   }
 
   group('extraction status display — success suppresses stale error', () {
@@ -159,17 +282,30 @@ void main() {
       expect(statusLabel('failed'), 'OCR başarısız');
     });
 
-    test('failed status with specific error shows that error', () {
+    test('failed status maps technical connection text to a safe message', () {
       const error = 'connection timeout';
-      expect(errorMessage('failed', error), 'connection timeout');
+      expect(
+        errorMessage('failed', error),
+        UserMessage.submissionOcrUnavailable,
+      );
     });
 
     test('failed status with null error falls back to generic message', () {
-      expect(errorMessage('failed', null), 'Otomatik okuma başarısız oldu.');
+      expect(errorMessage('failed', null), UserMessage.submissionOcrGeneric);
     });
 
     test('failed status with blank error falls back to generic message', () {
-      expect(errorMessage('failed', '   '), 'Otomatik okuma başarısız oldu.');
+      expect(errorMessage('failed', '   '), UserMessage.submissionOcrGeneric);
+    });
+
+    test('failed status never exposes a stored raw Dio error', () {
+      final message = errorMessage(
+        'failed',
+        'DioException [bad response]: status code of 401 RequestOptions',
+      );
+
+      expect(message, UserMessage.submissionOcrAuth);
+      expect(message, isNot(contains('DioException')));
     });
   });
 

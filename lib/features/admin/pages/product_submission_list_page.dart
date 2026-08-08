@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:food_analyzer_app/core/errors/user_message.dart';
 import 'package:food_analyzer_app/features/admin/controllers/product_submission_review_controller.dart';
 import 'package:food_analyzer_app/features/submission/models/product_submission.dart';
 
@@ -26,7 +27,7 @@ class ProductSubmissionListPage extends ConsumerWidget {
       body: state.submissions.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => _ErrorState(
-          message: e.toString(),
+          message: UserMessage.forGeneric(e),
           onRetry: () =>
               ref.read(productSubmissionReviewProvider.notifier).load(),
         ),

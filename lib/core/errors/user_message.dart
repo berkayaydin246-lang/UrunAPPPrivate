@@ -27,6 +27,14 @@ class UserMessage {
   static const analysisFailed =
       'Şu anda analiz tamamlanamadı. Lütfen biraz sonra tekrar deneyin.';
   static const generic = 'Bir sorun oluştu. Lütfen biraz sonra tekrar deneyin.';
+  static const submissionOcrAuth =
+      'OCR servisi doğrulanamadı. Ürün bilgilerini manuel kontrol edebilirsiniz.';
+  static const submissionOcrUnreadable =
+      'Görselden içerik metni okunamadı. Ürün bilgilerini manuel kontrol edebilirsiniz.';
+  static const submissionOcrUnavailable =
+      'OCR işlemi tamamlanamadı. Ürün bilgilerini manuel kontrol edebilirsiniz.';
+  static const submissionOcrGeneric =
+      'Otomatik metin çıkarma tamamlanamadı. Ürün bilgilerini manuel kontrol edebilirsiniz.';
 
   /// Lowercased fragments that indicate raw developer text leaked through.
   static const _technicalFragments = <String>[
@@ -47,6 +55,16 @@ class UserMessage {
     'os error',
     'errno',
     'dioexception',
+    'requestoptions',
+    'validatestatus',
+    'status code',
+    'developer.mozilla.org',
+    'server code',
+    'client error',
+    'upstream',
+    'response body',
+    'request failed',
+    'http error',
     'handshake',
     'unhandled',
     "type '",
@@ -55,7 +73,7 @@ class UserMessage {
 
   static bool _isTechnical(String message) {
     final lower = message.toLowerCase();
-    return _technicalFragments.any(lower.contains);
+    return lower.trim() == 'null' || _technicalFragments.any(lower.contains);
   }
 
   /// Extract a candidate message ONLY from our own error convention.
@@ -107,6 +125,108 @@ class UserMessage {
 
   /// Friendly message for OCR / image-scanning failures.
   static String forOcr(Object error) => _resolve(error, ocrUnreadable);
+
+  /// Friendly message for product-submission OCR failures, including raw errors
+  /// already persisted by older app versions.
+  static String forSubmissionOcr(Object? errorOrMessage) {
+    if (errorOrMessage == null) return submissionOcrGeneric;
+
+    if (errorOrMessage is DioException) {
+      final status = errorOrMessage.response?.statusCode;
+      if (status == 401 || status == 403) return submissionOcrAuth;
+      if (status == 400 || status == 422) return submissionOcrUnreadable;
+
+      final type = errorOrMessage.type;
+      if (type == DioExceptionType.connectionTimeout ||
+          type == DioExceptionType.sendTimeout ||
+          type == DioExceptionType.receiveTimeout ||
+          type == DioExceptionType.connectionError) {
+        return submissionOcrUnavailable;
+      }
+    }
+
+    if (errorOrMessage is TimeoutException ||
+        errorOrMessage is SocketException) {
+      return submissionOcrUnavailable;
+    }
+
+    final candidate = errorOrMessage is String
+        ? errorOrMessage.trim()
+        : _ownMessage(errorOrMessage)?.trim();
+    if (candidate == null || candidate.isEmpty) return submissionOcrGeneric;
+
+    final lower = candidate.toLowerCase();
+    if (_containsAny(lower, const [
+      '401',
+      '403',
+      'unauthorized',
+      'forbidden',
+      'authentication',
+      'authorization',
+      'apikey',
+      'jwt',
+      'yetkilendir',
+      'doğrulanamadı',
+    ])) {
+      return submissionOcrAuth;
+    }
+
+    if (_containsAny(lower, const [
+      'görsel işlenemedi',
+      'görselden içerik',
+      'metni okunamadı',
+      'etiket bulunamadı',
+      'okunabilir metin',
+      'no label',
+      'unreadable image',
+    ])) {
+      return submissionOcrUnreadable;
+    }
+
+    if (_containsAny(lower, const [
+      'timeout',
+      'time out',
+      'zaman aş',
+      'connection',
+      'network',
+      'socket',
+      'ulaşılamadı',
+      '502',
+      '503',
+      '504',
+    ])) {
+      return submissionOcrUnavailable;
+    }
+
+    if (_isSafeSubmissionMessage(candidate)) return candidate;
+    return submissionOcrGeneric;
+  }
+
+  static bool _containsAny(String value, List<String> fragments) =>
+      fragments.any(value.contains);
+
+  static bool _isSafeSubmissionMessage(String message) {
+    if (message.length > 240 ||
+        message.contains('\n') ||
+        _isTechnical(message) ||
+        RegExp(r'https?://|[\[\]{}]|=>|\b\d{3}\b').hasMatch(message)) {
+      return false;
+    }
+
+    final lower = message.toLowerCase();
+    return _containsAny(lower, const [
+      'lütfen',
+      'edebilirsiniz',
+      'tamamlanamadı',
+      'okunamadı',
+      'başarısız',
+      'ulaşılamadı',
+      'bulunamadı',
+      'yapılamadı',
+      'kontrol edin',
+      'tekrar deneyin',
+    ]);
+  }
 
   /// Friendly message for rule-based analysis failures.
   static String forAnalysis(Object error) => _resolve(error, analysisFailed);

@@ -1,9 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:food_analyzer_app/core/errors/user_message.dart';
 import 'package:food_analyzer_app/core/services/storage_service.dart';
 import 'package:food_analyzer_app/core/services/supabase_service.dart';
 import 'package:food_analyzer_app/features/ocr/models/structured_ingredient_extraction_result.dart';
+import 'package:food_analyzer_app/features/ocr/services/ocr_request_headers.dart';
+import 'package:food_analyzer_app/features/product/models/nutrition_data.dart';
 
 enum SubmitMissingProductResult {
   submitted,
@@ -54,7 +57,10 @@ bool hasRequiredSubmissionInputs({
 }
 
 class ProductSubmissionRepository {
-  const ProductSubmissionRepository();
+  final SubmissionOcrExtractor? _ocrExtractor;
+
+  const ProductSubmissionRepository({SubmissionOcrExtractor? ocrExtractor})
+    : _ocrExtractor = ocrExtractor;
 
   Future<SubmitMissingProductResponse> submitMissingProduct({
     required String barcode,
@@ -62,6 +68,8 @@ class ProductSubmissionRepository {
     required Uint8List labelImageBytes,
     required String frontImageName,
     required String labelImageName,
+    Uint8List? nutritionImageBytes,
+    String? nutritionImageName,
     String? productName,
     String? brand,
     String? notes,
@@ -74,7 +82,7 @@ class ProductSubmissionRepository {
       return const SubmitMissingProductResponse(
         result: SubmitMissingProductResult.validationError,
         message:
-            'Ürünü ekleyebilmemiz için ön yüz ve içerik/besin etiketi fotoğrafları gereklidir.',
+            'Ürünü ekleyebilmemiz için ön yüz ve içindekiler fotoğrafları gereklidir.',
       );
     }
 
@@ -110,11 +118,39 @@ class ProductSubmissionRepository {
         );
       }
 
+      String? nutritionImageUrl;
+      if (nutritionImageBytes != null) {
+        final safeNutritionName = nutritionImageName?.trim().isNotEmpty == true
+            ? nutritionImageName!.trim()
+            : 'nutrition.jpg';
+        final nutritionPath =
+            '$normalizedBarcode/${stamp}_nutrition_$safeNutritionName';
+        nutritionImageUrl = await StorageService.uploadFileBytes(
+          'product-submissions',
+          nutritionPath,
+          nutritionImageBytes,
+        );
+        if (nutritionImageUrl == null) {
+          _debugSubmissionLog(
+            '[Submission] optional nutrition image could not be uploaded',
+          );
+        }
+      }
+
       _debugSubmissionLog('[Submission] label image uploaded');
       _debugSubmissionLog(
         '[Submission] extraction started for barcode: $normalizedBarcode',
       );
-      final extraction = await _extractFromLabelImage(labelImageUrl);
+      final extractor = _ocrExtractor ?? SubmissionOcrExtractor.fromEnv();
+      final labelExtraction = await extractor.extractFromLabelImage(
+        labelImageUrl,
+      );
+      final extraction = nutritionImageUrl == null
+          ? labelExtraction
+          : mergeLabelExtractionResults(
+              labelExtraction,
+              await extractor.extractFromLabelImage(nutritionImageUrl),
+            );
       _debugSubmissionLog(
         '[Submission] extraction status: ${extraction.status}',
       );
@@ -143,6 +179,7 @@ class ProductSubmissionRepository {
         if (notes != null && notes.trim().isNotEmpty) 'notes': notes.trim(),
         'front_image_url': frontImageUrl,
         'label_image_url': labelImageUrl,
+        'nutrition_image_url': ?nutritionImageUrl,
         // Backward compatibility for legacy reads.
         'image_url': frontImageUrl,
         if (extraction.ingredientsText != null &&
@@ -191,30 +228,82 @@ class ProductSubmissionRepository {
       );
     }
   }
+}
 
-  Future<LabelExtractionResult> _extractFromLabelImage(String imageUrl) async {
-    final baseUrl = (dotenv.env['OCR_BACKEND_URL'] ?? '').trim();
-    if (baseUrl.isEmpty) {
+class SubmissionOcrExtractor {
+  final Dio _dio;
+  final String _baseUrl;
+  final String _backendApiKey;
+  final String _supabaseAnonKey;
+
+  const SubmissionOcrExtractor({
+    required Dio dio,
+    required String baseUrl,
+    String backendApiKey = '',
+    String supabaseAnonKey = '',
+  }) : _dio = dio,
+       _baseUrl = baseUrl,
+       _backendApiKey = backendApiKey,
+       _supabaseAnonKey = supabaseAnonKey;
+
+  factory SubmissionOcrExtractor.fromEnv() {
+    return SubmissionOcrExtractor(
+      dio: Dio(),
+      baseUrl: dotenv.env['OCR_BACKEND_URL'] ?? '',
+      backendApiKey: dotenv.env['OCR_BACKEND_API_KEY'] ?? '',
+      supabaseAnonKey: dotenv.env['SUPABASE_ANON_KEY'] ?? '',
+    );
+  }
+
+  bool get _isSupabaseEdge => isSupabaseFunctionsUrl(_baseUrl);
+
+  String get _normalizedBaseUrl =>
+      _baseUrl.trim().replaceFirst(RegExp(r'/+$'), '');
+
+  Map<String, dynamic> get _headers => buildOcrRequestHeaders(
+    baseUrl: _baseUrl,
+    backendApiKey: _backendApiKey,
+    supabaseAnonKey: _supabaseAnonKey,
+  );
+
+  @visibleForTesting
+  Map<String, dynamic> get headersForTest => _headers;
+
+  Future<LabelExtractionResult> extractFromLabelImage(String imageUrl) async {
+    if (_normalizedBaseUrl.isEmpty) {
       _debugSubmissionLog(
         '[Submission] OCR_BACKEND_URL not set — skipping extraction',
       );
       return const LabelExtractionResult(status: 'not_started');
     }
 
-    final dio = Dio();
-    const headers = <String, dynamic>{'Content-Type': 'application/json'};
+    if ((_isSupabaseEdge && _supabaseAnonKey.trim().isEmpty) ||
+        (!_isSupabaseEdge && _backendApiKey.trim().isEmpty)) {
+      _debugSubmissionLog('[Submission] OCR authentication is not configured');
+      return const LabelExtractionResult(
+        status: 'failed',
+        error: UserMessage.submissionOcrAuth,
+      );
+    }
+
+    final combined = await _extractProductLabel(imageUrl);
+    if (combined != null) return combined;
+
+    return _extractIngredients(imageUrl);
+  }
+
+  Future<LabelExtractionResult?> _extractProductLabel(String imageUrl) async {
     const sendTimeout = Duration(seconds: 20);
     const receiveTimeout = Duration(seconds: 60);
 
-    // Attempt the combined product-label endpoint first (ingredients + nutrition).
     try {
       _debugSubmissionLog('[Submission] calling /ocr/product-label');
-      final response = await dio
+      final response = await _dio
           .postUri(
-            Uri.parse('$baseUrl/ocr/product-label'),
+            Uri.parse('$_normalizedBaseUrl/ocr/product-label'),
             data: {'image_url': imageUrl, 'language_hint': 'tr'},
             options: Options(
-              headers: headers,
+              headers: _headers,
               sendTimeout: sendTimeout,
               receiveTimeout: receiveTimeout,
             ),
@@ -225,13 +314,19 @@ class ProductSubmissionRepository {
       if (data is! Map<String, dynamic>) {
         return const LabelExtractionResult(
           status: 'failed',
-          error: 'product-label yanıtı okunamadı',
+          error: UserMessage.submissionOcrGeneric,
         );
       }
 
       final status = (data['extraction_status'] as String?) ?? 'failed';
-      final ingredientsData = data['ingredients'] as Map<String, dynamic>?;
-      final nutritionRaw = data['nutrition'] as Map<String, dynamic>?;
+      final ingredientsValue = data['ingredients'];
+      final ingredientsData = ingredientsValue is Map
+          ? Map<String, dynamic>.from(ingredientsValue)
+          : null;
+      final nutritionValue = data['nutrition'];
+      final nutritionRaw = nutritionValue is Map
+          ? normalizeNutritionMap(Map<String, dynamic>.from(nutritionValue))
+          : null;
 
       String? ingredientsText;
       if (ingredientsData != null) {
@@ -249,44 +344,48 @@ class ProductSubmissionRepository {
         'nutrition=${nutritionRaw != null}',
       );
 
+      final succeeded = status == 'success' || status == 'partial';
       return LabelExtractionResult(
-        status: status == 'success' || status == 'partial'
-            ? 'success'
-            : 'failed',
+        status: succeeded ? 'success' : 'failed',
         ingredientsText: ingredientsText,
         nutrition: nutritionRaw,
+        error: succeeded ? null : UserMessage.submissionOcrUnreadable,
       );
     } on DioException catch (e) {
-      // 404 means the backend doesn't have this endpoint yet — fall back.
       if (e.response?.statusCode == 404) {
         _debugSubmissionLog(
           '[Submission] /ocr/product-label not found (404) — '
           'falling back to /ocr/ingredients',
         );
-      } else {
-        _debugSubmissionLog('[Submission] /ocr/product-label error: $e');
-        return LabelExtractionResult(status: 'failed', error: e.toString());
+        return null;
       }
-    } catch (e) {
-      _debugSubmissionLog(
-        '[Submission] /ocr/product-label unexpected error: $e',
-      );
-      return LabelExtractionResult(status: 'failed', error: e.toString());
-    }
 
-    // Fallback: /ocr/ingredients (ingredients only, no nutrition).
+      final message = UserMessage.forSubmissionOcr(e);
+      _debugSubmissionLog('[Submission] /ocr/product-label failed: $message');
+      return LabelExtractionResult(status: 'failed', error: message);
+    } catch (e) {
+      final message = UserMessage.forSubmissionOcr(e);
+      _debugSubmissionLog('[Submission] /ocr/product-label failed: $message');
+      return LabelExtractionResult(status: 'failed', error: message);
+    }
+  }
+
+  Future<LabelExtractionResult> _extractIngredients(String imageUrl) async {
+    const sendTimeout = Duration(seconds: 20);
+    const receiveTimeout = Duration(seconds: 60);
+
     try {
-      _debugSubmissionLog('[Submission] calling /ocr/ingredients (fallback)');
-      final response = await dio
+      _debugSubmissionLog('[Submission] calling /ocr/ingredients');
+      final response = await _dio
           .postUri(
-            Uri.parse('$baseUrl/ocr/ingredients'),
+            Uri.parse('$_normalizedBaseUrl/ocr/ingredients'),
             data: {
               'image_url': imageUrl,
               'language_hint': 'tr',
               'mode': 'ingredients_label',
             },
             options: Options(
-              headers: headers,
+              headers: _headers,
               sendTimeout: sendTimeout,
               receiveTimeout: receiveTimeout,
             ),
@@ -297,7 +396,7 @@ class ProductSubmissionRepository {
       if (data is! Map<String, dynamic>) {
         return const LabelExtractionResult(
           status: 'failed',
-          error: 'OCR yanıtı okunamadı',
+          error: UserMessage.submissionOcrGeneric,
         );
       }
 
@@ -308,21 +407,47 @@ class ProductSubmissionRepository {
           : parsed.cleanedText.trim();
 
       _debugSubmissionLog(
-        '[Submission] /ocr/ingredients fallback success — '
+        '[Submission] /ocr/ingredients success — '
         '${ingredientsText.length} chars',
       );
 
-      // TODO: nutrition extraction not supported by /ocr/ingredients endpoint.
       return LabelExtractionResult(
         status: ingredientsText.isNotEmpty ? 'success' : 'failed',
         ingredientsText: ingredientsText.isNotEmpty ? ingredientsText : null,
         nutrition: null,
+        error: ingredientsText.isNotEmpty
+            ? null
+            : UserMessage.submissionOcrUnreadable,
       );
     } catch (e) {
-      _debugSubmissionLog('[Submission] /ocr/ingredients fallback error: $e');
-      return LabelExtractionResult(status: 'failed', error: e.toString());
+      final message = UserMessage.forSubmissionOcr(e);
+      _debugSubmissionLog('[Submission] /ocr/ingredients failed: $message');
+      return LabelExtractionResult(status: 'failed', error: message);
     }
   }
+}
+
+@visibleForTesting
+LabelExtractionResult mergeLabelExtractionResults(
+  LabelExtractionResult labelResult,
+  LabelExtractionResult nutritionResult,
+) {
+  final ingredientsText = labelResult.ingredientsText?.trim().isNotEmpty == true
+      ? labelResult.ingredientsText!.trim()
+      : nutritionResult.ingredientsText?.trim();
+  final nutrition =
+      normalizeNutritionMap(nutritionResult.nutrition) ??
+      normalizeNutritionMap(labelResult.nutrition);
+  final hasData = ingredientsText?.isNotEmpty == true || nutrition != null;
+
+  return LabelExtractionResult(
+    status: hasData ? 'success' : 'failed',
+    ingredientsText: ingredientsText?.isNotEmpty == true
+        ? ingredientsText
+        : null,
+    nutrition: nutrition,
+    error: hasData ? null : (nutritionResult.error ?? labelResult.error),
+  );
 }
 
 void _debugSubmissionLog(String message) {

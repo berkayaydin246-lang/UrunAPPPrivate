@@ -138,6 +138,18 @@ void main() {
       expect(data.salt, 1.2);
     });
 
+    test('accepts comma decimals and keeps clean serving-size text', () {
+      final data = NutritionData.fromMap({
+        'fat': '3,4',
+        'proteins': '8,25',
+        'serving_size': ' 30 g ',
+      });
+
+      expect(data.fat, 3.4);
+      expect(data.proteins, 8.25);
+      expect(data.servingSize, '30 g');
+    });
+
     test('returns null for missing keys', () {
       final data = NutritionData.fromMap({});
       expect(data.energyKcal, isNull);
@@ -147,6 +159,51 @@ void main() {
     test('returns null for unparseable string', () {
       final data = NutritionData.fromMap({'sugars': 'n/a'});
       expect(data.sugars, isNull);
+    });
+
+    test('rejects non-finite, negative, and unit-bearing numeric values', () {
+      final data = NutritionData.fromMap({
+        'energy_kcal': double.nan,
+        'fat': double.infinity,
+        'sugars': -1,
+        'salt': '0.8 g',
+      });
+
+      expect(data.hasAnyData, isFalse);
+      expect(data.energyKcal, isNull);
+      expect(data.fat, isNull);
+      expect(data.sugars, isNull);
+      expect(data.salt, isNull);
+    });
+  });
+
+  group('normalizeNutritionMap', () {
+    test('returns only canonical, valid nutrition fields', () {
+      final normalized = normalizeNutritionMap({
+        'energy_kcal': 193,
+        'fat': '3,4',
+        'salt': 'not_visible',
+        'unknown': 99,
+        'serving_size': '30 g',
+      });
+
+      expect(normalized, {
+        'energy_kcal': 193.0,
+        'fat': 3.4,
+        'serving_size': '30 g',
+      });
+    });
+
+    test('returns null when no numeric nutrient is available', () {
+      expect(
+        normalizeNutritionMap({
+          'fat': 'NaN',
+          'salt': null,
+          'serving_size': '30 g',
+        }),
+        isNull,
+      );
+      expect(normalizeNutritionMap(null), isNull);
     });
   });
 

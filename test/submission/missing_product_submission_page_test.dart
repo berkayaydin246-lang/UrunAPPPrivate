@@ -19,15 +19,31 @@ void main() {
         ),
       );
 
-      await tester.tap(find.text('İncelemeye Gönder'));
+      final submitButton = find.text('İncelemeye Gönder');
+      await tester.ensureVisible(submitButton);
+      await tester.tap(submitButton);
       await tester.pump();
 
       expect(
         find.text(
-          'Ürünü ekleyebilmemiz için ön yüz ve içerik/besin etiketi fotoğrafları gereklidir.',
+          'Ürünü ekleyebilmemiz için ön yüz ve içindekiler fotoğrafları gereklidir.',
         ),
         findsAtLeastNWidgets(1),
       );
+    });
+
+    testWidgets('shows nutrition photo as optional', (tester) async {
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(
+            home: MissingProductSubmissionPage(barcode: '8699118005551'),
+          ),
+        ),
+      );
+
+      expect(find.text('Besin değerleri fotoğrafı'), findsOneWidget);
+      expect(find.text('Besin tablosu fotoğrafı çek'), findsOneWidget);
+      expect(find.text('İsteğe bağlı'), findsAtLeastNWidgets(1));
     });
 
     test('required input helper validates barcode and both photos', () {

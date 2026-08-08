@@ -6,6 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:food_analyzer_app/features/barcode/controllers/barcode_controller.dart';
 import 'package:food_analyzer_app/features/submission/repositories/product_submission_repository.dart';
 
+enum _SubmissionPhotoKind { front, ingredients, nutrition }
+
 class MissingProductSubmissionPage extends ConsumerStatefulWidget {
   final String barcode;
 
@@ -30,6 +32,8 @@ class _MissingProductSubmissionPageState
   String? _frontImageName;
   Uint8List? _labelImageBytes;
   String? _labelImageName;
+  Uint8List? _nutritionImageBytes;
+  String? _nutritionImageName;
 
   bool _isSubmitting = false;
   bool _submitted = false;
@@ -43,7 +47,7 @@ class _MissingProductSubmissionPageState
     super.dispose();
   }
 
-  Future<void> _pickImage({required bool isFront}) async {
+  Future<void> _pickImage(_SubmissionPhotoKind kind) async {
     try {
       final file = await _picker.pickImage(
         source: ImageSource.camera,
@@ -57,12 +61,19 @@ class _MissingProductSubmissionPageState
       if (!mounted) return;
 
       setState(() {
-        if (isFront) {
-          _frontImageBytes = bytes;
-          _frontImageName = file.name;
-        } else {
-          _labelImageBytes = bytes;
-          _labelImageName = file.name;
+        switch (kind) {
+          case _SubmissionPhotoKind.front:
+            _frontImageBytes = bytes;
+            _frontImageName = file.name;
+            break;
+          case _SubmissionPhotoKind.ingredients:
+            _labelImageBytes = bytes;
+            _labelImageName = file.name;
+            break;
+          case _SubmissionPhotoKind.nutrition:
+            _nutritionImageBytes = bytes;
+            _nutritionImageName = file.name;
+            break;
         }
       });
     } on PlatformException catch (e) {
@@ -94,7 +105,7 @@ class _MissingProductSubmissionPageState
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-            'Ürünü ekleyebilmemiz için ön yüz ve içerik/besin etiketi fotoğrafları gereklidir.',
+            'Ürünü ekleyebilmemiz için ön yüz ve içindekiler fotoğrafları gereklidir.',
           ),
         ),
       );
@@ -109,6 +120,8 @@ class _MissingProductSubmissionPageState
       labelImageBytes: _labelImageBytes!,
       frontImageName: _frontImageName ?? 'front.jpg',
       labelImageName: _labelImageName ?? 'label.jpg',
+      nutritionImageBytes: _nutritionImageBytes,
+      nutritionImageName: _nutritionImageName,
       productName: _productNameController.text.trim().isEmpty
           ? null
           : _productNameController.text.trim(),
@@ -201,15 +214,23 @@ class _MissingProductSubmissionPageState
               subtitle: 'Zorunlu',
               picked: _frontImageBytes != null,
               buttonText: 'Ön yüz fotoğrafı çek',
-              onTap: () => _pickImage(isFront: true),
+              onTap: () => _pickImage(_SubmissionPhotoKind.front),
             ),
             const SizedBox(height: 10),
             _PhotoPickerTile(
-              title: 'İçindekiler/Besin Değeri fotoğrafı',
+              title: 'İçindekiler fotoğrafı',
               subtitle: 'Zorunlu',
               picked: _labelImageBytes != null,
-              buttonText: 'İçindekiler/Besin Değeri fotoğrafı çek',
-              onTap: () => _pickImage(isFront: false),
+              buttonText: 'İçindekiler fotoğrafı çek',
+              onTap: () => _pickImage(_SubmissionPhotoKind.ingredients),
+            ),
+            const SizedBox(height: 10),
+            _PhotoPickerTile(
+              title: 'Besin değerleri fotoğrafı',
+              subtitle: 'İsteğe bağlı',
+              picked: _nutritionImageBytes != null,
+              buttonText: 'Besin tablosu fotoğrafı çek',
+              onTap: () => _pickImage(_SubmissionPhotoKind.nutrition),
             ),
             const SizedBox(height: 12),
             TextFormField(
@@ -230,7 +251,7 @@ class _MissingProductSubmissionPageState
                   border: Border.all(color: Colors.orange[200]!),
                 ),
                 child: const Text(
-                  'Ürünü ekleyebilmemiz için ön yüz ve içerik/besin etiketi fotoğrafları gereklidir.',
+                  'Ürünü ekleyebilmemiz için ön yüz ve içindekiler fotoğrafları gereklidir.',
                 ),
               ),
             const SizedBox(height: 16),

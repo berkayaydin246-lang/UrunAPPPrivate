@@ -25,7 +25,12 @@ Deno.serve(async (req) => {
   }
 
   const url = new URL(req.url);
-  if (!url.pathname.endsWith('/ocr/ingredients')) {
+  const endpoint = url.pathname.endsWith('/ocr/product-label')
+    ? '/ocr/product-label'
+    : url.pathname.endsWith('/ocr/ingredients')
+    ? '/ocr/ingredients'
+    : null;
+  if (endpoint === null) {
     return jsonResponse({ error: 'Not found' }, 404);
   }
 
@@ -47,7 +52,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const upstream = await fetch(`${backendUrl}/ocr/ingredients`, {
+    const upstream = await fetch(`${backendUrl}${endpoint}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

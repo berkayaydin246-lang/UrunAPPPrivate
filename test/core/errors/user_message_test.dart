@@ -16,6 +16,10 @@ const _forbidden = <String>[
   'FormatException',
   'SocketException',
   'TimeoutException',
+  'DioException',
+  'developer.mozilla.org',
+  'status code',
+  'RequestOptions',
   'null',
 ];
 
@@ -131,6 +135,62 @@ void main() {
 
     test('generic Exception never leaks', () {
       _expectClean(UserMessage.forAnalysis(Exception('db failure xyz')));
+    });
+  });
+
+  group('UserMessage.forSubmissionOcr', () {
+    test('HTTP 401 becomes the clean Turkish auth message', () {
+      final options = RequestOptions(path: '/ocr/ingredients');
+      final msg = UserMessage.forSubmissionOcr(
+        DioException(
+          requestOptions: options,
+          response: Response(requestOptions: options, statusCode: 401),
+          type: DioExceptionType.badResponse,
+        ),
+      );
+
+      expect(msg, UserMessage.submissionOcrAuth);
+      _expectClean(msg);
+    });
+
+    test('stored raw Dio 401 text becomes the clean Turkish auth message', () {
+      final msg = UserMessage.forSubmissionOcr(
+        'DioException [bad response]: status code of 401. '
+        'See https://developer.mozilla.org and RequestOptions.',
+      );
+
+      expect(msg, UserMessage.submissionOcrAuth);
+      _expectClean(msg);
+    });
+
+    test('stored unreadable-image message maps to manual review guidance', () {
+      final msg = UserMessage.forSubmissionOcr(
+        'Görsel işlenemedi. Lütfen daha net bir fotoğraf çekin.',
+      );
+
+      expect(msg, UserMessage.submissionOcrUnreadable);
+      _expectClean(msg);
+    });
+
+    test('stored timeout text maps to the submission OCR network message', () {
+      final msg = UserMessage.forSubmissionOcr('connection timeout after 60s');
+
+      expect(msg, UserMessage.submissionOcrUnavailable);
+      _expectClean(msg);
+    });
+
+    test('unknown raw text maps to the generic extraction message', () {
+      final msg = UserMessage.forSubmissionOcr('upstream exploded at line 42');
+
+      expect(msg, UserMessage.submissionOcrGeneric);
+      _expectClean(msg);
+    });
+
+    test('clean Turkish user guidance may pass through', () {
+      const clean =
+          'Otomatik okuma başarısız oldu. Lütfen manuel kontrol edin.';
+
+      expect(UserMessage.forSubmissionOcr(clean), clean);
     });
   });
 
