@@ -10,7 +10,7 @@ product/counsel review where stated.
 
 | Finding | Evidence/status | Required resolution |
 |---|---|---|
-| Historical score cannot be fully reproduced after mutable product/risk-catalogue changes | No immutable result/input/catalogue snapshot; documented in `SCORE_AUDIT_TRAIL_GAP.md` | Approve and implement minimum versioned append-only audit trail; replay test before broad public score release. |
+| Historical score cannot be fully reproduced after mutable product/risk-catalogue changes | **TECHNICALLY ADDRESSED — REMOTE MIGRATION/ROLLOUT PENDING.** Immutable risk-at-time/input/result snapshots, trusted append RPC, validation, and public fingerprint gating are implemented locally; see `../scoring/SCORE_AUDIT_TRAIL_V1.md`. | Review/apply the remote migration, run controlled backfill, verify rollout/replay samples, and obtain counsel approval before broad public score release. |
 | Public ingredient explanations contain unaudited health-effect/legal-status claims | Local and remote fields include cancer, reaction, cardiovascular, legal-limit and consumption language | Complete field-level primary-source/editorial/counsel audit or suppress unapproved claim fields. |
 | Operator/data-controller identity is absent | Live Terms/Privacy use support email but no established legal identity/address | Establish and publish truthful operator/controller details and KVKK channel. |
 | Live Terms do not cover Etiketly Score methodology, versioning, independence and correction rules | Live page dated 30 June 2026 predates score feature | Counsel-approve and publish updated Terms; record effective version/acceptance decision. |
@@ -40,6 +40,9 @@ product/counsel review where stated.
 
 ## Resolved/Reduced In This Phase
 
+- The score audit-trail P0 is technically addressed in code with remote
+  migration, controlled backfill, rollout verification, and counsel review still
+  pending.
 - Score band is contextualised as `İçerik profili: ...`.
 - Score component and additive summaries use neutral Etiketly context.
 - Legacy public health-risk/consumption recommendation output was neutralised.

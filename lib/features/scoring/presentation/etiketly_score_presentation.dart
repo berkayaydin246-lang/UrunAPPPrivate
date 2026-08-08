@@ -119,6 +119,12 @@ class EtiketlyScorePresentationMapper {
     );
   }
 
+  ProductEtiketlyScoreState auditSnapshotRequired() {
+    return ProductEtiketlyScoreState.unavailable(
+      reasons: const ['Puan kaydı güncelleniyor.'],
+    );
+  }
+
   EtiketlyScoreBand bandForDisplayScore(int score) {
     if (score >= 80) return EtiketlyScoreBand.veryGood;
     if (score >= 60) return EtiketlyScoreBand.good;

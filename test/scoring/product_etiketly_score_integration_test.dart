@@ -13,6 +13,9 @@ import 'package:food_analyzer_app/features/product/models/product_review.dart';
 import 'package:food_analyzer_app/features/product/product_page.dart';
 import 'package:food_analyzer_app/features/product/repositories/product_repository.dart';
 import 'package:food_analyzer_app/features/scoring/application/product_etiketly_score_orchestrator.dart';
+import 'package:food_analyzer_app/features/scoring/controllers/product_etiketly_score_controller.dart';
+import 'package:food_analyzer_app/features/scoring/data/score_audit_snapshot_repository.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/etiketly_score_audit_snapshot.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/etiketly_scoring_input.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/presence_evidence.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_evidence_snapshot.dart';
@@ -20,6 +23,7 @@ import 'package:food_analyzer_app/features/scoring/domain/models/scoring_types.d
 import 'package:food_analyzer_app/features/scoring/domain/models/validated_nutrition_scoring_input.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/additive_quality_transformer.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/etiketly_score_calculator.dart';
+import 'package:food_analyzer_app/features/scoring/domain/services/etiketly_score_audit_snapshot_builder.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/etiketly_score_readiness_evaluator.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/nutrition_quality_transformer.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/nutrition_raw_score_calculator.dart';
@@ -44,8 +48,13 @@ void main() {
           product: product,
           allIngredients: [_ordinaryIngredient()],
         );
+        final auditSnapshot = _matchingAuditSnapshot(product);
 
-        await _pumpProductScreen(tester, repository);
+        await _pumpProductScreen(
+          tester,
+          repository,
+          auditSnapshot: auditSnapshot,
+        );
 
         expect(
           find.byKey(const ValueKey('etiketly-score-calculated')),
@@ -58,6 +67,65 @@ void main() {
         expect(repository.getAllIngredientsCalls, 1);
       },
     );
+
+    testWidgets(
+      'audit 22. scoring-ready product without audit shows no number',
+      (tester) async {
+        final product = _productFromInput(completeInput());
+        final repository = _FakeProductRepository(
+          product: product,
+          allIngredients: [_ordinaryIngredient()],
+        );
+
+        await _pumpProductScreen(tester, repository);
+
+        _expectUnavailableWithoutNumber();
+        expect(find.text('Puan kaydı güncelleniyor.'), findsOneWidget);
+      },
+    );
+
+    testWidgets('audit 23. stale fingerprint shows no number', (tester) async {
+      final product = _productFromInput(completeInput());
+      final staleProduct = Product(
+        id: product.id,
+        name: product.name,
+        ingredientsText: 'Yulaf ezmesi, su',
+        nutritionText: product.nutritionText,
+        verificationStatus: product.verificationStatus,
+        scoringEvidence: product.scoringEvidence,
+        createdAt: product.createdAt,
+        updatedAt: product.updatedAt,
+      );
+      final repository = _FakeProductRepository(
+        product: product,
+        allIngredients: [_ordinaryIngredient()],
+      );
+
+      await _pumpProductScreen(
+        tester,
+        repository,
+        auditSnapshot: _matchingAuditSnapshot(staleProduct),
+      );
+
+      _expectUnavailableWithoutNumber();
+      expect(find.text('Puan kaydı güncelleniyor.'), findsOneWidget);
+    });
+
+    testWidgets('audit 24. invalid audit shows no number', (tester) async {
+      final product = _productFromInput(completeInput());
+      final json = _matchingAuditSnapshot(product).toJson()
+        ..['final_score'] = 99.0;
+      final invalid = EtiketlyScoreAuditSnapshot.tryFromJson(json)!;
+      final repository = _FakeProductRepository(
+        product: product,
+        allIngredients: [_ordinaryIngredient()],
+      );
+
+      await _pumpProductScreen(tester, repository, auditSnapshot: invalid);
+
+      _expectUnavailableWithoutNumber();
+      expect(find.text('Puan kaydı güncelleniyor.'), findsOneWidget);
+    });
 
     testWidgets('22. displayed score equals the real final calculator result', (
       tester,
@@ -405,8 +473,9 @@ Future<void> _pumpScoreCard(
 
 Future<void> _pumpProductScreen(
   WidgetTester tester,
-  _FakeProductRepository repository,
-) async {
+  _FakeProductRepository repository, {
+  EtiketlyScoreAuditSnapshot? auditSnapshot,
+}) async {
   tester.view.devicePixelRatio = 1;
   tester.view.physicalSize = const Size(800, 2400);
   addTearDown(() {
@@ -418,6 +487,9 @@ Future<void> _pumpProductScreen(
     ProviderScope(
       overrides: [
         productRepositoryProvider.overrideWithValue(repository),
+        scoreAuditSnapshotRepositoryProvider.overrideWithValue(
+          _FakeAuditSnapshotRepository(auditSnapshot),
+        ),
         userProductLibraryStorageProvider.overrideWithValue(_MemoryStorage()),
       ],
       child: MaterialApp(
@@ -427,6 +499,20 @@ Future<void> _pumpProductScreen(
     ),
   );
   await tester.pumpAndSettle();
+}
+
+EtiketlyScoreAuditSnapshot _matchingAuditSnapshot(Product product) {
+  final assessment = const CanonicalIngredientRiskService().assessIngredients([
+    _ordinaryIngredient(),
+  ]);
+  final evaluation = const ProductEtiketlyScoreOrchestrator().calculate(
+    product: product,
+    canonicalAssessment: assessment,
+  )!;
+  return const EtiketlyScoreAuditSnapshotBuilder().build(
+    product: product,
+    evaluation: evaluation,
+  );
 }
 
 String _displayedScore(WidgetTester tester) {
@@ -490,5 +576,23 @@ class _MemoryStorage implements UserProductLibraryStorage {
   @override
   Future<void> writeString(String key, String value) async {
     _values[key] = value;
+  }
+}
+
+class _FakeAuditSnapshotRepository implements ScoreAuditSnapshotRepository {
+  const _FakeAuditSnapshotRepository(this.snapshot);
+
+  final EtiketlyScoreAuditSnapshot? snapshot;
+
+  @override
+  Future<EtiketlyScoreAuditSnapshot?> fetchCurrent(String productId) async =>
+      snapshot;
+
+  @override
+  Future<ScoreAuditSnapshotWriteResult> insertTrusted(
+    EtiketlyScoreAuditSnapshot snapshot, {
+    required ScoreAuditTriggerSource triggerSource,
+  }) {
+    throw UnsupportedError('Widget test repository is read-only.');
   }
 }

@@ -5,6 +5,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:food_analyzer_app/core/services/supabase_service.dart';
 import 'package:food_analyzer_app/features/product/models/product.dart';
 import 'package:food_analyzer_app/features/product_staging/models/product_candidate.dart';
+import 'package:food_analyzer_app/features/scoring/application/product_score_audit_capture_service.dart';
+import 'package:food_analyzer_app/features/scoring/data/score_audit_snapshot_repository.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/scoring_evidence_merger.dart';
 
 /// Outcome of approving a staged product.
@@ -62,7 +64,12 @@ class StagingApprovalEdits {
 /// `approved`. It NEVER overwrites existing non-null product fields (verified or
 /// manual data is preserved); it only fills gaps.
 class ProductStagingApprovalRepository {
-  const ProductStagingApprovalRepository();
+  const ProductStagingApprovalRepository({
+    ProductScoreAuditCapture scoreAuditCapture =
+        const ProductScoreAuditCaptureService(),
+  }) : _scoreAuditCapture = scoreAuditCapture;
+
+  final ProductScoreAuditCapture _scoreAuditCapture;
 
   static const String _stagingTable = 'product_staging';
   static const String _productsTable = 'products';
@@ -278,12 +285,16 @@ class ProductStagingApprovalRepository {
     final barcode = candidate.barcode?.trim();
     final hasBarcode = barcode != null && barcode.isNotEmpty;
 
+    final String lookupColumn;
+    final String lookupValue;
     final ApproveStagedResult result;
     if (hasBarcode) {
+      lookupColumn = 'barcode';
+      lookupValue = barcode;
       result = await _upsertProductByColumn(
         client,
-        column: 'barcode',
-        value: barcode,
+        column: lookupColumn,
+        value: lookupValue,
         candidate: candidate,
         edits: edits,
       );
@@ -291,14 +302,32 @@ class ProductStagingApprovalRepository {
       // No-barcode (web-discovered) product: dedupe by source_url so the same
       // page approved twice never creates a duplicate product.
       final sourceUrl = candidate.sourceUrl!.trim();
+      lookupColumn = 'source_url';
+      lookupValue = sourceUrl;
       result = await _upsertProductByColumn(
         client,
-        column: 'source_url',
-        value: sourceUrl,
+        column: lookupColumn,
+        value: lookupValue,
         candidate: candidate,
         edits: edits,
       );
     }
+
+    final savedProductRow = await client
+        .from(_productsTable)
+        .select('id')
+        .eq(lookupColumn, lookupValue)
+        .maybeSingle();
+    final savedProductId = savedProductRow?['id'];
+    if (savedProductId is! String) {
+      throw StateError(
+        'Approved product could not be reloaded for score audit.',
+      );
+    }
+    await _scoreAuditCapture.captureCurrent(
+      savedProductId,
+      triggerSource: ScoreAuditTriggerSource.stagingApproval,
+    );
 
     return _finalizeStagingApproval(
       client,

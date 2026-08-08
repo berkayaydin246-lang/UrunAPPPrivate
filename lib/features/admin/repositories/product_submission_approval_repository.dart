@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:food_analyzer_app/core/services/supabase_service.dart';
 import 'package:food_analyzer_app/features/product/models/product.dart';
 import 'package:food_analyzer_app/features/product/models/nutrition_data.dart';
+import 'package:food_analyzer_app/features/scoring/application/product_score_audit_capture_service.dart';
+import 'package:food_analyzer_app/features/scoring/data/score_audit_snapshot_repository.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_evidence_snapshot.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/scoring_evidence_merger.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/scoring_evidence_nutrition_consistency.dart';
@@ -18,7 +20,12 @@ enum ApproveProductResult {
 }
 
 class ProductSubmissionApprovalRepository {
-  const ProductSubmissionApprovalRepository();
+  const ProductSubmissionApprovalRepository({
+    ProductScoreAuditCapture scoreAuditCapture =
+        const ProductScoreAuditCaptureService(),
+  }) : _scoreAuditCapture = scoreAuditCapture;
+
+  final ProductScoreAuditCapture _scoreAuditCapture;
 
   // ── read ──────────────────────────────────────────────────────────────────
 
@@ -208,7 +215,24 @@ class ProductSubmissionApprovalRepository {
       result = ApproveProductResult.updatedExisting;
     }
 
-    // 3. Mark submission approved.
+    // 3. Capture the coherent saved scoring state before publishing approval.
+    final savedProductRow = await client
+        .from('products')
+        .select('id')
+        .eq('barcode', barcode)
+        .maybeSingle();
+    final savedProductId = savedProductRow?['id'];
+    if (savedProductId is! String) {
+      throw StateError(
+        'Approved product could not be reloaded for score audit.',
+      );
+    }
+    await _scoreAuditCapture.captureCurrent(
+      savedProductId,
+      triggerSource: ScoreAuditTriggerSource.submissionApproval,
+    );
+
+    // 4. Mark submission approved.
     _debugSubmissionApprovalLog(
       '[Approval] updating product_submissions.status = approved',
     );

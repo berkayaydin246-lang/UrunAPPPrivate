@@ -1,7 +1,9 @@
 import 'package:food_analyzer_app/features/analysis/models/canonical_additive_assessment.dart';
 import 'package:food_analyzer_app/features/product/models/product.dart';
 import 'package:food_analyzer_app/features/scoring/adapters/product_scoring_input_adapter.dart';
+import 'package:food_analyzer_app/features/scoring/application/product_etiketly_score_evaluation.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/nutrition_quality_result.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/nutrition_raw_score_result.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/validated_nutrition_scoring_input.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/additive_quality_transformer.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/etiketly_score_calculator.dart';
@@ -36,8 +38,22 @@ class ProductEtiketlyScoreOrchestrator {
     required Product product,
     required CanonicalAdditiveAssessment? canonicalAssessment,
   }) {
-    if (canonicalAssessment == null) {
+    final evaluation = calculate(
+      product: product,
+      canonicalAssessment: canonicalAssessment,
+    );
+    if (evaluation == null) {
       return presentationMapper.missingCanonicalAssessment();
+    }
+    return presentationMapper.fromResult(evaluation.result);
+  }
+
+  ProductEtiketlyScoreEvaluation? calculate({
+    required Product product,
+    required CanonicalAdditiveAssessment? canonicalAssessment,
+  }) {
+    if (canonicalAssessment == null) {
+      return null;
     }
 
     final input = inputAdapter.fromProduct(product);
@@ -51,12 +67,11 @@ class ProductEtiketlyScoreOrchestrator {
       additiveQuality: additiveQuality,
     );
 
+    NutritionRawScoreResult? rawNutrition;
     NutritionQualityResult? nutritionQuality;
     if (nutritionReadiness.isScorable) {
       final validatedInput = ValidatedNutritionScoringInput.validate(input);
-      final rawNutrition = nutritionRawScoreCalculator.calculate(
-        validatedInput,
-      );
+      rawNutrition = nutritionRawScoreCalculator.calculate(validatedInput);
       nutritionQuality = nutritionQualityTransformer.transform(rawNutrition);
     }
 
@@ -65,6 +80,14 @@ class ProductEtiketlyScoreOrchestrator {
       additiveQuality: additiveQuality,
       readiness: finalReadiness,
     );
-    return presentationMapper.fromResult(result);
+    return ProductEtiketlyScoreEvaluation(
+      input: input,
+      nutritionReadiness: nutritionReadiness,
+      rawNutrition: rawNutrition,
+      nutritionQuality: nutritionQuality,
+      additiveQuality: additiveQuality,
+      finalReadiness: finalReadiness,
+      result: result,
+    );
   }
 }
