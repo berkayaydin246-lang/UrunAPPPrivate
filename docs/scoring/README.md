@@ -171,6 +171,19 @@ the 2022 solid-food update, the 2023 beverage update, and the Santé publique
 France Questions & Answers dated 17 March 2025. This reference does not make
 Etiketly's future combined result an official Nutri-Score.
 
+Before changing official nutrition threshold code, consult:
+
+- [NUTRITION_METHODOLOGY_2023.md](NUTRITION_METHODOLOGY_2023.md)
+- [OFFICIAL_REFERENCE_FIXTURES_2023.md](OFFICIAL_REFERENCE_FIXTURES_2023.md)
+
+These documents are the local source-of-truth record for the future nutrition
+raw calculator's numeric methodology and official-calculator controls. They do
+not define the final Etiketly 0-100 score. The verified methodology records a
+known Belgian FPS workbook discrepancy at exact beverage salt `3.2 g/100 mL`:
+the March 2025 normative specification and current Q&A assign 15 points, while
+the workbook returns 16. The explicit textual specification is authoritative
+for the local boundary decision.
+
 ## Next phase
 
 Any raw calculation, 0-100 transformation, additive weight, public result, and
