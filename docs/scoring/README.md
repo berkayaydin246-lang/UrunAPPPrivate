@@ -11,9 +11,10 @@ boundary. Phase 2B-5 transforms that raw result into an internal, category-aware
 deterministic additive/ingredient identity and risk assessment authority with
 deduplication, match authority, strict future eligibility, and non-numeric NNS
 overlap metadata. Phase 2B-7 transforms eligible canonical additives into the
-internal, versioned `additiveQuality` component in `0..100`. No phase currently
-calculates a final Etiketly value, letter grade, or combined nutrition and
-additive result.
+internal, versioned `additiveQuality` component in `0..100`. Phase 2B-8 adds the
+strictly eligible, internal Etiketly Score v1 as an `80% nutritionQuality` and
+`20% additiveQuality` weighted arithmetic result. Public score UI and public
+labels are not enabled.
 
 The domain module is pure Dart. It does not access UI state, Riverpod,
 repositories, Supabase, the network, or AI services.
@@ -307,13 +308,46 @@ comparison, 50 calibration fixtures, limitations, and remaining catalogue gaps
 are documented in
 [ADDITIVE_QUALITY_TRANSFORM_V1.md](ADDITIVE_QUALITY_TRANSFORM_V1.md).
 
-Both `nutritionQuality` and `additiveQuality` now exist internally. They are not
-combined. No nutrition/additive weighting, final Etiketly Score, letter grade,
-or public score UI exists.
+## Etiketly Score v1
+
+Phase 2B-8 implements the internal final score in:
+
+- `features/scoring/domain/models/etiketly_score_readiness_result.dart`
+- `features/scoring/domain/models/etiketly_score_result.dart`
+- `features/scoring/domain/services/etiketly_score_readiness_evaluator.dart`
+- `features/scoring/domain/services/etiketly_score_calculator.dart`
+
+The only production formula is:
+
+```text
+EtiketlyScore = 0.80 * nutritionQuality + 0.20 * additiveQuality
+```
+
+The transform version is `etiketly_score_v1`. It preserves unrounded component
+precision and retains the nutrition methodology, nutrition transform, additive
+transform, and final-score versions independently.
+
+Final eligibility is stricter than numeric component availability. Nutrition
+must pass existing readiness, ingredient evidence must be complete, and the
+canonical additive assessment must have no unresolved tokens, review-required
+additive matches, conflicts, unknown additive risks, or other ineligible
+canonical additives. A recognized ordinary ingredient does not itself block.
+Legacy and incomplete products may validly remain without a score.
+
+Qualifying beverage NNS remains represented once through nutrition methodology;
+the additive overlap exclusion is respected and final v1 adds no new NNS
+penalty. Formula selection, five model candidates, six weight candidates, 60
+calibration cases, 40 full-pipeline fixtures, extremes, readiness, rounding,
+and limitations are documented in
+[ETIKETLY_SCORE_V1.md](ETIKETLY_SCORE_V1.md).
+
+The score is an Etiketly content-profile result, not a health/safety percentage,
+medical advice, or disease-risk probability. It is not persisted and is not
+shown in normal product UI in this phase.
 
 ## Next phase
 
-Phase 2B-8 may define and calibrate a separately versioned final combination
-policy. No weight, final Etiketly Score, public result, or score UI exists yet.
-Catalogue coverage review and any backfill require a separate controlled
-process and must not guess evidence from product names.
+Phase 2B-9 may define user presentation, labels, colours, and the guarded public
+score experience after internal results are inspected. Catalogue coverage,
+backfill, persistence, and caching require separate controlled processes with
+version invalidation and must not guess evidence from product names.
