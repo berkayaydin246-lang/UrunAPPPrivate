@@ -10,9 +10,10 @@ boundary. Phase 2B-5 transforms that raw result into an internal, category-aware
 `nutritionQuality` component in `0..100`. Phase 2B-6 adds one canonical,
 deterministic additive/ingredient identity and risk assessment authority with
 deduplication, match authority, strict future eligibility, and non-numeric NNS
-overlap metadata. No phase currently calculates a final Etiketly value,
-additive numeric result, letter grade, or combined nutrition and additive
-result.
+overlap metadata. Phase 2B-7 transforms eligible canonical additives into the
+internal, versioned `additiveQuality` component in `0..100`. No phase currently
+calculates a final Etiketly value, letter grade, or combined nutrition and
+additive result.
 
 The domain module is pure Dart. It does not access UI state, Riverpod,
 repositories, Supabase, the network, or AI services.
@@ -281,12 +282,38 @@ See
 [ADDITIVE_ASSESSMENT_FOUNDATION.md](ADDITIVE_ASSESSMENT_FOUNDATION.md) for the
 authority, identity, conflict, hard-coded-rule, and catalogue-gap audit.
 
-There is still no additive numeric score, additive penalty, nutrition/additive
-weight, combined Etiketly Score, or public score UI.
+## Additive quality transform
+
+Phase 2B-7 implements `additiveQuality` in:
+
+- `features/scoring/domain/models/additive_quality_result.dart`
+- `features/scoring/domain/services/additive_quality_transformer.dart`
+
+The transform consumes only `CanonicalAdditiveAssessment`, uses unique eligible
+canonical additives, and applies a tier-wise diminishing-return penalty for
+reviewed low/medium/high classifications. Unknown, unresolved, fuzzy,
+conflicted, ordinary, and otherwise ineligible items receive no invented
+numeric fallback and remain diagnostic.
+
+Qualifying beverage NNS carrying the Phase 2B-6 nutrition-overlap flag remains
+visible but is excluded from additive numeric contribution because that signal
+is already represented in beverage nutrition methodology. Non-beverage
+sweeteners are not automatically excluded.
+
+The internal result retains unrounded `double` precision, a per-tier breakdown,
+overlap exclusions, unknown/ineligible counts, clamp metadata, and transform
+version `additive_quality_transform_v1`. Formula, constants, candidate
+comparison, 50 calibration fixtures, limitations, and remaining catalogue gaps
+are documented in
+[ADDITIVE_QUALITY_TRANSFORM_V1.md](ADDITIVE_QUALITY_TRANSFORM_V1.md).
+
+Both `nutritionQuality` and `additiveQuality` now exist internally. They are not
+combined. No nutrition/additive weighting, final Etiketly Score, letter grade,
+or public score UI exists.
 
 ## Next phase
 
-Phase 2B-7 may calibrate an additive component using the canonical assessment.
-No weight, final Etiketly Score, public result, or score UI exists yet. Catalogue
-coverage review and any backfill require a separate controlled process and must
-not guess evidence from product names.
+Phase 2B-8 may define and calibrate a separately versioned final combination
+policy. No weight, final Etiketly Score, public result, or score UI exists yet.
+Catalogue coverage review and any backfill require a separate controlled
+process and must not guess evidence from product names.
