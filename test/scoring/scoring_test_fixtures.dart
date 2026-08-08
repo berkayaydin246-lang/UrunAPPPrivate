@@ -3,6 +3,7 @@ import 'package:food_analyzer_app/features/scoring/domain/models/etiketly_scorin
 import 'package:food_analyzer_app/features/scoring/domain/models/evidence_value.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/presence_evidence.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_category_evidence.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/scoring_classification_facts.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_nutrition_data.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_types.dart';
 
@@ -73,6 +74,8 @@ EtiketlyScoringInput completeInput({
   NutritionBasis? basis,
   NutritionProductState productState = NutritionProductState.asSold,
   ScoringNutritionData? nutrition,
+  ScoringClassificationFacts classificationFacts =
+      const ScoringClassificationFacts(),
   CompositionPercentageEvidence fvlEvidence =
       const CompositionPercentageEvidence.provenAbsent(
         provenance: EvidenceProvenance.declaredLabel,
@@ -95,6 +98,7 @@ EtiketlyScoringInput completeInput({
     nutritionBasis: resolvedBasis,
     productState: productState,
     categoryEvidence: categoryEvidence ?? explicitCategory(category),
+    classificationFacts: classificationFacts,
     fvlEvidence: fvlEvidence,
     nnsEvidence: nnsEvidence,
     ingredientEvidenceCompleteness: ingredientCompleteness,

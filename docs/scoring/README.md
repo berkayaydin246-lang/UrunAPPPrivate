@@ -3,10 +3,11 @@
 ## Current scope
 
 Phases 2B-1 through 2B-3 determine whether the available product evidence is
-sufficient for a future deterministic nutrition calculation, persist that
-source evidence, and let an admin verify submission evidence. They do not
-calculate a raw nutrition value, a 0-100 Etiketly value, a letter, or a combined
-nutrition and additive result.
+sufficient for deterministic nutrition calculation, persist that source
+evidence, and let an admin verify submission evidence. Phase 2B-4 adds the pure
+updated-methodology raw nutrition calculator behind that strict readiness
+boundary. No phase currently calculates a 0-100 Etiketly value, additive
+numeric result, letter grade, or combined nutrition and additive result.
 
 The domain module is pure Dart. It does not access UI state, Riverpod,
 repositories, Supabase, the network, or AI services.
@@ -51,9 +52,8 @@ Evidence quality and warnings are diagnostic only and never bypass a blocker.
   percentage candidates
 
 The JSON object contains `schema_version: 1`. This evidence schema version is
-only the serialization contract. It is not a methodology version and is not a
-future scoring algorithm version. There is no scoring algorithm version yet,
-because no score exists.
+only the serialization contract. It is independent from the raw nutrition
+methodology version and is not a future combined Etiketly algorithm version.
 
 Unsupported future schema versions are ignored conservatively. Unknown future
 enum strings degrade to their domain `unknown` state where possible. Malformed,
@@ -176,17 +176,55 @@ Before changing official nutrition threshold code, consult:
 - [NUTRITION_METHODOLOGY_2023.md](NUTRITION_METHODOLOGY_2023.md)
 - [OFFICIAL_REFERENCE_FIXTURES_2023.md](OFFICIAL_REFERENCE_FIXTURES_2023.md)
 
-These documents are the local source-of-truth record for the future nutrition
-raw calculator's numeric methodology and official-calculator controls. They do
+These documents are the local source-of-truth record for the implemented raw
+calculator's numeric methodology and official-calculator controls. They do
 not define the final Etiketly 0-100 score. The verified methodology records a
 known Belgian FPS workbook discrepancy at exact beverage salt `3.2 g/100 mL`:
 the March 2025 normative specification and current Q&A assign 15 points, while
 the workbook returns 16. The explicit textual specification is authoritative
 for the local boundary decision.
 
+## Raw nutrition calculator
+
+Phase 2B-4 implements the deterministic raw nutrition component in:
+
+- `domain/models/validated_nutrition_scoring_input.dart`
+- `domain/models/nutrition_raw_score_result.dart`
+- `domain/services/nutrition_point_calculator.dart`
+- `domain/services/nutrition_raw_score_calculator.dart`
+
+All paths above are under `lib/features/scoring/`. The stable component
+methodology identifier is `updated_nutrition_profile_2023_v1`. It identifies
+only this updated raw nutrition methodology, not a combined Etiketly algorithm.
+
+`ValidatedNutritionScoringInput.validate` reruns `ScoringReadinessEvaluator`
+and is the only public construction path into the calculator. Missing evidence,
+wrong basis, unknown/out-of-scope category, unknown beverage NNS, non-finite or
+negative values, invalid FVL, and impossible fat-ratio states are rejected;
+values are never clamped or repaired. Accepted salt and energy kJ are consumed
+as provided, so the calculator performs no sodium or kcal conversion.
+
+`NutritionRawScoreResult` separates negative and positive point breakdowns,
+calculated protein from methodology-applied protein, and raw points. General
+food, red meat, and fats can suppress calculated protein at their documented N
+thresholds; red meat also retains the pre-cap calculation. Cheese retains its
+special high-N protein behavior. Plain water returns
+`PlainWaterNutritionRawScoreResult`, whose numeric totals and `rawScore` are
+null rather than fabricated.
+
+Tests under `test/scoring/` cover every numeric threshold below, exactly, and
+above; category suppression/cap rules; official-calculator verified controls;
+plain water; and internal arithmetic archetypes. The known workbook defect is
+an explicit regression: exact beverage salt `3.2` follows the concordant
+textual specification and receives 15 points.
+
+This raw result is not an Etiketly Score. There is no 0-100 transformation,
+additive component, nutrition/additive weighting, production A/B/C/D/E mapping,
+or normal-user score UI.
+
 ## Next phase
 
-Any raw calculation, 0-100 transformation, additive weight, public result, and
+Any 0-100 transformation, additive component or weight, public result, and
 score UI remain explicitly outside this phase. Legacy catalog backfill also
 requires a separate controlled process and must not guess evidence from product
 names.
