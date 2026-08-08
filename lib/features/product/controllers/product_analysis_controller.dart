@@ -6,6 +6,7 @@ import 'package:food_analyzer_app/features/analysis/models/product_analysis_resu
 import 'package:food_analyzer_app/features/analysis/services/ingredient_canonicalizer.dart';
 import 'package:food_analyzer_app/features/analysis/services/ingredient_matcher_service.dart';
 import 'package:food_analyzer_app/features/product/controllers/product_detail_controller.dart';
+import 'package:food_analyzer_app/features/scoring/adapters/product_scoring_input_adapter.dart';
 
 /// Runs the full analysis pipeline on a product's ingredients_text.
 ///
@@ -31,6 +32,10 @@ final productAnalysisProvider = FutureProvider.family<ProductAnalysisResult?, St
   // Use the same matching + engine as the OCR analysis flow.
   const matcher = IngredientMatcherService();
   const engine = AnalysisEngine();
+  final scoringCategory = const ProductScoringInputAdapter()
+      .fromProduct(product)
+      .categoryEvidence
+      .resolvedCategory;
   final allergenTokens = IngredientCanonicalizer.extractAllergenTokens(text);
 
   final structuredIngredients = matcher.parseIngredients(text);
@@ -56,7 +61,10 @@ final productAnalysisProvider = FutureProvider.family<ProductAnalysisResult?, St
     structuredIngredients,
     allIngredients,
   );
-  final result = engine.analyze(matchingResult);
+  final result = engine.analyze(
+    matchingResult,
+    scoringCategory: scoringCategory,
+  );
   final displayItemCount = _displayItemCount(result);
   final displayedUnknowns = result.unknownIngredients.toSet();
   final droppedTokens = matchingResult

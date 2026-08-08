@@ -14,6 +14,9 @@ import 'package:food_analyzer_app/features/product/models/nutrition_data.dart';
 import 'package:food_analyzer_app/features/product/models/product.dart';
 import 'package:food_analyzer_app/features/user_library/controllers/user_product_library_controller.dart';
 import 'package:food_analyzer_app/features/product_reports/widgets/product_report_card.dart';
+import 'package:food_analyzer_app/features/scoring/controllers/product_etiketly_score_controller.dart';
+import 'package:food_analyzer_app/features/scoring/presentation/etiketly_score_presentation.dart';
+import 'package:food_analyzer_app/features/scoring/widgets/etiketly_score_card.dart';
 import 'package:food_analyzer_app/features/user_library/models/local_product_snapshot.dart';
 
 class ProductScreen extends ConsumerStatefulWidget {
@@ -111,6 +114,8 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
             children: [
               _ProductHeader(product: detail.product!),
               const SizedBox(height: 14),
+              _ProductEtiketlyScoreSection(productId: widget.productId),
+              const SizedBox(height: 14),
               _ComparisonEntryCard(
                 product: detail.product!,
                 onCompare: () => _startComparison(detail.product!),
@@ -194,6 +199,24 @@ class _ProductScreenState extends ConsumerState<ProductScreen> {
         sourceProduct: product,
         comparedProduct: selected,
       ),
+    );
+  }
+}
+
+class _ProductEtiketlyScoreSection extends ConsumerWidget {
+  const _ProductEtiketlyScoreSection({required this.productId});
+
+  final String productId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scoreAsync = ref.watch(productEtiketlyScoreProvider(productId));
+    return scoreAsync.when(
+      loading: () =>
+          const EtiketlyScoreCard(state: ProductEtiketlyScoreState.loading()),
+      error: (_, _) =>
+          const EtiketlyScoreCard(state: ProductEtiketlyScoreState.error()),
+      data: (state) => EtiketlyScoreCard(state: state),
     );
   }
 }
@@ -460,7 +483,7 @@ class _AnalysisSection extends StatelessWidget {
           child: CircularProgressIndicator(),
         ),
       ),
-      error: (error, _) => Container(
+      error: (_, _) => Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppColors.dangerBg,
@@ -474,7 +497,7 @@ class _AnalysisSection extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                'Analiz yüklenemedi: ${error.toString()}',
+                'İçerik analizi şu anda yüklenemedi. Lütfen tekrar deneyin.',
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
             ),

@@ -13,8 +13,9 @@ deduplication, match authority, strict future eligibility, and non-numeric NNS
 overlap metadata. Phase 2B-7 transforms eligible canonical additives into the
 internal, versioned `additiveQuality` component in `0..100`. Phase 2B-8 adds the
 strictly eligible, internal Etiketly Score v1 as an `80% nutritionQuality` and
-`20% additiveQuality` weighted arithmetic result. Public score UI and public
-labels are not enabled.
+`20% additiveQuality` weighted arithmetic result. Phase 2B-9 adds the guarded
+Product Detail score card, presentation-only public labels, deterministic
+explanations, and strict non-numeric unavailable/error states.
 
 The domain module is pure Dart. It does not access UI state, Riverpod,
 repositories, Supabase, the network, or AI services.
@@ -343,11 +344,19 @@ and limitations are documented in
 
 The score is an Etiketly content-profile result, not a health/safety percentage,
 medical advice, or disease-risk probability. It is not persisted and is not
-shown in normal product UI in this phase.
+used in lists or comparison. Product Detail now displays it only when final
+readiness passes; incomplete and legacy products remain explicitly unavailable
+without a fallback number. See
+[ETIKETLY_SCORE_UI_V1.md](ETIKETLY_SCORE_UI_V1.md) for display rounding, public
+bands, blocker wording, accessibility, and legacy behavior.
+
+The result remains deterministic. AI and user voting do not affect the numeric
+score. It is not medical advice, and initial catalogue score coverage is
+expected to remain partial while verified evidence is rolled out.
 
 ## Next phase
 
-Phase 2B-9 may define user presentation, labels, colours, and the guarded public
-score experience after internal results are inspected. Catalogue coverage,
-backfill, persistence, and caching require separate controlled processes with
-version invalidation and must not guess evidence from product names.
+Catalogue snapshot coverage analysis, list/comparison integration, backfill,
+persistence, and caching remain separate controlled phases. Any future stored
+score must include version invalidation and must never guess evidence from
+product names.
