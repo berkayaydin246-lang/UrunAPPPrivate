@@ -51,13 +51,21 @@ void main() {
     expect(sql, contains('on conflict on constraint'));
   });
 
-  test('public RPC exposes only the current product snapshot', () {
+  test('public RPC exposes only the exact current input snapshot', () {
     expect(sql, contains('get_current_product_score_audit_snapshot'));
-    expect(sql, contains('order by created_at desc, id desc limit 1'));
+    expect(sql, contains('and input_fingerprint = p_input_fingerprint'));
+    expect(sql, contains('and score_version = p_score_version'));
     expect(
       sql,
       contains(
-        'grant execute on function public.get_current_product_score_audit_snapshot(uuid) to anon, authenticated',
+        'and nutrition_methodology_version = p_nutrition_methodology_version',
+      ),
+    );
+    expect(sql, isNot(contains('order by created_at desc')));
+    expect(
+      sql,
+      contains(
+        'grant execute on function public.get_current_product_score_audit_snapshot( uuid, text, text, text, text, text ) to anon, authenticated',
       ),
     );
   });

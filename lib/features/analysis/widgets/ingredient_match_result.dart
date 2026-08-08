@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_analyzer_app/features/analysis/models/ingredient_match.dart';
 import 'package:food_analyzer_app/features/analysis/services/canonical_ingredient_risk_service.dart';
+import 'package:food_analyzer_app/features/product/models/ingredient.dart';
 import 'package:food_analyzer_app/features/product/models/ingredient_detail.dart';
 import 'package:food_analyzer_app/features/analysis/pages/ingredient_detail_page.dart';
 import 'package:food_analyzer_app/shared/widgets/ingredient_explanation_card.dart';
@@ -158,17 +159,14 @@ class IngredientMatchItem extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
-                color: canonicalIngredient?.getRiskLevelColor().withAlpha(51),
-                border: Border.all(
-                  color:
-                      canonicalIngredient?.getRiskLevelColor() ?? Colors.grey,
-                ),
+                color: _riskLevelColor(canonicalIngredient).withAlpha(51),
+                border: Border.all(color: _riskLevelColor(canonicalIngredient)),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
                 'Etiketly değerlendirmesi: ${canonicalIngredient?.getRiskLevelTurkish() ?? 'Bilinmiyor'}',
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: canonicalIngredient?.getRiskLevelColor(),
+                  color: _riskLevelColor(canonicalIngredient),
                 ),
               ),
             ),
@@ -244,6 +242,15 @@ class IngredientMatchItem extends StatelessWidget {
       ),
     );
   }
+}
+
+Color _riskLevelColor(Ingredient? ingredient) {
+  return switch (ingredient?.riskLevel) {
+    'low' => Colors.green,
+    'medium' => Colors.amber,
+    'high' => Colors.red,
+    _ => Colors.grey,
+  };
 }
 
 /// Widget to display ingredient matching results

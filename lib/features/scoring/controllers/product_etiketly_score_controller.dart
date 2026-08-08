@@ -64,7 +64,7 @@ final productEtiketlyScoreProvider =
           evaluation: evaluation,
         );
         try {
-          final trusted = await auditRepository.fetchCurrent(productId);
+          final trusted = await auditRepository.fetchMatching(current);
           final decision = auditGate.evaluate(
             current: current,
             trusted: trusted,

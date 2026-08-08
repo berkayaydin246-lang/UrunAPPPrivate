@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart';
+import 'dart:developer' as developer;
+
 import 'package:food_analyzer_app/features/analysis/models/ingredient_match.dart';
 import 'package:food_analyzer_app/features/product/models/ingredient.dart';
 import 'package:food_analyzer_app/features/analysis/services/ingredient_canonicalizer.dart';
@@ -113,9 +114,10 @@ class IngredientMatcherService {
     required String reason,
     required bool selected,
   }) {
-    if (!kDebugMode) return;
-    debugPrint(
+    if (const bool.fromEnvironment('dart.vm.product')) return;
+    developer.log(
       '[OCR-MATCH] token="$token" candidate="$candidate" confidence=${confidence.toStringAsFixed(2)} reason=$reason selected=$selected',
+      name: 'IngredientMatcherService',
     );
   }
 

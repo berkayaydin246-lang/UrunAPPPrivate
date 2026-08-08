@@ -585,8 +585,9 @@ class _FakeAuditSnapshotRepository implements ScoreAuditSnapshotRepository {
   final EtiketlyScoreAuditSnapshot? snapshot;
 
   @override
-  Future<EtiketlyScoreAuditSnapshot?> fetchCurrent(String productId) async =>
-      snapshot;
+  Future<EtiketlyScoreAuditSnapshot?> fetchMatching(
+    EtiketlyScoreAuditSnapshot current,
+  ) async => snapshot;
 
   @override
   Future<ScoreAuditSnapshotWriteResult> insertTrusted(

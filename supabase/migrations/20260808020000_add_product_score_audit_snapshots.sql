@@ -271,7 +271,12 @@ GRANT EXECUTE ON FUNCTION public.record_product_score_audit_snapshot(
 ) TO authenticated, service_role, postgres;
 
 CREATE OR REPLACE FUNCTION public.get_current_product_score_audit_snapshot(
-  p_product_id UUID
+  p_product_id UUID,
+  p_input_fingerprint TEXT,
+  p_score_version TEXT,
+  p_nutrition_methodology_version TEXT,
+  p_nutrition_transform_version TEXT,
+  p_additive_transform_version TEXT
 )
 RETURNS JSONB
 LANGUAGE SQL
@@ -282,11 +287,17 @@ AS $$
   SELECT snapshot
   FROM public.product_score_audit_snapshots
   WHERE product_id = p_product_id
-  ORDER BY created_at DESC, id DESC
+    AND input_fingerprint = p_input_fingerprint
+    AND score_version = p_score_version
+    AND nutrition_methodology_version = p_nutrition_methodology_version
+    AND nutrition_transform_version = p_nutrition_transform_version
+    AND additive_transform_version = p_additive_transform_version
   LIMIT 1;
 $$;
 
-REVOKE ALL ON FUNCTION public.get_current_product_score_audit_snapshot(UUID)
-  FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION public.get_current_product_score_audit_snapshot(UUID)
-  TO anon, authenticated, service_role, postgres;
+REVOKE ALL ON FUNCTION public.get_current_product_score_audit_snapshot(
+  UUID, TEXT, TEXT, TEXT, TEXT, TEXT
+) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.get_current_product_score_audit_snapshot(
+  UUID, TEXT, TEXT, TEXT, TEXT, TEXT
+) TO anon, authenticated, service_role, postgres;

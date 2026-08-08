@@ -24,7 +24,9 @@ class ScoreAuditSnapshotWriteResult {
 }
 
 abstract interface class ScoreAuditSnapshotRepository {
-  Future<EtiketlyScoreAuditSnapshot?> fetchCurrent(String productId);
+  Future<EtiketlyScoreAuditSnapshot?> fetchMatching(
+    EtiketlyScoreAuditSnapshot current,
+  );
 
   Future<ScoreAuditSnapshotWriteResult> insertTrusted(
     EtiketlyScoreAuditSnapshot snapshot, {
@@ -37,10 +39,19 @@ class SupabaseScoreAuditSnapshotRepository
   const SupabaseScoreAuditSnapshotRepository();
 
   @override
-  Future<EtiketlyScoreAuditSnapshot?> fetchCurrent(String productId) async {
+  Future<EtiketlyScoreAuditSnapshot?> fetchMatching(
+    EtiketlyScoreAuditSnapshot current,
+  ) async {
     final response = await SupabaseService.client.rpc(
       'get_current_product_score_audit_snapshot',
-      params: {'p_product_id': productId},
+      params: {
+        'p_product_id': current.productId,
+        'p_input_fingerprint': current.inputFingerprint,
+        'p_score_version': current.scoreVersion,
+        'p_nutrition_methodology_version': current.nutritionMethodologyVersion,
+        'p_nutrition_transform_version': current.nutritionTransformVersion,
+        'p_additive_transform_version': current.additiveTransformVersion,
+      },
     );
     if (response == null) return null;
     final snapshot = EtiketlyScoreAuditSnapshot.tryFromJson(response);

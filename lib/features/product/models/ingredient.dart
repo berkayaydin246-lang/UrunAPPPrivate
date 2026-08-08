@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:food_analyzer_app/features/product/models/ingredient_risk_reference.dart';
 
 class Ingredient {
@@ -119,22 +118,6 @@ class Ingredient {
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
     };
-  }
-
-  /// Get risk level color
-  Color getRiskLevelColor() {
-    switch (riskLevel) {
-      case 'low':
-        return Colors.green;
-      case 'medium':
-        return Colors.amber;
-      case 'high':
-        return Colors.red;
-      case 'unknown':
-        return Colors.grey;
-      default:
-        return Colors.grey;
-    }
   }
 
   /// Get user-friendly risk level label in Turkish

@@ -169,8 +169,16 @@ class _MemoryAuditRepository implements ScoreAuditSnapshotRepository {
   bool failWrites = false;
 
   @override
-  Future<EtiketlyScoreAuditSnapshot?> fetchCurrent(String productId) async {
-    return rows.where((row) => row.productId == productId).lastOrNull;
+  Future<EtiketlyScoreAuditSnapshot?> fetchMatching(
+    EtiketlyScoreAuditSnapshot current,
+  ) async {
+    return rows
+        .where(
+          (row) =>
+              row.productId == current.productId &&
+              row.inputFingerprint == current.inputFingerprint,
+        )
+        .lastOrNull;
   }
 
   @override

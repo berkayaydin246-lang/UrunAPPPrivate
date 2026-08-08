@@ -31,7 +31,7 @@ formula:
 finalScore = 0.80 * nutritionQuality + 0.20 * additiveQuality
 ```
 
-`ScoreAuditSnapshotRepository` exposes only current-snapshot retrieval and a
+`ScoreAuditSnapshotRepository` exposes only exact-current-input retrieval and a
 trusted append operation. `ScoreAuditSnapshotFormatter` provides concise
 internal/admin/legal text without exposing raw JSON in the consumer UI.
 
@@ -119,8 +119,11 @@ path. It accepts only `service_role` or a user whose server-managed JWT
 metadata mirroring, supported versions, score ranges, and 80/20 reconciliation.
 No service-role secret is present in Flutter.
 
-`get_current_product_score_audit_snapshot` exposes only the latest snapshot for
-one product. It does not expose history or trigger/admin metadata.
+`get_current_product_score_audit_snapshot` exposes only the snapshot matching
+the current product ID, fingerprint, and complete scoring-version tuple. It
+does not expose history or trigger/admin metadata. Exact lookup also makes an
+idempotent A-to-B-to-A input reversion usable without duplicating immutable
+rows or incorrectly returning the newer B snapshot.
 
 ## Creation Lifecycle
 
