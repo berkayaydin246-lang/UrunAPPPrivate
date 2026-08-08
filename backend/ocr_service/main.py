@@ -136,6 +136,7 @@ class ProductLabelRequest(BaseModel):
 
 
 class NutritionFacts(BaseModel):
+    energy_kj: float | None = None
     energy_kcal: float | None = None
     fat: float | None = None
     saturated_fat: float | None = None
@@ -151,7 +152,7 @@ class NutritionFacts(BaseModel):
         return any(
             v is not None
             for v in (
-                self.energy_kcal, self.fat, self.saturated_fat,
+                self.energy_kj, self.energy_kcal, self.fat, self.saturated_fat,
                 self.carbohydrates, self.sugars, self.fiber,
                 self.proteins, self.salt, self.sodium,
             )
@@ -165,10 +166,28 @@ class NutritionFacts(BaseModel):
         return result
 
 
+class IngredientPercentageCandidate(BaseModel):
+    ingredient_text: str
+    percentage: float = Field(ge=0.0, le=100.0)
+    evidence_text: str
+
+
+class ProductLabelEvidenceCandidates(BaseModel):
+    nutrition_basis: str = "unknown"
+    nutrition_basis_text: str | None = None
+    nutrition_product_state: str = "unknown"
+    nutrition_product_state_text: str | None = None
+    ingredient_percentages: list[IngredientPercentageCandidate] = Field(
+        default_factory=list
+    )
+
+
 class ProductLabelResponse(BaseModel):
     ingredients: IngredientResponse
     nutrition: dict[str, Any] | None = None
     extraction_status: str  # success | partial | failed
+    extraction_schema_version: int = 2
+    evidence_candidates: ProductLabelEvidenceCandidates | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -1351,8 +1370,12 @@ For ingredients:
 - If no ingredients section is visible, leave INGREDIENTS empty and add a WARNING.
 
 For nutrition facts:
-- Extract only per-100g or per-100ml values (prefer 100g if both are shown).
+- Extract the values from an explicitly labelled per-100g or per-100ml table
+  (prefer 100g if both are shown). If only a clearly labelled per-serving table
+  exists, extract that table without converting its values.
 - Use decimal dot notation (e.g. 9.3, not 9,3).
+- Preserve energy_kj and energy_kcal independently when each is visibly printed.
+- Never calculate energy_kj from energy_kcal or energy_kcal from energy_kj.
 - If a field is not printed on the label, write: not_visible
 - serving_size: copy the serving size text exactly as printed (e.g. "30 g", "1 bardak (250 ml)").
 - If no nutrition table is visible, write not_visible for all fields.
@@ -1387,6 +1410,7 @@ WARNINGS:
 - any extraction issue (e.g. image blurry, no ingredients section visible)
 
 NUTRITION_FACTS:
+energy_kj: <value or not_visible>
 energy_kcal: <value or not_visible>
 fat: <value or not_visible>
 saturated_fat: <value or not_visible>
@@ -1409,6 +1433,8 @@ Rules:
 
 
 _NUTRITION_FIELD_ALIASES: dict[str, str] = {
+    "energy_kj": "energy_kj",
+    "enerji_kj": "energy_kj",
     "energy_kcal": "energy_kcal",
     "enerji_kcal": "energy_kcal",
     "energy": "energy_kcal",
@@ -1439,9 +1465,50 @@ _NUTRITION_FIELD_ALIASES: dict[str, str] = {
 }
 
 _NUTRITION_NUMERIC_FIELDS = frozenset({
-    "energy_kcal", "fat", "saturated_fat", "carbohydrates",
+    "energy_kj", "energy_kcal", "fat", "saturated_fat", "carbohydrates",
     "sugars", "fiber", "proteins", "salt", "sodium",
 })
+
+_BASIS_PATTERNS: dict[str, tuple[re.Pattern[str], ...]] = {
+    "per100g": (
+        re.compile(r"\b100\s*g(?:ram)?\s+(?:için|başına)\b", re.IGNORECASE),
+        re.compile(r"\bher\s+100\s*g(?:ram)?(?:['’]?(?:da|de))?\b", re.IGNORECASE),
+        re.compile(r"\b100\s*g(?:ram)?['’]?(?:da|de)\b", re.IGNORECASE),
+    ),
+    "per100ml": (
+        re.compile(r"\b100\s*ml\s+(?:için|başına)\b", re.IGNORECASE),
+        re.compile(r"\bher\s+100\s*ml(?:['’]?(?:da|de))?\b", re.IGNORECASE),
+        re.compile(r"\b100\s*ml['’]?(?:da|de)\b", re.IGNORECASE),
+    ),
+    "perServing": (
+        re.compile(r"\bporsiyon\s+başına\b", re.IGNORECASE),
+        re.compile(r"\bbir\s+porsiyonda\b", re.IGNORECASE),
+        re.compile(r"\bper\s+serving\b", re.IGNORECASE),
+    ),
+}
+
+_PRODUCT_STATE_PATTERNS: dict[str, tuple[re.Pattern[str], ...]] = {
+    "asPrepared": (
+        re.compile(r"\bhazırlanmış\s+ürün\s+için\b", re.IGNORECASE),
+        re.compile(r"\bhazırlandıktan\s+sonra\b", re.IGNORECASE),
+        re.compile(r"\bhazırlanmış\s+hal(?:i|de|iyle)\b", re.IGNORECASE),
+        re.compile(r"\bas\s+prepared\b", re.IGNORECASE),
+    ),
+    "asSold": (
+        re.compile(r"\bsatıldığı\s+haliyle\b", re.IGNORECASE),
+        re.compile(r"\bambalajlandığı\s+haliyle\b", re.IGNORECASE),
+        re.compile(r"\bas\s+sold\b", re.IGNORECASE),
+    ),
+}
+
+_INGREDIENT_PERCENT_AFTER_RE = re.compile(
+    r"(?P<ingredient>[A-Za-zÇĞİÖŞÜçğıöşü][^\n,;:%]{1,79}?)"
+    r"\s*%\s*(?P<percentage>\d{1,3}(?:[.,]\d+)?)",
+)
+_INGREDIENT_PERCENT_BEFORE_RE = re.compile(
+    r"%\s*(?P<percentage>\d{1,3}(?:[.,]\d+)?)\s*"
+    r"(?P<ingredient>[A-Za-zÇĞİÖŞÜçğıöşü][^\n,;:%]{1,79})",
+)
 
 
 def _parse_nutrition_section(lines: list[str]) -> dict[str, Any]:
@@ -1479,6 +1546,121 @@ def _parse_nutrition_section(lines: list[str]) -> dict[str, Any]:
                 pass
 
     return result
+
+
+def _detect_explicit_text_candidate(
+    text: str,
+    patterns_by_value: dict[str, tuple[re.Pattern[str], ...]],
+) -> tuple[str, str | None]:
+    matches: list[tuple[str, str]] = []
+    for value, patterns in patterns_by_value.items():
+        for pattern in patterns:
+            match = pattern.search(text)
+            if match is not None:
+                matches.append((value, match.group(0).strip()))
+                break
+    matched_values = {value for value, _ in matches}
+    if len(matched_values) != 1:
+        return "unknown", None
+    return matches[0]
+
+
+def _detect_nutrition_basis_candidate(text: str) -> tuple[str, str | None]:
+    """Return a basis only when explicit label wording supports one basis."""
+    value, evidence_text = _detect_explicit_text_candidate(text, _BASIS_PATTERNS)
+    mentions_100g = re.search(r"\b100\s*g(?:ram)?\b", text, re.IGNORECASE)
+    mentions_100ml = re.search(r"\b100\s*ml\b", text, re.IGNORECASE)
+    if mentions_100g is not None and mentions_100ml is not None:
+        return "unknown", None
+    return value, evidence_text
+
+
+def _detect_product_state_candidate(text: str) -> tuple[str, str | None]:
+    """Return product state only for explicit as-sold/as-prepared wording."""
+    return _detect_explicit_text_candidate(text, _PRODUCT_STATE_PATTERNS)
+
+
+def _clean_percentage_ingredient(value: str) -> str:
+    cleaned = re.sub(r"\s+", " ", value).strip(" .:-()[]")
+    if ":" in cleaned:
+        cleaned = cleaned.rsplit(":", 1)[-1].strip()
+    cleaned = re.sub(
+        r"^(?:içindekiler|ingredients?)\s*[:\-]?\s*",
+        "",
+        cleaned,
+        flags=re.IGNORECASE,
+    )
+    return cleaned.strip(" .:-()[]")
+
+
+def _extract_explicit_ingredient_percentages(
+    text: str,
+) -> list[IngredientPercentageCandidate]:
+    """Extract only literal ingredient + percentage pairs from OCR raw text."""
+    ingredient_header = re.search(
+        r"\b(?:içindekiler|ingredients?)\s*[:\-]?",
+        text,
+        re.IGNORECASE,
+    )
+    if ingredient_header is None:
+        return []
+    ingredient_text = text[ingredient_header.start():]
+    section_end = re.search(
+        r"\b(?:besin\s+değerleri|nutrition\s+facts?|alerjen\s+uyarısı|allergen\s+warning)\b",
+        ingredient_text,
+        re.IGNORECASE,
+    )
+    if section_end is not None:
+        ingredient_text = ingredient_text[:section_end.start()]
+
+    candidates: list[IngredientPercentageCandidate] = []
+    seen: set[tuple[str, float]] = set()
+    excluded_labels = {
+        "enerji", "energy", "yağ", "fat", "doymuş yağ", "saturated fat",
+        "karbonhidrat", "carbohydrate", "şeker", "sugars", "protein",
+        "lif", "fiber", "tuz", "salt", "sodyum", "sodium",
+        "referans alım", "reference intake", "günlük değer",
+    }
+    for pattern in (_INGREDIENT_PERCENT_AFTER_RE, _INGREDIENT_PERCENT_BEFORE_RE):
+        for match in pattern.finditer(ingredient_text):
+            ingredient = _clean_percentage_ingredient(match.group("ingredient"))
+            if not ingredient or ingredient.lower() in excluded_labels:
+                continue
+            try:
+                percentage = float(match.group("percentage").replace(",", "."))
+            except ValueError:
+                continue
+            if not math.isfinite(percentage) or percentage < 0 or percentage > 100:
+                continue
+            key = (ingredient.lower(), percentage)
+            if key in seen:
+                continue
+            seen.add(key)
+            candidates.append(
+                IngredientPercentageCandidate(
+                    ingredient_text=ingredient,
+                    percentage=percentage,
+                    evidence_text=match.group(0).strip(),
+                )
+            )
+    return candidates
+
+
+def _build_product_label_evidence_candidates(
+    raw_text: str,
+) -> ProductLabelEvidenceCandidates | None:
+    basis, basis_text = _detect_nutrition_basis_candidate(raw_text)
+    product_state, product_state_text = _detect_product_state_candidate(raw_text)
+    percentages = _extract_explicit_ingredient_percentages(raw_text)
+    if basis == "unknown" and product_state == "unknown" and not percentages:
+        return None
+    return ProductLabelEvidenceCandidates(
+        nutrition_basis=basis,
+        nutrition_basis_text=basis_text,
+        nutrition_product_state=product_state,
+        nutrition_product_state_text=product_state_text,
+        ingredient_percentages=percentages,
+    )
 
 
 async def _extract_product_label_with_claude(
@@ -1575,6 +1757,9 @@ async def _extract_product_label_with_claude(
     else:
         ingredient_response = _build_fallback_response(raw_content, "Unrecognised response format")
 
+    evidence_candidates = _build_product_label_evidence_candidates(
+        ingredient_response.raw_text
+    )
     has_ingredients = len(ingredient_response.ingredients) > 0
     has_nutrition = bool(nutrition_dict)
     if has_ingredients or has_nutrition:
@@ -1586,6 +1771,7 @@ async def _extract_product_label_with_claude(
         ingredients=ingredient_response,
         nutrition=nutrition_dict if has_nutrition else None,
         extraction_status=status,
+        evidence_candidates=evidence_candidates,
     )
 
 

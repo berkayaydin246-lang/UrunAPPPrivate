@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:food_analyzer_app/core/errors/user_message.dart';
 import 'package:food_analyzer_app/features/admin/repositories/product_submission_approval_repository.dart';
 import 'package:food_analyzer_app/features/submission/models/product_submission.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/scoring_evidence_snapshot.dart';
 
 final productSubmissionApprovalRepositoryProvider = Provider(
   (_) => const ProductSubmissionApprovalRepository(),
@@ -64,6 +65,7 @@ class ProductSubmissionReviewNotifier
     String? editedIngredientsText,
     Map<String, dynamic>? editedNutrition,
     bool nutritionWasReviewed = false,
+    ScoringEvidenceSnapshot? reviewedScoringEvidence,
   }) async {
     state = state.copyWith(isProcessing: true, clearError: true);
     try {
@@ -74,6 +76,7 @@ class ProductSubmissionReviewNotifier
         editedIngredientsText: editedIngredientsText,
         editedNutrition: editedNutrition,
         nutritionWasReviewed: nutritionWasReviewed,
+        reviewedScoringEvidence: reviewedScoringEvidence,
       );
       _removeFromList(submissionId);
       state = state.copyWith(isProcessing: false);
@@ -93,6 +96,29 @@ class ProductSubmissionReviewNotifier
     try {
       await _repo.rejectProductSubmission(submissionId, reason: reason);
       _removeFromList(submissionId);
+      state = state.copyWith(isProcessing: false);
+      return true;
+    } catch (e) {
+      state = state.copyWith(
+        isProcessing: false,
+        error: UserMessage.forGeneric(e),
+      );
+      return false;
+    }
+  }
+
+  Future<bool> saveScoringEvidenceReview(
+    String submissionId, {
+    required Map<String, dynamic>? reviewedNutrition,
+    required ScoringEvidenceSnapshot evidence,
+  }) async {
+    state = state.copyWith(isProcessing: true, clearError: true);
+    try {
+      await _repo.saveScoringEvidenceReview(
+        submissionId,
+        reviewedNutrition: reviewedNutrition,
+        evidence: evidence,
+      );
       state = state.copyWith(isProcessing: false);
       return true;
     } catch (e) {

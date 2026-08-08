@@ -5,9 +5,15 @@ import 'package:food_analyzer_app/core/theme/app_theme.dart';
 import 'package:food_analyzer_app/features/admin/controllers/product_submission_review_controller.dart';
 import 'package:food_analyzer_app/features/admin/repositories/product_submission_approval_repository.dart';
 import 'package:food_analyzer_app/features/product/models/nutrition_data.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/scoring_evidence_snapshot.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/scoring_types.dart';
+import 'package:food_analyzer_app/features/scoring/domain/services/scoring_evidence_admin_review_service.dart';
+import 'package:food_analyzer_app/features/scoring/domain/services/scoring_evidence_merger.dart';
+import 'package:food_analyzer_app/features/scoring/domain/services/scoring_readiness_presentation.dart';
 import 'package:food_analyzer_app/features/submission/models/product_submission.dart';
 
 const _nutritionFieldSpecs = <_NutritionFieldSpec>[
+  _NutritionFieldSpec('energy_kj', 'Enerji', 'kJ'),
   _NutritionFieldSpec('energy_kcal', 'Enerji', 'kcal'),
   _NutritionFieldSpec('fat', 'Yağ', 'g'),
   _NutritionFieldSpec('saturated_fat', 'Doymuş Yağ', 'g'),
@@ -40,16 +46,40 @@ class _ProductSubmissionDetailPageState
   final _brandController = TextEditingController();
   final _ingredientsController = TextEditingController();
   final _servingSizeController = TextEditingController();
+  final _fvlPercentageController = TextEditingController();
+  final _redMeatPercentageController = TextEditingController();
+  final _nutSeedPercentageController = TextEditingController();
   late final Map<String, TextEditingController> _nutritionControllers = {
     for (final spec in _nutritionFieldSpecs) spec.key: TextEditingController(),
   };
 
   ProductSubmission? _resolved;
   bool _loaded = false;
+  bool _populating = false;
+  NutritionBasis _nutritionBasis = NutritionBasis.unknown;
+  NutritionProductState _productState = NutritionProductState.unknown;
+  IngredientEvidenceCompleteness _ingredientCompleteness =
+      IngredientEvidenceCompleteness.unknown;
+  CompositionPercentageState _fvlState = CompositionPercentageState.unknown;
+  PresenceEvidenceState _nnsState = PresenceEvidenceState.unknown;
+  ScoringCategory _scoringCategory = ScoringCategory.unknown;
+  bool? _isPlainWater;
+  bool? _redMeatIsPrimaryIngredient;
+  bool? _isPlantBasedCheeseAlternative;
+  bool? _isCompoundProduct;
 
   @override
   void initState() {
     super.initState();
+    for (final controller in [
+      _ingredientsController,
+      _fvlPercentageController,
+      _redMeatPercentageController,
+      _nutSeedPercentageController,
+      ..._nutritionControllers.values,
+    ]) {
+      controller.addListener(_refreshEvidencePreview);
+    }
     _resolve();
   }
 
@@ -59,6 +89,9 @@ class _ProductSubmissionDetailPageState
     _brandController.dispose();
     _ingredientsController.dispose();
     _servingSizeController.dispose();
+    _fvlPercentageController.dispose();
+    _redMeatPercentageController.dispose();
+    _nutSeedPercentageController.dispose();
     for (final controller in _nutritionControllers.values) {
       controller.dispose();
     }
@@ -85,15 +118,16 @@ class _ProductSubmissionDetailPageState
   }
 
   Future<void> _fetchFromDb() async {
-    final sub = await const ProductSubmissionApprovalRepository().fetchById(
-      widget.submissionId,
-    );
+    final sub = await ref
+        .read(productSubmissionApprovalRepositoryProvider)
+        .fetchById(widget.submissionId);
     if (!mounted) return;
     if (sub != null) _populate(sub);
     setState(() => _loaded = true);
   }
 
   void _populate(ProductSubmission sub) {
+    _populating = true;
     _resolved = sub;
     _nameController.text = sub.productName ?? '';
     _brandController.text = sub.brand ?? '';
@@ -105,7 +139,44 @@ class _ProductSubmissionDetailPageState
       );
     }
     _servingSizeController.text = nutrition?['serving_size']?.toString() ?? '';
+    final evidence = sub.scoringEvidence;
+    _nutritionBasis =
+        evidence?.nutritionBasisEvidence?.value ??
+        evidence?.nutritionBasis ??
+        NutritionBasis.unknown;
+    _productState =
+        evidence?.nutritionProductStateEvidence?.value ??
+        evidence?.nutritionProductState ??
+        NutritionProductState.unknown;
+    _ingredientCompleteness =
+        evidence?.ingredientEvidenceCompleteness ??
+        IngredientEvidenceCompleteness.unknown;
+    _fvlState =
+        evidence?.fvlEvidence.state ?? CompositionPercentageState.unknown;
+    _fvlPercentageController.text = _formatNutritionValue(
+      evidence?.fvlEvidence.percentage,
+    );
+    _nnsState = evidence?.nnsEvidence.state ?? PresenceEvidenceState.unknown;
+    _scoringCategory =
+        evidence?.categoryEvidence.resolvedCategory ?? ScoringCategory.unknown;
+    final facts = evidence?.classificationFacts;
+    _isPlainWater = facts?.isPlainWater?.value;
+    _redMeatPercentageController.text = _formatNutritionValue(
+      facts?.redMeatPercentage?.value,
+    );
+    _redMeatIsPrimaryIngredient = facts?.redMeatIsPrimaryIngredient?.value;
+    _nutSeedPercentageController.text = _formatNutritionValue(
+      facts?.nutSeedPercentage?.value,
+    );
+    _isPlantBasedCheeseAlternative =
+        facts?.isPlantBasedCheeseAlternative?.value;
+    _isCompoundProduct = facts?.isCompoundProduct?.value;
     _loaded = true;
+    _populating = false;
+  }
+
+  void _refreshEvidencePreview() {
+    if (mounted && !_populating) setState(() {});
   }
 
   // ── actions ───────────────────────────────────────────────────────────────
@@ -124,9 +195,37 @@ class _ProductSubmissionDetailPageState
       return;
     }
 
+    final review = _buildScoringEvidenceReview(nutritionDraft.nutrition);
+    if (!_showReviewValidation(review)) return;
+
+    List<ScoringEvidenceConflict> conflicts;
+    try {
+      conflicts = await ref
+          .read(productSubmissionApprovalRepositoryProvider)
+          .previewScoringEvidenceConflicts(
+            barcode: _resolved!.barcode,
+            reviewedNutrition: nutritionDraft.nutrition,
+            incomingEvidence: review.evidence,
+          );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(UserMessage.forGeneric(error)),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+      return;
+    }
+    if (!mounted) return;
+    final conflictText = conflicts.isEmpty
+        ? ''
+        : '\n\nMevcut üründeki daha güvenilir veriler korunacak:\n${conflicts.map(_conflictLabel).map((label) => '• $label').join('\n')}';
+
     final confirmed = await _confirmDialog(
       title: 'Ürünü Onayla',
-      content: 'Bu gönderi onaylanacak ve ürün veritabanına eklenecek.',
+      content:
+          'Bu gönderi onaylanacak ve ürün veritabanına eklenecek.$conflictText',
       actionLabel: 'Onayla',
       actionColor: Colors.green,
     );
@@ -141,6 +240,7 @@ class _ProductSubmissionDetailPageState
           editedIngredientsText: _ingredientsController.text.trim(),
           editedNutrition: nutritionDraft.nutrition,
           nutritionWasReviewed: true,
+          reviewedScoringEvidence: review.evidence,
         );
 
     if (!mounted) return;
@@ -167,6 +267,101 @@ class _ProductSubmissionDetailPageState
         ),
       );
     }
+  }
+
+  Future<void> _saveScoringEvidence() async {
+    final nutritionDraft = _readNutritionDraft();
+    if (nutritionDraft.invalidLabel != null) {
+      _showInvalidNutrition(nutritionDraft.invalidLabel!);
+      return;
+    }
+    final review = _buildScoringEvidenceReview(nutritionDraft.nutrition);
+    if (!_showReviewValidation(review)) return;
+    final saved = await ref
+        .read(productSubmissionReviewProvider.notifier)
+        .saveScoringEvidenceReview(
+          widget.submissionId,
+          reviewedNutrition: nutritionDraft.nutrition,
+          evidence: review.evidence,
+        );
+    if (!mounted) return;
+    if (!saved) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            ref.read(productSubmissionReviewProvider).error ??
+                UserMessage.generic,
+          ),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+      return;
+    }
+    ProductSubmission? refreshed;
+    try {
+      refreshed = await ref
+          .read(productSubmissionApprovalRepositoryProvider)
+          .fetchById(widget.submissionId);
+    } catch (_) {
+      refreshed = null;
+    }
+    if (!mounted) return;
+    if (refreshed != null) _populate(refreshed);
+    setState(() {});
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Puanlama verisi kaydedildi.')),
+    );
+  }
+
+  ScoringEvidenceAdminReviewResult _buildScoringEvidenceReview(
+    Map<String, dynamic>? nutrition,
+  ) {
+    return const ScoringEvidenceAdminReviewService().build(
+      ScoringEvidenceAdminDraft(
+        reviewedNutrition: nutrition,
+        ingredientText: _ingredientsController.text,
+        nutritionBasis: _nutritionBasis,
+        productState: _productState,
+        ingredientCompleteness: _ingredientCompleteness,
+        fvlState: _fvlState,
+        fvlPercentage: _readOptionalAdminNumber(_fvlPercentageController),
+        nnsState: _nnsState,
+        category: _scoringCategory,
+        isPlainWater: _isPlainWater,
+        redMeatPercentage: _readOptionalAdminNumber(
+          _redMeatPercentageController,
+        ),
+        redMeatIsPrimaryIngredient: _redMeatIsPrimaryIngredient,
+        nutSeedPercentage: _readOptionalAdminNumber(
+          _nutSeedPercentageController,
+        ),
+        isPlantBasedCheeseAlternative: _isPlantBasedCheeseAlternative,
+        isCompoundProduct: _isCompoundProduct,
+        existingCandidate: _resolved?.scoringEvidence,
+      ),
+    );
+  }
+
+  bool _showReviewValidation(ScoringEvidenceAdminReviewResult review) {
+    if (review.isValid) return true;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(review.validationIssues.first),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      ),
+    );
+    return false;
+  }
+
+  void _showInvalidNutrition(String label) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '$label için sıfır veya daha büyük sayısal bir değer girin.',
+        ),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      ),
+    );
   }
 
   ({Map<String, dynamic>? nutrition, String? invalidLabel})
@@ -304,6 +499,10 @@ class _ProductSubmissionDetailPageState
     }
 
     final sub = _resolved!;
+    final previewNutrition = _readNutritionDraft();
+    final evidenceReview = previewNutrition.invalidLabel == null
+        ? _buildScoringEvidenceReview(previewNutrition.nutrition)
+        : null;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Gönderi Detayı')),
@@ -392,6 +591,57 @@ class _ProductSubmissionDetailPageState
                   _NutritionEditorCard(
                     controllers: _nutritionControllers,
                     servingSizeController: _servingSizeController,
+                  ),
+                  const SizedBox(height: 16),
+
+                  _ScoringEvidenceReviewCard(
+                    evidence: sub.scoringEvidence,
+                    review: evidenceReview,
+                    nutritionBasis: _nutritionBasis,
+                    onNutritionBasisChanged: (value) {
+                      setState(() => _nutritionBasis = value);
+                    },
+                    productState: _productState,
+                    onProductStateChanged: (value) {
+                      setState(() => _productState = value);
+                    },
+                    ingredientCompleteness: _ingredientCompleteness,
+                    onIngredientCompletenessChanged: (value) {
+                      setState(() => _ingredientCompleteness = value);
+                    },
+                    fvlState: _fvlState,
+                    onFvlStateChanged: (value) {
+                      setState(() => _fvlState = value);
+                    },
+                    fvlPercentageController: _fvlPercentageController,
+                    nnsState: _nnsState,
+                    onNnsStateChanged: (value) {
+                      setState(() => _nnsState = value);
+                    },
+                    scoringCategory: _scoringCategory,
+                    onScoringCategoryChanged: (value) {
+                      setState(() => _scoringCategory = value);
+                    },
+                    isPlainWater: _isPlainWater,
+                    onPlainWaterChanged: (value) {
+                      setState(() => _isPlainWater = value);
+                    },
+                    redMeatPercentageController: _redMeatPercentageController,
+                    redMeatIsPrimaryIngredient: _redMeatIsPrimaryIngredient,
+                    onRedMeatPrimaryChanged: (value) {
+                      setState(() => _redMeatIsPrimaryIngredient = value);
+                    },
+                    nutSeedPercentageController: _nutSeedPercentageController,
+                    isPlantBasedCheeseAlternative:
+                        _isPlantBasedCheeseAlternative,
+                    onPlantAlternativeChanged: (value) {
+                      setState(() => _isPlantBasedCheeseAlternative = value);
+                    },
+                    isCompoundProduct: _isCompoundProduct,
+                    onCompoundProductChanged: (value) {
+                      setState(() => _isCompoundProduct = value);
+                    },
+                    onSave: _saveScoringEvidence,
                   ),
                   const SizedBox(height: 16),
 
@@ -526,6 +776,72 @@ String _formatNutritionValue(dynamic value) {
       : number.toString();
 }
 
+double? _readOptionalAdminNumber(TextEditingController controller) {
+  final raw = controller.text.trim();
+  if (raw.isEmpty) return null;
+  return double.tryParse(raw.replaceAll(',', '.')) ?? double.nan;
+}
+
+String _nutritionBasisLabel(NutritionBasis value) => switch (value) {
+  NutritionBasis.per100g => '100 g başına',
+  NutritionBasis.per100ml => '100 ml başına',
+  NutritionBasis.perServing => 'Porsiyon başına',
+  NutritionBasis.unknown => 'Bilinmiyor',
+};
+
+String _productStateLabel(NutritionProductState value) => switch (value) {
+  NutritionProductState.asSold => 'Satıldığı haliyle',
+  NutritionProductState.asPrepared => 'Hazırlanmış haliyle',
+  NutritionProductState.unknown => 'Bilinmiyor',
+};
+
+String _ingredientCompletenessLabel(IngredientEvidenceCompleteness value) =>
+    switch (value) {
+      IngredientEvidenceCompleteness.complete => 'Tam ve okunabilir',
+      IngredientEvidenceCompleteness.incomplete => 'Eksik / kısmi',
+      IngredientEvidenceCompleteness.unknown => 'Bilinmiyor',
+    };
+
+String _fvlStateLabel(CompositionPercentageState value) => switch (value) {
+  CompositionPercentageState.known => 'Bilinen oran',
+  CompositionPercentageState.provenAbsent => 'Yokluğu doğrulandı',
+  CompositionPercentageState.unknown => 'Bilinmiyor',
+};
+
+String _nnsStateLabel(PresenceEvidenceState value) => switch (value) {
+  PresenceEvidenceState.present => 'Var',
+  PresenceEvidenceState.absent => 'Yokluğu doğrulandı',
+  PresenceEvidenceState.unknown => 'Bilinmiyor',
+};
+
+String _scoringCategoryLabel(ScoringCategory value) => switch (value) {
+  ScoringCategory.generalFood => 'Genel gıda',
+  ScoringCategory.cheese => 'Peynir',
+  ScoringCategory.redMeat => 'Kırmızı et',
+  ScoringCategory.fatsOilsNutsSeeds => 'Yağ / kuruyemiş / tohum',
+  ScoringCategory.beverage => 'İçecek',
+  ScoringCategory.outOfScope => 'Kapsam dışı',
+  ScoringCategory.unknown => 'Bilinmiyor',
+};
+
+String _conflictLabel(ScoringEvidenceConflict conflict) {
+  final field = conflict.field;
+  if (field == 'nutrition_basis') return 'Besin değeri temeli çelişiyor.';
+  if (field == 'nutrition_product_state') return 'Ürün hali çelişiyor.';
+  if (field == 'fvl_evidence') return 'FVL kanıtı çelişiyor.';
+  if (field == 'nns_evidence') return 'Tatlandırıcı kanıtı çelişiyor.';
+  if (field == 'category_evidence.resolved_category') {
+    return 'Puanlama ürün sınıfı çelişiyor.';
+  }
+  if (field.startsWith('nutrition.')) {
+    return 'Doğrulanmış bir besin değeri çelişiyor.';
+  }
+  if (field.startsWith('classification_facts.')) {
+    return 'Ürün sınıflandırma bilgisi çelişiyor.';
+  }
+  return 'Puanlama kanıtlarından biri çelişiyor.';
+}
+
 class _MissingNutritionNotice extends StatelessWidget {
   const _MissingNutritionNotice();
 
@@ -613,6 +929,425 @@ class _NutritionEditorCard extends StatelessWidget {
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class _ScoringEvidenceReviewCard extends StatelessWidget {
+  final ScoringEvidenceSnapshot? evidence;
+  final ScoringEvidenceAdminReviewResult? review;
+  final NutritionBasis nutritionBasis;
+  final ValueChanged<NutritionBasis> onNutritionBasisChanged;
+  final NutritionProductState productState;
+  final ValueChanged<NutritionProductState> onProductStateChanged;
+  final IngredientEvidenceCompleteness ingredientCompleteness;
+  final ValueChanged<IngredientEvidenceCompleteness>
+  onIngredientCompletenessChanged;
+  final CompositionPercentageState fvlState;
+  final ValueChanged<CompositionPercentageState> onFvlStateChanged;
+  final TextEditingController fvlPercentageController;
+  final PresenceEvidenceState nnsState;
+  final ValueChanged<PresenceEvidenceState> onNnsStateChanged;
+  final ScoringCategory scoringCategory;
+  final ValueChanged<ScoringCategory> onScoringCategoryChanged;
+  final bool? isPlainWater;
+  final ValueChanged<bool?> onPlainWaterChanged;
+  final TextEditingController redMeatPercentageController;
+  final bool? redMeatIsPrimaryIngredient;
+  final ValueChanged<bool?> onRedMeatPrimaryChanged;
+  final TextEditingController nutSeedPercentageController;
+  final bool? isPlantBasedCheeseAlternative;
+  final ValueChanged<bool?> onPlantAlternativeChanged;
+  final bool? isCompoundProduct;
+  final ValueChanged<bool?> onCompoundProductChanged;
+  final VoidCallback onSave;
+
+  const _ScoringEvidenceReviewCard({
+    required this.evidence,
+    required this.review,
+    required this.nutritionBasis,
+    required this.onNutritionBasisChanged,
+    required this.productState,
+    required this.onProductStateChanged,
+    required this.ingredientCompleteness,
+    required this.onIngredientCompletenessChanged,
+    required this.fvlState,
+    required this.onFvlStateChanged,
+    required this.fvlPercentageController,
+    required this.nnsState,
+    required this.onNnsStateChanged,
+    required this.scoringCategory,
+    required this.onScoringCategoryChanged,
+    required this.isPlainWater,
+    required this.onPlainWaterChanged,
+    required this.redMeatPercentageController,
+    required this.redMeatIsPrimaryIngredient,
+    required this.onRedMeatPrimaryChanged,
+    required this.nutSeedPercentageController,
+    required this.isPlantBasedCheeseAlternative,
+    required this.onPlantAlternativeChanged,
+    required this.isCompoundProduct,
+    required this.onCompoundProductChanged,
+    required this.onSave,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final candidates = evidence?.ingredientPercentageCandidates ?? const [];
+    final basisIsOcr =
+        evidence?.nutritionBasisEvidence?.provenance ==
+        EvidenceProvenance.ocrDeclaredLabel;
+    final stateIsOcr =
+        evidence?.nutritionProductStateEvidence?.provenance ==
+        EvidenceProvenance.ocrDeclaredLabel;
+    final blockers = review == null
+        ? const ['Besin değerlerinden biri geçersiz.']
+        : ScoringReadinessPresentation.blockerLabels(review!.readiness);
+    final isReady = review?.readiness.isScorable == true;
+
+    return Container(
+      key: const ValueKey('submission-scoring-evidence-section'),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceSoft,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Puanlama Verisi',
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'OCR alanları taslaktır. Kaydetmeden önce etiketten doğrulayın.',
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+          ),
+          const SizedBox(height: 14),
+          _ReviewDropdown<NutritionBasis>(
+            fieldKey: 'scoring-basis',
+            label: basisIsOcr
+                ? 'Besin değeri temeli (OCR adayı)'
+                : 'Besin değeri temeli',
+            value: nutritionBasis,
+            values: NutritionBasis.values,
+            labelFor: _nutritionBasisLabel,
+            onChanged: onNutritionBasisChanged,
+          ),
+          const SizedBox(height: 10),
+          _ReviewDropdown<NutritionProductState>(
+            fieldKey: 'scoring-product-state',
+            label: stateIsOcr ? 'Ürün hali (OCR adayı)' : 'Ürün hali',
+            value: productState,
+            values: NutritionProductState.values,
+            labelFor: _productStateLabel,
+            onChanged: onProductStateChanged,
+          ),
+          const SizedBox(height: 10),
+          _ReviewDropdown<IngredientEvidenceCompleteness>(
+            fieldKey: 'scoring-ingredient-completeness',
+            label: 'İçerik listesinin durumu',
+            value: ingredientCompleteness,
+            values: IngredientEvidenceCompleteness.values,
+            labelFor: _ingredientCompletenessLabel,
+            onChanged: onIngredientCompletenessChanged,
+          ),
+          const SizedBox(height: 10),
+          _ReviewDropdown<CompositionPercentageState>(
+            fieldKey: 'scoring-fvl-state',
+            label: 'FVL kanıtı',
+            value: fvlState,
+            values: const [
+              CompositionPercentageState.unknown,
+              CompositionPercentageState.provenAbsent,
+              CompositionPercentageState.known,
+            ],
+            labelFor: _fvlStateLabel,
+            onChanged: onFvlStateChanged,
+          ),
+          if (fvlState == CompositionPercentageState.known) ...[
+            const SizedBox(height: 10),
+            _PercentageField(
+              fieldKey: 'scoring-fvl-percentage',
+              label: 'Doğrulanan FVL oranı',
+              controller: fvlPercentageController,
+            ),
+          ],
+          if (candidates.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Text(
+              'Etikette görülen oran adayları',
+              style: Theme.of(
+                context,
+              ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 6),
+            for (final candidate in candidates)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 3),
+                child: Text(
+                  '• ${candidate.ingredientText}: %${_formatNutritionValue(candidate.percentage)}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
+            Text(
+              'Bu adaylar FVL oranını otomatik belirlemez.',
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+            ),
+          ],
+          const SizedBox(height: 10),
+          _ReviewDropdown<PresenceEvidenceState>(
+            fieldKey: 'scoring-nns-state',
+            label: 'NNS tatlandırıcı durumu',
+            value: nnsState,
+            values: const [
+              PresenceEvidenceState.unknown,
+              PresenceEvidenceState.present,
+              PresenceEvidenceState.absent,
+            ],
+            labelFor: _nnsStateLabel,
+            onChanged: onNnsStateChanged,
+          ),
+          const SizedBox(height: 10),
+          _ReviewDropdown<ScoringCategory>(
+            fieldKey: 'scoring-category',
+            label: 'Puanlama ürün sınıfı',
+            value: scoringCategory,
+            values: ScoringCategory.values,
+            labelFor: _scoringCategoryLabel,
+            onChanged: onScoringCategoryChanged,
+          ),
+          ..._categoryFactFields(context),
+          const SizedBox(height: 14),
+          Container(
+            key: const ValueKey('submission-scoring-readiness-preview'),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: (isReady ? Colors.green : Colors.orange).withValues(
+                alpha: 0.08,
+              ),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: (isReady ? Colors.green : Colors.orange).withValues(
+                  alpha: 0.3,
+                ),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Puanlama için veri durumu: ${isReady ? 'Hazır' : 'Eksik veri var'}',
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+                if (!isReady) ...[
+                  const SizedBox(height: 6),
+                  for (final blocker in blockers.take(6))
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 2),
+                      child: Text('• $blocker'),
+                    ),
+                ],
+              ],
+            ),
+          ),
+          if (review?.validationIssues.isNotEmpty == true) ...[
+            const SizedBox(height: 8),
+            for (final issue in review!.validationIssues)
+              Text(
+                issue,
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+          ],
+          const SizedBox(height: 12),
+          OutlinedButton.icon(
+            key: const ValueKey('save-scoring-evidence-review'),
+            onPressed: onSave,
+            icon: const Icon(Icons.save_outlined),
+            label: const Text('Puanlama Verisini Kaydet'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _categoryFactFields(BuildContext context) {
+    switch (scoringCategory) {
+      case ScoringCategory.redMeat:
+        return [
+          const SizedBox(height: 10),
+          _PercentageField(
+            fieldKey: 'scoring-red-meat-percentage',
+            label: 'Kırmızı et oranı',
+            controller: redMeatPercentageController,
+          ),
+          const SizedBox(height: 10),
+          _TriStateReviewDropdown(
+            fieldKey: 'scoring-red-meat-primary',
+            label: 'Kırmızı et ana bileşen mi?',
+            value: redMeatIsPrimaryIngredient,
+            onChanged: onRedMeatPrimaryChanged,
+          ),
+        ];
+      case ScoringCategory.fatsOilsNutsSeeds:
+        return [
+          const SizedBox(height: 10),
+          _PercentageField(
+            fieldKey: 'scoring-nut-seed-percentage',
+            label: 'Kuruyemiş / tohum oranı (uygunsa)',
+            controller: nutSeedPercentageController,
+          ),
+        ];
+      case ScoringCategory.beverage:
+        return [
+          const SizedBox(height: 10),
+          _TriStateReviewDropdown(
+            fieldKey: 'scoring-plain-water',
+            label: 'Sade su mu?',
+            value: isPlainWater,
+            onChanged: onPlainWaterChanged,
+          ),
+        ];
+      case ScoringCategory.cheese:
+        return [
+          const SizedBox(height: 10),
+          _TriStateReviewDropdown(
+            fieldKey: 'scoring-cheese-plant-alternative',
+            label: 'Bitkisel peynir alternatifi mi?',
+            value: isPlantBasedCheeseAlternative,
+            onChanged: onPlantAlternativeChanged,
+          ),
+          const SizedBox(height: 10),
+          _TriStateReviewDropdown(
+            fieldKey: 'scoring-cheese-compound',
+            label: 'Bileşik ürün mü?',
+            value: isCompoundProduct,
+            onChanged: onCompoundProductChanged,
+          ),
+        ];
+      case ScoringCategory.generalFood:
+      case ScoringCategory.unknown:
+      case ScoringCategory.outOfScope:
+        return const [];
+    }
+  }
+}
+
+class _ReviewDropdown<T> extends StatelessWidget {
+  final String fieldKey;
+  final String label;
+  final T value;
+  final List<T> values;
+  final String Function(T) labelFor;
+  final ValueChanged<T> onChanged;
+
+  const _ReviewDropdown({
+    required this.fieldKey,
+    required this.label,
+    required this.value,
+    required this.values,
+    required this.labelFor,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField<T>(
+      key: ValueKey('$fieldKey-$value'),
+      initialValue: value,
+      isExpanded: true,
+      decoration: InputDecoration(
+        labelText: label,
+        isDense: true,
+        filled: true,
+        fillColor: AppColors.surface,
+        border: const OutlineInputBorder(),
+      ),
+      items: [
+        for (final item in values)
+          DropdownMenuItem(value: item, child: Text(labelFor(item))),
+      ],
+      onChanged: (selected) {
+        if (selected != null) onChanged(selected);
+      },
+    );
+  }
+}
+
+class _TriStateReviewDropdown extends StatelessWidget {
+  final String fieldKey;
+  final String label;
+  final bool? value;
+  final ValueChanged<bool?> onChanged;
+
+  const _TriStateReviewDropdown({
+    required this.fieldKey,
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final selected = value == null ? 'unknown' : (value! ? 'yes' : 'no');
+    return DropdownButtonFormField<String>(
+      key: ValueKey('$fieldKey-$selected'),
+      initialValue: selected,
+      isExpanded: true,
+      decoration: InputDecoration(
+        labelText: label,
+        isDense: true,
+        filled: true,
+        fillColor: AppColors.surface,
+        border: const OutlineInputBorder(),
+      ),
+      items: const [
+        DropdownMenuItem(value: 'unknown', child: Text('Bilinmiyor')),
+        DropdownMenuItem(value: 'yes', child: Text('Evet')),
+        DropdownMenuItem(value: 'no', child: Text('Hayır')),
+      ],
+      onChanged: (choice) => onChanged(switch (choice) {
+        'yes' => true,
+        'no' => false,
+        _ => null,
+      }),
+    );
+  }
+}
+
+class _PercentageField extends StatelessWidget {
+  final String fieldKey;
+  final String label;
+  final TextEditingController controller;
+
+  const _PercentageField({
+    required this.fieldKey,
+    required this.label,
+    required this.controller,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      key: ValueKey(fieldKey),
+      controller: controller,
+      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      decoration: InputDecoration(
+        labelText: label,
+        suffixText: '%',
+        isDense: true,
+        filled: true,
+        fillColor: AppColors.surface,
+        border: const OutlineInputBorder(),
       ),
     );
   }

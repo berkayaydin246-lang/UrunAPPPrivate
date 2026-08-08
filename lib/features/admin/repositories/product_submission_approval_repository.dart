@@ -6,6 +6,7 @@ import 'package:food_analyzer_app/features/product/models/product.dart';
 import 'package:food_analyzer_app/features/product/models/nutrition_data.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_evidence_snapshot.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/scoring_evidence_merger.dart';
+import 'package:food_analyzer_app/features/scoring/domain/services/scoring_evidence_nutrition_consistency.dart';
 import 'package:food_analyzer_app/features/submission/models/product_submission.dart';
 
 enum ApproveProductResult {
@@ -59,6 +60,7 @@ class ProductSubmissionApprovalRepository {
     String? editedIngredientsText,
     Map<String, dynamic>? editedNutrition,
     bool nutritionWasReviewed = false,
+    ScoringEvidenceSnapshot? reviewedScoringEvidence,
   }) async {
     final client = SupabaseService.client;
     _debugSubmissionApprovalLog(
@@ -100,6 +102,31 @@ class ProductSubmissionApprovalRepository {
       return ApproveProductResult.invalidBarcode;
     }
 
+    final rawScoringEvidence =
+        reviewedScoringEvidence ?? submission.scoringEvidence;
+    final approvedNutrition = normalizeNutritionMap(
+      nutritionWasReviewed
+          ? editedNutrition
+          : editedNutrition ?? submission.extractedNutrition,
+    );
+    final effectiveScoringEvidence = rawScoringEvidence == null
+        ? null
+        : const ScoringEvidenceNutritionConsistency().align(
+            rawScoringEvidence,
+            NutritionData.fromMap(approvedNutrition ?? const {}),
+          );
+    final reviewedSubmissionPayload = <String, dynamic>{
+      if (nutritionWasReviewed) 'extracted_nutrition': editedNutrition,
+      if (effectiveScoringEvidence != null)
+        'scoring_evidence': effectiveScoringEvidence.toJson(),
+    };
+    if (reviewedSubmissionPayload.isNotEmpty) {
+      await client
+          .from('product_submissions')
+          .update(reviewedSubmissionPayload)
+          .eq('id', submissionId);
+    }
+
     final insertMap = buildProductInsertMap(
       submission,
       editedProductName: editedProductName,
@@ -107,6 +134,7 @@ class ProductSubmissionApprovalRepository {
       editedIngredientsText: editedIngredientsText,
       editedNutrition: editedNutrition,
       nutritionWasReviewed: nutritionWasReviewed,
+      scoringEvidence: effectiveScoringEvidence,
     );
 
     _debugSubmissionApprovalLog(
@@ -142,9 +170,17 @@ class ProductSubmissionApprovalRepository {
         '[Approval] existing product found — patching missing fields',
       );
       final existing = Product.fromJson(existingRow);
+      final alignedIncomingEvidence = effectiveScoringEvidence == null
+          ? null
+          : const ScoringEvidenceNutritionConsistency().align(
+              effectiveScoringEvidence,
+              existing.nutritionText == null
+                  ? NutritionData.fromMap(approvedNutrition ?? const {})
+                  : existing.nutrition,
+            );
       final evidenceMerge = const ScoringEvidenceMerger().merge(
         existing.scoringEvidence,
-        submission.scoringEvidence,
+        alignedIncomingEvidence,
       );
       if (evidenceMerge.conflicts.isNotEmpty) {
         _debugSubmissionApprovalLog(
@@ -178,7 +214,7 @@ class ProductSubmissionApprovalRepository {
     );
     await client
         .from('product_submissions')
-        .update({'status': 'approved'})
+        .update({'status': 'approved', ...reviewedSubmissionPayload})
         .eq('id', submissionId);
     _debugSubmissionApprovalLog(
       '[Approval] submission status update succeeded — result=$result',
@@ -205,6 +241,46 @@ class ProductSubmissionApprovalRepository {
     _debugSubmissionApprovalLog('[Approval] rejection update succeeded');
   }
 
+  Future<void> saveScoringEvidenceReview(
+    String submissionId, {
+    required Map<String, dynamic>? reviewedNutrition,
+    required ScoringEvidenceSnapshot evidence,
+  }) async {
+    await SupabaseService.client
+        .from('product_submissions')
+        .update({
+          'extracted_nutrition': reviewedNutrition,
+          'scoring_evidence': evidence.toJson(),
+        })
+        .eq('id', submissionId);
+  }
+
+  Future<List<ScoringEvidenceConflict>> previewScoringEvidenceConflicts({
+    required String barcode,
+    required Map<String, dynamic>? reviewedNutrition,
+    required ScoringEvidenceSnapshot incomingEvidence,
+  }) async {
+    final row = await SupabaseService.client
+        .from('products')
+        .select()
+        .eq('barcode', barcode.trim())
+        .maybeSingle();
+    if (row == null) return const [];
+    final existing = Product.fromJson(row);
+    final canonicalNutrition = existing.nutritionText == null
+        ? NutritionData.fromMap(
+            normalizeNutritionMap(reviewedNutrition) ?? const {},
+          )
+        : existing.nutrition;
+    final aligned = const ScoringEvidenceNutritionConsistency().align(
+      incomingEvidence,
+      canonicalNutrition,
+    );
+    return const ScoringEvidenceMerger()
+        .merge(existing.scoringEvidence, aligned)
+        .conflicts;
+  }
+
   // ── helpers ───────────────────────────────────────────────────────────────
 
   /// Builds the final `products` row from a submission and reviewed admin data.
@@ -215,6 +291,7 @@ class ProductSubmissionApprovalRepository {
     String? editedIngredientsText,
     Map<String, dynamic>? editedNutrition,
     bool nutritionWasReviewed = false,
+    ScoringEvidenceSnapshot? scoringEvidence,
   }) {
     final nutritionSource = nutritionWasReviewed
         ? editedNutrition
@@ -223,6 +300,13 @@ class ProductSubmissionApprovalRepository {
     final nutritionText = normalizedNutrition == null
         ? null
         : jsonEncode(normalizedNutrition);
+    final rawScoringEvidence = scoringEvidence ?? submission.scoringEvidence;
+    final effectiveScoringEvidence = rawScoringEvidence == null
+        ? null
+        : const ScoringEvidenceNutritionConsistency().align(
+            rawScoringEvidence,
+            NutritionData.fromMap(normalizedNutrition ?? const {}),
+          );
 
     return {
       'barcode': submission.barcode.trim(),
@@ -243,8 +327,8 @@ class ProductSubmissionApprovalRepository {
             _resolve(submission.extractedIngredientsText),
       ),
       ...?_entry('nutrition_text', nutritionText),
-      if (submission.scoringEvidence != null)
-        'scoring_evidence': submission.scoringEvidence!.toJson(),
+      if (effectiveScoringEvidence != null)
+        'scoring_evidence': effectiveScoringEvidence.toJson(),
     };
   }
 

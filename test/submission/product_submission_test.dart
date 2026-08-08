@@ -155,11 +155,26 @@ void main() {
               'quality_score': 0.95,
             },
             'nutrition': {
+              'energy_kj': 810,
               'energy_kcal': 193,
               'fat': '3,4',
               'sugars': 9.2,
               'salt': 0.7,
               'fiber': 'not_visible',
+            },
+            'extraction_schema_version': 2,
+            'evidence_candidates': {
+              'nutrition_basis': 'per100g',
+              'nutrition_basis_text': '100 g başına',
+              'nutrition_product_state': 'asSold',
+              'nutrition_product_state_text': 'satıldığı haliyle',
+              'ingredient_percentages': [
+                {
+                  'ingredient_text': 'şeker',
+                  'percentage': 12,
+                  'evidence_text': 'şeker %12',
+                },
+              ],
             },
             'extraction_status': 'success',
           }),
@@ -192,11 +207,30 @@ void main() {
         expect(result.status, 'success');
         expect(result.ingredientsText, 'su, şeker');
         expect(result.nutrition, {
+          'energy_kj': 810.0,
           'energy_kcal': 193.0,
           'fat': 3.4,
           'sugars': 9.2,
           'salt': 0.7,
         });
+        expect(result.scoringEvidence?.nutrition.energyKj.value, 810);
+        expect(
+          result.scoringEvidence?.nutrition.energyKj.provenance.name,
+          'ocrDeclaredLabel',
+        );
+        expect(result.scoringEvidence?.nutritionBasis.name, 'per100g');
+        expect(
+          result.scoringEvidence?.nutritionBasisEvidence?.verification.name,
+          'unverified',
+        );
+        expect(
+          result
+              .scoringEvidence
+              ?.ingredientPercentageCandidates
+              .single
+              .percentage,
+          12,
+        );
         expect(result.error, isNull);
       },
     );

@@ -8,6 +8,9 @@ import 'package:food_analyzer_app/features/ocr/models/structured_ingredient_extr
 import 'package:food_analyzer_app/features/ocr/services/ocr_request_headers.dart';
 import 'package:food_analyzer_app/features/product/models/nutrition_data.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_evidence_snapshot.dart';
+import 'package:food_analyzer_app/features/scoring/domain/services/scoring_evidence_merger.dart';
+import 'package:food_analyzer_app/features/scoring/domain/services/scoring_evidence_nutrition_consistency.dart';
+import 'package:food_analyzer_app/features/scoring/domain/services/scoring_evidence_ocr_candidate_builder.dart';
 
 enum SubmitMissingProductResult {
   submitted,
@@ -36,12 +39,14 @@ class SubmitMissingProductResponse {
 class LabelExtractionResult {
   final String? ingredientsText;
   final Map<String, dynamic>? nutrition;
+  final ScoringEvidenceSnapshot? scoringEvidence;
   final String status; // not_started, pending, success, failed
   final String? error;
 
   const LabelExtractionResult({
     this.ingredientsText,
     this.nutrition,
+    this.scoringEvidence,
     required this.status,
     this.error,
   });
@@ -173,6 +178,15 @@ class ProductSubmissionRepository {
           .eq('status', 'pending')
           .maybeSingle();
 
+      final mergedScoringEvidence = const ScoringEvidenceMerger()
+          .merge(extraction.scoringEvidence, scoringEvidence)
+          .evidence;
+      final effectiveScoringEvidence = mergedScoringEvidence == null
+          ? null
+          : const ScoringEvidenceNutritionConsistency().align(
+              mergedScoringEvidence,
+              NutritionData.fromMap(extraction.nutrition ?? const {}),
+            );
       final payload = <String, dynamic>{
         'barcode': normalizedBarcode,
         if (productName != null && productName.trim().isNotEmpty)
@@ -189,8 +203,8 @@ class ProductSubmissionRepository {
           'extracted_ingredients_text': extraction.ingredientsText!.trim(),
         if (extraction.nutrition != null)
           'extracted_nutrition': extraction.nutrition,
-        if (scoringEvidence != null)
-          'scoring_evidence': scoringEvidence.toJson(),
+        if (effectiveScoringEvidence != null)
+          'scoring_evidence': effectiveScoringEvidence.toJson(),
         'extraction_status': extraction.status,
         if (extraction.error != null && extraction.error!.trim().isNotEmpty)
           'extraction_error': extraction.error,
@@ -331,6 +345,10 @@ class SubmissionOcrExtractor {
       final nutritionRaw = nutritionValue is Map
           ? normalizeNutritionMap(Map<String, dynamic>.from(nutritionValue))
           : null;
+      final evidenceValue = data['evidence_candidates'];
+      final evidenceCandidates = evidenceValue is Map
+          ? Map<String, dynamic>.from(evidenceValue)
+          : null;
 
       String? ingredientsText;
       if (ingredientsData != null) {
@@ -349,10 +367,16 @@ class SubmissionOcrExtractor {
       );
 
       final succeeded = status == 'success' || status == 'partial';
+      final scoringEvidence = const ScoringEvidenceOcrCandidateBuilder().build(
+        nutrition: nutritionRaw,
+        evidenceCandidates: evidenceCandidates,
+        ingredientsText: ingredientsText,
+      );
       return LabelExtractionResult(
         status: succeeded ? 'success' : 'failed',
         ingredientsText: ingredientsText,
         nutrition: nutritionRaw,
+        scoringEvidence: scoringEvidence,
         error: succeeded ? null : UserMessage.submissionOcrUnreadable,
       );
     } on DioException catch (e) {
@@ -419,6 +443,9 @@ class SubmissionOcrExtractor {
         status: ingredientsText.isNotEmpty ? 'success' : 'failed',
         ingredientsText: ingredientsText.isNotEmpty ? ingredientsText : null,
         nutrition: null,
+        scoringEvidence: const ScoringEvidenceOcrCandidateBuilder().build(
+          ingredientsText: ingredientsText,
+        ),
         error: ingredientsText.isNotEmpty
             ? null
             : UserMessage.submissionOcrUnreadable,
@@ -443,6 +470,15 @@ LabelExtractionResult mergeLabelExtractionResults(
       normalizeNutritionMap(nutritionResult.nutrition) ??
       normalizeNutritionMap(labelResult.nutrition);
   final hasData = ingredientsText?.isNotEmpty == true || nutrition != null;
+  final mergedScoringEvidence = const ScoringEvidenceMerger()
+      .merge(nutritionResult.scoringEvidence, labelResult.scoringEvidence)
+      .evidence;
+  final scoringEvidence = mergedScoringEvidence == null
+      ? null
+      : const ScoringEvidenceNutritionConsistency().align(
+          mergedScoringEvidence,
+          NutritionData.fromMap(nutrition ?? const {}),
+        );
 
   return LabelExtractionResult(
     status: hasData ? 'success' : 'failed',
@@ -450,6 +486,7 @@ LabelExtractionResult mergeLabelExtractionResults(
         ? ingredientsText
         : null,
     nutrition: nutrition,
+    scoringEvidence: scoringEvidence,
     error: hasData ? null : (nutritionResult.error ?? labelResult.error),
   );
 }

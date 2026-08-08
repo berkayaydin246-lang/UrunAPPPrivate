@@ -1,6 +1,7 @@
 import 'package:food_analyzer_app/features/scoring/domain/models/composition_percentage_evidence.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/etiketly_scoring_input.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/evidence_value.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/ingredient_percentage_candidate.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/presence_evidence.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_category_evidence.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_classification_facts.dart';
@@ -16,18 +17,23 @@ class ScoringEvidenceSnapshot {
   final int schemaVersion;
   final NutritionBasis nutritionBasis;
   final NutritionProductState nutritionProductState;
+  final EvidenceValue<NutritionBasis>? nutritionBasisEvidence;
+  final EvidenceValue<NutritionProductState>? nutritionProductStateEvidence;
   final ScoringNutritionData nutrition;
   final CompositionPercentageEvidence fvlEvidence;
   final PresenceEvidence nnsEvidence;
   final IngredientEvidenceCompleteness ingredientEvidenceCompleteness;
   final ScoringCategoryEvidence categoryEvidence;
   final ScoringClassificationFacts classificationFacts;
+  final List<IngredientPercentageCandidate> ingredientPercentageCandidates;
   final ScoringEvidenceAdminMetadata? adminVerification;
 
   ScoringEvidenceSnapshot({
     this.schemaVersion = currentSchemaVersion,
     this.nutritionBasis = NutritionBasis.unknown,
     this.nutritionProductState = NutritionProductState.unknown,
+    this.nutritionBasisEvidence,
+    this.nutritionProductStateEvidence,
     this.nutrition = const ScoringNutritionData(),
     this.fvlEvidence = const CompositionPercentageEvidence.unknown(),
     this.nnsEvidence = const PresenceEvidence.unknown(),
@@ -35,6 +41,7 @@ class ScoringEvidenceSnapshot {
         IngredientEvidenceCompleteness.unknown,
     ScoringCategoryEvidence? categoryEvidence,
     this.classificationFacts = const ScoringClassificationFacts(),
+    this.ingredientPercentageCandidates = const [],
     this.adminVerification,
   }) : categoryEvidence = categoryEvidence ?? ScoringCategoryEvidence.unknown(),
        assert(schemaVersion == currentSchemaVersion);
@@ -58,6 +65,14 @@ class ScoringEvidenceSnapshot {
             json['nutrition_product_state'],
           ) ??
           NutritionProductState.unknown,
+      nutritionBasisEvidence: _enumEvidenceFromJson(
+        json['nutrition_basis_evidence'],
+        NutritionBasis.values,
+      ),
+      nutritionProductStateEvidence: _enumEvidenceFromJson(
+        json['nutrition_product_state_evidence'],
+        NutritionProductState.values,
+      ),
       nutrition: _nutritionFromJson(json['nutrition']),
       fvlEvidence: _fvlFromJson(json['fvl_evidence']),
       nnsEvidence: _presenceFromJson(json['nns_evidence']),
@@ -71,6 +86,9 @@ class ScoringEvidenceSnapshot {
       classificationFacts: _classificationFactsFromJson(
         json['classification_facts'],
       ),
+      ingredientPercentageCandidates: _percentageCandidatesFromJson(
+        json['ingredient_percentage_candidates'],
+      ),
       adminVerification: ScoringEvidenceAdminMetadata.tryFromJson(
         json['admin_verification'],
       ),
@@ -82,6 +100,14 @@ class ScoringEvidenceSnapshot {
       'schema_version': schemaVersion,
       'nutrition_basis': _enumName(nutritionBasis),
       'nutrition_product_state': _enumName(nutritionProductState),
+      if (nutritionBasisEvidence != null)
+        'nutrition_basis_evidence': _enumEvidenceToJson(
+          nutritionBasisEvidence!,
+        ),
+      if (nutritionProductStateEvidence != null)
+        'nutrition_product_state_evidence': _enumEvidenceToJson(
+          nutritionProductStateEvidence!,
+        ),
       'nutrition': _nutritionToJson(nutrition),
       'fvl_evidence': _fvlToJson(fvlEvidence),
       'nns_evidence': _presenceToJson(nnsEvidence),
@@ -90,6 +116,11 @@ class ScoringEvidenceSnapshot {
       ),
       'category_evidence': _categoryEvidenceToJson(categoryEvidence),
       'classification_facts': _classificationFactsToJson(classificationFacts),
+      if (ingredientPercentageCandidates.isNotEmpty)
+        'ingredient_percentage_candidates': ingredientPercentageCandidates
+            .where((candidate) => candidate.isValid)
+            .map(_percentageCandidateToJson)
+            .toList(growable: false),
       if (adminVerification != null)
         'admin_verification': adminVerification!.toJson(),
     };
@@ -98,8 +129,16 @@ class ScoringEvidenceSnapshot {
   EtiketlyScoringInput toScoringInput() {
     return EtiketlyScoringInput(
       nutrition: nutrition,
-      nutritionBasis: nutritionBasis,
-      productState: nutritionProductState,
+      nutritionBasis: _verifiedEnumValue(
+        nutritionBasisEvidence,
+        legacyValue: nutritionBasis,
+        unknownValue: NutritionBasis.unknown,
+      ),
+      productState: _verifiedEnumValue(
+        nutritionProductStateEvidence,
+        legacyValue: nutritionProductState,
+        unknownValue: NutritionProductState.unknown,
+      ),
       categoryEvidence: categoryEvidence,
       classificationFacts: classificationFacts,
       fvlEvidence: fvlEvidence,
@@ -111,18 +150,25 @@ class ScoringEvidenceSnapshot {
   ScoringEvidenceSnapshot copyWith({
     NutritionBasis? nutritionBasis,
     NutritionProductState? nutritionProductState,
+    EvidenceValue<NutritionBasis>? nutritionBasisEvidence,
+    EvidenceValue<NutritionProductState>? nutritionProductStateEvidence,
     ScoringNutritionData? nutrition,
     CompositionPercentageEvidence? fvlEvidence,
     PresenceEvidence? nnsEvidence,
     IngredientEvidenceCompleteness? ingredientEvidenceCompleteness,
     ScoringCategoryEvidence? categoryEvidence,
     ScoringClassificationFacts? classificationFacts,
+    List<IngredientPercentageCandidate>? ingredientPercentageCandidates,
     ScoringEvidenceAdminMetadata? adminVerification,
   }) {
     return ScoringEvidenceSnapshot(
       nutritionBasis: nutritionBasis ?? this.nutritionBasis,
       nutritionProductState:
           nutritionProductState ?? this.nutritionProductState,
+      nutritionBasisEvidence:
+          nutritionBasisEvidence ?? this.nutritionBasisEvidence,
+      nutritionProductStateEvidence:
+          nutritionProductStateEvidence ?? this.nutritionProductStateEvidence,
       nutrition: nutrition ?? this.nutrition,
       fvlEvidence: fvlEvidence ?? this.fvlEvidence,
       nnsEvidence: nnsEvidence ?? this.nnsEvidence,
@@ -130,6 +176,8 @@ class ScoringEvidenceSnapshot {
           ingredientEvidenceCompleteness ?? this.ingredientEvidenceCompleteness,
       categoryEvidence: categoryEvidence ?? this.categoryEvidence,
       classificationFacts: classificationFacts ?? this.classificationFacts,
+      ingredientPercentageCandidates:
+          ingredientPercentageCandidates ?? this.ingredientPercentageCandidates,
       adminVerification: adminVerification ?? this.adminVerification,
     );
   }
@@ -242,6 +290,55 @@ EvidenceValue<bool> _boolEvidenceFromJson(dynamic value) {
     provenance: provenance,
     verification: verification,
   );
+}
+
+EvidenceValue<T>? _enumEvidenceFromJson<T extends Enum>(
+  dynamic value,
+  List<T> values,
+) {
+  final json = _asMap(value);
+  if (json == null) return null;
+  final parsedValue = _enumValue(values, json['value']);
+  final provenance =
+      _enumValue(EvidenceProvenance.values, json['provenance']) ??
+      EvidenceProvenance.unknown;
+  final verification = provenance == EvidenceProvenance.unknown
+      ? EvidenceVerification.unknown
+      : _enumValue(EvidenceVerification.values, json['verification']) ??
+            EvidenceVerification.unknown;
+  return EvidenceValue<T>(
+    value: parsedValue,
+    provenance: provenance,
+    verification: verification,
+  );
+}
+
+Map<String, dynamic> _enumEvidenceToJson<T extends Enum>(
+  EvidenceValue<T> value,
+) {
+  return {
+    'value': value.value == null ? null : _enumName(value.value!),
+    'provenance': _enumName(value.provenance),
+    'verification': _enumName(
+      value.provenance == EvidenceProvenance.unknown
+          ? EvidenceVerification.unknown
+          : value.verification,
+    ),
+  };
+}
+
+T _verifiedEnumValue<T extends Enum>(
+  EvidenceValue<T>? evidence, {
+  required T legacyValue,
+  required T unknownValue,
+}) {
+  if (evidence == null) return legacyValue;
+  if (evidence.value == null ||
+      evidence.provenance == EvidenceProvenance.unknown ||
+      evidence.verification != EvidenceVerification.verified) {
+    return unknownValue;
+  }
+  return evidence.value!;
 }
 
 Map<String, dynamic> _evidenceToJson<T>(
@@ -503,6 +600,56 @@ Map<String, dynamic> _classificationFactsToJson(
       'is_sports_nutrition': _evidenceToJson(value.isSportsNutrition!),
     if (value.isMealReplacement != null)
       'is_meal_replacement': _evidenceToJson(value.isMealReplacement!),
+  };
+}
+
+List<IngredientPercentageCandidate> _percentageCandidatesFromJson(
+  dynamic value,
+) {
+  if (value is! List) return const [];
+  final candidates = <IngredientPercentageCandidate>[];
+  for (final rawCandidate in value) {
+    final json = _asMap(rawCandidate);
+    if (json == null) continue;
+    final ingredientText = _cleanText(json['ingredient_text']);
+    final evidenceText = _cleanText(json['evidence_text']);
+    final percentage = _finiteNonNegative(json['percentage'], maximum: 100);
+    if (ingredientText == null || evidenceText == null || percentage == null) {
+      continue;
+    }
+    final provenance =
+        _enumValue(EvidenceProvenance.values, json['provenance']) ??
+        EvidenceProvenance.unknown;
+    final verification = provenance == EvidenceProvenance.unknown
+        ? EvidenceVerification.unknown
+        : _enumValue(EvidenceVerification.values, json['verification']) ??
+              EvidenceVerification.unknown;
+    candidates.add(
+      IngredientPercentageCandidate(
+        ingredientText: ingredientText,
+        percentage: percentage,
+        evidenceText: evidenceText,
+        provenance: provenance,
+        verification: verification,
+      ),
+    );
+  }
+  return List.unmodifiable(candidates);
+}
+
+Map<String, dynamic> _percentageCandidateToJson(
+  IngredientPercentageCandidate value,
+) {
+  return {
+    'ingredient_text': value.ingredientText.trim(),
+    'percentage': value.percentage,
+    'evidence_text': value.evidenceText.trim(),
+    'provenance': _enumName(value.provenance),
+    'verification': _enumName(
+      value.provenance == EvidenceProvenance.unknown
+          ? EvidenceVerification.unknown
+          : value.verification,
+    ),
   };
 }
 

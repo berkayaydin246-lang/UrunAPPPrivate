@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:food_analyzer_app/features/scoring/domain/models/composition_percentage_evidence.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/evidence_value.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/ingredient_percentage_candidate.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/presence_evidence.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_category_evidence.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_classification_facts.dart';
@@ -52,6 +53,18 @@ class ScoringEvidenceMerger {
     }
 
     final conflicts = <ScoringEvidenceConflict>[];
+    final basisEvidence = _mergeOptionalEvidence(
+      'nutrition_basis',
+      existing.nutritionBasisEvidence,
+      incoming.nutritionBasisEvidence,
+      conflicts,
+    );
+    final stateEvidence = _mergeOptionalEvidence(
+      'nutrition_product_state',
+      existing.nutritionProductStateEvidence,
+      incoming.nutritionProductStateEvidence,
+      conflicts,
+    );
     final nutrition = ScoringNutritionData(
       energyKj: _mergeEvidenceValue(
         'nutrition.energy_kj',
@@ -110,20 +123,26 @@ class ScoringEvidenceMerger {
     );
 
     final merged = ScoringEvidenceSnapshot(
-      nutritionBasis: _mergeUnknownableEnum(
-        'nutrition_basis',
-        existing.nutritionBasis,
-        incoming.nutritionBasis,
-        NutritionBasis.unknown,
-        conflicts,
-      ),
-      nutritionProductState: _mergeUnknownableEnum(
-        'nutrition_product_state',
-        existing.nutritionProductState,
-        incoming.nutritionProductState,
-        NutritionProductState.unknown,
-        conflicts,
-      ),
+      nutritionBasis:
+          basisEvidence?.value ??
+          _mergeUnknownableEnum(
+            'nutrition_basis',
+            existing.nutritionBasis,
+            incoming.nutritionBasis,
+            NutritionBasis.unknown,
+            conflicts,
+          ),
+      nutritionProductState:
+          stateEvidence?.value ??
+          _mergeUnknownableEnum(
+            'nutrition_product_state',
+            existing.nutritionProductState,
+            incoming.nutritionProductState,
+            NutritionProductState.unknown,
+            conflicts,
+          ),
+      nutritionBasisEvidence: basisEvidence,
+      nutritionProductStateEvidence: stateEvidence,
       nutrition: nutrition,
       fvlEvidence: _mergeFvl(
         existing.fvlEvidence,
@@ -152,8 +171,12 @@ class ScoringEvidenceMerger {
         incoming.classificationFacts,
         conflicts,
       ),
+      ingredientPercentageCandidates: _mergePercentageCandidates(
+        existing.ingredientPercentageCandidates,
+        incoming.ingredientPercentageCandidates,
+      ),
       adminVerification:
-          existing.adminVerification ?? incoming.adminVerification,
+          incoming.adminVerification ?? existing.adminVerification,
     );
     final changed =
         jsonEncode(existing.toJson()) != jsonEncode(merged.toJson());
@@ -355,6 +378,26 @@ class ScoringEvidenceMerger {
     if (incoming == null || !incoming.hasValue) return existing;
     if (existing == null || !existing.hasValue) return incoming;
     return _mergeEvidenceValue(field, existing, incoming, conflicts);
+  }
+
+  List<IngredientPercentageCandidate> _mergePercentageCandidates(
+    List<IngredientPercentageCandidate> existing,
+    List<IngredientPercentageCandidate> incoming,
+  ) {
+    final merged = <String, IngredientPercentageCandidate>{};
+    for (final candidate in [...existing, ...incoming]) {
+      if (!candidate.isValid) continue;
+      final key =
+          '${candidate.ingredientText.trim().toLowerCase()}|'
+          '${candidate.percentage}|${candidate.evidenceText.trim().toLowerCase()}';
+      final current = merged[key];
+      if (current == null ||
+          _evidenceRank(candidate.provenance, candidate.verification) >
+              _evidenceRank(current.provenance, current.verification)) {
+        merged[key] = candidate;
+      }
+    }
+    return List.unmodifiable(merged.values);
   }
 
   T _mergeUnknownableEnum<T extends Enum>(

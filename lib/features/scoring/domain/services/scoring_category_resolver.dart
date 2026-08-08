@@ -47,6 +47,16 @@ class ScoringCategoryResolver {
     final explicitCategory = explicit?.trustedValue;
     if (explicitCategory != null &&
         explicitCategory != ScoringCategory.unknown) {
+      final incompleteReason = _explicitCategoryIncompleteReason(
+        explicitCategory,
+        facts,
+      );
+      if (incompleteReason != null) {
+        return ScoringCategoryEvidence.unknown(
+          evidenceValues: [explicitCategory.name],
+          reasons: [incompleteReason],
+        );
+      }
       final isAdmin = explicit!.provenance == EvidenceProvenance.adminVerified;
       return ScoringCategoryEvidence(
         resolvedCategory: explicitCategory,
@@ -249,6 +259,41 @@ class ScoringCategoryResolver {
         CategoryResolutionReason.insufficientEvidence,
       },
     );
+  }
+
+  CategoryResolutionReason? _explicitCategoryIncompleteReason(
+    ScoringCategory category,
+    ScoringClassificationFacts facts,
+  ) {
+    switch (category) {
+      case ScoringCategory.redMeat:
+        final percentage = facts.redMeatPercentage?.trustedValue;
+        if (!_validPercentage(percentage) ||
+            percentage! < 20 ||
+            facts.redMeatIsPrimaryIngredient?.trustedValue != true) {
+          return CategoryResolutionReason.redMeatEvidenceIncomplete;
+        }
+        break;
+      case ScoringCategory.cheese:
+        if (facts.isPlantBasedCheeseAlternative?.trustedValue != false ||
+            facts.isCompoundProduct?.trustedValue != false) {
+          return CategoryResolutionReason.cheeseEvidenceIncomplete;
+        }
+        break;
+      case ScoringCategory.fatsOilsNutsSeeds:
+        final percentage = facts.nutSeedPercentage?.trustedValue;
+        if (percentage != null &&
+            (!_validPercentage(percentage) || percentage <= 50)) {
+          return CategoryResolutionReason.nutSeedPercentageUnknown;
+        }
+        break;
+      case ScoringCategory.generalFood:
+      case ScoringCategory.beverage:
+      case ScoringCategory.outOfScope:
+      case ScoringCategory.unknown:
+        break;
+    }
+    return null;
   }
 
   void _resolveCheeseCandidate({
