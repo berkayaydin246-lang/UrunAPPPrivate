@@ -6,8 +6,10 @@ Phases 2B-1 through 2B-3 determine whether the available product evidence is
 sufficient for deterministic nutrition calculation, persist that source
 evidence, and let an admin verify submission evidence. Phase 2B-4 adds the pure
 updated-methodology raw nutrition calculator behind that strict readiness
-boundary. No phase currently calculates a 0-100 Etiketly value, additive
-numeric result, letter grade, or combined nutrition and additive result.
+boundary. Phase 2B-5 transforms that raw result into an internal, category-aware
+`nutritionQuality` component in `0..100`. No phase currently calculates a final
+Etiketly value, additive numeric result, letter grade, or combined nutrition and
+additive result.
 
 The domain module is pure Dart. It does not access UI state, Riverpod,
 repositories, Supabase, the network, or AI services.
@@ -218,13 +220,40 @@ plain water; and internal arithmetic archetypes. The known workbook defect is
 an explicit regression: exact beverage salt `3.2` follows the concordant
 textual specification and receives 15 points.
 
-This raw result is not an Etiketly Score. There is no 0-100 transformation,
-additive component, nutrition/additive weighting, production A/B/C/D/E mapping,
-or normal-user score UI.
+This raw result is not an Etiketly Score. Phase 2B-5 transforms it only into the
+internal nutrition component described below. There is no additive component,
+nutrition/additive weighting, production A/B/C/D/E mapping, final Etiketly
+Score, or normal-user score UI.
+
+## Nutrition quality transform
+
+Phase 2B-5 adds a separate pure normalization layer:
+
+- `domain/models/nutrition_quality_result.dart`
+- `domain/services/nutrition_quality_transformer.dart`
+
+All paths above are under `lib/features/scoring/`. The transform version is
+`nutrition_quality_transform_v1`, separate from the raw methodology version.
+The transformer consumes only `NutritionRawScoreResult`; it does not access a
+product, readiness evidence, database, network, clock, AI, Riverpod, or UI.
+
+The category-specific piecewise-linear mapping is anchored to common quality
+values at the official raw category transitions. It is deterministic,
+continuous, monotonic, catalogue-independent, bounded to `0..100`, and keeps
+internal `double` precision without rounding. Plain water maps directly from
+its typed raw special case to `100`; no raw score is fabricated. Exact anchors,
+tail behavior, candidate comparison, calibration results, and limitations are
+documented in
+[NUTRITION_QUALITY_TRANSFORM_V1.md](NUTRITION_QUALITY_TRANSFORM_V1.md).
+
+The `41` synthetic cases are explicitly internal calibration fixtures, not
+official products or public labels. Tests also cover exhaustive monotonicity,
+official transition continuity, tail clamps, cross-category direction, and
+one-factor sensitivity. This internal nutrition component is not exposed to
+normal users and is not the final Etiketly Score.
 
 ## Next phase
 
-Any 0-100 transformation, additive component or weight, public result, and
-score UI remain explicitly outside this phase. Legacy catalog backfill also
-requires a separate controlled process and must not guess evidence from product
-names.
+Any additive component or weight, final Etiketly Score, public result, and score
+UI remain explicitly outside this phase. Legacy catalog backfill also requires
+a separate controlled process and must not guess evidence from product names.
