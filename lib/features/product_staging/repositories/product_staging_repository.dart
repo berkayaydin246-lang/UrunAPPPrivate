@@ -1,6 +1,7 @@
 import 'package:food_analyzer_app/core/services/supabase_service.dart';
 import 'package:food_analyzer_app/features/product_staging/models/product_candidate.dart';
 import 'package:food_analyzer_app/features/product_staging/services/product_candidate_quality_evaluator.dart';
+import 'package:food_analyzer_app/features/scoring/domain/services/scoring_evidence_merger.dart';
 
 /// Repository for the `product_staging` table.
 ///
@@ -141,6 +142,10 @@ class ProductStagingRepository {
     ProductCandidate existing,
     ProductCandidate incoming,
   ) {
+    final evidenceMerge = const ScoringEvidenceMerger().merge(
+      existing.scoringEvidence,
+      incoming.scoringEvidence,
+    );
     return existing.copyWith(
       barcode: _fillString(existing.barcode, incoming.barcode),
       name: _fillString(existing.name, incoming.name),
@@ -175,6 +180,7 @@ class ProductStagingRepository {
         incoming.ingredientsText,
       ),
       nutritionJson: _fillMap(existing.nutritionJson, incoming.nutritionJson),
+      scoringEvidence: evidenceMerge.evidence,
       sourceUrl: _fillString(existing.sourceUrl, incoming.sourceUrl),
       // raw_source_payload is always refreshed by the caller.
       rawSourcePayload: incoming.rawSourcePayload ?? existing.rawSourcePayload,

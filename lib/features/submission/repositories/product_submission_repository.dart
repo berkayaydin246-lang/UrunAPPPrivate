@@ -7,6 +7,7 @@ import 'package:food_analyzer_app/core/services/supabase_service.dart';
 import 'package:food_analyzer_app/features/ocr/models/structured_ingredient_extraction_result.dart';
 import 'package:food_analyzer_app/features/ocr/services/ocr_request_headers.dart';
 import 'package:food_analyzer_app/features/product/models/nutrition_data.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/scoring_evidence_snapshot.dart';
 
 enum SubmitMissingProductResult {
   submitted,
@@ -73,6 +74,7 @@ class ProductSubmissionRepository {
     String? productName,
     String? brand,
     String? notes,
+    ScoringEvidenceSnapshot? scoringEvidence,
   }) async {
     if (!hasRequiredSubmissionInputs(
       barcode: barcode,
@@ -187,6 +189,8 @@ class ProductSubmissionRepository {
           'extracted_ingredients_text': extraction.ingredientsText!.trim(),
         if (extraction.nutrition != null)
           'extracted_nutrition': extraction.nutrition,
+        if (scoringEvidence != null)
+          'scoring_evidence': scoringEvidence.toJson(),
         'extraction_status': extraction.status,
         if (extraction.error != null && extraction.error!.trim().isNotEmpty)
           'extraction_error': extraction.error,

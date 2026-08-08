@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:food_analyzer_app/features/product/models/nutrition_data.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/scoring_evidence_snapshot.dart';
 
 class Product {
   final String id;
@@ -20,6 +21,7 @@ class Product {
   final List<String>? categoryTags;
   final String? canonicalCategory;
   final String? canonicalSubcategory;
+  final ScoringEvidenceSnapshot? scoringEvidence;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -40,6 +42,7 @@ class Product {
     this.categoryTags,
     this.canonicalCategory,
     this.canonicalSubcategory,
+    this.scoringEvidence,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -67,6 +70,9 @@ class Product {
           .toList(),
       canonicalCategory: json['canonical_category'] as String?,
       canonicalSubcategory: json['canonical_subcategory'] as String?,
+      scoringEvidence: ScoringEvidenceSnapshot.tryFromJson(
+        json['scoring_evidence'],
+      ),
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
@@ -92,6 +98,8 @@ class Product {
       if (canonicalCategory != null) 'canonical_category': canonicalCategory,
       if (canonicalSubcategory != null)
         'canonical_subcategory': canonicalSubcategory,
+      if (scoringEvidence != null)
+        'scoring_evidence': scoringEvidence!.toJson(),
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
     };

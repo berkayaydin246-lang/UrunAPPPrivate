@@ -104,6 +104,7 @@ void main() {
   group('NutritionData.fromMap', () {
     test('parses all double fields', () {
       final data = NutritionData.fromMap({
+        'energy_kj': 1046.0,
         'energy_kcal': 250.0,
         'fat': 10.5,
         'saturated_fat': 3.2,
@@ -115,6 +116,7 @@ void main() {
         'sodium': 0.3,
       });
 
+      expect(data.energyKj, 1046.0);
       expect(data.energyKcal, 250.0);
       expect(data.fat, 10.5);
       expect(data.saturatedFat, 3.2);
@@ -152,8 +154,15 @@ void main() {
 
     test('returns null for missing keys', () {
       final data = NutritionData.fromMap({});
+      expect(data.energyKj, isNull);
       expect(data.energyKcal, isNull);
       expect(data.fat, isNull);
+    });
+
+    test('kcal does not silently populate canonical kJ', () {
+      final data = NutritionData.fromMap({'energy_kcal': 100});
+      expect(data.energyKcal, 100);
+      expect(data.energyKj, isNull);
     });
 
     test('returns null for unparseable string', () {
@@ -180,6 +189,7 @@ void main() {
   group('normalizeNutritionMap', () {
     test('returns only canonical, valid nutrition fields', () {
       final normalized = normalizeNutritionMap({
+        'energy_kj': 808,
         'energy_kcal': 193,
         'fat': '3,4',
         'salt': 'not_visible',
@@ -188,6 +198,7 @@ void main() {
       });
 
       expect(normalized, {
+        'energy_kj': 808.0,
         'energy_kcal': 193.0,
         'fat': 3.4,
         'serving_size': '30 g',
@@ -218,6 +229,7 @@ void main() {
 
     test('fromMap(toMap()) preserves values', () {
       const original = NutritionData(
+        energyKj: 836.8,
         energyKcal: 200.0,
         fat: 8.0,
         sugars: 22.0,
@@ -226,6 +238,7 @@ void main() {
         salt: 1.2,
       );
       final roundTripped = NutritionData.fromMap(original.toMap());
+      expect(roundTripped.energyKj, original.energyKj);
       expect(roundTripped.energyKcal, original.energyKcal);
       expect(roundTripped.fat, original.fat);
       expect(roundTripped.sugars, original.sugars);
@@ -244,6 +257,12 @@ void main() {
     test('true when at least one field is set', () {
       const data = NutritionData(salt: 0.5);
       expect(data.hasAnyData, isTrue);
+    });
+
+    test('true when only energy kJ is set', () {
+      const data = NutritionData(energyKj: 420);
+      expect(data.hasAnyData, isTrue);
+      expect(data.toMap(), {'energy_kj': 420.0});
     });
   });
 

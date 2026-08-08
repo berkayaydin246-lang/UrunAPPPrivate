@@ -1,4 +1,5 @@
 import 'package:food_analyzer_app/features/product/models/nutrition_data.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/scoring_evidence_snapshot.dart';
 
 class ProductSubmission {
   final String id;
@@ -11,6 +12,7 @@ class ProductSubmission {
   final String? nutritionImageUrl;
   final String? extractedIngredientsText;
   final Map<String, dynamic>? extractedNutrition;
+  final ScoringEvidenceSnapshot? scoringEvidence;
   final String extractionStatus;
   final String? extractionError;
   final String? notes;
@@ -31,6 +33,7 @@ class ProductSubmission {
     this.nutritionImageUrl,
     this.extractedIngredientsText,
     this.extractedNutrition,
+    this.scoringEvidence,
     this.extractionStatus = 'not_started',
     this.extractionError,
     this.notes,
@@ -53,6 +56,9 @@ class ProductSubmission {
       nutritionImageUrl: json['nutrition_image_url'] as String?,
       extractedIngredientsText: json['extracted_ingredients_text'] as String?,
       extractedNutrition: _nutritionMapOrNull(json['extracted_nutrition']),
+      scoringEvidence: ScoringEvidenceSnapshot.tryFromJson(
+        json['scoring_evidence'],
+      ),
       extractionStatus: json['extraction_status'] as String? ?? 'not_started',
       extractionError: json['extraction_error'] as String?,
       notes: json['notes'] as String?,

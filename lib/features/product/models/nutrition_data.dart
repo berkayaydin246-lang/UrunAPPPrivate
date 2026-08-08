@@ -1,4 +1,5 @@
 class NutritionData {
+  final double? energyKj;
   final double? energyKcal;
   final double? fat;
   final double? saturatedFat;
@@ -11,6 +12,7 @@ class NutritionData {
   final String? servingSize;
 
   const NutritionData({
+    this.energyKj,
     this.energyKcal,
     this.fat,
     this.saturatedFat,
@@ -24,6 +26,7 @@ class NutritionData {
   });
 
   bool get hasAnyData =>
+      energyKj != null ||
       energyKcal != null ||
       fat != null ||
       saturatedFat != null ||
@@ -36,6 +39,7 @@ class NutritionData {
 
   factory NutritionData.fromMap(Map<String, dynamic> map) {
     return NutritionData(
+      energyKj: _toDouble(map['energy_kj']),
       energyKcal: _toDouble(map['energy_kcal']),
       fat: _toDouble(map['fat']),
       saturatedFat: _toDouble(map['saturated_fat']),
@@ -51,6 +55,7 @@ class NutritionData {
 
   Map<String, dynamic> toMap() {
     return {
+      if (energyKj != null) 'energy_kj': energyKj,
       if (energyKcal != null) 'energy_kcal': energyKcal,
       if (fat != null) 'fat': fat,
       if (saturatedFat != null) 'saturated_fat': saturatedFat,

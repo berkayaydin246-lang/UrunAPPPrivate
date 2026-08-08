@@ -101,6 +101,19 @@ void main() {
       expect(nutrition.energyKj.provenance, EvidenceProvenance.derivedFromKcal);
     });
 
+    test('canonical kJ remains imported and is not overwritten by kcal', () {
+      final nutrition = adapter.fromLegacyNutrition(
+        const NutritionData(energyKj: 410, energyKcal: 100),
+      );
+
+      expect(nutrition.energyKj.value, 410);
+      expect(nutrition.energyKj.provenance, EvidenceProvenance.databaseImport);
+      expect(
+        nutrition.energyKj.provenance,
+        isNot(EvidenceProvenance.declaredLabel),
+      );
+    });
+
     test('null nutrition adapts without throwing', () {
       expect(() => adapter.fromLegacyNutrition(null), returnsNormally);
       expect(adapter.fromLegacyNutrition(null).energyKj.value, isNull);

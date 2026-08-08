@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:food_analyzer_app/core/services/supabase_service.dart';
 import 'package:food_analyzer_app/features/product/models/product.dart';
 import 'package:food_analyzer_app/features/product_staging/models/product_candidate.dart';
+import 'package:food_analyzer_app/features/scoring/domain/services/scoring_evidence_merger.dart';
 
 /// Outcome of approving a staged product.
 enum ApproveStagedResult {
@@ -339,7 +340,22 @@ class ProductStagingApprovalRepository {
       '[Staging] existing product — filling missing fields only',
     );
     final existing = Product.fromJson(existingRow);
-    final patch = buildProductEnrichPatch(existing, candidate, edits);
+    final evidenceMerge = const ScoringEvidenceMerger().merge(
+      existing.scoringEvidence,
+      candidate.scoringEvidence,
+    );
+    if (evidenceMerge.conflicts.isNotEmpty) {
+      _debugStagingApprovalLog(
+        '[Staging] scoring evidence conflicts retained deterministically: '
+        '${evidenceMerge.conflicts.map((item) => item.field).join(', ')}',
+      );
+    }
+    final patch = buildProductEnrichPatch(
+      existing,
+      candidate,
+      edits,
+      scoringEvidenceMerge: evidenceMerge,
+    );
     if (patch.isNotEmpty) {
       _debugStagingApprovalLog(
         '[Staging] updating product keys=${patch.keys.toList()}',
@@ -436,6 +452,8 @@ class ProductStagingApprovalRepository {
       ...?_entry('source_url', _resolve(candidate.sourceUrl)),
       ...?_entryList('category_tags', candidate.categoryTags),
       ...?_entryList('search_keywords', candidate.searchKeywords),
+      if (candidate.scoringEvidence != null)
+        'scoring_evidence': candidate.scoringEvidence!.toJson(),
     };
   }
 
@@ -446,8 +464,9 @@ class ProductStagingApprovalRepository {
   static Map<String, dynamic> buildProductEnrichPatch(
     Product existing,
     ProductCandidate candidate,
-    StagingApprovalEdits edits,
-  ) {
+    StagingApprovalEdits edits, {
+    ScoringEvidenceMergeResult? scoringEvidenceMerge,
+  }) {
     final patch = <String, dynamic>{};
 
     if (existing.name.trim().isEmpty) {
@@ -479,6 +498,15 @@ class ProductStagingApprovalRepository {
       patch.addAll(
         _entryList('search_keywords', candidate.searchKeywords) ?? {},
       );
+    }
+    final evidenceMerge =
+        scoringEvidenceMerge ??
+        const ScoringEvidenceMerger().merge(
+          existing.scoringEvidence,
+          candidate.scoringEvidence,
+        );
+    if (evidenceMerge.changed && evidenceMerge.evidence != null) {
+      patch['scoring_evidence'] = evidenceMerge.evidence!.toJson();
     }
     return patch;
   }

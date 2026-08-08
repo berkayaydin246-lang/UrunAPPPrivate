@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:food_analyzer_app/core/services/supabase_service.dart';
 import 'package:food_analyzer_app/features/product/models/product.dart';
 import 'package:food_analyzer_app/features/product/models/nutrition_data.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/scoring_evidence_snapshot.dart';
+import 'package:food_analyzer_app/features/scoring/domain/services/scoring_evidence_merger.dart';
 import 'package:food_analyzer_app/features/submission/models/product_submission.dart';
 
 enum ApproveProductResult {
@@ -140,7 +142,21 @@ class ProductSubmissionApprovalRepository {
         '[Approval] existing product found — patching missing fields',
       );
       final existing = Product.fromJson(existingRow);
-      final patch = buildProductEnrichPatch(existing, insertMap);
+      final evidenceMerge = const ScoringEvidenceMerger().merge(
+        existing.scoringEvidence,
+        submission.scoringEvidence,
+      );
+      if (evidenceMerge.conflicts.isNotEmpty) {
+        _debugSubmissionApprovalLog(
+          '[Approval] scoring evidence conflicts retained deterministically: '
+          '${evidenceMerge.conflicts.map((item) => item.field).join(', ')}',
+        );
+      }
+      final patch = buildProductEnrichPatch(
+        existing,
+        insertMap,
+        scoringEvidenceMerge: evidenceMerge,
+      );
 
       if (patch.isNotEmpty) {
         _debugSubmissionApprovalLog(
@@ -227,14 +243,17 @@ class ProductSubmissionApprovalRepository {
             _resolve(submission.extractedIngredientsText),
       ),
       ...?_entry('nutrition_text', nutritionText),
+      if (submission.scoringEvidence != null)
+        'scoring_evidence': submission.scoringEvidence!.toJson(),
     };
   }
 
   /// Fills only missing product fields; existing nutrition is never replaced.
   static Map<String, dynamic> buildProductEnrichPatch(
     Product existing,
-    Map<String, dynamic> reviewedInsertMap,
-  ) {
+    Map<String, dynamic> reviewedInsertMap, {
+    ScoringEvidenceMergeResult? scoringEvidenceMerge,
+  }) {
     final patch = <String, dynamic>{};
     if (_isEmpty(existing.name)) patch['name'] = reviewedInsertMap['name'];
     if (existing.brand == null && reviewedInsertMap.containsKey('brand')) {
@@ -251,6 +270,18 @@ class ProductSubmissionApprovalRepository {
     if (existing.nutritionText == null &&
         reviewedInsertMap.containsKey('nutrition_text')) {
       patch['nutrition_text'] = reviewedInsertMap['nutrition_text'];
+    }
+    final incomingEvidence = ScoringEvidenceSnapshot.tryFromJson(
+      reviewedInsertMap['scoring_evidence'],
+    );
+    final evidenceMerge =
+        scoringEvidenceMerge ??
+        const ScoringEvidenceMerger().merge(
+          existing.scoringEvidence,
+          incomingEvidence,
+        );
+    if (evidenceMerge.changed && evidenceMerge.evidence != null) {
+      patch['scoring_evidence'] = evidenceMerge.evidence!.toJson();
     }
     return patch;
   }

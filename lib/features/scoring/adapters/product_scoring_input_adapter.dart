@@ -17,6 +17,11 @@ class ProductScoringInputAdapter {
   });
 
   EtiketlyScoringInput fromProduct(Product product) {
+    final persistedEvidence = product.scoringEvidence;
+    if (persistedEvidence != null) {
+      return persistedEvidence.toScoringInput();
+    }
+
     final categoryEvidence = categoryResolver.resolve(
       ScoringCategoryResolverInput(
         categoryTags: product.categoryTags ?? const [],
@@ -50,7 +55,9 @@ class ProductScoringInputAdapter {
           );
 
     final energyKcal = imported(nutrition.energyKcal);
-    final energyKj = nutrition.energyKcal == null
+    final energyKj = nutrition.energyKj != null
+        ? imported(nutrition.energyKj)
+        : nutrition.energyKcal == null
         ? const EvidenceValue<double>.unknown()
         : EvidenceValue<double>(
             value: nutrition.energyKcal! * 4.184,

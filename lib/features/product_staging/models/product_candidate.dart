@@ -1,4 +1,5 @@
 import 'package:food_analyzer_app/features/product/models/nutrition_data.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/scoring_evidence_snapshot.dart';
 
 /// A standardized product candidate that flows into the `product_staging` table.
 ///
@@ -36,6 +37,7 @@ class ProductCandidate {
   // Extracted data
   final String? ingredientsText;
   final Map<String, dynamic>? nutritionJson;
+  final ScoringEvidenceSnapshot? scoringEvidence;
 
   // Source tracking
   final String source;
@@ -75,6 +77,7 @@ class ProductCandidate {
     this.imageNutritionUrl,
     this.ingredientsText,
     this.nutritionJson,
+    this.scoringEvidence,
     required this.source,
     this.sourceUrl,
     this.rawSourcePayload,
@@ -135,6 +138,9 @@ class ProductCandidate {
       imageNutritionUrl: json['image_nutrition_url'] as String?,
       ingredientsText: json['ingredients_text'] as String?,
       nutritionJson: _mapOrNull(json['nutrition_json']),
+      scoringEvidence: ScoringEvidenceSnapshot.tryFromJson(
+        json['scoring_evidence'],
+      ),
       source: (json['source'] as String?) ?? 'unknown',
       sourceUrl: json['source_url'] as String?,
       rawSourcePayload: _mapOrNull(json['raw_source_payload']),
@@ -170,6 +176,8 @@ class ProductCandidate {
       'image_nutrition_url': imageNutritionUrl,
       'ingredients_text': ingredientsText,
       'nutrition_json': nutritionJson,
+      if (scoringEvidence != null)
+        'scoring_evidence': scoringEvidence!.toJson(),
       'source': source,
       'source_url': sourceUrl,
       'raw_source_payload': rawSourcePayload,
@@ -222,6 +230,7 @@ class ProductCandidate {
     put('image_nutrition_url', imageNutritionUrl);
     put('ingredients_text', ingredientsText);
     put('nutrition_json', nutritionJson);
+    put('scoring_evidence', scoringEvidence?.toJson());
     put('source_url', sourceUrl);
     put('raw_source_payload', rawSourcePayload);
     put('name_source', nameSource);
@@ -250,6 +259,7 @@ class ProductCandidate {
     String? imageNutritionUrl,
     String? ingredientsText,
     Map<String, dynamic>? nutritionJson,
+    ScoringEvidenceSnapshot? scoringEvidence,
     String? source,
     String? sourceUrl,
     Map<String, dynamic>? rawSourcePayload,
@@ -282,6 +292,7 @@ class ProductCandidate {
       imageNutritionUrl: imageNutritionUrl ?? this.imageNutritionUrl,
       ingredientsText: ingredientsText ?? this.ingredientsText,
       nutritionJson: nutritionJson ?? this.nutritionJson,
+      scoringEvidence: scoringEvidence ?? this.scoringEvidence,
       source: source ?? this.source,
       sourceUrl: sourceUrl ?? this.sourceUrl,
       rawSourcePayload: rawSourcePayload ?? this.rawSourcePayload,

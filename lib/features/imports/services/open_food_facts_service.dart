@@ -304,20 +304,15 @@ NutritionData? parseOffNutriments(Map<String, dynamic> raw) {
       n('saturated-fat') ??
       n('saturated_fat');
 
-  // Derive kcal from kJ when the kcal key is absent.
-  // 1 kcal = 4.184 kJ (rounded; exact conversion varies by source).
-  double? energyKcalFromKj() {
-    final kj =
-        n('energy-kj_100g') ??
-        n('energy_kj_100g') ??
-        n('energy-kj_100ml') ??
-        n('energy_kj_100ml') ??
-        n('energy_100g') ??
-        n('energy_100ml') ??
-        n('energy-kj') ??
-        n('energy_kj');
-    return kj != null ? kj / 4.184 : null;
-  }
+  final energyKj =
+      n('energy-kj_100g') ??
+      n('energy_kj_100g') ??
+      n('energy-kj_100ml') ??
+      n('energy_kj_100ml') ??
+      n('energy_100g') ??
+      n('energy_100ml') ??
+      n('energy-kj') ??
+      n('energy_kj');
 
   final energyKcal =
       n('energy-kcal_100g') ??
@@ -326,9 +321,10 @@ NutritionData? parseOffNutriments(Map<String, dynamic> raw) {
       n('energy_kcal_100ml') ??
       n('energy-kcal') ??
       n('energy_kcal') ??
-      energyKcalFromKj();
+      (energyKj != null ? energyKj / 4.184 : null);
 
   final data = NutritionData(
+    energyKj: energyKj,
     energyKcal: energyKcal,
     fat: nFat('fat'),
     saturatedFat: nSaturated(),
