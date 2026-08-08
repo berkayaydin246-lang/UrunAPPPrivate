@@ -569,7 +569,7 @@ class ProductRepository {
       final response = await SupabaseService.client
           .from('product_ingredients')
           .select(
-            'ingredients:ingredient_id(id, name, normalized_name, alternative_names, e_code, category, risk_level, short_description, long_description, source_url, created_at, updated_at)',
+            'ingredients:ingredient_id(id, name, normalized_name, alternative_names, aliases, common_names, english_names, e_code, category, risk_level, additive_group, short_description, long_description, child_warning, source_references, source_url, ingredient_type, short_purpose, short_risk_summary, caution_groups, processing_role, created_at, updated_at)',
           )
           .eq('product_id', productId);
 

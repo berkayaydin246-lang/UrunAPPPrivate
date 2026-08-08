@@ -7,9 +7,12 @@ sufficient for deterministic nutrition calculation, persist that source
 evidence, and let an admin verify submission evidence. Phase 2B-4 adds the pure
 updated-methodology raw nutrition calculator behind that strict readiness
 boundary. Phase 2B-5 transforms that raw result into an internal, category-aware
-`nutritionQuality` component in `0..100`. No phase currently calculates a final
-Etiketly value, additive numeric result, letter grade, or combined nutrition and
-additive result.
+`nutritionQuality` component in `0..100`. Phase 2B-6 adds one canonical,
+deterministic additive/ingredient identity and risk assessment authority with
+deduplication, match authority, strict future eligibility, and non-numeric NNS
+overlap metadata. No phase currently calculates a final Etiketly value,
+additive numeric result, letter grade, or combined nutrition and additive
+result.
 
 The domain module is pure Dart. It does not access UI state, Riverpod,
 repositories, Supabase, the network, or AI services.
@@ -252,8 +255,38 @@ official transition continuity, tail clamps, cross-category direction, and
 one-factor sensitivity. This internal nutrition component is not exposed to
 normal users and is not the final Etiketly Score.
 
+## Canonical additive assessment
+
+Phase 2B-6 implements the canonical runtime assessment in:
+
+- `features/analysis/models/canonical_additive_assessment.dart`
+- `features/analysis/services/canonical_ingredient_risk_service.dart`
+
+Database ingredient identity is preferred; E-code and canonical-name fallbacks
+are used only without an ID. Exact canonical, E-code, and alias matches can be
+authoritative, while fuzzy candidates remain review-required. Repeated aliases,
+names, and E-codes for one canonical identity are counted once. Ordinary
+ingredients and unresolved tokens are explicitly separate from additives.
+
+Reviewed database risk and reviewed explanation-catalogue risk are reconciled
+only by the canonical service. A known conflict becomes `unknown` and is
+recorded rather than silently selecting a more severe value. Product detail,
+comparison, and `AnalysisEngine` no longer maintain independent risk decisions.
+
+Qualifying beverage NNS can carry non-numeric nutrition-overlap metadata by
+reusing the existing versioned NNS detector. Non-beverages and excluded polyols
+do not receive that flag. This metadata does not alter nutrition scoring.
+
+See
+[ADDITIVE_ASSESSMENT_FOUNDATION.md](ADDITIVE_ASSESSMENT_FOUNDATION.md) for the
+authority, identity, conflict, hard-coded-rule, and catalogue-gap audit.
+
+There is still no additive numeric score, additive penalty, nutrition/additive
+weight, combined Etiketly Score, or public score UI.
+
 ## Next phase
 
-Any additive component or weight, final Etiketly Score, public result, and score
-UI remain explicitly outside this phase. Legacy catalog backfill also requires
-a separate controlled process and must not guess evidence from product names.
+Phase 2B-7 may calibrate an additive component using the canonical assessment.
+No weight, final Etiketly Score, public result, or score UI exists yet. Catalogue
+coverage review and any backfill require a separate controlled process and must
+not guess evidence from product names.

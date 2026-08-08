@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:food_analyzer_app/features/product/models/ingredient.dart';
 
 /// Type of match for an ingredient
@@ -39,7 +38,6 @@ class IngredientMatch {
   bool get isConfirmed => shouldAffectAnalysis;
   bool get isLowConfidence => matchType == MatchType.lowConfidencePossible;
   bool get isRejected => userApproved == false;
-  String get riskLevel => matchedIngredient?.riskLevel ?? 'unknown';
 
   IngredientMatch copyWith({
     String? originalToken,
@@ -77,16 +75,6 @@ class IngredientMatch {
     needsUserConfirmation: false,
     userApproved: false,
   );
-
-  /// Get risk level in Turkish
-  String getRiskLevelTurkish() {
-    return matchedIngredient?.getRiskLevelTurkish() ?? 'Bilinmiyor';
-  }
-
-  /// Get risk level color
-  Color? getRiskLevelColor() {
-    return matchedIngredient?.getRiskLevelColor();
-  }
 
   /// Get ingredient type explanation (e.g., "Koruyucu katkı maddesi")
   String? getIngredientType() {

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:food_analyzer_app/features/analysis/services/canonical_ingredient_risk_service.dart';
 import 'package:food_analyzer_app/features/comparison/domain/comparison_metric.dart';
 import 'package:food_analyzer_app/features/product/models/ingredient.dart';
 import 'package:food_analyzer_app/features/product/models/product.dart';
@@ -59,7 +60,11 @@ class ComparisonProductData {
 
   List<String> get additiveLabels {
     final labels = <String>{};
-    for (final ingredient in ingredients) {
+    final assessment = const CanonicalIngredientRiskService().assessIngredients(
+      ingredients,
+    );
+    for (final item in assessment.canonicalAdditives) {
+      final ingredient = item.ingredient;
       final name = ingredient.name.trim();
       if (name.isEmpty) continue;
       if ((ingredient.eCode ?? '').trim().isNotEmpty) {
@@ -75,15 +80,22 @@ class ComparisonProductData {
 
   List<String> get warningLabels {
     final labels = <String>{};
-    for (final ingredient in ingredients) {
+    final assessment = const CanonicalIngredientRiskService().assessIngredients(
+      ingredients,
+    );
+    for (final item in assessment.recognizedIngredients) {
+      final ingredient = item.ingredient;
       final name = ingredient.name.trim();
       if (name.isEmpty) continue;
       final childWarning = ingredient.childWarning?.trim();
       if (childWarning != null && childWarning.isNotEmpty) {
         labels.add('$name: $childWarning');
       }
-      if (ingredient.riskLevel == 'high' || ingredient.riskLevel == 'medium') {
-        labels.add('$name: ${ingredient.getRiskLevelTurkish()}');
+      if (item.riskLevelName == 'high' || item.riskLevelName == 'medium') {
+        final label = item.riskLevelName == 'high'
+            ? 'Yüksek Risk'
+            : 'Orta Risk';
+        labels.add('$name: $label');
       }
     }
     return labels.toList()..sort();

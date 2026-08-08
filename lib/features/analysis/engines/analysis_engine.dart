@@ -1,221 +1,188 @@
+import 'package:food_analyzer_app/features/analysis/models/canonical_additive_assessment.dart';
 import 'package:food_analyzer_app/features/analysis/models/ingredient_match.dart';
 import 'package:food_analyzer_app/features/analysis/models/product_analysis_result.dart';
 import 'package:food_analyzer_app/features/analysis/models/product_context.dart';
+import 'package:food_analyzer_app/features/analysis/services/canonical_ingredient_risk_service.dart';
 import 'package:food_analyzer_app/features/analysis/services/unknown_ingredient_sanitizer.dart';
 import 'package:food_analyzer_app/features/product/models/ingredient.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/scoring_types.dart';
 
 /// Analysis engine: deterministic, rule-based product evaluation
 class AnalysisEngine {
-  const AnalysisEngine();
+  const AnalysisEngine({
+    CanonicalIngredientRiskService riskService =
+        const CanonicalIngredientRiskService(),
+  }) : _riskService = riskService;
+
+  final CanonicalIngredientRiskService _riskService;
 
   ProductAnalysisResult analyze(
     IngredientMatchingResult matchingResult, {
     String? category,
     ProductContext? productContext,
+    ScoringCategory scoringCategory = ScoringCategory.unknown,
   }) {
+    final additiveAssessment = _riskService.assess(
+      matchingResult,
+      scoringCategory: scoringCategory,
+    );
+    final matchedItems = additiveAssessment.recognizedIngredients
+        .where((item) => item.affectsCurrentAnalysis)
+        .toList(growable: false);
     final matched = matchingResult.getConfirmedMatches();
     final reviewRequired = matchingResult.getLowConfidenceMatches();
     final unmatched = matchingResult.getUnmatched();
 
-    // Risk-first detection from ingredient tokens
     final riskSignals = <String, int>{};
     final processingSignals = <String>{};
     final sugarSaltFat = <String>{};
 
-    final List<Ingredient> highRisk = <Ingredient>[];
-    final List<Ingredient> mediumRisk = <Ingredient>[];
-    final List<Ingredient> recognizedIngredients = <Ingredient>[];
+    final highRisk = matchedItems
+        .where((item) => item.riskLevel == CanonicalRiskLevel.high)
+        .map((item) => item.ingredient)
+        .toList(growable: false);
+    final mediumRisk = matchedItems
+        .where((item) => item.riskLevel == CanonicalRiskLevel.medium)
+        .map((item) => item.ingredient)
+        .toList(growable: false);
+    final recognizedIngredients = matchedItems
+        .map((item) => item.ingredient)
+        .toList(growable: false);
     final List<Ingredient> otherRecognizedIngredients = <Ingredient>[];
-    final Set<String> recognizedIds = <String>{};
     final Map<String, int> originalOrder = <String, int>{};
     final Set<String> signaledIngredientIds = <String>{};
     final Set<String> firstThreeSignalIngredientIds = <String>{};
 
-    for (var i = 0; i < matched.length; i++) {
-      final m = matched[i];
-      final matchedIngredient = m.matchedIngredient;
-      if (matchedIngredient != null &&
-          recognizedIds.add(matchedIngredient.id)) {
-        recognizedIngredients.add(matchedIngredient);
-        originalOrder[matchedIngredient.id] = i;
-      }
-
+    for (var i = 0; i < matchedItems.length; i++) {
+      final item = matchedItems[i];
+      final ingredient = item.ingredient;
+      originalOrder[ingredient.id] = i;
       final isFirstThree = i < 3;
 
-      void markSignalForIngredient(Ingredient? ingredient) {
-        if (ingredient == null) return;
+      void markSignalForIngredient() {
         signaledIngredientIds.add(ingredient.id);
         if (isFirstThree) {
           firstThreeSignalIngredientIds.add(ingredient.id);
         }
       }
 
-      final name = m.normalizedText.toLowerCase();
-      final canonical = (m.matchedIngredient?.normalizedName ?? '')
-          .toLowerCase();
+      final evidenceText = <String>[
+        ingredient.name,
+        ingredient.normalizedName,
+        if (ingredient.eCode != null) ingredient.eCode!,
+        ...item.sourceTokens,
+      ].join(' ').toLowerCase();
 
-      // helper to add signal
+      bool containsAny(Iterable<String> values) =>
+          values.any(evidenceText.contains);
+
       void addSignal(String key) =>
           riskSignals[key] = (riskSignals[key] ?? 0) + 1;
 
-      // low_quality_oil
-      if (name.contains('palm') ||
-          canonical.contains('palm yağı') ||
-          name.contains('hydrogenated') ||
-          name.contains('trans')) {
+      if (containsAny(['palm', 'hydrogenated', 'hidrojenize', 'trans'])) {
         addSignal('low_quality_oil');
         processingSignals.add('hydrogenated_oil');
-        if (m.matchedIngredient != null) {
-          final ing = m.matchedIngredient!;
-          markSignalForIngredient(ing);
-          if (!highRisk.any((i) => i.id == ing.id)) highRisk.add(ing);
-        }
+        markSignalForIngredient();
       }
 
-      // nitrite / processed meat additive
-      if (name.contains('nitrit') ||
-          name.contains('nitrat') ||
-          canonical.contains('sodyum nitrit')) {
+      if (containsAny(['nitrit', 'nitrat', 'e250', 'e251', 'e249', 'e252'])) {
         addSignal('processed_meat_additive');
         addSignal('preservative');
-        if (m.matchedIngredient != null) {
-          final ing = m.matchedIngredient!;
-          markSignalForIngredient(ing);
-          if (!highRisk.any((i) => i.id == ing.id)) highRisk.add(ing);
-        }
+        markSignalForIngredient();
       }
 
-      // benzoat / sorbat etc
-      if (name.contains('benzoat') ||
-          name.contains('sorbat') ||
-          name.contains('potasyum sorbat') ||
-          name.contains('sodyum benzoat')) {
+      if (containsAny(['benzoat', 'sorbat', 'benzoik asit', 'sorbik asit'])) {
         addSignal('preservative');
-        if (m.matchedIngredient != null) {
-          final ing = m.matchedIngredient!;
-          markSignalForIngredient(ing);
-          if (!mediumRisk.any((i) => i.id == ing.id)) mediumRisk.add(ing);
-        }
+        markSignalForIngredient();
       }
 
-      // artificial sweeteners
-      if (name.contains('aspartam') ||
-          name.contains('acesülfam') ||
-          name.contains('asesülfam') ||
-          name.contains('sukraloz') ||
-          name.contains('sukralose')) {
+      if (containsAny([
+        'aspartam',
+        'acesülfam',
+        'asesülfam',
+        'sukraloz',
+        'sucralose',
+        'sakarin',
+        'siklamat',
+      ])) {
         addSignal('artificial_sweetener');
-        if (m.matchedIngredient != null) {
-          final ing = m.matchedIngredient!;
-          markSignalForIngredient(ing);
-          if (!mediumRisk.any((i) => i.id == ing.id)) mediumRisk.add(ing);
-        }
+        markSignalForIngredient();
       }
 
-      // caffeine/taurine
-      if (name.contains('kafein') || name.contains('taurin')) {
+      if (containsAny(['kafein', 'taurin'])) {
         addSignal('caffeine_stimulant');
-        if (m.matchedIngredient != null) {
-          final ing = m.matchedIngredient!;
-          markSignalForIngredient(ing);
-          if (!highRisk.any((i) => i.id == ing.id)) highRisk.add(ing);
-        }
+        markSignalForIngredient();
       }
 
-      // artificial colors
-      if (name.contains('tartrazin') ||
-          canonical.contains('tartrazin') ||
-          name.contains('e102') ||
-          canonical.contains('e102')) {
+      if (containsAny([
+        'tartrazin',
+        'e102',
+        'allura red',
+        'e129',
+        'sunset yellow',
+        'e110',
+        'brilliant blue',
+        'e133',
+        'karmin',
+        'e120',
+      ])) {
         addSignal('artificial_color');
-        if (m.matchedIngredient != null) {
-          final ing = m.matchedIngredient!;
-          markSignalForIngredient(ing);
-          if (!highRisk.any((i) => i.id == ing.id)) highRisk.add(ing);
-        }
+        markSignalForIngredient();
       }
 
-      // emulsifiers
-      if (name.contains('mono ve digliserit') ||
-          name.contains('lesitin') ||
-          name.contains('emülgatör')) {
+      if (containsAny(['mono ve digliserit', 'lesitin', 'emülgatör'])) {
         addSignal('emulsifier');
-        if (m.matchedIngredient != null) {
-          final ing = m.matchedIngredient!;
-          markSignalForIngredient(ing);
-          if (!mediumRisk.any((i) => i.id == ing.id)) mediumRisk.add(ing);
-        }
+        markSignalForIngredient();
       }
 
-      // flavoring
-      if (name.contains('aroma') || name.contains('flavor')) {
+      if (containsAny(['aroma', 'flavor'])) {
         addSignal('flavoring');
-        if (m.matchedIngredient != null) {
-          final ing = m.matchedIngredient!;
-          markSignalForIngredient(ing);
-          if (!mediumRisk.any((i) => i.id == ing.id)) mediumRisk.add(ing);
-        }
+        markSignalForIngredient();
       }
 
-      // sugar syrups and maltodextrin
-      if (name.contains('glikoz') ||
-          name.contains('glucose') ||
-          name.contains('şurup') ||
-          name.contains('fruktoz') ||
-          name.contains('glikoz şurubu') ||
-          name.contains('maltodekstrin') ||
-          name.contains('malt ekstrakt') ||
-          name.contains('şeker')) {
+      if (containsAny([
+        'glikoz',
+        'glucose',
+        'şurup',
+        'fruktoz',
+        'maltodekstrin',
+        'malt ekstrakt',
+        'şeker',
+      ])) {
         addSignal('sugar_syrup');
         sugarSaltFat.add('sugar');
-        if (m.matchedIngredient != null) {
-          final ing = m.matchedIngredient!;
-          markSignalForIngredient(ing);
-          if (!mediumRisk.any((i) => i.id == ing.id)) mediumRisk.add(ing);
-        }
+        markSignalForIngredient();
       }
 
-      // modified starch
-      if (name.contains('modifiye') ||
-          name.contains('modifiye nişasta') ||
-          name.contains('modified starch')) {
+      if (containsAny(['modifiye', 'modified starch'])) {
         addSignal('modified_starch');
-        if (m.matchedIngredient != null) {
-          final ing = m.matchedIngredient!;
-          markSignalForIngredient(ing);
-          if (!mediumRisk.any((i) => i.id == ing.id)) mediumRisk.add(ing);
-        }
+        markSignalForIngredient();
       }
 
-      // phosphate
-      if (name.contains('fosfat') || name.contains('phosphate')) {
+      if (containsAny(['fosfat', 'phosphate'])) {
         addSignal('phosphate');
-        if (m.matchedIngredient != null) {
-          final ing = m.matchedIngredient!;
-          markSignalForIngredient(ing);
-          if (!mediumRisk.any((i) => i.id == ing.id)) mediumRisk.add(ing);
-        }
+        markSignalForIngredient();
       }
 
-      // high salt (salt indicators)
-      if (name.contains('tuz') || name.contains('sodyum')) {
-        if (!name.contains('sitrat') && !name.contains('citrat')) {
+      if (containsAny(['tuz', 'sodyum'])) {
+        if (!containsAny(['sitrat', 'citrat'])) {
           addSignal('high_salt_signal');
         }
         sugarSaltFat.add('salt');
       }
 
-      if (name.contains('sitrat') || name.contains('citrat')) {
+      if (containsAny(['sitrat', 'citrat'])) {
         addSignal('acidity_regulator');
       }
 
-      // ultra-processed markers
-      if (name.contains('aroma ver') ||
-          name.contains('emülgatör') ||
-          name.contains('antioksidan') ||
-          name.contains('mono ve digliserit')) {
+      if (containsAny([
+        'aroma ver',
+        'emülgatör',
+        'antioksidan',
+        'mono ve digliserit',
+      ])) {
         addSignal('ultra_processed_marker');
-        processingSignals.add(name);
+        processingSignals.add(ingredient.normalizedName);
       }
     }
 
@@ -364,6 +331,7 @@ class AnalysisEngine {
       sugarSaltFatSignals: sugarSaltFat.toList(growable: false),
       productContextNote: contextNote,
       productContext: productContext,
+      additiveAssessment: additiveAssessment,
     );
   }
 

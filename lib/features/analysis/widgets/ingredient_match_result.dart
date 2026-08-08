@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_analyzer_app/features/analysis/models/ingredient_match.dart';
+import 'package:food_analyzer_app/features/analysis/services/canonical_ingredient_risk_service.dart';
 import 'package:food_analyzer_app/features/product/models/ingredient_detail.dart';
 import 'package:food_analyzer_app/features/analysis/pages/ingredient_detail_page.dart';
 import 'package:food_analyzer_app/shared/widgets/ingredient_explanation_card.dart';
@@ -21,6 +22,11 @@ class IngredientMatchItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final canonicalIngredient = match.matchedIngredient == null
+        ? null
+        : const CanonicalIngredientRiskService()
+              .assessIngredient(match.matchedIngredient!)
+              .ingredient;
     // Determine confidence category
     Color confidenceColor() {
       final c = match.confidenceScore;
@@ -152,16 +158,17 @@ class IngredientMatchItem extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
-                color: match.getRiskLevelColor()?.withAlpha(51),
+                color: canonicalIngredient?.getRiskLevelColor().withAlpha(51),
                 border: Border.all(
-                  color: match.getRiskLevelColor() ?? Colors.grey,
+                  color:
+                      canonicalIngredient?.getRiskLevelColor() ?? Colors.grey,
                 ),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
-                'Risk: ${match.getRiskLevelTurkish()}',
+                'Risk: ${canonicalIngredient?.getRiskLevelTurkish() ?? 'Bilinmiyor'}',
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: match.getRiskLevelColor(),
+                  color: canonicalIngredient?.getRiskLevelColor(),
                 ),
               ),
             ),

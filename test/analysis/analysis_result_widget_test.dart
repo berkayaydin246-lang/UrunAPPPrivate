@@ -286,7 +286,9 @@ void main() {
   );
 
   testWidgets('low risk ingredient shows green dot', (tester) async {
-    final result = resultWith(important: [ingredient('1', 'Tuz', 'low')]);
+    final result = resultWith(
+      important: [ingredient('1', 'Düşük risk örneği', 'low')],
+    );
 
     await pumpResultWidget(tester, result);
 
@@ -785,14 +787,20 @@ void main() {
       'Şeker şurubu',
       'Palm yağı',
       'Ayçiçek yağı',
-      'Kanola yağı',
       'Sorbat koruyucu',
       'Fosfat bazlı kabartıcı',
       'Karbonat bazlı kabartıcı',
       'Çikolata emülgatörü',
     ]) {
-      expect(find.text(name), findsOneWidget);
+      expect(
+        find.text(name),
+        name == 'Palm yağı' || name == 'Sorbat koruyucu'
+            ? findsNWidgets(2)
+            : findsOneWidget,
+      );
     }
+    expect(find.text('Kanola yağı'), findsNothing);
+    expect(find.text('+1 içerik daha'), findsOneWidget);
 
     // Vague / prefixed names are gone.
     expect(find.text('Kabartıcı katkı'), findsNothing);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_analyzer_app/features/analysis/models/canonical_additive_assessment.dart';
 import 'package:food_analyzer_app/features/analysis/models/ingredient_match.dart';
 import 'package:food_analyzer_app/features/product/models/ingredient.dart';
 
@@ -52,6 +53,7 @@ class ProductAnalysisResult {
   final List<String> allergenTokens; // tokens split from allergen warnings
   final String? productContextNote; // optional context enrichment note
   final dynamic productContext;
+  final CanonicalAdditiveAssessment? additiveAssessment;
 
   ProductAnalysisResult({
     required this.scoreLabel,
@@ -71,6 +73,7 @@ class ProductAnalysisResult {
     this.allergenTokens = const [],
     this.productContextNote,
     this.productContext,
+    this.additiveAssessment,
   });
 
   ProductAnalysisResult copyWith({
@@ -91,6 +94,7 @@ class ProductAnalysisResult {
     List<String>? allergenTokens,
     String? productContextNote,
     dynamic productContext,
+    CanonicalAdditiveAssessment? additiveAssessment,
   }) {
     return ProductAnalysisResult(
       scoreLabel: scoreLabel ?? this.scoreLabel,
@@ -114,6 +118,7 @@ class ProductAnalysisResult {
       allergenTokens: allergenTokens ?? this.allergenTokens,
       productContextNote: productContextNote ?? this.productContextNote,
       productContext: productContext ?? this.productContext,
+      additiveAssessment: additiveAssessment ?? this.additiveAssessment,
     );
   }
 }

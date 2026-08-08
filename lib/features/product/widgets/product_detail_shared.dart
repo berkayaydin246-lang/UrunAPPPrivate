@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:food_analyzer_app/features/analysis/models/canonical_additive_assessment.dart';
 import 'package:food_analyzer_app/features/analysis/models/product_analysis_result.dart';
 import 'package:food_analyzer_app/features/analysis/services/ingredient_canonicalizer.dart';
+import 'package:food_analyzer_app/features/analysis/services/canonical_ingredient_risk_service.dart';
 import 'package:food_analyzer_app/core/theme/app_theme.dart';
 import 'package:food_analyzer_app/features/product/data/ingredient_explanation_catalog.dart';
 import 'package:food_analyzer_app/features/product/models/ingredient.dart';
 import 'package:food_analyzer_app/features/product/models/nutrition_data.dart';
 import 'package:food_analyzer_app/features/product/widgets/ingredient_detail_sections.dart';
 
-/// Returns the canonical severity for [ingredient] as defined by the app's
-/// spec registry, falling back to the DB-stored riskLevel when no spec exists.
-/// Use this for any severity badge that must stay in sync with list rows.
 String canonicalRiskLevelForIngredient(Ingredient ingredient) {
-  final key = normalizeIngredientDisplayKey(
-    ingredient.normalizedName.trim().isNotEmpty
-        ? ingredient.normalizedName
-        : ingredient.name,
-  );
-  return productRiskSpecForKey(key)?.riskLevel ?? ingredient.riskLevel;
+  return const CanonicalIngredientRiskService()
+      .assessIngredient(ingredient)
+      .riskLevelName;
 }
 
 String riskLabelForUser(String riskLevel) {
@@ -146,15 +142,16 @@ List<ProductNutrientVisualData> buildNutritionVisualRows(
 class ProductIngredientPresentation {
   const ProductIngredientPresentation({
     required this.ingredient,
+    required this.riskLevel,
     required this.originalOrder,
   });
 
   final Ingredient ingredient;
+  final String riskLevel;
   final int originalOrder;
 
   String get name => ingredient.name.trim();
   String get normalizedName => ingredient.normalizedName.trim();
-  String get riskLevel => ingredient.riskLevel;
 
   String? get previewSummary {
     final shortRisk = ingredient.shortRiskSummary?.trim();
@@ -175,19 +172,16 @@ List<ProductIngredientPresentation> buildStructuredIngredientPresentations(
   final unique = <String, ProductIngredientPresentation>{};
   var order = 0;
 
-  for (final ingredient in ingredients) {
-    final resolvedIngredient = enrichIngredientKnowledge(ingredient);
-    final key = ingredient.id.trim().isNotEmpty
-        ? ingredient.id.trim()
-        : normalizeIngredientDisplayKey(
-            resolvedIngredient.normalizedName.isNotEmpty
-                ? resolvedIngredient.normalizedName
-                : resolvedIngredient.name,
-          );
+  final assessment = const CanonicalIngredientRiskService().assessIngredients(
+    ingredients,
+  );
+  for (final item in assessment.recognizedIngredients) {
+    final resolvedIngredient = item.ingredient;
     unique.putIfAbsent(
-      key,
+      item.canonicalKey,
       () => ProductIngredientPresentation(
         ingredient: resolvedIngredient,
+        riskLevel: item.riskLevelName,
         originalOrder: order++,
       ),
     );
@@ -285,14 +279,12 @@ class ProductRiskSpec {
     required this.groupId,
     required this.displayName,
     required this.category,
-    required this.riskLevel,
     this.riskSummary,
   });
 
   final String groupId;
   final String displayName;
   final ProductRiskCategory category;
-  final String riskLevel;
   final String? riskSummary;
 }
 
@@ -372,30 +364,23 @@ List<ProductRiskPreviewItem> buildComparisonRiskPreviewItems({
     byKey[key] = item;
   }
 
-  final analysisIngredients = <Ingredient>[
-    ...?analysisResult?.recognizedIngredients,
-    ...?analysisResult?.detectedRiskIngredients,
-  ];
+  final analysisAssessment = analysisResult?.additiveAssessment;
+  final analysisItems = analysisAssessment != null
+      ? analysisAssessment.recognizedIngredients
+      : const CanonicalIngredientRiskService().assessIngredients([
+          ...?analysisResult?.recognizedIngredients,
+          ...?analysisResult?.detectedRiskIngredients,
+        ]).recognizedIngredients;
+  final fallbackItems = const CanonicalIngredientRiskService()
+      .assessIngredients(fallbackIngredients)
+      .recognizedIngredients;
 
-  for (final ingredient in analysisIngredients) {
-    final item = _buildRiskPreviewItemFromIngredient(
-      enrichIngredientKnowledge(ingredient),
+  for (final assessmentItem in [...analysisItems, ...fallbackItems]) {
+    final item = _buildRiskPreviewItemFromAssessment(
+      assessmentItem,
       originalOrder: order++,
     );
-    addItem(item, key: item?.normalizedKey ?? '');
-  }
-
-  for (final ingredient in fallbackIngredients) {
-    final item = _buildRiskPreviewItemFromIngredient(
-      enrichIngredientKnowledge(ingredient),
-      originalOrder: order++,
-    );
-    addItem(item, key: item?.normalizedKey ?? '');
-  }
-
-  for (final token in analysisResult?.unknownIngredients ?? const <String>[]) {
-    final item = _buildRiskPreviewItemFromToken(token, originalOrder: order++);
-    addItem(item, key: item?.normalizedKey ?? '');
+    addItem(item, key: assessmentItem.canonicalKey);
   }
 
   final values = byKey.values.toList(growable: false);
@@ -469,10 +454,11 @@ List<String>? buildComparisonAllergenLabels({
   return values;
 }
 
-ProductRiskPreviewItem? _buildRiskPreviewItemFromIngredient(
-  Ingredient ingredient, {
+ProductRiskPreviewItem? _buildRiskPreviewItemFromAssessment(
+  CanonicalIngredientAssessment assessment, {
   required int originalOrder,
 }) {
+  final ingredient = assessment.ingredient;
   final normalizedKey = normalizeIngredientDisplayKey(
     ingredient.normalizedName.isNotEmpty
         ? ingredient.normalizedName
@@ -488,46 +474,19 @@ ProductRiskPreviewItem? _buildRiskPreviewItemFromIngredient(
       : ingredient.childWarning?.trim();
 
   if (spec == null &&
-      ingredient.riskLevel != 'high' &&
-      ingredient.riskLevel != 'medium') {
+      assessment.riskLevelName != 'high' &&
+      assessment.riskLevelName != 'medium') {
     return null;
   }
 
-  final dedupeKey = spec?.groupId ?? normalizedKey;
   return ProductRiskPreviewItem(
     name: spec?.displayName ?? ingredient.name.trim(),
-    normalizedKey: dedupeKey,
-    riskLevel: spec?.riskLevel ?? ingredient.riskLevel,
+    normalizedKey: assessment.canonicalKey,
+    riskLevel: assessment.riskLevelName,
     originalOrder: originalOrder,
     summary: summary?.isNotEmpty == true ? summary : spec?.riskSummary,
     category: spec?.category,
     ingredient: ingredient,
-  );
-}
-
-ProductRiskPreviewItem? _buildRiskPreviewItemFromToken(
-  String token, {
-  required int originalOrder,
-}) {
-  final normalizedKey = normalizeIngredientDisplayKey(
-    _stripComparisonAmountPrefix(token),
-  );
-  if (normalizedKey.isEmpty || _isAllergenOnlyIngredientKey(normalizedKey)) {
-    return null;
-  }
-
-  final spec = productRiskSpecForKey(normalizedKey);
-  if (spec == null) {
-    return null;
-  }
-
-  return ProductRiskPreviewItem(
-    name: spec.displayName,
-    normalizedKey: spec.groupId,
-    riskLevel: spec.riskLevel,
-    originalOrder: originalOrder,
-    summary: spec.riskSummary,
-    category: spec.category,
   );
 }
 
@@ -585,7 +544,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'aspartam',
       displayName: 'Aspartam',
       category: ProductRiskCategory.sweetener,
-      riskLevel: 'high',
       riskSummary:
           'Fenilketonüri (PKU) olanların kaçınması gerekir; sık tüketimde dikkat edilebilir.',
     );
@@ -600,7 +558,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
           ? 'Sukraloz'
           : (normalized.contains('sakarin') ? 'Sakarin' : 'Asesülfam K'),
       category: ProductRiskCategory.sweetener,
-      riskLevel: 'medium',
       riskSummary:
           'Yapay tatlandırıcı olarak kullanılır; sık tüketimde dikkat edilebilir.',
     );
@@ -610,7 +567,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'sorbitol',
       displayName: 'Sorbitol',
       category: ProductRiskCategory.sweetener,
-      riskLevel: 'medium',
       riskSummary:
           'Fazla tüketimde sindirim rahatsızlığı yapabilir; paketli tatlılarda dikkat edilebilir.',
     );
@@ -620,7 +576,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'sugar_syrup',
       displayName: 'Şeker şurubu',
       category: ProductRiskCategory.sweetener,
-      riskLevel: 'medium',
       riskSummary:
           'Sık tüketimde ilave şeker alımını artırır; tüketim sıklığına dikkat edilmelidir.',
     );
@@ -630,7 +585,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'maltodextrin',
       displayName: 'Maltodekstrin',
       category: ProductRiskCategory.sweetener,
-      riskLevel: 'medium',
       riskSummary:
           'Hızlı sindirilen bir karbonhidrattır; sık tüketimde dikkat edilebilir.',
     );
@@ -640,7 +594,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'maltitol',
       displayName: 'Maltitol (E965)',
       category: ProductRiskCategory.sweetener,
-      riskLevel: 'medium',
       riskSummary:
           'Fazla tüketimde sindirim rahatsızlığı yapabilir; kan şekerini tamamen etkilemez ancak sıfır değildir.',
     );
@@ -654,7 +607,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'cyclamate',
       displayName: 'Siklamat (E952)',
       category: ProductRiskCategory.sweetener,
-      riskLevel: 'medium',
       riskSummary:
           'AB\'de izin verilmiştir; tatlandırıcı içeren ürünlerde tüketim alışkanlığı ve ürün profili birlikte değerlendirilmelidir.',
     );
@@ -664,7 +616,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'sugar',
       displayName: 'Şeker',
       category: ProductRiskCategory.sweetener,
-      riskLevel: 'medium',
       riskSummary:
           'Sık tüketimde ilave şeker alımını artırır; tüketim sıklığına dikkat edilmelidir.',
     );
@@ -674,7 +625,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'palm',
       displayName: 'Palm yağı',
       category: ProductRiskCategory.oil,
-      riskLevel: 'medium',
       riskSummary:
           'Sık tüketimde doymuş yağ alımını artırabilir; ultra işlenmiş ürünlerde dikkatli olunmalıdır.',
     );
@@ -685,7 +635,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'sunflower_oil',
       displayName: 'Ayçiçek yağı',
       category: ProductRiskCategory.oil,
-      riskLevel: 'medium',
       riskSummary:
           'İşlenmiş ürünlerde toplam yağ alımına katkı sağlar; sık tüketimde dikkat edilebilir.',
     );
@@ -695,7 +644,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'corn_oil',
       displayName: 'Mısır yağı',
       category: ProductRiskCategory.oil,
-      riskLevel: 'medium',
       riskSummary: 'İşlenmiş ürünlerde toplam yağ alımına dikkat edilmelidir.',
     );
   }
@@ -705,7 +653,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'canola_oil',
       displayName: 'Kanola yağı',
       category: ProductRiskCategory.oil,
-      riskLevel: 'medium',
       riskSummary: 'İşlenmiş ürünlerde toplam yağ alımına dikkat edilmelidir.',
     );
   }
@@ -714,7 +661,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'cocoa_butter',
       displayName: 'Kakao yağı',
       category: ProductRiskCategory.oil,
-      riskLevel: 'medium',
       riskSummary:
           'Tek başına yüksek riskli değildir; toplam yağ ve şeker yüküyle birlikte değerlendirilmelidir.',
     );
@@ -724,7 +670,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'hydrogenated_oil',
       displayName: 'Hidrojenize yağ',
       category: ProductRiskCategory.oil,
-      riskLevel: 'medium',
       riskSummary:
           'İşlenmiş yağ yapısı nedeniyle sık tüketimde dikkatli olunmalıdır.',
     );
@@ -736,7 +681,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'vegetable_oil',
       displayName: 'Bitkisel yağ',
       category: ProductRiskCategory.oil,
-      riskLevel: 'medium',
       riskSummary:
           'Yağın türü net belirtilmediğinde kalite değerlendirmesi sınırlıdır; toplam yağ alımına dikkat edilmelidir.',
     );
@@ -753,7 +697,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'bht',
       displayName: 'BHT (E321) antioksidan',
       category: ProductRiskCategory.preservative,
-      riskLevel: 'medium',
       riskSummary:
           'Yasal sınırlar içinde kullanılır; sık paketli tüketimde toplam alım miktarına dikkat edilmesi önerilir.',
     );
@@ -769,7 +712,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'bha',
       displayName: 'BHA (E320) antioksidan',
       category: ProductRiskCategory.preservative,
-      riskLevel: 'medium',
       riskSummary:
           'Yasal sınırlar içinde kullanılır; sık paketli tüketimde toplam alım miktarına dikkat edilmesi önerilir.',
     );
@@ -784,7 +726,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'tbhq',
       displayName: 'TBHQ (E319) antioksidan',
       category: ProductRiskCategory.preservative,
-      riskLevel: 'medium',
       riskSummary:
           'Yasal sınırlar içinde kullanılır; sık paketli tüketimde toplam alım miktarına dikkat edilmesi önerilir.',
     );
@@ -799,7 +740,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'nitrite',
       displayName: 'Nitrit/Nitrat koruyucu',
       category: ProductRiskCategory.preservative,
-      riskLevel: 'high',
       riskSummary:
           'İşlenmiş et katkısı olarak sık tüketimde dikkatli olunması önerilir.',
     );
@@ -810,7 +750,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'sorbate',
       displayName: 'Sorbat koruyucu',
       category: ProductRiskCategory.preservative,
-      riskLevel: 'low',
       riskSummary:
           'İzin verilen miktarlarda kullanılır; hassas kişilerde sık tüketimde dikkat edilebilir.',
     );
@@ -821,7 +760,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'benzoate',
       displayName: 'Benzoat koruyucu',
       category: ProductRiskCategory.preservative,
-      riskLevel: 'low',
       riskSummary:
           'İzin verilen miktarlarda kullanılır; hassas kişilerde sık tüketimde dikkat edilebilir.',
     );
@@ -831,7 +769,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'tartrazine',
       displayName: 'Tartrazin',
       category: ProductRiskCategory.color,
-      riskLevel: 'high',
       riskSummary:
           'Hassas kişilerde tepkiye yol açabilir; çocukların sık tüketiminde dikkat edilmelidir.',
     );
@@ -841,7 +778,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'allura_red',
       displayName: 'Allura Red',
       category: ProductRiskCategory.color,
-      riskLevel: 'high',
       riskSummary:
           'Hassas kişilerde tepkiye yol açabilir; çocukların sık tüketiminde dikkat edilmelidir.',
     );
@@ -851,7 +787,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'sunset_yellow',
       displayName: 'Sunset Yellow',
       category: ProductRiskCategory.color,
-      riskLevel: 'high',
       riskSummary:
           'Hassas kişilerde tepkiye yol açabilir; çocukların sık tüketiminde dikkat edilmelidir.',
     );
@@ -863,7 +798,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'carmine',
       displayName: 'Karmin (E120)',
       category: ProductRiskCategory.color,
-      riskLevel: 'medium',
       riskSummary:
           'Hassas kişilerde alerjik tepkiye yol açabilir; vejetaryen/vegan diyette kullanımına dikkat edilmelidir.',
     );
@@ -875,7 +809,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'brilliant_blue',
       displayName: 'Brilliant Blue (E133)',
       category: ProductRiskCategory.color,
-      riskLevel: 'high',
       riskSummary:
           'Hassas kişilerde tepkiye yol açabilir; çocukların sık tüketiminde dikkat edilmelidir.',
     );
@@ -885,7 +818,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'caramel_color',
       displayName: 'Karamel renklendirici',
       category: ProductRiskCategory.color,
-      riskLevel: 'medium',
       riskSummary:
           'Ultra işlenmiş ürün göstergesi olabilir; sık tüketimde dikkat edilebilir.',
     );
@@ -898,7 +830,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'phosphate_leavening',
       displayName: 'Fosfat bazlı kabartıcı',
       category: ProductRiskCategory.leavening,
-      riskLevel: 'medium',
       riskSummary:
           'Fosfat katkısı olduğu için sık paketli ürün tüketiminde dikkat edilebilir.',
     );
@@ -911,7 +842,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'carbonate_leavening',
       displayName: 'Karbonat bazlı kabartıcı',
       category: ProductRiskCategory.leavening,
-      riskLevel: 'low',
       riskSummary:
           'Genel olarak düşük dikkat düzeyindedir; paketli ürün göstergesi olarak değerlendirilebilir.',
     );
@@ -923,7 +853,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'pgpr',
       displayName: 'Çikolata emülgatörü',
       category: ProductRiskCategory.emulsifier,
-      riskLevel: 'low',
       riskSummary:
           'Tek başına yüksek riskli değildir; ultra işlenmiş ürünlerde katkı göstergesi olabilir.',
     );
@@ -934,7 +863,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'mono_diglyceride',
       displayName: 'Mono ve digliseritler',
       category: ProductRiskCategory.emulsifier,
-      riskLevel: 'low',
       riskSummary:
           'Genel olarak düşük dikkat düzeyindedir; ultra işlenmiş ürün göstergesi olabilir.',
     );
@@ -944,7 +872,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'xanthan',
       displayName: 'Ksantan gam',
       category: ProductRiskCategory.emulsifier,
-      riskLevel: 'low',
       riskSummary:
           'Genel olarak düşük dikkat düzeyindedir; ultra işlenmiş ürün göstergesi olabilir.',
     );
@@ -958,7 +885,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'carrageenan',
       displayName: 'Karragenan (E407)',
       category: ProductRiskCategory.emulsifier,
-      riskLevel: 'medium',
       riskSummary:
           'Sindirim sistemi hassasiyeti olanlarda dikkat edilmesi önerilir; sık tüketimde toplam katkı yüküne dikkat edilebilir.',
     );
@@ -971,7 +897,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'soy_lecithin',
       displayName: 'Soya lesitini (E322)',
       category: ProductRiskCategory.emulsifier,
-      riskLevel: 'low',
       riskSummary:
           'Soya alerjisi olanlar için dikkat gerektirmektedir; genel tüketimde düşük risk düzeyindedir.',
     );
@@ -981,7 +906,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'salt',
       displayName: 'Tuz',
       category: ProductRiskCategory.other,
-      riskLevel: 'medium',
       riskSummary:
           'Sık tüketimde toplam sodyum alımını artırabilir; tuz hassasiyeti olanlar dikkat etmelidir.',
     );
@@ -991,7 +915,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
       groupId: 'msg',
       displayName: 'Çeşni artırıcı (MSG)',
       category: ProductRiskCategory.other,
-      riskLevel: 'medium',
       riskSummary:
           'İzin verilen miktarlarda kullanılır; hassas kişilerde sık tüketimde dikkat edilebilir.',
     );
@@ -1011,7 +934,6 @@ ProductRiskSpec? productRiskSpecForKey(String key) {
                       ? 'Guarana'
                       : 'Uyarıcı katkı')),
       category: ProductRiskCategory.other,
-      riskLevel: 'medium',
       riskSummary:
           'Çocuklar ve hassas kişiler için sık tüketimde dikkatli olunmalıdır.',
     );

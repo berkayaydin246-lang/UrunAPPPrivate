@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_analyzer_app/features/analysis/models/ingredient_match.dart';
+import 'package:food_analyzer_app/features/analysis/services/canonical_ingredient_risk_service.dart';
 
 /// Widget to display ingredient educational explanations
 /// Shows: type, purpose, risk summary, and caution groups
@@ -112,8 +113,12 @@ class IngredientExplanationCard extends StatelessWidget {
     final summary = match.getShortRiskSummary();
     if (summary == null) return const SizedBox.shrink();
 
-    // Choose color based on risk level
-    final riskLevel = match.riskLevel;
+    final ingredient = match.matchedIngredient;
+    final riskLevel = ingredient == null
+        ? 'unknown'
+        : const CanonicalIngredientRiskService()
+              .assessIngredient(ingredient)
+              .riskLevelName;
     Color bgColor;
     Color borderColor;
     Color textColor;

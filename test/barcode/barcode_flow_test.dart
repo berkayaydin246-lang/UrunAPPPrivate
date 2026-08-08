@@ -31,11 +31,19 @@ void main() {
     );
   }
 
-  Ingredient makeIngredient(String id, String name, String risk) {
+  Ingredient makeIngredient(
+    String id,
+    String name,
+    String risk, {
+    String? eCode,
+    String? additiveGroup,
+  }) {
     return Ingredient(
       id: id,
       name: name,
       normalizedName: name,
+      eCode: eCode,
+      additiveGroup: additiveGroup,
       riskLevel: risk,
       createdAt: now,
       updatedAt: now,
@@ -107,13 +115,25 @@ void main() {
     });
 
     test('score degrades to sikTuketme with two high-risk ingredients', () {
-      final ing1 = makeIngredient('h1', 'palm yağı', 'high');
-      final ing2 = makeIngredient('h2', 'kafein', 'high');
+      final ing1 = makeIngredient(
+        'h1',
+        'sodyum nitrit',
+        'high',
+        eCode: 'E250',
+        additiveGroup: 'preservative',
+      );
+      final ing2 = makeIngredient(
+        'h2',
+        'tartrazin',
+        'high',
+        eCode: 'E102',
+        additiveGroup: 'color',
+      );
       final result = const AnalysisEngine().analyze(
         IngredientMatchingResult(
           matches: [
-            makeMatch('palm yağı', ing1, 1.0, MatchType.exactMatch),
-            makeMatch('kafein', ing2, 1.0, MatchType.exactMatch),
+            makeMatch('sodyum nitrit', ing1, 1.0, MatchType.exactMatch),
+            makeMatch('tartrazin', ing2, 1.0, MatchType.exactMatch),
           ],
         ),
       );

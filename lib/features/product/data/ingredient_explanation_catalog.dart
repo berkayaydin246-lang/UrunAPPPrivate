@@ -197,12 +197,8 @@ Ingredient enrichIngredientKnowledge(Ingredient ingredient) {
     englishNames: ingredient.englishNames,
     eCode: resolvedECode,
     category: ingredient.category,
-    // Preserve DB riskLevel when it's explicitly set; fall back to catalog only
-    // for 'unknown'. The severity badge is resolved separately via
-    // canonicalRiskLevelForIngredient() which looks up the spec function.
-    riskLevel: ingredient.riskLevel == 'unknown'
-        ? entry.riskLevel
-        : ingredient.riskLevel,
+    // Risk resolution belongs exclusively to CanonicalIngredientRiskService.
+    riskLevel: ingredient.riskLevel,
     shortDescription: ingredient.shortDescription,
     longDescription: ingredient.longDescription,
     additiveGroup: ingredient.additiveGroup,
@@ -234,6 +230,13 @@ Ingredient enrichIngredientKnowledge(Ingredient ingredient) {
     createdAt: ingredient.createdAt,
     updatedAt: ingredient.updatedAt,
   );
+}
+
+/// Reviewed catalogue source data consumed by CanonicalIngredientRiskService.
+///
+/// This lookup does not resolve conflicts or choose a canonical risk by itself.
+String? reviewedCatalogRiskLevelForIngredient(Ingredient ingredient) {
+  return _ingredientCatalogEntryForIngredient(ingredient)?.riskLevel;
 }
 
 _IngredientCatalogEntry? _ingredientCatalogEntryForIngredient(

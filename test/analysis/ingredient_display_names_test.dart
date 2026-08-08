@@ -60,10 +60,10 @@ void main() {
     expect(find.text('Sorbitol'), findsOneWidget);
 
     expect(find.text('Yağlar'), findsOneWidget);
-    expect(find.text('Palm yağı'), findsOneWidget);
+    expect(find.text('Palm yağı'), findsNWidgets(2));
 
     expect(find.text('Koruyucular'), findsOneWidget);
-    expect(find.text('Sorbat koruyucu'), findsOneWidget);
+    expect(find.text('Sorbat koruyucu'), findsNWidgets(2));
 
     expect(find.text('Kabartıcılar'), findsOneWidget);
     expect(find.text('Fosfat bazlı kabartıcı'), findsOneWidget);
@@ -82,24 +82,23 @@ void main() {
     expect(find.text('Kabartıcı'), findsNothing);
   });
 
-  // ── Test 2: no duplicate palm ───────────────────────────────────────────────
+  // ── Test 2: unresolved identity is not inferred from display grouping ───────
 
-  testWidgets('palm variants merge into a single "Palm yağı" row', (
+  testWidgets('palm variants retain distinct unresolved identities', (
     tester,
   ) async {
     await pumpBarcode(tester, ['palm yağı', 'tam hidrojenize palm yağı']);
-    expect(find.text('Palm yağı'), findsOneWidget);
+    expect(find.text('Palm yağı'), findsNWidgets(2));
     expect(find.textContaining('hidrojenize'), findsNothing);
   });
 
-  // ── Test 3: consistent risk (low → detail says Az dikkat) ───────────────────
+  // ── Test 3: raw tokens do not receive a display-spec risk ───────────────────
 
-  testWidgets('sorbat preservative risk is consistent (low)', (tester) async {
+  testWidgets('unresolved sorbat token remains informational', (tester) async {
     await pumpBarcode(tester, ['potasyum sorbat']);
     await tester.tap(find.text('Sorbat koruyucu'));
     await tester.pumpAndSettle();
-    // Same spec.risk drives the list dot and this label → guaranteed consistent.
-    expect(find.textContaining('Az dikkat'), findsOneWidget);
+    expect(find.textContaining('Bilgi amaçlı'), findsOneWidget);
     expect(find.textContaining('Koruyucu'), findsWidgets);
   });
 
@@ -124,12 +123,12 @@ void main() {
       'aspartam',
       'sukraloz',
     ]);
-    // 5 sweeteners → only the top 3 by risk/order are shown.
-    expect(find.text('Aspartam'), findsOneWidget); // high → sorted first
+    // Unresolved tokens have no inferred risk, so source order is preserved.
     expect(find.text('Şeker'), findsOneWidget);
     expect(find.text('Şeker şurubu'), findsOneWidget);
-    // The 2 lowest-priority items are hidden.
-    expect(find.text('Sorbitol'), findsNothing);
+    expect(find.text('Sorbitol'), findsOneWidget);
+    // The final two source items are hidden by the display cap.
+    expect(find.text('Aspartam'), findsNothing);
     expect(find.text('Sukraloz'), findsNothing);
     expect(find.textContaining('+2 içerik daha'), findsOneWidget);
   });
@@ -169,7 +168,7 @@ void main() {
       expect(find.text('Teknik adı'), findsOneWidget);
       expect(find.text('Ne için kullanılır?'), findsOneWidget);
       expect(find.text('Neden dikkat edilmeli?'), findsOneWidget);
-      expect(find.textContaining('Orta dikkat'), findsOneWidget);
+      expect(find.textContaining('Bilgi amaçlı'), findsOneWidget);
     },
   );
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:food_analyzer_app/core/widgets/salt_shaker_icon.dart';
+import 'package:food_analyzer_app/features/analysis/models/canonical_additive_assessment.dart';
 import 'package:food_analyzer_app/features/analysis/models/ingredient_match.dart';
 import 'package:food_analyzer_app/features/analysis/models/product_analysis_result.dart';
+import 'package:food_analyzer_app/features/analysis/services/canonical_ingredient_risk_service.dart';
 import 'package:food_analyzer_app/features/product/data/ingredient_explanation_catalog.dart';
 import 'package:food_analyzer_app/features/product/models/ingredient.dart';
 import 'package:food_analyzer_app/features/product/models/nutrition_data.dart';
@@ -52,8 +54,16 @@ List<String> buildConsumptionNotes(
 ) {
   final notes = <String>[];
 
-  final hasHigh = result.detectedRiskIngredients.any(
-    (i) => i.riskLevel == 'high',
+  final assessment =
+      result.additiveAssessment ??
+      const CanonicalIngredientRiskService().assessIngredients([
+        ...result.recognizedIngredients,
+        ...result.detectedRiskIngredients,
+      ]);
+  final hasHigh = assessment.recognizedIngredients.any(
+    (item) =>
+        item.affectsCurrentAnalysis &&
+        item.riskLevel == CanonicalRiskLevel.high,
   );
   final hasAdditiveSignal = result.riskSignals.keys.any(
     _additiveSignals.contains,
@@ -268,29 +278,20 @@ class AnalysisResultWidget extends StatelessWidget {
   }
 
   List<_IngredientDisplayItem> _getIngredientRowsForDisplay() {
-    // Combine risk ingredients + all recognized ingredients
     final combined = <String, _IngredientDisplayItem>{};
     var order = 0;
 
-    // Add all recognized ingredients in ingredient-list order.
-    for (final ing in result.recognizedIngredients) {
+    final assessment =
+        result.additiveAssessment ??
+        const CanonicalIngredientRiskService().assessIngredients([
+          ...result.recognizedIngredients,
+          ...result.detectedRiskIngredients,
+        ]);
+    for (final item in assessment.recognizedIngredients) {
+      if (!item.affectsCurrentAnalysis) continue;
       combined.putIfAbsent(
-        'matched:${ing.id}',
-        () => _IngredientDisplayItem.fromIngredient(
-          enrichIngredientKnowledge(ing),
-          order++,
-        ),
-      );
-    }
-
-    // Add high/medium risk ingredients that may not be present above.
-    for (final ing in result.detectedRiskIngredients) {
-      combined.putIfAbsent(
-        'matched:${ing.id}',
-        () => _IngredientDisplayItem.fromIngredient(
-          enrichIngredientKnowledge(ing),
-          order++,
-        ),
+        item.canonicalKey,
+        () => _IngredientDisplayItem.fromAssessment(item, order++),
       );
     }
 
@@ -616,14 +617,11 @@ Color _attentionCategoryColor(_AttentionCategory c) => switch (c) {
   _AttentionCategory.other => Colors.deepOrange,
 };
 
-/// Canonical, single-source spec for an attention-worthy ingredient. The same
-/// [risk] drives both the list dot colour and the detail sheet text, so they
-/// can never disagree.
+/// Display-only metadata for an attention-worthy ingredient.
 class _AttentionSpec {
-  final String groupId; // merges technical variants into one row
+  final String groupId;
   final String displayName; // user-friendly row title
   final _AttentionCategory category;
-  final String risk; // canonical: high / medium / low
   final String? technicalNote; // shown in the detail sheet
   final String? purpose;
   final String? riskSummary;
@@ -632,7 +630,6 @@ class _AttentionSpec {
     required this.groupId,
     required this.displayName,
     required this.category,
-    required this.risk,
     this.technicalNote,
     this.purpose,
     this.riskSummary,
@@ -645,10 +642,8 @@ bool _hasSyrupMarker(String k) =>
     k.contains('surup') ||
     k.contains('surub');
 
-/// Returns the canonical attention spec for a normalized ingredient key, or
-/// null when the ingredient is not decision-relevant (it is then hidden, to
-/// keep the product detail compact). This is the single source of truth for the
-/// display name, category and risk level of grouped attention rows.
+/// Returns display name, category, and educational text for a normalized key.
+/// Risk always comes from CanonicalIngredientRiskService or remains unknown.
 _AttentionSpec? _attentionSpecForKey(String key) {
   final k = key.toLowerCase();
 
@@ -658,7 +653,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'aspartam',
       displayName: 'Aspartam',
       category: _AttentionCategory.sweetener,
-      risk: 'high',
       technicalNote: 'Aspartam (E951)',
       purpose: 'Yapay tatlandırıcı olarak tat vermek için kullanılır.',
       riskSummary:
@@ -675,7 +669,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
           ? 'Sukraloz'
           : (k.contains('sakarin') ? 'Sakarin' : 'Asesülfam K'),
       category: _AttentionCategory.sweetener,
-      risk: 'medium',
       purpose: 'Yapay tatlandırıcı olarak şekersiz tatlılık sağlar.',
       riskSummary:
           'İzin verilen miktarlarda kullanılır; sık tüketimde dikkat edilebilir.',
@@ -686,7 +679,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'sorbitol',
       displayName: 'Sorbitol',
       category: _AttentionCategory.sweetener,
-      risk: 'medium',
       technicalNote: 'Sorbitol (E420)',
       purpose:
           'Tat, nem tutma ve kıvam sağlamak için kullanılan bir polioldür.',
@@ -699,7 +691,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'sugar_syrup',
       displayName: 'Şeker şurubu',
       category: _AttentionCategory.sweetener,
-      risk: 'medium',
       technicalNote:
           'Etikette "invert şeker şurubu", "glukoz şurubu" veya "glukoz-fruktoz şurubu" olarak geçebilir.',
       purpose: 'Tat, kıvam ve nem tutma sağlamak için kullanılır.',
@@ -712,7 +703,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'maltodextrin',
       displayName: 'Maltodekstrin',
       category: _AttentionCategory.sweetener,
-      risk: 'medium',
       purpose: 'Dolgu, kıvam ve tat taşıyıcı olarak kullanılır.',
       riskSummary:
           'Hızlı sindirilen bir karbonhidrattır; sık tüketimde dikkat edilebilir.',
@@ -723,7 +713,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'maltitol',
       displayName: 'Maltitol (E965)',
       category: _AttentionCategory.sweetener,
-      risk: 'medium',
       technicalNote: 'Maltitol / Maltitol şurubu (E965)',
       purpose:
           'Şekersiz veya azaltılmış şekerli ürünlerde tat ve hacim sağlamak için kullanılan şeker alkolüdür.',
@@ -740,7 +729,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'cyclamate',
       displayName: 'Siklamat (E952)',
       category: _AttentionCategory.sweetener,
-      risk: 'medium',
       technicalNote: 'Sodyum siklamat (E952)',
       purpose:
           'Şekerden çok daha tatlı olan yapay tatlandırıcı; düşük kalorili ürünlerde kullanılır.',
@@ -753,7 +741,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'sugar',
       displayName: 'Şeker',
       category: _AttentionCategory.sweetener,
-      risk: 'medium',
       technicalNote: 'İlave şeker (sakaroz)',
       purpose: 'Tat vermek ve ürün dokusunu desteklemek için kullanılır.',
       riskSummary:
@@ -767,7 +754,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'palm',
       displayName: 'Palm yağı',
       category: _AttentionCategory.oil,
-      risk: 'medium',
       technicalNote:
           'Etikette "palm yağı", "palmiye yağı" veya "hidrojenize palm yağı" olarak geçebilir.',
       purpose: 'Ürüne doku, kıvam ve raf ömrü kazandırmak için kullanılır.',
@@ -780,7 +766,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'sunflower_oil',
       displayName: 'Ayçiçek yağı',
       category: _AttentionCategory.oil,
-      risk: 'medium',
       purpose:
           'Ürünün yağ fazını oluşturmak ve lezzet/doku sağlamak için kullanılır.',
       riskSummary:
@@ -792,7 +777,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'corn_oil',
       displayName: 'Mısır yağı',
       category: _AttentionCategory.oil,
-      risk: 'medium',
       purpose: 'Ürünün yağ fazını oluşturmak için kullanılır.',
       riskSummary:
           'Tek başına yüksek riskli değildir; işlenmiş ürünlerde toplam yağ alımına dikkat edilmelidir.',
@@ -803,7 +787,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'canola_oil',
       displayName: 'Kanola yağı',
       category: _AttentionCategory.oil,
-      risk: 'medium',
       purpose: 'Ürünün yağ fazını oluşturmak için kullanılır.',
       riskSummary:
           'Tek başına yüksek riskli değildir; işlenmiş ürünlerde toplam yağ alımına dikkat edilmelidir.',
@@ -814,7 +797,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'cocoa_butter',
       displayName: 'Kakao yağı',
       category: _AttentionCategory.oil,
-      risk: 'medium',
       purpose:
           'Çikolata ve kaplamalarda doku ve ağız hissi sağlamak için kullanılır.',
       riskSummary:
@@ -826,7 +808,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'hydrogenated_oil',
       displayName: 'Hidrojenize yağ',
       category: _AttentionCategory.oil,
-      risk: 'medium',
       purpose: 'Ürünün dokusunu ve raf ömrünü iyileştirmek için kullanılır.',
       riskSummary:
           'İşlenmiş yağ yapısı nedeniyle sık tüketimde dikkatli olunmalıdır; etikette trans yağ bilgisi kontrol edilmelidir.',
@@ -837,7 +818,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'vegetable_oil',
       displayName: 'Bitkisel yağ',
       category: _AttentionCategory.oil,
-      risk: 'medium',
       purpose: 'Ürüne doku, kıvam ve lezzet kazandırmak için kullanılır.',
       riskSummary:
           'Yağın türü net belirtilmediğinde kalite değerlendirmesi sınırlıdır; toplam yağ alımına dikkat edilmelidir.',
@@ -857,7 +837,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'bht',
       displayName: 'BHT (E321) antioksidan',
       category: _AttentionCategory.preservative,
-      risk: 'medium',
       technicalNote: 'Bütillenmiş hidroksitoluen (E321)',
       purpose:
           'Yağların ve yağlı besinlerin bozulmasını önlemek için kullanılan yapay antioksidandır.',
@@ -876,7 +855,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'bha',
       displayName: 'BHA (E320) antioksidan',
       category: _AttentionCategory.preservative,
-      risk: 'medium',
       technicalNote: 'Bütillenmiş hidroksianizol (E320)',
       purpose:
           'Yağların oksidasyonunu yavaşlatmak için paketli ürünlerde kullanılan yapay antioksidandır.',
@@ -894,7 +872,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'tbhq',
       displayName: 'TBHQ (E319) antioksidan',
       category: _AttentionCategory.preservative,
-      risk: 'medium',
       technicalNote: 'Tersiyer bütilhidrokinon (E319)',
       purpose:
           'Yağ ve yağlı ürünlerde raf ömrünü uzatmak için kullanılan yapay antioksidandır.',
@@ -912,7 +889,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'nitrite',
       displayName: 'Nitrit/Nitrat koruyucu',
       category: _AttentionCategory.preservative,
-      risk: 'high',
       technicalNote: 'Sodyum nitrit / nitrat (E249–E252)',
       purpose: 'İşlenmiş ette rengi ve raf ömrünü korumak için kullanılır.',
       riskSummary:
@@ -924,7 +900,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'sorbate',
       displayName: 'Sorbat koruyucu',
       category: _AttentionCategory.preservative,
-      risk: 'low',
       technicalNote: 'Sorbik asit / Potasyum sorbat (E200–E202)',
       purpose:
           'Ürünün raf ömrünü uzatmak ve küf/maya gelişimini sınırlamak için kullanılır.',
@@ -937,7 +912,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'benzoate',
       displayName: 'Benzoat koruyucu',
       category: _AttentionCategory.preservative,
-      risk: 'low',
       technicalNote: 'Benzoik asit / Sodyum benzoat (E210–E211)',
       purpose:
           'Ürünün raf ömrünü uzatmak ve mikrobiyal gelişimi sınırlamak için kullanılır.',
@@ -952,7 +926,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'tartrazine',
       displayName: 'Tartrazin',
       category: _AttentionCategory.color,
-      risk: 'high',
       technicalNote: 'Tartrazin (E102)',
       purpose: 'Ürüne sarı renk vermek için kullanılan yapay renklendiricidir.',
       riskSummary:
@@ -964,7 +937,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'allura_red',
       displayName: 'Allura Red',
       category: _AttentionCategory.color,
-      risk: 'high',
       technicalNote: 'Allura Red AC (E129)',
       purpose:
           'Ürüne kırmızı renk vermek için kullanılan yapay renklendiricidir.',
@@ -977,7 +949,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'sunset_yellow',
       displayName: 'Sunset Yellow',
       category: _AttentionCategory.color,
-      risk: 'high',
       technicalNote: 'Sunset Yellow FCF (E110)',
       purpose:
           'Ürüne turuncu/sarı renk vermek için kullanılan yapay renklendiricidir.',
@@ -990,7 +961,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'carmine',
       displayName: 'Karmin (E120)',
       category: _AttentionCategory.color,
-      risk: 'medium',
       technicalNote: 'Karmin / Koşinil ekstresi (E120)',
       purpose:
           'Ürüne kırmızı/pembe renk vermek için kullanılan doğal kaynaklı renklendiricidir.',
@@ -1005,7 +975,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'brilliant_blue',
       displayName: 'Brilliant Blue (E133)',
       category: _AttentionCategory.color,
-      risk: 'high',
       technicalNote: 'Brilliant Blue FCF (E133)',
       purpose: 'Ürüne mavi renk vermek için kullanılan yapay renklendiricidir.',
       riskSummary:
@@ -1017,7 +986,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'caramel_color',
       displayName: 'Karamel renklendirici',
       category: _AttentionCategory.color,
-      risk: 'medium',
       technicalNote: 'Karamel rengi (E150)',
       purpose: 'Ürüne kahverengi ton vermek için kullanılır.',
       riskSummary:
@@ -1034,7 +1002,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'phosphate_leavening',
       displayName: 'Fosfat bazlı kabartıcı',
       category: _AttentionCategory.leavening,
-      risk: 'medium',
       technicalNote: 'Sodyum asit pirofosfat / E450',
       purpose:
           'Hamur işlerinde kabarma ve doku oluşumunu desteklemek için kullanılır.',
@@ -1050,7 +1017,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'carbonate_leavening',
       displayName: 'Karbonat bazlı kabartıcı',
       category: _AttentionCategory.leavening,
-      risk: 'low',
       technicalNote: 'Sodyum hidrojen karbonat / E500',
       purpose:
           'Hamurun kabarmasını ve istenen dokunun oluşmasını sağlamak için kullanılır.',
@@ -1065,7 +1031,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'pgpr',
       displayName: 'Çikolata emülgatörü',
       category: _AttentionCategory.emulsifier,
-      risk: 'low',
       technicalNote: 'Poligliserol polirisinoleat (E476)',
       purpose:
           'Çikolata ve kaplamalarda kıvamı ve akışkanlığı düzenlemek için kullanılır.',
@@ -1078,7 +1043,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'mono_diglyceride',
       displayName: 'Mono ve digliseritler',
       category: _AttentionCategory.emulsifier,
-      risk: 'low',
       technicalNote: 'Yağ asitlerinin mono- ve digliseritleri (E471)',
       purpose:
           'Yağ ve su fazını kararlı tutmak, ürün dokusunu desteklemek için kullanılır.',
@@ -1091,7 +1055,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'xanthan',
       displayName: 'Ksantan gam',
       category: _AttentionCategory.emulsifier,
-      risk: 'low',
       technicalNote: 'Ksantan gam (E415)',
       purpose: 'Ürünün kıvamını ve stabilitesini korumak için kullanılır.',
       riskSummary:
@@ -1107,7 +1070,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'carrageenan',
       displayName: 'Karragenan (E407)',
       category: _AttentionCategory.emulsifier,
-      risk: 'medium',
       technicalNote: 'Karragenan (E407)',
       purpose:
           'Süt ürünleri ve işlenmiş gıdalarda kıvam ve stabilite sağlamak için kullanılır.',
@@ -1124,7 +1086,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'soy_lecithin',
       displayName: 'Soya lesitini (E322)',
       category: _AttentionCategory.emulsifier,
-      risk: 'low',
       technicalNote: 'Soya lesitini (E322)',
       purpose:
           'Yağ ve su fazını karıştırmak, ürün dokusunu düzenlemek için kullanılır.',
@@ -1139,7 +1100,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'salt',
       displayName: 'Tuz',
       category: _AttentionCategory.other,
-      risk: 'medium',
       technicalNote: 'Tuz (sodyum klorür)',
       purpose: 'Tat dengesini sağlamak için kullanılır.',
       riskSummary:
@@ -1151,7 +1111,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
       groupId: 'msg',
       displayName: 'Çeşni artırıcı (MSG)',
       category: _AttentionCategory.other,
-      risk: 'medium',
       technicalNote: 'Monosodyum glutamat (E621)',
       purpose: 'Tadı yoğunlaştırmak için kullanılır.',
       riskSummary:
@@ -1171,7 +1130,6 @@ _AttentionSpec? _attentionSpecForKey(String key) {
                 ? 'Taurin'
                 : (k.contains('guarana') ? 'Guarana' : 'Uyarıcı katkı')),
       category: _AttentionCategory.other,
-      risk: 'medium',
       purpose: 'Uyarıcı/enerji verici etki için kullanılır.',
       riskSummary:
           'Çocuklar ve hassas kişiler için sık tüketimde dikkatli olunmalıdır.',
@@ -1192,11 +1150,15 @@ int _riskRank(String risk) => switch (risk) {
 class _AttentionItem {
   final _AttentionSpec spec;
   final Ingredient? ingredient; // DB match, when available
+  final String canonicalKey;
+  final String riskLevel;
   final int order;
 
   const _AttentionItem({
     required this.spec,
     required this.ingredient,
+    required this.canonicalKey,
+    required this.riskLevel,
     required this.order,
   });
 }
@@ -1220,18 +1182,19 @@ const _maxRowsPerAttentionGroup = 3;
 List<_AttentionGroup> _buildAttentionGroups(
   List<_IngredientDisplayItem> items,
 ) {
-  // Dedup by spec.groupId — collapses technical variants (palm + hidrojenize
-  // palm, sorbik asit + potasyum sorbat, …) into one canonical row.
+  // Display grouping never defines identity. Canonical ingredient identity does.
   final byGroup = <String, _AttentionItem>{};
   for (final item in items) {
     final spec = _attentionSpecForKey(_filterKey(item.normalizedName));
     if (spec == null) continue;
-    final existing = byGroup[spec.groupId];
+    final existing = byGroup[item.canonicalKey];
     if (existing == null ||
         (existing.ingredient == null && item.ingredient != null)) {
-      byGroup[spec.groupId] = _AttentionItem(
+      byGroup[item.canonicalKey] = _AttentionItem(
         spec: spec,
         ingredient: item.ingredient,
+        canonicalKey: item.canonicalKey,
+        riskLevel: item.riskLevel,
         order: item.originalOrder,
       );
     }
@@ -1246,9 +1209,8 @@ List<_AttentionGroup> _buildAttentionGroups(
   for (final category in _attentionCategoryOrder) {
     final list = buckets[category];
     if (list == null || list.isEmpty) continue;
-    // Sort by risk (high→low) then original ingredient order.
     list.sort((a, b) {
-      final byRisk = _riskRank(b.spec.risk).compareTo(_riskRank(a.spec.risk));
+      final byRisk = _riskRank(b.riskLevel).compareTo(_riskRank(a.riskLevel));
       if (byRisk != 0) return byRisk;
       return a.order.compareTo(b.order);
     });
@@ -1330,6 +1292,7 @@ String _canonicalProductDetailToken(String key) {
 class _IngredientDisplayItem {
   final String name;
   final String normalizedName;
+  final String canonicalKey;
   final String riskLevel;
   final int originalOrder;
   final Ingredient? ingredient;
@@ -1337,19 +1300,22 @@ class _IngredientDisplayItem {
   const _IngredientDisplayItem({
     required this.name,
     required this.normalizedName,
+    required this.canonicalKey,
     required this.riskLevel,
     required this.originalOrder,
     this.ingredient,
   });
 
-  factory _IngredientDisplayItem.fromIngredient(
-    Ingredient ingredient,
+  factory _IngredientDisplayItem.fromAssessment(
+    CanonicalIngredientAssessment assessment,
     int originalOrder,
   ) {
+    final ingredient = assessment.ingredient;
     return _IngredientDisplayItem(
       name: ingredient.name,
       normalizedName: ingredient.normalizedName,
-      riskLevel: ingredient.riskLevel,
+      canonicalKey: assessment.canonicalKey,
+      riskLevel: assessment.riskLevelName,
       originalOrder: originalOrder,
       ingredient: ingredient,
     );
@@ -1363,7 +1329,8 @@ class _IngredientDisplayItem {
     return _IngredientDisplayItem(
       name: _displayNameForParsedToken(normalized),
       normalizedName: normalized,
-      riskLevel: _riskLevelForParsedToken(normalized),
+      canonicalKey: 'unresolved:$normalized',
+      riskLevel: 'unknown',
       originalOrder: originalOrder,
     );
   }
@@ -1374,40 +1341,6 @@ String _displayNameForParsedToken(String token) {
   if (trimmed.isEmpty) return trimmed;
   if (trimmed[0] == 'i') return 'İ${trimmed.substring(1)}';
   return trimmed[0].toUpperCase() + trimmed.substring(1);
-}
-
-String _riskLevelForParsedToken(String token) {
-  final normalized = token.toLowerCase();
-  if (normalized.contains('nitrit') ||
-      normalized.contains('nitrat') ||
-      normalized.contains('aspartam') ||
-      normalized.contains('tartrazin')) {
-    return 'high';
-  }
-  if (normalized.contains('yağ') ||
-      normalized.contains('yag') ||
-      normalized.contains('tuz') ||
-      normalized.contains('sodyum') ||
-      normalized.contains('şeker') ||
-      normalized.contains('seker') ||
-      normalized.contains('şurup') ||
-      normalized.contains('surup') ||
-      normalized.contains('sorbat') ||
-      normalized.contains('sorbik asit') ||
-      normalized.contains('sitrik asit') ||
-      normalized.contains('ksantan gam') ||
-      normalized.contains('modifiye nişasta') ||
-      normalized.contains('modifiye nisasta') ||
-      normalized.contains('gliserol') ||
-      normalized.contains('poligliserol') ||
-      normalized.contains('mono ve digliserit') ||
-      normalized.contains('aroma') ||
-      normalized.contains('emülgatör') ||
-      normalized.contains('emulgator') ||
-      normalized.contains('hidrojenize')) {
-    return 'medium';
-  }
-  return 'low';
 }
 
 // ── Nutrition section ─────────────────────────────────────────────────────────
@@ -1939,7 +1872,7 @@ class _GroupedAttentionView extends StatelessWidget {
           id: 'attention:${spec.groupId}',
           name: spec.displayName,
           normalizedName: spec.displayName.toLowerCase(),
-          riskLevel: spec.risk,
+          riskLevel: item.riskLevel,
           ingredientType: _categoryLabelForSpec(spec),
           shortPurpose: spec.purpose,
           shortRiskSummary: spec.riskSummary,
@@ -1947,7 +1880,7 @@ class _GroupedAttentionView extends StatelessWidget {
           updatedAt: DateTime.utc(1970),
         );
     final resolvedIngredient = enrichIngredientKnowledge(baseIngredient);
-    final riskLabel = riskLabelForUser(spec.risk);
+    final riskLabel = riskLabelForUser(item.riskLevel);
     final categoryLabel = _attentionCategoryLabel(spec.category);
 
     showModalBottomSheet<void>(
@@ -2003,7 +1936,7 @@ class _GroupedAttentionView extends StatelessWidget {
                         width: 10,
                         height: 10,
                         decoration: BoxDecoration(
-                          color: riskColorForUser(spec.risk),
+                          color: riskColorForUser(item.riskLevel),
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -2057,7 +1990,7 @@ class _GroupedIngredientRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final risk = item.spec.risk;
+    final risk = item.riskLevel;
     final riskColor = riskColorForUser(risk);
 
     return Semantics(
@@ -2347,10 +2280,15 @@ class _UncertainIngredientSection extends StatelessWidget {
           const SizedBox(height: 10),
           ...items.map((match) {
             final ingredient = match.matchedIngredient;
+            final canonicalRisk = ingredient == null
+                ? 'unknown'
+                : const CanonicalIngredientRiskService()
+                      .assessIngredient(ingredient)
+                      .riskLevelName;
             final ingredientName = ingredient?.name ?? 'Bilinmeyen eşleşme';
             final riskLabel = ingredient == null
                 ? 'Bilgi yok'
-                : riskLabelForUser(ingredient.riskLevel);
+                : riskLabelForUser(canonicalRisk);
             final typeText = ingredient?.ingredientType;
             final confidence = confidenceToLabel(match.confidenceScore);
             final confidenceColor = confidenceToColor(match.confidenceScore);
@@ -2374,7 +2312,7 @@ class _UncertainIngredientSection extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: ingredient == null
                               ? Colors.grey
-                              : riskColorForUser(ingredient.riskLevel),
+                              : riskColorForUser(canonicalRisk),
                           shape: BoxShape.circle,
                         ),
                       ),

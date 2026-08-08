@@ -404,7 +404,7 @@ void main() {
         'asesülfam k',
         'medium',
       );
-      final ingMed2 = makeIngredient('m2', 'palm yağı', 'palm yağı', 'high');
+      final ingMed2 = makeIngredient('m2', 'palm yağı', 'palm yağı', 'medium');
 
       final matches = [
         makeMatch('kafein', 'kafein', ingHigh1, 0.95, MatchType.exactMatch),

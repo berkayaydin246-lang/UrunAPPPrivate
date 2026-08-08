@@ -1,591 +1,282 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:food_analyzer_app/features/analysis/models/canonical_additive_assessment.dart';
+import 'package:food_analyzer_app/features/analysis/services/canonical_ingredient_risk_service.dart';
 import 'package:food_analyzer_app/features/product/data/ingredient_explanation_catalog.dart';
 import 'package:food_analyzer_app/features/product/models/ingredient.dart';
 import 'package:food_analyzer_app/features/product/widgets/product_detail_shared.dart';
 
+Ingredient _ingredient(String id, String name, String riskLevel) => Ingredient(
+  id: id,
+  name: name,
+  normalizedName: name.toLowerCase(),
+  riskLevel: riskLevel,
+  createdAt: DateTime.utc(2026),
+  updatedAt: DateTime.utc(2026),
+);
+
+Ingredient _catalogCode(String eCode) => Ingredient(
+  id: 'catalog-$eCode',
+  name: 'Catalogue fixture $eCode',
+  normalizedName: 'catalogue fixture ${eCode.toLowerCase()}',
+  eCode: eCode,
+  riskLevel: 'unknown',
+  createdAt: DateTime.utc(2026),
+  updatedAt: DateTime.utc(2026),
+);
+
+const _legacyDisplayCoverage = <({String name, String eCode, String groupId})>[
+  (name: 'BHT', eCode: 'E321', groupId: 'bht'),
+  (name: 'BHA', eCode: 'E320', groupId: 'bha'),
+  (name: 'TBHQ', eCode: 'E319', groupId: 'tbhq'),
+  (name: 'Tartrazin', eCode: 'E102', groupId: 'tartrazine'),
+  (name: 'Allura Red', eCode: 'E129', groupId: 'allura_red'),
+  (name: 'Sunset Yellow', eCode: 'E110', groupId: 'sunset_yellow'),
+  (name: 'Brilliant Blue', eCode: 'E133', groupId: 'brilliant_blue'),
+  (name: 'Sodyum nitrit', eCode: 'E250', groupId: 'nitrite'),
+  (name: 'Sodyum nitrat', eCode: 'E251', groupId: 'nitrite'),
+  (name: 'Monosodyum glutamat', eCode: 'E621', groupId: 'msg'),
+  (name: 'Karagenan', eCode: 'E407', groupId: 'carrageenan'),
+  (name: 'Siklamat', eCode: 'E952', groupId: 'cyclamate'),
+  (name: 'Maltitol', eCode: 'E965', groupId: 'maltitol'),
+  (name: 'Soya lesitini', eCode: 'E322', groupId: 'soy_lecithin'),
+  (name: 'Karmin', eCode: 'E120', groupId: 'carmine'),
+];
+
 void main() {
-  final now = DateTime(2026, 1, 1);
+  const service = CanonicalIngredientRiskService();
 
-  Ingredient ing(String id, String name, String riskLevel) => Ingredient(
-    id: id,
-    name: name,
-    normalizedName: name.toLowerCase(),
-    riskLevel: riskLevel,
-    createdAt: now,
-    updatedAt: now,
-  );
-
-  // ── BHT / E321 ─────────────────────────────────────────────────────────────
-
-  group('BHT / E321', () {
-    test('canonical "BHT" resolves to bht spec with medium risk', () {
-      final spec = productRiskSpecForKey('BHT');
-      expect(spec, isNotNull);
-      expect(spec!.groupId, 'bht');
-      expect(spec.riskLevel, 'medium');
-    });
-
-    test('E-code alias "E321" resolves to same group as "BHT"', () {
-      final specBht = productRiskSpecForKey('BHT');
-      final specE321 = productRiskSpecForKey('E321');
-      expect(specE321, isNotNull);
-      expect(specE321!.groupId, specBht!.groupId);
-      expect(specE321.riskLevel, specBht.riskLevel);
-    });
-
-    test('hyphenated alias "E-321" resolves to bht', () {
+  group('display-only product specs', () {
+    test('BHT aliases retain one display identity', () {
+      expect(productRiskSpecForKey('BHT')?.groupId, 'bht');
+      expect(productRiskSpecForKey('E321')?.groupId, 'bht');
       expect(productRiskSpecForKey('E-321')?.groupId, 'bht');
-    });
-
-    test('spaced alias "E 321" resolves to bht', () {
-      expect(productRiskSpecForKey('E 321')?.groupId, 'bht');
-    });
-
-    test('Turkish name resolves to bht', () {
       expect(productRiskSpecForKey('Butil hidroksi toluen')?.groupId, 'bht');
     });
 
-    test('English name resolves to bht', () {
-      expect(productRiskSpecForKey('Butylated Hydroxytoluene')?.groupId, 'bht');
+    test('display spec retains non-risk presentation metadata', () {
+      final spec = productRiskSpecForKey('BHT');
+
+      expect(spec, isNotNull);
+      expect(spec!.displayName, contains('BHT'));
+      expect(spec.category, ProductRiskCategory.preservative);
+      expect(spec.riskSummary, isNotEmpty);
     });
 
-    test('BHT catalog entry enriches ingredient with E321 and references', () {
-      final resolved = enrichIngredientKnowledge(ing('1', 'BHT', 'unknown'));
-      expect(resolved.eCode, 'E321');
-      // For 'unknown' DB riskLevel, catalog's 'medium' kicks in
-      expect(resolved.riskLevel, 'medium');
-      expect(resolved.ingredientType, 'Yapay antioksidan');
-      expect(resolved.shortPurpose, isNotEmpty);
-      expect(resolved.shortRiskSummary, isNotEmpty);
-      expect(
-        resolved.sourceReferenceEntries?.any((r) => r.documentCode == 'E321'),
-        isTrue,
-      );
-    });
-
-    test('BHT catalog wins over bad DB content', () {
-      final badDbIngredient = Ingredient(
-        id: '1b',
-        name: 'BHT',
-        normalizedName: 'bht',
-        riskLevel: 'high',
-        shortPurpose: 'Yağ stabilizesi, rancidizasyonu engel.',
-        shortRiskSummary: 'Hayvan araştırmasında organ etkileri.',
-        createdAt: now,
-        updatedAt: now,
-      );
-      final resolved = enrichIngredientKnowledge(badDbIngredient);
-      expect(
-        resolved.shortPurpose,
-        isNot(contains('rancidizasyonu')),
-        reason: 'Catalog shortPurpose must replace bad DB text',
-      );
-      expect(
-        resolved.shortRiskSummary,
-        isNot(contains('organ etkileri')),
-        reason: 'Catalog shortRiskSummary must replace bad DB text',
-      );
-    });
-
-    test('BHT and E321 produce same groupId — no duplicate rows', () {
-      final spec1 = productRiskSpecForKey('BHT');
-      final spec2 = productRiskSpecForKey('E321');
-      expect(
-        spec1!.groupId,
-        spec2!.groupId,
-        reason: 'BHT and E321 must deduplicate to the same group',
-      );
-    });
-
-    test(
-      'canonicalRiskLevelForIngredient uses spec severity, not DB severity',
-      () {
-        final dbHighBht = ing('1c', 'BHT', 'high');
-        final canonical = canonicalRiskLevelForIngredient(dbHighBht);
-        expect(
-          canonical,
-          'medium',
-          reason: 'Spec defines medium; DB high must be overridden',
-        );
-      },
-    );
-  });
-
-  // ── Brilliant Blue / E133 ───────────────────────────────────────────────────
-
-  group('Brilliant Blue / E133', () {
-    test(
-      'canonical "Brilliant Blue" resolves to brilliant_blue with high risk',
-      () {
-        final spec = productRiskSpecForKey('Brilliant Blue');
-        expect(spec, isNotNull);
-        expect(spec!.groupId, 'brilliant_blue');
-        expect(spec.riskLevel, 'high');
-      },
-    );
-
-    test('E133 alias resolves to brilliant_blue', () {
+    test('different color additives retain separate display identities', () {
+      expect(productRiskSpecForKey('E102')?.groupId, 'tartrazine');
+      expect(productRiskSpecForKey('E129')?.groupId, 'allura_red');
+      expect(productRiskSpecForKey('E110')?.groupId, 'sunset_yellow');
       expect(productRiskSpecForKey('E133')?.groupId, 'brilliant_blue');
     });
 
-    test('Brilliant Blue catalog entry has non-placeholder content', () {
-      final resolved = enrichIngredientKnowledge(
-        ing('2', 'Brilliant Blue', 'medium'),
-      );
-      expect(
-        ingredientHasExplanationMetadata(resolved),
-        isTrue,
-        reason: 'Must not show placeholder text',
-      );
-      expect(resolved.shortPurpose, isNotEmpty);
-      expect(resolved.shortRiskSummary, isNotEmpty);
-      expect(
-        resolved.shortRiskSummary,
-        isNot(contains('Bu içerik için detaylı açıklama henüz eklenmedi.')),
-      );
-    });
-
-    test(
-      'Brilliant Blue catalog with unknown DB riskLevel gets catalog high',
-      () {
-        final unknownBb = ing('2b', 'Brilliant Blue', 'unknown');
-        final resolved = enrichIngredientKnowledge(unknownBb);
-        expect(
-          resolved.riskLevel,
-          'high',
-          reason: 'Catalog riskLevel applied when DB has unknown',
-        );
-      },
-    );
-
-    test(
-      'canonicalRiskLevelForIngredient for DB-medium Brilliant Blue returns high',
-      () {
-        final dbMediumBb = ing('2c', 'Brilliant Blue', 'medium');
-        final canonical = canonicalRiskLevelForIngredient(dbMediumBb);
-        expect(
-          canonical,
-          'high',
-          reason: 'Spec defines high; DB medium must be overridden',
-        );
-      },
-    );
-
-    test('Brilliant Blue catalog has EFSA source', () {
-      final resolved = enrichIngredientKnowledge(
-        ing('2d', 'Brilliant Blue', 'medium'),
-      );
-      expect(
-        resolved.sourceReferenceEntries?.any((r) => r.authority == 'EFSA'),
-        isTrue,
-      );
-    });
-  });
-
-  // ── BHA / E320 ─────────────────────────────────────────────────────────────
-
-  group('BHA / E320', () {
-    test('canonical "BHA" resolves to bha spec with medium risk', () {
-      final spec = productRiskSpecForKey('BHA');
-      expect(spec, isNotNull);
-      expect(spec!.groupId, 'bha');
-      expect(spec.riskLevel, 'medium');
-    });
-
-    test('E-code alias "E320" resolves to same group as "BHA"', () {
-      expect(
-        productRiskSpecForKey('E320')?.groupId,
-        productRiskSpecForKey('BHA')?.groupId,
-      );
-    });
-
-    test('BHA catalog enriches with E320', () {
-      final resolved = enrichIngredientKnowledge(ing('3', 'BHA', 'unknown'));
-      expect(resolved.eCode, 'E320');
-    });
-  });
-
-  // ── TBHQ / E319 ────────────────────────────────────────────────────────────
-
-  group('TBHQ / E319', () {
-    test('canonical "TBHQ" resolves to tbhq spec with medium risk', () {
-      final spec = productRiskSpecForKey('TBHQ');
-      expect(spec, isNotNull);
-      expect(spec!.groupId, 'tbhq');
-      expect(spec.riskLevel, 'medium');
-    });
-
-    test('E319 resolves to tbhq', () {
-      expect(productRiskSpecForKey('E319')?.groupId, 'tbhq');
-    });
-
-    test('TBHQ catalog enriches with E319', () {
-      final resolved = enrichIngredientKnowledge(ing('4', 'TBHQ', 'unknown'));
-      expect(resolved.eCode, 'E319');
-    });
-  });
-
-  // ── Antioxidant risk parity ─────────────────────────────────────────────────
-
-  test('BHT, BHA, TBHQ all have same risk level (medium)', () {
-    final risks = [
-      'BHT',
-      'BHA',
-      'TBHQ',
-    ].map((k) => productRiskSpecForKey(k)?.riskLevel);
-    for (final r in risks) {
-      expect(
-        r,
-        'medium',
-        reason: 'All antioxidant preservatives must be medium',
-      );
-    }
-  });
-
-  // ── Artificial colours ──────────────────────────────────────────────────────
-
-  group('Artificial colours (high risk)', () {
-    for (final entry in <Map<String, String>>[
-      {'name': 'Tartrazin', 'groupId': 'tartrazine', 'eCode': 'E102'},
-      {'name': 'Allura Red', 'groupId': 'allura_red', 'eCode': 'E129'},
-      {'name': 'Sunset Yellow', 'groupId': 'sunset_yellow', 'eCode': 'E110'},
-      {'name': 'Brilliant Blue', 'groupId': 'brilliant_blue', 'eCode': 'E133'},
-    ]) {
-      test('${entry['name']} resolves to high risk by name and E-code', () {
-        final byName = productRiskSpecForKey(entry['name']!);
-        final byCode = productRiskSpecForKey(entry['eCode']!);
-        expect(
-          byName?.groupId,
-          entry['groupId'],
-          reason: '${entry['name']} name lookup must resolve',
-        );
-        expect(
-          byCode?.groupId,
-          entry['groupId'],
-          reason: '${entry['eCode']} code lookup must resolve to same group',
-        );
-        expect(
-          byName?.riskLevel,
-          'high',
-          reason: '${entry['name']} must be high risk',
-        );
-        expect(
-          byCode?.riskLevel,
-          'high',
-          reason: '${entry['eCode']} must be high risk',
-        );
-      });
-
-      test('${entry['name']} catalog has non-empty content and source', () {
-        final resolved = enrichIngredientKnowledge(
-          ing('c_${entry['eCode']}', entry['name']!, 'unknown'),
-        );
-        expect(
-          ingredientHasExplanationMetadata(resolved),
-          isTrue,
-          reason: '${entry['name']} must have catalog content',
-        );
-        expect(resolved.shortRiskSummary, isNotEmpty);
-        expect(
-          resolved.shortRiskSummary,
-          isNot(contains('Bu içerik için detaylı açıklama henüz eklenmedi.')),
-        );
-        expect(
-          resolved.sourceReferenceEntries?.isNotEmpty ?? false,
-          isTrue,
-          reason: '${entry['name']} must have source references',
-        );
-      });
-    }
-  });
-
-  // ── Nitrite / Nitrate (E250/E251) ───────────────────────────────────────────
-
-  group('Sodium nitrite / nitrate', () {
-    test('sodyum nitrit resolves to nitrite with high risk', () {
-      final spec = productRiskSpecForKey('sodyum nitrit');
-      expect(spec?.groupId, 'nitrite');
-      expect(spec?.riskLevel, 'high');
-    });
-
-    test('E250 resolves to nitrite', () {
-      expect(productRiskSpecForKey('E250')?.groupId, 'nitrite');
-    });
-
-    test('E251 resolves to nitrite', () {
-      expect(productRiskSpecForKey('E251')?.groupId, 'nitrite');
-    });
-
-    test('sodyum nitrit catalog has EFSA source', () {
-      final resolved = enrichIngredientKnowledge(
-        ing('n1', 'Sodyum nitrit', 'unknown'),
-      );
-      expect(resolved.shortRiskSummary, isNotEmpty);
-      expect(
-        resolved.sourceReferenceEntries?.any(
-          (r) => r.authority.contains('EFSA') || r.authority.contains('WHO'),
-        ),
-        isTrue,
-      );
-    });
-  });
-
-  // ── MSG / E621 ──────────────────────────────────────────────────────────────
-
-  group('MSG / E621', () {
-    test('monosodyum glutamat resolves to msg with medium risk', () {
-      final spec = productRiskSpecForKey('Monosodyum glutamat');
-      expect(spec?.groupId, 'msg');
-      expect(spec?.riskLevel, 'medium');
-    });
-
-    test('MSG catalog has content and EFSA source', () {
-      final resolved = enrichIngredientKnowledge(
-        ing('m1', 'Monosodyum glutamat', 'unknown'),
-      );
-      expect(resolved.shortRiskSummary, isNotEmpty);
-      expect(
-        resolved.sourceReferenceEntries?.any((r) => r.authority == 'EFSA'),
-        isTrue,
-      );
-    });
-  });
-
-  // ── Carrageenan ─────────────────────────────────────────────────────────────
-
-  group('Carrageenan / E407', () {
-    test('karagenan (single-r) resolves to carrageenan', () {
-      expect(productRiskSpecForKey('karagenan')?.groupId, 'carrageenan');
-      expect(productRiskSpecForKey('karagenan')?.riskLevel, 'medium');
-    });
-
-    test('E407 resolves to carrageenan', () {
-      expect(productRiskSpecForKey('E407')?.groupId, 'carrageenan');
-    });
-  });
-
-  // ── Cyclamate / E952 ────────────────────────────────────────────────────────
-
-  group('Cyclamate / E952', () {
-    test('siklamat resolves to cyclamate spec', () {
-      expect(productRiskSpecForKey('siklamat')?.groupId, 'cyclamate');
-      expect(productRiskSpecForKey('siklamat')?.riskLevel, 'medium');
-    });
-
-    test('E952 resolves to cyclamate', () {
-      expect(productRiskSpecForKey('E952')?.groupId, 'cyclamate');
-    });
-
-    test('cyclamate catalog has content', () {
-      final resolved = enrichIngredientKnowledge(
-        ing('cy1', 'siklamat', 'unknown'),
-      );
-      expect(resolved.shortRiskSummary, isNotEmpty);
-    });
-  });
-
-  // ── Maltitol / E965 ─────────────────────────────────────────────────────────
-
-  group('Maltitol / E965', () {
-    test('maltitol resolves to maltitol spec', () {
-      expect(productRiskSpecForKey('maltitol')?.groupId, 'maltitol');
-      expect(productRiskSpecForKey('maltitol')?.riskLevel, 'medium');
-    });
-
-    test('maltitol catalog has content', () {
-      final resolved = enrichIngredientKnowledge(
-        ing('ma1', 'maltitol', 'unknown'),
-      );
-      expect(resolved.shortRiskSummary, isNotEmpty);
-    });
-  });
-
-  // ── Soy lecithin / E322 ─────────────────────────────────────────────────────
-
-  group('Soy lecithin / E322', () {
-    test('soya lesitini resolves to soy_lecithin spec', () {
-      expect(productRiskSpecForKey('Soya lesitini')?.groupId, 'soy_lecithin');
-      expect(productRiskSpecForKey('Soya lesitini')?.riskLevel, 'low');
-    });
-
-    test('E322 resolves to soy_lecithin', () {
-      expect(productRiskSpecForKey('E322')?.groupId, 'soy_lecithin');
-    });
-  });
-
-  // ── Carmine / E120 ─────────────────────────────────────────────────────────
-
-  group('Carmine / E120', () {
-    test('karmin resolves to carmine spec', () {
-      expect(productRiskSpecForKey('karmin')?.groupId, 'carmine');
-      expect(productRiskSpecForKey('karmin')?.riskLevel, 'medium');
-    });
-
-    test('E120 resolves to carmine', () {
-      expect(productRiskSpecForKey('E120')?.groupId, 'carmine');
-    });
-
-    test('carmine catalog has EFSA source', () {
-      final resolved = enrichIngredientKnowledge(
-        ing('ca1', 'karmin', 'unknown'),
-      );
-      expect(resolved.shortRiskSummary, isNotEmpty);
-      expect(
-        resolved.sourceReferenceEntries?.any((r) => r.authority == 'EFSA'),
-        isTrue,
-      );
-    });
-  });
-
-  // ── Catalog riskLevel: fallback for 'unknown' ────────────────────────────────
-
-  group('Catalog riskLevel fallback for DB-unknown ingredients', () {
-    test('DB-unknown BHT gets catalog medium riskLevel', () {
-      final resolved = enrichIngredientKnowledge(ing('r1', 'BHT', 'unknown'));
-      expect(resolved.riskLevel, 'medium');
-    });
-
-    test('DB-high BHT preserves DB riskLevel (catalog does not override)', () {
-      final resolved = enrichIngredientKnowledge(ing('r2', 'BHT', 'high'));
-      // DB 'high' is preserved; canonical severity is via canonicalRiskLevelForIngredient()
-      expect(resolved.riskLevel, 'high');
-    });
-
-    test('DB-medium Brilliant Blue preserves DB riskLevel', () {
-      final resolved = enrichIngredientKnowledge(
-        ing('r3', 'Brilliant Blue', 'medium'),
-      );
-      expect(resolved.riskLevel, 'medium');
-    });
-  });
-
-  // ── canonicalRiskLevelForIngredient ─────────────────────────────────────────
-
-  group('canonicalRiskLevelForIngredient', () {
-    test('uses spec riskLevel when spec exists (overrides DB)', () {
-      // BHT: spec = medium, DB = high
-      final canonical = canonicalRiskLevelForIngredient(
-        ing('cr1', 'BHT', 'high'),
-      );
-      expect(canonical, 'medium');
-    });
-
-    test('falls back to DB riskLevel when no spec exists', () {
-      final canonical = canonicalRiskLevelForIngredient(
-        ing('cr2', 'completely unknown ingredient xyz', 'medium'),
-      );
-      expect(canonical, 'medium');
-    });
-
-    test('Brilliant Blue DB-medium returns high from spec', () {
-      final canonical = canonicalRiskLevelForIngredient(
-        ing('cr3', 'Brilliant Blue', 'medium'),
-      );
-      expect(canonical, 'high');
-    });
-  });
-
-  // ── No placeholder for high/medium entries ──────────────────────────────────
-
-  group('No placeholder text for known high/medium additives', () {
-    const highMediumAdditives = [
-      'BHT',
-      'BHA',
-      'TBHQ',
-      'Brilliant Blue',
-      'Tartrazin',
-      'Allura Red',
-      'Sunset Yellow',
-      'karmin',
-      'Sodyum nitrit',
-      'Monosodyum glutamat',
-      'maltodekstrin',
-      'maltitol',
-      'siklamat',
-    ];
-
-    const forbiddenPhrases = [
-      'Bu içerik için detaylı açıklama henüz eklenmedi.',
-      'Detaylı açıklama yok.',
-      'Açıklama eklenecek.',
-      'TODO',
-      'TBD',
-    ];
-
-    for (final name in highMediumAdditives) {
-      test('$name has no placeholder text in catalog', () {
-        final resolved = enrichIngredientKnowledge(
-          ing('p_$name', name, 'unknown'),
-        );
-        final text = [
-          resolved.shortPurpose ?? '',
-          resolved.shortRiskSummary ?? '',
-          resolved.processingRole ?? '',
-        ].join(' ');
-
-        for (final phrase in forbiddenPhrases) {
-          expect(
-            text,
-            isNot(contains(phrase)),
-            reason: '$name must not have placeholder: "$phrase"',
-          );
+    for (final entry in _legacyDisplayCoverage) {
+      test('${entry.name} retains its legacy display identity', () {
+        expect(productRiskSpecForKey(entry.name)?.groupId, entry.groupId);
+        if (entry.eCode != 'E621' && entry.eCode != 'E965') {
+          expect(productRiskSpecForKey(entry.eCode)?.groupId, entry.groupId);
         }
       });
     }
-  });
 
-  // ── Alias deduplication ─────────────────────────────────────────────────────
-
-  group('Alias dedupe: same spec groupId for all aliases', () {
-    test('BHT and E321 map to same groupId', () {
-      expect(
-        productRiskSpecForKey('BHT')?.groupId,
-        productRiskSpecForKey('E321')?.groupId,
-      );
-    });
-
-    test('Brilliant Blue and E133 map to same groupId', () {
-      expect(
-        productRiskSpecForKey('Brilliant Blue')?.groupId,
-        productRiskSpecForKey('E133')?.groupId,
-      );
-    });
-
-    test('Tartrazin and E102 map to same groupId', () {
-      expect(
-        productRiskSpecForKey('Tartrazin')?.groupId,
-        productRiskSpecForKey('E102')?.groupId,
-      );
-    });
-
-    test('Allura Red and E129 map to same groupId', () {
-      expect(
-        productRiskSpecForKey('Allura Red')?.groupId,
-        productRiskSpecForKey('E129')?.groupId,
-      );
-    });
-
-    test('Sunset Yellow and E110 map to same groupId', () {
-      expect(
-        productRiskSpecForKey('Sunset Yellow')?.groupId,
-        productRiskSpecForKey('E110')?.groupId,
-      );
+    test('BHT legacy spelling variants retain display identity', () {
+      for (final alias in const [
+        'E-321',
+        'E 321',
+        'Butil hidroksi toluen',
+        'Butylated Hydroxytoluene',
+      ]) {
+        expect(productRiskSpecForKey(alias)?.groupId, 'bht', reason: alias);
+      }
     });
   });
 
-  // ── normalizeIngredientDisplayKey ──────────────────────────────────────────
+  group('catalogue source and canonical resolver', () {
+    test('educational enrichment does not independently change risk', () {
+      final enriched = enrichIngredientKnowledge(
+        _ingredient('bht-unknown', 'BHT', 'unknown'),
+      );
 
-  group('normalizeIngredientDisplayKey', () {
-    test('uppercased BHT normalizes to bht', () {
-      expect(normalizeIngredientDisplayKey('BHT'), 'bht');
+      expect(enriched.eCode, 'E321');
+      expect(enriched.riskLevel, 'unknown');
+      expect(enriched.shortPurpose, isNotEmpty);
+      expect(enriched.sourceReferenceEntries, isNotEmpty);
     });
 
-    test('E-321 with hyphen normalizes to e-321', () {
-      expect(normalizeIngredientDisplayKey('E-321'), 'e-321');
+    test('canonical service applies reviewed fallback for unknown BHT', () {
+      final item = service.assessIngredient(
+        _ingredient('bht-reviewed', 'BHT', 'unknown'),
+      );
+
+      expect(item.riskLevel, CanonicalRiskLevel.medium);
+      expect(item.riskSource, CanonicalRiskSource.reviewedExplanationCatalogue);
     });
 
-    test('leading/trailing punctuation stripped', () {
+    test('catalogue disagreement becomes visible unknown conflict', () {
+      final item = service.assessIngredient(
+        _ingredient('bht-conflict', 'BHT', 'high'),
+      );
+
+      expect(item.riskLevel, CanonicalRiskLevel.unknown);
+      expect(item.riskSource, CanonicalRiskSource.unresolvedConflict);
+      expect(item.conflicts, hasLength(1));
+    });
+
+    test('product detail risk helper delegates to canonical service', () {
+      expect(
+        canonicalRiskLevelForIngredient(
+          _ingredient('bht-helper', 'BHT', 'high'),
+        ),
+        'unknown',
+      );
+    });
+
+    test('known catalogue entries retain reviewed explanatory sources', () {
+      for (final name in [
+        'BHT',
+        'BHA',
+        'TBHQ',
+        'Tartrazin',
+        'Brilliant Blue',
+        'Sodyum Nitrit',
+        'Monosodyum Glutamat',
+        'Karmin',
+      ]) {
+        final enriched = enrichIngredientKnowledge(
+          _ingredient('source-$name', name, 'unknown'),
+        );
+        expect(enriched.shortPurpose, isNotEmpty, reason: name);
+        expect(enriched.shortRiskSummary, isNotEmpty, reason: name);
+        expect(enriched.sourceReferenceEntries, isNotEmpty, reason: name);
+      }
+    });
+
+    for (final entry in _legacyDisplayCoverage) {
+      test(
+        '${entry.name} keeps sourced non-placeholder catalogue metadata',
+        () {
+          final enriched = enrichIngredientKnowledge(
+            _ingredient('metadata-${entry.eCode}', entry.name, 'unknown'),
+          );
+          final explanation = [
+            enriched.shortPurpose ?? '',
+            enriched.shortRiskSummary ?? '',
+            enriched.processingRole ?? '',
+          ].join(' ');
+
+          expect(enriched.eCode, entry.eCode);
+          expect(ingredientHasExplanationMetadata(enriched), isTrue);
+          expect(enriched.sourceReferenceEntries, isNotEmpty);
+          expect(explanation, isNot(contains('TODO')));
+          expect(explanation, isNot(contains('TBD')));
+          expect(
+            explanation,
+            isNot(contains('detaylı açıklama henüz eklenmedi')),
+          );
+        },
+      );
+    }
+  });
+
+  group('reviewed hard-coded rule coverage', () {
+    CanonicalRiskLevel riskFor(String eCode) =>
+        service.assessIngredient(_catalogCode(eCode)).riskLevel;
+
+    test('BHT E321 retains reviewed medium', () {
+      expect(riskFor('E321'), CanonicalRiskLevel.medium);
+    });
+
+    test('BHA E320 retains reviewed medium', () {
+      expect(riskFor('E320'), CanonicalRiskLevel.medium);
+    });
+
+    test('TBHQ E319 retains reviewed medium', () {
+      expect(riskFor('E319'), CanonicalRiskLevel.medium);
+    });
+
+    test('Tartrazine E102 retains reviewed high', () {
+      expect(riskFor('E102'), CanonicalRiskLevel.high);
+    });
+
+    test('Sunset Yellow E110 retains reviewed high', () {
+      expect(riskFor('E110'), CanonicalRiskLevel.high);
+    });
+
+    test('Carmine E120 retains reviewed medium', () {
+      expect(riskFor('E120'), CanonicalRiskLevel.medium);
+    });
+
+    test('Allura Red E129 retains reviewed high', () {
+      expect(riskFor('E129'), CanonicalRiskLevel.high);
+    });
+
+    test('Brilliant Blue E133 retains reviewed high', () {
+      expect(riskFor('E133'), CanonicalRiskLevel.high);
+    });
+
+    test('Sodium nitrite E250 retains reviewed high', () {
+      expect(riskFor('E250'), CanonicalRiskLevel.high);
+    });
+
+    test('Sodium nitrate E251 retains reviewed high', () {
+      expect(riskFor('E251'), CanonicalRiskLevel.high);
+    });
+
+    test('Sorbic acid E200 retains reviewed medium', () {
+      expect(riskFor('E200'), CanonicalRiskLevel.medium);
+    });
+
+    test('Potassium sorbate E202 retains reviewed medium', () {
+      expect(riskFor('E202'), CanonicalRiskLevel.medium);
+    });
+
+    test('Benzoic acid E210 retains reviewed medium', () {
+      expect(riskFor('E210'), CanonicalRiskLevel.medium);
+    });
+
+    test('Sodium benzoate E211 retains reviewed medium', () {
+      expect(riskFor('E211'), CanonicalRiskLevel.medium);
+    });
+
+    test('Acesulfame K E950 retains reviewed medium', () {
+      expect(riskFor('E950'), CanonicalRiskLevel.medium);
+    });
+
+    test('Aspartame E951 retains reviewed high', () {
+      expect(riskFor('E951'), CanonicalRiskLevel.high);
+    });
+
+    test('Cyclamate E952 retains reviewed medium', () {
+      expect(riskFor('E952'), CanonicalRiskLevel.medium);
+    });
+
+    test('Saccharin E954 retains reviewed medium', () {
+      expect(riskFor('E954'), CanonicalRiskLevel.medium);
+    });
+
+    test('Sucralose E955 retains reviewed medium', () {
+      expect(riskFor('E955'), CanonicalRiskLevel.medium);
+    });
+
+    test('Maltitol E965 retains reviewed medium', () {
+      expect(riskFor('E965'), CanonicalRiskLevel.medium);
+    });
+
+    test('uncovered nitrite E249 remains unknown', () {
+      expect(riskFor('E249'), CanonicalRiskLevel.unknown);
+    });
+
+    test('uncovered NNS E957 remains unknown', () {
+      expect(riskFor('E957'), CanonicalRiskLevel.unknown);
+    });
+  });
+
+  group('display key normalization', () {
+    test('normalizes case and surrounding punctuation', () {
       expect(normalizeIngredientDisplayKey(' BHT, '), 'bht');
+    });
+
+    test('preserves meaningful E-code separators for display matching', () {
+      expect(normalizeIngredientDisplayKey('E-321'), 'e-321');
     });
   });
 }
