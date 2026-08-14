@@ -69,7 +69,7 @@ class ProductScoreAuditEvaluator {
         .fromProduct(product)
         .categoryEvidence
         .resolvedCategory;
-    final canonicalAssessment = riskService.assess(
+    final canonicalAssessment = riskService.assessForScoring(
       matching,
       scoringCategory: scoringCategory,
     );

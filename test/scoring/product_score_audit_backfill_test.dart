@@ -1,9 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:food_analyzer_app/features/analysis/services/canonical_ingredient_risk_service.dart';
+import 'package:food_analyzer_app/features/analysis/services/ingredient_matcher_service.dart';
 import 'package:food_analyzer_app/features/product/models/ingredient.dart';
 import 'package:food_analyzer_app/features/product/models/product.dart';
+import 'package:food_analyzer_app/features/scoring/adapters/product_scoring_input_adapter.dart';
+import 'package:food_analyzer_app/features/scoring/application/product_etiketly_score_orchestrator.dart';
 import 'package:food_analyzer_app/features/scoring/application/product_score_audit_backfill.dart';
 import 'package:food_analyzer_app/features/scoring/application/product_score_audit_evaluator.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/etiketly_score_audit_snapshot.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/etiketly_score_readiness_result.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/scoring_types.dart';
 
 import 'scoring_test_fixtures.dart';
 import 'support/score_audit_test_support.dart';
@@ -25,6 +31,90 @@ void main() {
     final result = await evaluator.evaluate(product, catalogue);
     return result.snapshot!;
   }
+
+  Future<({bool additiveReady, bool finalScoreReady})> normalReadiness(
+    Product product,
+    List<Ingredient> ingredientCatalogue,
+  ) async {
+    const matcher = IngredientMatcherService();
+    final matching = await matcher.matchIngredientTokens(
+      matcher.parseIngredients(product.ingredientsText ?? ''),
+      ingredientCatalogue,
+    );
+    final scoringCategory = const ProductScoringInputAdapter()
+        .fromProduct(product)
+        .categoryEvidence
+        .resolvedCategory;
+    final assessment = const CanonicalIngredientRiskService().assessForScoring(
+      matching,
+      scoringCategory: scoringCategory,
+    );
+    final evaluation = const ProductEtiketlyScoreOrchestrator().calculate(
+      product: product,
+      canonicalAssessment: assessment,
+    )!;
+    final additiveReady = evaluation.finalReadiness.blockingReasons
+        .where(
+          (reason) => reason != EtiketlyScoreReadinessBlocker.nutritionNotReady,
+        )
+        .isEmpty;
+    return (
+      additiveReady: additiveReady,
+      finalScoreReady: evaluation.isCalculated,
+    );
+  }
+
+  group('shared additive readiness semantics', () {
+    test(
+      'ordinary unmatched food is ready in normal and audit paths',
+      () async {
+        final product = readyProduct(10, ingredientsText: 'pirinç unu');
+        final normal = await normalReadiness(product, catalogue);
+        final audit = await evaluator.evaluate(product, catalogue);
+
+        expect(normal.additiveReady, isTrue);
+        expect(audit.additiveReady, isTrue);
+        expect(normal.finalScoreReady, isTrue);
+        expect(audit.finalScoreReady, normal.finalScoreReady);
+      },
+    );
+
+    test('unresolved E-code blocks normal and audit paths', () async {
+      final product = readyProduct(11, ingredientsText: 'E9999');
+      final normal = await normalReadiness(product, catalogue);
+      final audit = await evaluator.evaluate(product, catalogue);
+
+      expect(normal.additiveReady, isFalse);
+      expect(audit.additiveReady, isFalse);
+      expect(normal.finalScoreReady, isFalse);
+      expect(audit.finalScoreReady, normal.finalScoreReady);
+      expect(
+        audit.blockerReasons,
+        contains('additive:unresolvedIngredientEvidence'),
+      );
+    });
+
+    test('incomplete ingredient evidence still blocks both paths', () async {
+      final product = auditProductFromInput(
+        completeInput(
+          ingredientCompleteness: IngredientEvidenceCompleteness.unknown,
+        ),
+        id: _id(12),
+        ingredientsText: 'pirinç unu',
+      );
+      final normal = await normalReadiness(product, catalogue);
+      final audit = await evaluator.evaluate(product, catalogue);
+
+      expect(normal.additiveReady, isFalse);
+      expect(audit.additiveReady, isFalse);
+      expect(normal.finalScoreReady, isFalse);
+      expect(audit.finalScoreReady, normal.finalScoreReady);
+      expect(
+        audit.blockerReasons,
+        contains('additive:ingredientEvidenceIncomplete'),
+      );
+    });
+  });
 
   test('dry run writes nothing and plans a missing current audit', () async {
     final source = _MemoryBackfillDataSource(

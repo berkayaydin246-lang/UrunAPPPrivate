@@ -336,11 +336,9 @@ class LegacyScoringEvidenceRecoveryService {
       tokens,
       ingredientCatalogue,
     );
-    final assessment = riskService.assess(
+    final assessment = riskService.assessForScoring(
       matching,
       scoringCategory: resolvedCategory,
-      unresolvedIngredientPolicy:
-          CanonicalUnresolvedIngredientPolicy.additiveCandidatesOnly,
     );
     final evaluation = orchestrator.calculate(
       product: temporaryProduct,

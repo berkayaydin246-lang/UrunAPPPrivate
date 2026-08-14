@@ -218,7 +218,7 @@ void main() {
     });
 
     test(
-      'legacy policy drops ordinary unresolved but retains additive-like',
+      'scoring assessment drops ordinary unresolved but retains additive-like',
       () {
         final matches = [
           _match(
@@ -236,13 +236,11 @@ void main() {
         ];
 
         expect(_assess(matches).unresolvedIngredients, hasLength(2));
-        final legacy = _assess(
-          matches,
-          unresolvedIngredientPolicy:
-              CanonicalUnresolvedIngredientPolicy.additiveCandidatesOnly,
+        final scoring = const CanonicalIngredientRiskService().assessForScoring(
+          IngredientMatchingResult(matches: matches),
         );
-        expect(legacy.unresolvedIngredients, hasLength(1));
-        expect(legacy.unresolvedIngredients.single.sourceTokens, ['E9999']);
+        expect(scoring.unresolvedIngredients, hasLength(1));
+        expect(scoring.unresolvedIngredients.single.sourceTokens, ['E9999']);
       },
     );
   });

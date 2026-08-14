@@ -100,6 +100,22 @@ class CanonicalIngredientRiskService {
     );
   }
 
+  /// Builds the canonical assessment consumed by score readiness.
+  ///
+  /// Analysis diagnostics may retain every unmatched token, but additive
+  /// readiness must retain only unresolved tokens that could be additives.
+  CanonicalAdditiveAssessment assessForScoring(
+    IngredientMatchingResult matchingResult, {
+    ScoringCategory scoringCategory = ScoringCategory.unknown,
+  }) {
+    return assess(
+      matchingResult,
+      scoringCategory: scoringCategory,
+      unresolvedIngredientPolicy:
+          CanonicalUnresolvedIngredientPolicy.additiveCandidatesOnly,
+    );
+  }
+
   CanonicalAdditiveAssessment assessIngredients(
     Iterable<Ingredient> ingredients, {
     ScoringCategory scoringCategory = ScoringCategory.unknown,
