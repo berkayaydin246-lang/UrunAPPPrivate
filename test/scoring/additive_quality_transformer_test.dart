@@ -10,10 +10,9 @@ import 'support/additive_quality_test_support.dart';
 
 void main() {
   const transformer = AdditiveQualityTransformer();
-  const lowCodes = ['E322', 'E412', 'E415'];
+  const lowCodes = ['E202', 'E282', 'E322', 'E412', 'E415', 'E471'];
   const mediumCodes = [
     'E200',
-    'E202',
     'E210',
     'E211',
     'E319',
@@ -23,7 +22,6 @@ void main() {
     'E954',
     'E955',
     'E407',
-    'E471',
     'E120',
     'E621',
     'E965',
@@ -59,7 +57,7 @@ void main() {
     });
 
     test('one reviewed medium additive has a visible limited impact', () {
-      final result = resultFor(const ['E202']);
+      final result = resultFor(const ['E211']);
 
       expect(result.qualityScore, 91);
       expect(result.mediumCount, 1);
@@ -76,7 +74,7 @@ void main() {
 
     test('high impact is greater than medium and medium than low', () {
       final low = resultFor(const ['E322']);
-      final medium = resultFor(const ['E202']);
+      final medium = resultFor(const ['E211']);
       final high = resultFor(const ['E102']);
 
       expect(high.totalPenalty, greaterThan(medium.totalPenalty));
@@ -86,7 +84,7 @@ void main() {
     });
 
     test('geometric tier contributions preserve unrounded precision', () {
-      final result = resultFor(const ['E200', 'E202', 'E210']);
+      final result = resultFor(const ['E200', 'E211', 'E210']);
 
       expect(result.totalPenalty, closeTo(20.8125, 0.0000001));
       expect(result.qualityScore, closeTo(79.1875, 0.0000001));
@@ -94,7 +92,7 @@ void main() {
     });
 
     test('tier contribution metadata exposes exact v1 constants and caps', () {
-      final result = resultFor(const ['E322', 'E202', 'E102']);
+      final result = resultFor(const ['E322', 'E211', 'E102']);
       final low = result.contributions.singleWhere(
         (item) => item.riskLevel == CanonicalRiskLevel.low,
       );
@@ -115,7 +113,7 @@ void main() {
     });
 
     test('same canonical assessment is deterministic', () {
-      final assessment = assessmentForCodes(const ['E322', 'E202', 'E102']);
+      final assessment = assessmentForCodes(const ['E322', 'E211', 'E102']);
       final first = transformer.transform(assessment);
       final second = transformer.transform(assessment);
 
@@ -126,7 +124,7 @@ void main() {
     });
 
     test('risk counts and penalized counts retain canonical summaries', () {
-      final result = resultFor(const ['E322', 'E412', 'E200', 'E202', 'E102']);
+      final result = resultFor(const ['E322', 'E412', 'E200', 'E211', 'E102']);
 
       expect(result.lowCount, 2);
       expect(result.mediumCount, 2);
@@ -281,7 +279,7 @@ void main() {
     test(
       'eligible item contributes while mixed unknown remains diagnostic',
       () {
-        final result = resultFor(const ['E202', 'E249']);
+        final result = resultFor(const ['E211', 'E249']);
 
         expect(result.qualityScore, 91);
         expect(result.mediumCount, 1);
@@ -336,7 +334,7 @@ void main() {
     test('beverage NNS plus unrelated medium penalizes only the medium', () {
       final result = resultFor(const [
         'E955',
-        'E202',
+        'E211',
       ], category: ScoringCategory.beverage);
 
       expect(result.qualityScore, 91);
@@ -393,7 +391,7 @@ void main() {
           ['E200'],
           ['E102'],
           ['E322', 'E200', 'E102'],
-          ['E200', 'E202'],
+          ['E200', 'E211'],
         ];
         for (final base in bases) {
           final baseQuality = qualityFor(base);
@@ -410,20 +408,20 @@ void main() {
     );
 
     test('replacing low with medium or medium with high never improves', () {
-      expect(qualityFor(const ['E202']), lessThan(qualityFor(const ['E322'])));
-      expect(qualityFor(const ['E102']), lessThan(qualityFor(const ['E202'])));
+      expect(qualityFor(const ['E211']), lessThan(qualityFor(const ['E322'])));
+      expect(qualityFor(const ['E102']), lessThan(qualityFor(const ['E211'])));
       expect(
-        qualityFor(const ['E202', 'E210']),
+        qualityFor(const ['E211', 'E210']),
         lessThan(qualityFor(const ['E322', 'E412'])),
       );
       expect(
         qualityFor(const ['E102', 'E110']),
-        lessThan(qualityFor(const ['E202', 'E210'])),
+        lessThan(qualityFor(const ['E211', 'E210'])),
       );
     });
 
     test('removing an eligible penalty item never worsens quality', () {
-      const codes = ['E322', 'E412', 'E200', 'E202', 'E102', 'E110'];
+      const codes = ['E322', 'E412', 'E200', 'E211', 'E102', 'E110'];
       final full = qualityFor(codes);
       for (var index = 0; index < codes.length; index += 1) {
         final reduced = [...codes]..removeAt(index);

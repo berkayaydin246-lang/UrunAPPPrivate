@@ -143,12 +143,12 @@ them. Runtime database entries remain authoritative inputs when present.
 Unknown or absent coverage remains `unknown`; this phase adds no scientific
 classification or health claim.
 
-The reviewed static catalogue supplies the missing E282 identity and aliases,
-with EFSA Journal 2014;12(7):3779 as its authority reference. It deliberately
-keeps the Etiketly risk tier `unknown`: the current methodology has no
-deterministic rule that maps an EFSA conclusion directly to low/medium/high.
-The same constraint applies to unresolved E202 and E471 catalogue risk
-conflicts; adding their specific EFSA references does not choose a tier.
+The active `ADDITIVE_RISK_METHODOLOGY_V1.md` defines the reviewed mapping from
+official evidence to an Etiketly tier. Its initial approved catalogue decisions
+assign `low` to E202, E471, and E282 under rule `L1`. E282 retains its static
+canonical identity and aliases with EFSA Journal 2014;12(7):3779 provenance.
+E202 and E471 retain their canonical identities and reconcile with matching
+database `low` values without a catalogue risk conflict.
 
 ## Compatibility
 

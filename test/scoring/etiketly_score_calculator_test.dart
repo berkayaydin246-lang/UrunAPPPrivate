@@ -404,7 +404,7 @@ void main() {
   group('deterministic explanation metadata', () {
     test('eligible additive penalty is machine-readable', () {
       final additive = const AdditiveQualityTransformer().transform(
-        assessmentForCodes(const ['E202']),
+        assessmentForCodes(const ['E211']),
       );
       final result = const EtiketlyScoreCalculator().calculate(
         nutritionQuality: syntheticNutritionQuality(80),

@@ -415,6 +415,7 @@ class ScoringBlockerReportFormatter {
       ..add('nutrition_ready=${_yesNo(report.nutritionReady)}')
       ..add('additive_ready=${_yesNo(report.additiveReady)}')
       ..add('final_score_ready=${_yesNo(report.finalScoreReady)}')
+      ..add('calculated_score=${_number(report.evaluation?.result.score)}')
       ..add('ordered_blocker_reasons=${_list(report.finalBlockers)}')
       ..add('[BLOCKER CLASSIFICATION]');
     for (var index = 0; index < report.finalBlockers.length; index++) {

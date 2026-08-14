@@ -184,6 +184,16 @@ final IngredientRiskReference _efsaE471Reference = IngredientRiskReference(
   documentCode: 'EFSA Journal 2017;15(11):5045',
 );
 
+final IngredientRiskReference
+_efsaE471FollowUpReference = IngredientRiskReference(
+  authority: 'EFSA',
+  title:
+      'Safety assessment of mono- and diglycerides of fatty acids (E 471) for infant uses and follow-up of its re-evaluation',
+  url: 'https://www.efsa.europa.eu/en/efsajournal/pub/6885',
+  accessedAt: _catalogAccessedAt,
+  documentCode: 'EFSA Journal 2021;19(11):6885',
+);
+
 final IngredientRiskReference _efsaE282Reference = IngredientRiskReference(
   authority: 'EFSA',
   title:
@@ -536,10 +546,10 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
     shortPurpose:
         'Potasyum sorbat, küf ve maya gelişimini sınırlamak için kullanılan bir koruyucudur.',
     shortRiskSummary:
-        'Mevzuatta izin verilen kullanım koşullarında değerlendirilir. Etiketly bunu katkı yoğunluğunu daha görünür kılmak için bilgi amaçlı gösterir.',
+        'Etiketly katkı riski metodolojisi v1 kapsamında düşük dikkat düzeyinde sınıflandırılır. Bu sınıflandırma ürün bazında güvenlik beyanı değildir.',
     processingRole:
         'Soslar, içecekler, unlu mamuller ve bazı sütlü ürünlerde görülebilir.',
-    riskLevel: 'medium',
+    riskLevel: 'low',
     references: [
       _efsaE202Reference,
       _commissionAdditivesOverviewReference,
@@ -562,10 +572,10 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
     shortPurpose:
         'Kalsiyum propiyonat, belirli gıdalarda küf gelişimini sınırlamak için kullanılan bir koruyucudur.',
     shortRiskSummary:
-        'Bu kimlik için Etiketly risk düzeyi, mevcut metodolojiye göre ayrıca doğrulanmadan atanmaz.',
+        'Etiketly katkı riski metodolojisi v1 kapsamında düşük dikkat düzeyinde sınıflandırılır. Bu sınıflandırma ürün bazında güvenlik beyanı değildir.',
     processingRole:
         'Fırıncılık ürünleri ve mevzuatta izin verilen diğer gıdalarda kullanılabilir.',
-    riskLevel: 'unknown',
+    riskLevel: 'low',
     references: [_efsaE282Reference],
     providesCanonicalIdentity: true,
     canonicalName: 'Kalsiyum Propiyonat',
@@ -871,12 +881,13 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
     shortPurpose:
         'Mono ve digliseritler, yağ ve su fazını daha kararlı tutmaya yardımcı olan emülgatörlerdir.',
     shortRiskSummary:
-        'Bu bileşen genellikle ürün yapısını desteklemek için kullanılır. Etiketly bunu katkı yoğunluğunu daha anlaşılır göstermek için bilgi amaçlı listeler.',
+        'Etiketly katkı riski metodolojisi v1 kapsamında düşük dikkat düzeyinde sınıflandırılır. Bu sınıflandırma ürün bazında güvenlik beyanı değildir.',
     processingRole:
         'Fırıncılık ürünleri, dondurulmuş tatlılar ve kremalı ürünlerde kullanılabilir.',
-    riskLevel: 'medium',
+    riskLevel: 'low',
     references: [
       _efsaE471Reference,
+      _efsaE471FollowUpReference,
       _commissionAdditivesOverviewReference,
       _commissionDatabaseReference(
         documentCode: 'E471',

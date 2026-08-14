@@ -44,6 +44,7 @@ void main() {
 
     expect(resolved.eCode, 'E202');
     expect(resolved.ingredientType, 'Koruyucu');
+    expect(reviewedCatalogRiskLevelForIngredient(resolved), 'low');
     expect(
       resolved.sourceReferenceEntries?.any(
         (reference) =>
@@ -62,40 +63,55 @@ void main() {
     );
   });
 
-  test('E471 aliases share one reviewed EFSA reference', () {
-    final resolved = enrichIngredientKnowledge(
-      ingredient('e471', 'Yağ asitlerinin mono- ve digliseritleri'),
-    );
-
-    expect(resolved.eCode, 'E471');
-    expect(
-      resolved.sourceReferenceEntries?.any(
-        (reference) =>
-            reference.authority == 'EFSA' &&
-            reference.documentCode == 'EFSA Journal 2017;15(11):5045',
-      ),
-      isTrue,
-    );
-  });
-
-  test('static E282 identity has aliases, authority, and no invented risk', () {
-    for (final token in const [
-      'kalsiyum propiyonat',
-      'calcium propionate',
-      'E282',
-    ]) {
-      final resolved = reviewedCanonicalIngredientIdentityForToken(token);
-
-      expect(resolved, isNotNull, reason: token);
-      expect(resolved!.eCode, 'E282', reason: token);
-      expect(resolved.riskLevel, 'unknown', reason: token);
-      expect(
-        resolved.sourceReferenceEntries?.single.documentCode,
-        'EFSA Journal 2014;12(7):3779',
-        reason: token,
+  test(
+    'E471 aliases share reviewed re-evaluation and follow-up references',
+    () {
+      final resolved = enrichIngredientKnowledge(
+        ingredient('e471', 'Yağ asitlerinin mono- ve digliseritleri'),
       );
-    }
-  });
+
+      expect(resolved.eCode, 'E471');
+      expect(reviewedCatalogRiskLevelForIngredient(resolved), 'low');
+      expect(
+        resolved.sourceReferenceEntries?.any(
+          (reference) =>
+              reference.authority == 'EFSA' &&
+              reference.documentCode == 'EFSA Journal 2017;15(11):5045',
+        ),
+        isTrue,
+      );
+      expect(
+        resolved.sourceReferenceEntries?.any(
+          (reference) =>
+              reference.authority == 'EFSA' &&
+              reference.documentCode == 'EFSA Journal 2021;19(11):6885',
+        ),
+        isTrue,
+      );
+    },
+  );
+
+  test(
+    'static E282 identity has aliases, reviewed low tier, and authority',
+    () {
+      for (final token in const [
+        'kalsiyum propiyonat',
+        'calcium propionate',
+        'E282',
+      ]) {
+        final resolved = reviewedCanonicalIngredientIdentityForToken(token);
+
+        expect(resolved, isNotNull, reason: token);
+        expect(resolved!.eCode, 'E282', reason: token);
+        expect(resolved.riskLevel, 'low', reason: token);
+        expect(
+          resolved.sourceReferenceEntries?.single.documentCode,
+          'EFSA Journal 2014;12(7):3779',
+          reason: token,
+        );
+      }
+    },
+  );
 
   test('ordinary ingredients keep E-code empty', () {
     final sugar = enrichIngredientKnowledge(ingredient('3', 'Şeker'));

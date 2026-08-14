@@ -240,7 +240,7 @@ void main() {
     ) async {
       final input = completeInput();
       final product = _productFromInput(input);
-      final assessment = assessmentForCodes(const ['E202']);
+      final assessment = assessmentForCodes(const ['E211']);
       final state = orchestrator.evaluate(
         product: product,
         canonicalAssessment: assessment,

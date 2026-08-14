@@ -65,7 +65,7 @@ void main() {
     ], _CalibrationBand.veryHigh),
     fixture('two medium preservatives', const [
       'E200',
-      'E202',
+      'E211',
     ], _CalibrationBand.high),
     fixture('two medium antioxidants', const [
       'E319',
@@ -73,19 +73,19 @@ void main() {
     ], _CalibrationBand.high),
     fixture('three medium preservatives', const [
       'E200',
-      'E202',
+      'E211',
       'E210',
     ], _CalibrationBand.mid),
     fixture('five medium additives', const [
       'E200',
-      'E202',
+      'E407',
       'E210',
       'E211',
       'E321',
     ], _CalibrationBand.mid),
     fixture('ten medium additives', const [
       'E200',
-      'E202',
+      'E407',
       'E210',
       'E211',
       'E319',
@@ -133,7 +133,7 @@ void main() {
       'E412',
       'E415',
       'E200',
-      'E202',
+      'E407',
       'E210',
       'E211',
       'E321',
@@ -148,7 +148,7 @@ void main() {
     ),
     fixture('different preservatives in same group', const [
       'E200',
-      'E202',
+      'E211',
     ], _CalibrationBand.high),
     fixture('unknown E249 only', const ['E249'], _CalibrationBand.veryHigh),
     fixture('unknown E252 only', const ['E252'], _CalibrationBand.veryHigh),
@@ -163,7 +163,7 @@ void main() {
       expectedBand: _CalibrationBand.veryHigh,
     ),
     fixture('eligible medium plus unknown gap', const [
-      'E202',
+      'E211',
       'E249',
     ], _CalibrationBand.high),
     fixture(
@@ -174,7 +174,7 @@ void main() {
     ),
     fixture(
       'beverage NNS overlap and unrelated medium',
-      const ['E955', 'E202'],
+      const ['E955', 'E211'],
       _CalibrationBand.high,
       category: ScoringCategory.beverage,
     ),
@@ -193,11 +193,11 @@ void main() {
       _CalibrationBand.high,
       category: ScoringCategory.beverage,
     ),
-    fixture('four reviewed preservatives', const [
+    fixture('four reviewed medium additives', const [
       'E200',
-      'E202',
       'E210',
       'E211',
+      'E321',
     ], _CalibrationBand.mid),
     fixture('three reviewed antioxidants', const [
       'E319',

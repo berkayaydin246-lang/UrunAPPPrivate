@@ -225,8 +225,16 @@ void main() {
       expect(riskFor('E200'), CanonicalRiskLevel.medium);
     });
 
-    test('Potassium sorbate E202 retains reviewed medium', () {
-      expect(riskFor('E202'), CanonicalRiskLevel.medium);
+    test('Potassium sorbate E202 uses accepted reviewed low', () {
+      expect(riskFor('E202'), CanonicalRiskLevel.low);
+    });
+
+    test('Calcium propionate E282 uses accepted reviewed low', () {
+      expect(riskFor('E282'), CanonicalRiskLevel.low);
+    });
+
+    test('Mono- and diglycerides E471 uses accepted reviewed low', () {
+      expect(riskFor('E471'), CanonicalRiskLevel.low);
     });
 
     test('Benzoic acid E210 retains reviewed medium', () {
@@ -239,6 +247,10 @@ void main() {
 
     test('Acesulfame K E950 retains reviewed medium', () {
       expect(riskFor('E950'), CanonicalRiskLevel.medium);
+    });
+
+    test('Guar gum E412 remains reviewed low', () {
+      expect(riskFor('E412'), CanonicalRiskLevel.low);
     });
 
     test('Aspartame E951 retains reviewed high', () {

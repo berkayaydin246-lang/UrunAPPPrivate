@@ -163,7 +163,7 @@ void main() {
         'Kalsiyum Propiyonat',
       );
       expect(result.matches.single.matchedIngredient?.eCode, 'E282');
-      expect(result.matches.single.matchedIngredient?.riskLevel, 'unknown');
+      expect(result.matches.single.matchedIngredient?.riskLevel, 'low');
       expect(result.matches.single.matchType, MatchType.exactMatch);
       expect(
         result.matches.single.matchedIngredient?.name,
@@ -180,7 +180,7 @@ void main() {
         final result = await service.matchIngredients(expectation.$1, const []);
 
         expect(result.matches.single.matchedIngredient?.eCode, 'E282');
-        expect(result.matches.single.matchedIngredient?.riskLevel, 'unknown');
+        expect(result.matches.single.matchedIngredient?.riskLevel, 'low');
         expect(result.matches.single.matchType, expectation.$2);
       }
     });

@@ -43,10 +43,13 @@ void main() {
         'additive_like_unresolved_ingredients_count=0',
         '[FINAL]',
         'final_score_ready=yes',
+        'calculated_score=',
         'ordered_blocker_reasons=none',
       ]) {
         expect(output, contains(field), reason: field);
       }
+      expect(report.evaluation?.result.score, isNotNull);
+      expect(output, isNot(contains('calculated_score=-')));
     },
   );
 

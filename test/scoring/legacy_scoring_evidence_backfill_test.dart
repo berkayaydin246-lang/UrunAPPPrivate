@@ -320,7 +320,7 @@ void main() {
     );
 
     test(
-      '7 Days recovery keeps only genuine canonical risk blockers',
+      '7 Days recovery becomes final-score-ready after reviewed risk decisions',
       () async {
         const ingredients =
             'un, çilek parçaları (%4), çilek püresi (%1,5), şeker, '
@@ -340,25 +340,9 @@ void main() {
 
         expect(result.evidence!.fvlEvidence.percentage, 5.5);
         expect(result.fvlReady, isTrue);
-        expect(result.additiveReady, isFalse);
-        expect(result.finalScoreReady, isFalse);
-        expect(
-          result.blockerReasons,
-          contains('canonical_additive_incomplete'),
-        );
-        expect(
-          result.blockerReasons,
-          contains('canonical_additive_risk_conflict'),
-        );
-        expect(
-          result.blockerReasons,
-          contains('canonical_additive_unknown_risk'),
-        );
-        expect(
-          result.blockerReasons,
-          isNot(contains('canonical_additive_unresolved')),
-        );
-        expect(result.blockerReasons, isNot(contains('fvl_unknown')));
+        expect(result.additiveReady, isTrue);
+        expect(result.finalScoreReady, isTrue);
+        expect(result.blockerReasons, isEmpty);
       },
     );
 
@@ -697,7 +681,7 @@ List<Ingredient> _functionalChildCatalogue() {
       id: 'e471',
       name: 'Mono ve Digliseritler',
       normalizedName: 'mono ve digliseritler',
-      risk: 'medium',
+      risk: 'low',
       eCode: 'E471',
       group: 'emülgatör',
     ),
@@ -705,7 +689,7 @@ List<Ingredient> _functionalChildCatalogue() {
       id: 'e282',
       name: 'Kalsiyum Propiyonat',
       normalizedName: 'kalsiyum propiyonat',
-      risk: 'unknown',
+      risk: 'low',
       eCode: 'E282',
       group: 'koruyucu',
     ),
@@ -713,7 +697,7 @@ List<Ingredient> _functionalChildCatalogue() {
       id: 'e202',
       name: 'Potasyum Sorbat',
       normalizedName: 'potasyum sorbat',
-      risk: 'medium',
+      risk: 'low',
       eCode: 'E202',
       group: 'koruyucu',
     ),
@@ -738,20 +722,6 @@ List<Ingredient> _functionalChildCatalogue() {
 
 List<Ingredient> _sevenDaysCatalogueWithoutE282() => _functionalChildCatalogue()
     .where((ingredient) => ingredient.eCode != 'E282')
-    .map(
-      (ingredient) => ingredient.eCode == 'E202' || ingredient.eCode == 'E471'
-          ? Ingredient(
-              id: ingredient.id,
-              name: ingredient.name,
-              normalizedName: ingredient.normalizedName,
-              eCode: ingredient.eCode,
-              additiveGroup: ingredient.additiveGroup,
-              riskLevel: 'low',
-              createdAt: ingredient.createdAt,
-              updatedAt: ingredient.updatedAt,
-            )
-          : ingredient,
-    )
     .toList(growable: false);
 
 LegacyStagingScoringEvidence _staging({

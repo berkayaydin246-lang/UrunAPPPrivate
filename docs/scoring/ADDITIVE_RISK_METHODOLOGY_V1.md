@@ -1,13 +1,16 @@
-# Etiketly Additive Risk Methodology V1 Proposal
+# Etiketly Additive Risk Methodology V1
 
-- Status: **proposal only**
+- Status: **active**
 - Evidence cut-off: **2026-08-14**
-- Runtime/catalogue effect: **none**
+- Initial reviewed catalogue adoption: **E202, E471, and E282**
 
-This document proposes a deterministic method for assigning the canonical
-Etiketly additive tiers `low`, `medium`, `high`, and `unknown`. It does not
-change any catalogue row, score formula, additive-quality penalty, nutrition
-methodology, or final-score weight.
+This document defines the deterministic method for assigning the canonical
+Etiketly additive tiers `low`, `medium`, `high`, and `unknown`. A tier may enter
+runtime scoring only through an explicitly reviewed catalogue entry that
+records applicable authoritative evidence and the matching rule below. The
+methodology itself does not automatically reclassify catalogue rows and does
+not change any score formula, additive-quality penalty, nutrition methodology,
+or final-score weight.
 
 ## 1. Why This Methodology Is Needed
 
@@ -24,9 +27,10 @@ the scientific classification step:
 - `CanonicalIngredientRiskService` applies the reconciliation policy. It does
   not interpret EFSA, European Commission, JECFA, or IARC findings.
 
-Consequently, the current catalogue's tier labels cannot be reproduced from a
-documented evidence-to-tier rule. The conflicts for E202 and E471, and the
-unknown tier for E282, are valid fail-closed outcomes of that omission.
+Before this methodology was adopted, the catalogue's tier labels could not be
+reproduced from a documented evidence-to-tier rule. The earlier conflicts for
+E202 and E471, and the earlier unknown tier for E282, were valid fail-closed
+outcomes of that omission.
 
 ## 2. Meaning Of An Etiketly Tier
 
@@ -212,11 +216,11 @@ Confidence must not raise or lower the tier. Record it separately:
 | `medium` | Exact identity and a usable official assessment exist, but it is older, group/read-across based, or a bounded uncertainty remains without changing the tier rule. |
 | `low` | The tier relies mainly on JECFA or indirect official evidence because no applicable EFSA assessment exists. A second review is mandatory. |
 
-## 7. Proposed Application To E202, E471, And E282
+## 7. Initial Reviewed Application To E202, E471, And E282
 
-These are report-only outcomes. They are not catalogue changes.
+These three outcomes are the first approved catalogue decisions under v1.
 
-### E202 - potassium sorbate: proposed `low`
+### E202 - potassium sorbate: `low`
 
 **Primary evidence**
 
@@ -239,7 +243,7 @@ These are report-only outcomes. They are not catalogue changes.
 - Provenance: EFSA DOI `10.2903/j.efsa.2019.5625`; Commission Regulation (EU)
   2024/2597.
 
-### E471 - mono- and diglycerides of fatty acids: proposed `low`
+### E471 - mono- and diglycerides of fatty acids: `low`
 
 **Primary evidence**
 
@@ -269,7 +273,7 @@ These are report-only outcomes. They are not catalogue changes.
 - Provenance: EFSA DOI `10.2903/j.efsa.2017.5045`, EFSA DOI
   `10.2903/j.efsa.2021.6885`; Commission Regulation (EU) 2023/1428.
 
-### E282 - calcium propionate: proposed `low`
+### E282 - calcium propionate: `low`
 
 **Primary evidence**
 
@@ -293,7 +297,7 @@ These are report-only outcomes. They are not catalogue changes.
   some toxicology-database limitations, but those limitations did not prevent
   the official conclusion.
 - Confidence: `medium` because the dedicated E282 evidence is group-based and
-  dates to 2014, not because the proposed tier is uncertain.
+  dates to 2014, not because the assigned tier is uncertain.
 - Provenance: EFSA DOI `10.2903/j.efsa.2014.3779`; corroborating scope context
   in EFSA DOI `10.2903/j.efsa.2016.4546`.
 
@@ -303,7 +307,7 @@ The sample was selected before assigning the target outcomes and spans the
 current static catalogue's low, medium, and high tiers. It deliberately excludes
 E202, E471, and E282.
 
-| Additive | Current | Proposal | Rule | Official evidence test | Result |
+| Additive | Current | Methodology outcome | Rule | Official evidence test | Result |
 | --- | --- | --- | --- | --- | --- |
 | E322 lecithins | low | **low** | `L1` | EFSA 2017 found no need for a numerical ADI/no concern; the 2020 infant and follow-up opinion found no concern up to the infant-formula MPL and supported specification updates. | agree |
 | E412 guar gum | low | **medium** | `M3` | EFSA 2024 retained the general assessment but found submitted data insufficient to demonstrate safety for specified infant/young-child food categories. | **disagree** |
@@ -316,14 +320,16 @@ E202, E471, and E282.
 | E110 Sunset Yellow | high | **high** | `H4` | EFSA 2014 established a permanent ADI of 4 mg/kg bw/day with exposure below it; EU Annex V nevertheless requires the child activity/attention warning. | agree |
 | E250 sodium nitrite | high | **high** | `H3` | EFSA 2017 found slight high-percentile ADI exceedance in children, evidence linking dietary nitrite with some cancers, and nitrosamine uncertainty; IARC classifies ingested nitrite under endogenous-nitrosation conditions as Group 2A, and EU 2023/2108 reduced permitted additions to minimize nitrosamines. | agree |
 
-Outcome: **8 agreements and 2 disagreements**. The proposed method is not a
+Outcome: **8 agreements and 2 disagreements**. The method is not a
 mechanism for preserving all existing tiers. It identifies E412 as understated
 and E951 as overstated under one common rule set, while independently placing
-the three 7 Days additives in `low`.
+the three 7 Days additives in `low`. The E412 and E951 sanity findings are not
+reviewed catalogue assignments; both entries remain unchanged until a separate
+catalogue review explicitly approves them.
 
 ## 9. Effect On The 7 Days Case
 
-Current read-only diagnostics for `7 Days Çilekli Kruvasan 60 G`
+The pre-adoption read-only diagnostics for `7 Days Çilekli Kruvasan 60 G`
 (`16dc5dac-4f37-4072-8e98-c2556ff76adf`) show:
 
 - source-backed FVL is 5.5%;
@@ -334,21 +340,20 @@ Current read-only diagnostics for `7 Days Çilekli Kruvasan 60 G`
 - the remaining blockers are canonical additive incompleteness, risk conflict,
   and unknown risk.
 
-If this proposal were separately approved and then applied consistently to all
-canonical sources, E202, E471, and E282 would each be `low`. The two conflicts
-and E282 unknown would disappear. With the already verified evidence unchanged,
-the product would become `final_score_ready`.
-
-That is a conditional impact statement, not a current runtime result. This
-methodology task does not alter the database, reviewed catalogue, evidence,
-snapshot, or product score.
+The initial reviewed catalogue adoption assigns `low` to E202, E471, and E282.
+When the database E202/E471 values are also `low`, canonical reconciliation has
+no risk mismatch; E282 resolves from the reviewed local identity. With the
+already verified product evidence unchanged, the in-memory scoring path becomes
+`final_score_ready`. This adoption does not write database rows or rewrite
+historical evidence, snapshots, or product scores.
 
 ## 10. Required Review Workflow Before Any Catalogue Change
 
 1. A reviewer records the evidence fields in Section 3 and identifies the
    latest applicable scope.
 2. The reviewer applies rule IDs in order and records the first result.
-3. A second reviewer repeats the decision without seeing the proposed tier.
+3. A second reviewer repeats the decision without seeing the first reviewer's
+   tier.
 4. Disagreement about facts or scope yields `unknown` until resolved; reviewers
    must not average tiers.
 5. A catalogue change must update every reconciled source atomically or stage
@@ -393,9 +398,11 @@ snapshot, or product score.
 - [IARC Monographs Volume 94: ingested nitrate and nitrite](https://publications.iarc.who.int/Book-And-Report-Series/Iarc-Monographs-On-The-Identification-Of-Carcinogenic-Hazards-To-Humans/Ingested-Nitrate-And-Nitrite-And-Cyanobacterial-Peptide-Toxins-2010)
 - [Commission Regulation (EU) 2023/2108, nitrite/nitrate controls](https://eur-lex.europa.eu/eli/reg/2023/2108/oj/eng)
 
-## 12. Proposal Boundary
+## 12. Active Methodology Boundary
 
-Approval of this document would approve only the classification methodology.
-Actual tier changes require a separate reviewed catalogue patch, conflict-safe
-deployment plan, regression tests, and score/audit impact report. Historical
-audit snapshots must remain immutable.
+This methodology is active, but it never changes a tier by implication. Every
+runtime tier requires a separate reviewed catalogue decision, conflict-safe
+deployment plan, regression tests, and score/audit impact report. The initial
+approved decisions are limited to E202, E471, and E282. In particular, the E412
+and E951 sanity-sample outcomes above do not change their current catalogue
+tiers. Historical audit snapshots must remain immutable.

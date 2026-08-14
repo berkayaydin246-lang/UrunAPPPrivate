@@ -37,7 +37,7 @@ class _WeightCandidate {
 const _profiles = <_AdditiveProfile>[
   _AdditiveProfile(name: 'no eligible additives', codes: []),
   _AdditiveProfile(name: 'one reviewed low', codes: ['E322']),
-  _AdditiveProfile(name: 'one reviewed medium', codes: ['E202']),
+  _AdditiveProfile(name: 'one reviewed medium', codes: ['E211']),
   _AdditiveProfile(name: 'one reviewed high', codes: ['E102']),
   _AdditiveProfile(name: 'two reviewed high', codes: ['E102', 'E110']),
   _AdditiveProfile(

@@ -139,8 +139,12 @@ void main() {
       ]);
 
       expect(result.canonicalAdditives, hasLength(1));
-      expect(result.canonicalAdditives.single.eCode, 'E471');
-      expect(result.canonicalAdditives.single.occurrenceCount, 2);
+      final item = result.canonicalAdditives.single;
+      expect(item.eCode, 'E471');
+      expect(item.occurrenceCount, 2);
+      expect(item.riskLevel, CanonicalRiskLevel.low);
+      expect(item.conflicts, isEmpty);
+      expect(result.conflicts, isEmpty);
     });
 
     test('different additives in the same group remain separate', () {
@@ -297,7 +301,7 @@ void main() {
       final potassiumSorbate = _ingredient(
         id: 'e202',
         name: 'Potasyum sorbat',
-        risk: 'medium',
+        risk: 'low',
         eCode: 'E202',
         additiveGroup: 'koruyucu',
       );
@@ -307,7 +311,12 @@ void main() {
 
       expect(result.outOfScopeFlavouringEvidence, isEmpty);
       expect(result.canonicalAdditives, hasLength(1));
-      expect(result.canonicalAdditives.single.eCode, 'E202');
+      final item = result.canonicalAdditives.single;
+      expect(item.eCode, 'E202');
+      expect(item.riskLevel, CanonicalRiskLevel.low);
+      expect(item.riskSource, CanonicalRiskSource.consistentCatalogues);
+      expect(item.conflicts, isEmpty);
+      expect(result.conflicts, isEmpty);
     });
 
     test(

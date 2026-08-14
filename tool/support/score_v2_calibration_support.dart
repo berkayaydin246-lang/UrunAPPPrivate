@@ -99,7 +99,7 @@ const scoreV2CalibrationFixtures = <ScoreV2CalibrationFixture>[
     fiber: 8,
     fvl: 60,
     additives: [
-      ScoreV2CalibrationAdditive('E202', 'medium'),
+      ScoreV2CalibrationAdditive('E202', 'low'),
       ScoreV2CalibrationAdditive('E322', 'low'),
     ],
   ),
@@ -114,7 +114,7 @@ const scoreV2CalibrationFixtures = <ScoreV2CalibrationFixture>[
     protein: 10,
     fiber: 9.4,
     additives: [
-      ScoreV2CalibrationAdditive('E202', 'medium'),
+      ScoreV2CalibrationAdditive('E202', 'low'),
       ScoreV2CalibrationAdditive('E322', 'low'),
     ],
   ),
@@ -129,7 +129,7 @@ const scoreV2CalibrationFixtures = <ScoreV2CalibrationFixture>[
     protein: 4,
     fiber: 1,
     additives: [
-      ScoreV2CalibrationAdditive('E202', 'medium'),
+      ScoreV2CalibrationAdditive('E202', 'low'),
       ScoreV2CalibrationAdditive('E322', 'low'),
     ],
   ),
@@ -138,7 +138,7 @@ const scoreV2CalibrationFixtures = <ScoreV2CalibrationFixture>[
     category: ScoringCategory.generalFood,
     sugars: 52,
     additives: [
-      ScoreV2CalibrationAdditive('E202', 'medium'),
+      ScoreV2CalibrationAdditive('E202', 'low'),
       ScoreV2CalibrationAdditive('E322', 'low'),
     ],
   ),
@@ -149,7 +149,7 @@ const scoreV2CalibrationFixtures = <ScoreV2CalibrationFixture>[
     totalFat: 20,
     saturatedFat: 10.1,
     additives: [
-      ScoreV2CalibrationAdditive('E202', 'medium'),
+      ScoreV2CalibrationAdditive('E202', 'low'),
       ScoreV2CalibrationAdditive('E322', 'low'),
     ],
   ),
@@ -243,7 +243,7 @@ const scoreV2CalibrationFixtures = <ScoreV2CalibrationFixture>[
     protein: 8,
     fiber: 6,
     fvl: 80,
-    additives: [ScoreV2CalibrationAdditive('E202', 'medium')],
+    additives: [ScoreV2CalibrationAdditive('E202', 'low')],
   ),
   ScoreV2CalibrationFixture(
     name: 'K chips',
@@ -269,7 +269,7 @@ const scoreV2CalibrationFixtures = <ScoreV2CalibrationFixture>[
     fiber: 2,
     additives: [
       ScoreV2CalibrationAdditive('E322', 'low'),
-      ScoreV2CalibrationAdditive('E471', 'medium'),
+      ScoreV2CalibrationAdditive('E471', 'low'),
     ],
   ),
   ScoreV2CalibrationFixture(
@@ -332,7 +332,7 @@ const scoreV2CalibrationFixtures = <ScoreV2CalibrationFixture>[
     energyKj: 190,
     sugars: 11,
     nnsPresent: true,
-    additives: [ScoreV2CalibrationAdditive('E202', 'medium')],
+    additives: [ScoreV2CalibrationAdditive('E202', 'low')],
   ),
 ];
 

@@ -264,7 +264,7 @@ const _fixtures = <_EndToEndFixture>[
     salt: 0.5,
     protein: 5,
     fiber: 3,
-    additiveCodes: ['E202', 'E321'],
+    additiveCodes: ['E211', 'E321'],
   ),
   _EndToEndFixture(
     name: 'two high additives',
@@ -286,7 +286,7 @@ const _fixtures = <_EndToEndFixture>[
     salt: 0.5,
     protein: 5,
     fiber: 3,
-    additiveCodes: ['E322', 'E202', 'E102'],
+    additiveCodes: ['E322', 'E211', 'E102'],
   ),
   _EndToEndFixture(
     name: 'simple additive-free food',

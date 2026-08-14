@@ -146,7 +146,7 @@ void main() {
     final result = results['B tarhana-like one major salt negative']!;
     expect(result.rawResult.saltPoints, greaterThanOrEqualTo(10));
     expect(result.nutritionQualityV2, inInclusiveRange(65, 69));
-    expect(result.additiveQuality, inInclusiveRange(85, 90));
+    expect(result.additiveQuality, closeTo(96.5, 0.0000001));
     expect(result.finalV2, inInclusiveRange(70, 74));
     expect(
       result.finalV2,
