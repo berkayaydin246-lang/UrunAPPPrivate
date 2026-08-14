@@ -62,6 +62,39 @@ CREATE POLICY "admins can update products"
   USING (public.is_freshscan_admin())
   WITH CHECK (public.is_freshscan_admin());
 
+-- Restore the ACL contract from 20260626010000 without replacing any function
+-- body. Production inspection found direct anon EXECUTE drift on these four
+-- guarded admin functions.
+REVOKE ALL ON FUNCTION public.is_freshscan_admin() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.is_freshscan_admin() FROM anon;
+GRANT EXECUTE ON FUNCTION public.is_freshscan_admin()
+  TO authenticated, service_role, postgres;
+
+REVOKE ALL ON FUNCTION public.admin_get_product_report(UUID) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.admin_get_product_report(UUID) FROM anon;
+GRANT EXECUTE ON FUNCTION public.admin_get_product_report(UUID)
+  TO authenticated, service_role, postgres;
+
+REVOKE ALL ON FUNCTION public.admin_list_product_reports(
+  TEXT, INTEGER, TIMESTAMPTZ, UUID
+) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.admin_list_product_reports(
+  TEXT, INTEGER, TIMESTAMPTZ, UUID
+) FROM anon;
+GRANT EXECUTE ON FUNCTION public.admin_list_product_reports(
+  TEXT, INTEGER, TIMESTAMPTZ, UUID
+) TO authenticated, service_role, postgres;
+
+REVOKE ALL ON FUNCTION public.admin_update_product_report(
+  UUID, TEXT, TEXT
+) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.admin_update_product_report(
+  UUID, TEXT, TEXT
+) FROM anon;
+GRANT EXECUTE ON FUNCTION public.admin_update_product_report(
+  UUID, TEXT, TEXT
+) TO authenticated, service_role, postgres;
+
 -- The function body remains unchanged. Restrict invocation to the roles that
 -- are admitted by its service-role/admin authorization gate.
 REVOKE EXECUTE ON FUNCTION public.record_product_score_audit_snapshot(

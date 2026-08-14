@@ -203,6 +203,57 @@ void main() {
     );
   });
 
+  test('release RLS repairs historical admin RPC execute ACL drift', () {
+    final migration = File(
+      'supabase/migrations/20260814010000_restrict_product_catalogue_writes.sql',
+    ).readAsStringSync();
+    const functions = <String>[
+      'public.is_freshscan_admin()',
+      'public.admin_get_product_report(UUID)',
+      'public.admin_list_product_reports(\n'
+          '  TEXT, INTEGER, TIMESTAMPTZ, UUID\n'
+          ')',
+      'public.admin_update_product_report(\n  UUID, TEXT, TEXT\n)',
+    ];
+
+    for (final function in functions) {
+      final escapedFunction = RegExp.escape(function);
+      expect(
+        migration,
+        matches(RegExp('REVOKE ALL ON FUNCTION $escapedFunction FROM PUBLIC;')),
+        reason: function,
+      );
+      expect(
+        migration,
+        matches(
+          RegExp('REVOKE EXECUTE ON FUNCTION $escapedFunction FROM anon;'),
+        ),
+        reason: function,
+      );
+      expect(
+        migration,
+        matches(
+          RegExp(
+            'GRANT EXECUTE ON FUNCTION $escapedFunction\\s+'
+            'TO authenticated, service_role, postgres;',
+          ),
+        ),
+        reason: function,
+      );
+    }
+
+    expect(
+      migration,
+      isNot(contains('CREATE OR REPLACE FUNCTION')),
+      reason: 'ACL repair must not replace historical or scoring RPC bodies',
+    );
+    expect(
+      migration,
+      isNot(contains('get_current_product_score_audit_snapshot')),
+      reason: 'audit read RPC must remain unchanged',
+    );
+  });
+
   test('RLS rollout preflight documents runtime and ACL invariants', () {
     final rollout = File(
       'docs/scoring/PRODUCT_CATALOGUE_RLS_ROLLOUT.md',
@@ -225,6 +276,11 @@ void main() {
     expect(rollout, contains('anon=false'));
     expect(rollout, contains('authenticated=true'));
     expect(rollout, contains('service_role=true'));
+    expect(rollout, contains('PUBLIC=false'));
+    expect(rollout, contains('anon=true'));
+    expect(rollout, contains('Post-migration ACL state required'));
+    expect(rollout, contains('SECURITY INVOKER'));
+    expect(rollout, contains('SECURITY DEFINER'));
     expect(rollout, contains('20260626010000'));
     expect(rollout, contains('supabase migration repair'));
     expect(rollout, contains('manual insert'));

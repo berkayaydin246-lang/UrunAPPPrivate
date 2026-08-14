@@ -52,6 +52,27 @@ the write RPC, revokes `PUBLIC` as defense in depth, and preserves EXECUTE for
 `authenticated`, `service_role`, and `postgres`. It does not change the write
 RPC body or any access to the audit read RPC.
 
+Production also has verified direct `anon` EXECUTE drift on the four historical
+admin functions listed below. Their definitions and internal authorization
+gates match the reviewed repository migration, so this known pre-migration ACL
+state is accepted only for this controlled remediation. The pending migration
+revokes `PUBLIC` and `anon`, restores EXECUTE for `authenticated`,
+`service_role`, and `postgres`, and does not replace any function body.
+
+Pre-migration ACL state accepted by this rollout:
+
+| Function | PUBLIC | anon | authenticated | service_role | postgres |
+| --- | --- | --- | --- | --- | --- |
+| `is_freshscan_admin()` | false | true | true | true | true |
+| `admin_get_product_report(uuid)` | false | true | true | true | true |
+| `admin_list_product_reports(text,integer,timestamptz,uuid)` | false | true | true | true | true |
+| `admin_update_product_report(uuid,text,text)` | false | true | true | true | true |
+| `record_product_score_audit_snapshot(uuid,text,integer,text,text,text,text,text,jsonb)` | false | true | true | true | true |
+
+Post-migration ACL state required for all five functions is `PUBLIC=false`,
+`anon=false`, `authenticated=true`, `service_role=true`, and `postgres=true`.
+The audit read RPC is outside this ACL repair and remains unchanged.
+
 ## Historical Migration Drift
 
 Production migration history does not contain `20260626010000`, and that row
@@ -153,6 +174,63 @@ SELECT
     'EXECUTE'
   ) AS authenticated_can_check_admin;
 
+WITH expected(signature, security_definer, volatility) AS (
+  VALUES
+    ('public.is_freshscan_admin()', false, 's'),
+    ('public.admin_get_product_report(uuid)', true, 'v'),
+    (
+      'public.admin_list_product_reports(text,integer,timestamptz,uuid)',
+      true,
+      'v'
+    ),
+    ('public.admin_update_product_report(uuid,text,text)', true, 'v')
+), definitions AS (
+  SELECT
+    expected.signature,
+    expected.security_definer,
+    expected.volatility,
+    p.prosecdef AS actual_security_definer,
+    p.provolatile::TEXT AS actual_volatility,
+    p.proconfig,
+    pg_get_functiondef(p.oid) AS body
+  FROM expected
+  LEFT JOIN pg_proc p ON p.oid = to_regprocedure(expected.signature)
+)
+SELECT
+  signature,
+  body IS NOT NULL AS function_exists,
+  actual_security_definer = security_definer AS security_mode_matches,
+  actual_volatility = volatility AS volatility_matches,
+  'search_path=public, pg_temp' = ANY (proconfig) AS fixed_search_path,
+  position('is_freshscan_admin()' IN body) > 0
+    OR signature = 'public.is_freshscan_admin()' AS has_or_is_admin_gate,
+  position('not_authorized' IN body) > 0
+    OR signature = 'public.is_freshscan_admin()' AS rejects_or_is_admin_gate,
+  CASE
+    WHEN signature = 'public.is_freshscan_admin()' THEN
+      position('auth.uid() IS NOT NULL' IN body) > 0
+      AND position('app_metadata' IN body) > 0
+      AND position('= ''admin''' IN body) > 0
+    ELSE position('IF NOT public.is_freshscan_admin()' IN body) > 0
+  END AS trusted_gate_matches,
+  CASE signature
+    WHEN 'public.is_freshscan_admin()' THEN true
+    WHEN 'public.admin_get_product_report(uuid)' THEN
+      position('IF NOT public.is_freshscan_admin()' IN body) > 0
+      AND position('IF NOT public.is_freshscan_admin()' IN body)
+        < position('SELECT jsonb_build_object(' IN body)
+    WHEN 'public.admin_list_product_reports(text,integer,timestamptz,uuid)' THEN
+      position('IF NOT public.is_freshscan_admin()' IN body) > 0
+      AND position('IF NOT public.is_freshscan_admin()' IN body)
+        < position('SELECT COALESCE(' IN body)
+    WHEN 'public.admin_update_product_report(uuid,text,text)' THEN
+      position('IF NOT public.is_freshscan_admin()' IN body) > 0
+      AND position('IF NOT public.is_freshscan_admin()' IN body)
+        < position('SELECT status' IN body)
+  END AS gate_precedes_privileged_work
+FROM definitions
+ORDER BY signature;
+
 WITH definition AS (
   SELECT pg_get_functiondef(
     'public.record_product_score_audit_snapshot(uuid,text,integer,text,text,text,text,text,jsonb)'::regprocedure
@@ -175,17 +253,40 @@ SELECT
     AS audit_rpc_uses_additive_transform_v1
 FROM definition;
 
-WITH roles(role_name) AS (
-  VALUES ('anon'), ('authenticated'), ('service_role'), ('postgres')
+WITH functions(function_name, signature) AS (
+  VALUES
+    ('admin gate', 'public.is_freshscan_admin()'),
+    ('admin get', 'public.admin_get_product_report(uuid)'),
+    (
+      'admin list',
+      'public.admin_list_product_reports(text,integer,timestamptz,uuid)'
+    ),
+    (
+      'admin update',
+      'public.admin_update_product_report(uuid,text,text)'
+    ),
+    (
+      'audit write',
+      'public.record_product_score_audit_snapshot(uuid,text,integer,text,text,text,text,text,jsonb)'
+    )
+), roles(role_name) AS (
+  VALUES ('PUBLIC'), ('anon'), ('authenticated'), ('service_role'), ('postgres')
 )
 SELECT
+  function_name,
   role_name,
-  has_function_privilege(
-    role_name,
-    'public.record_product_score_audit_snapshot(uuid,text,integer,text,text,text,text,text,jsonb)',
-    'EXECUTE'
-  ) AS can_execute_audit_write_rpc
-FROM roles;
+  CASE
+    WHEN role_name = 'PUBLIC' THEN EXISTS (
+      SELECT 1
+      FROM aclexplode(COALESCE(p.proacl, acldefault('f', p.proowner))) acl
+      WHERE acl.grantee = 0 AND acl.privilege_type = 'EXECUTE'
+    )
+    ELSE has_function_privilege(role_name, p.oid, 'EXECUTE')
+  END AS can_execute
+FROM functions
+JOIN pg_proc p ON p.oid = to_regprocedure(signature)
+CROSS JOIN roles
+ORDER BY function_name, role_name;
 
 SELECT
   to_regprocedure('public.is_freshscan_admin()') AS admin_gate,
@@ -211,14 +312,16 @@ ROLLBACK;
 SQL
 ```
 
-All independent body markers must be true. Before remediation the expected
-write-RPC EXECUTE matrix is `true/true/true/true` for
-`anon/authenticated/service_role/postgres`; the direct anon grant is the known
-drift corrected by this migration. Abort if a runtime admin function is absent,
-the gate/grant is invalid, no intended admin is provisioned, paired product
-policies differ, or any policy outside the six reviewed names exists. The
-documented history-row result is expected to be false and is not a blocker when
-the runtime dependencies pass.
+All independent body and historical-function definition markers must be true.
+For each of the four historical admin functions and the audit write RPC, the
+accepted pre-migration EXECUTE matrix is `PUBLIC=false`, `anon=true`,
+`authenticated=true`, `service_role=true`, and `postgres=true`. The direct anon
+grants are known drift corrected by this migration and are not a preflight stop
+condition while the reviewed definitions and internal gates match. Abort if a
+runtime admin function is absent, a definition/gate is invalid, no intended
+admin is provisioned, paired product policies differ, or any policy outside the
+six reviewed names exists. The documented history-row result is expected to be
+false and is not a blocker when the runtime dependencies pass; do not repair it.
 
 ## Controlled Apply
 
@@ -288,6 +391,41 @@ SELECT
     'EXECUTE'
   ) AS auth_can_call_audit_read_rpc;
 
+WITH functions(function_name, signature) AS (
+  VALUES
+    ('admin gate', 'public.is_freshscan_admin()'),
+    ('admin get', 'public.admin_get_product_report(uuid)'),
+    (
+      'admin list',
+      'public.admin_list_product_reports(text,integer,timestamptz,uuid)'
+    ),
+    (
+      'admin update',
+      'public.admin_update_product_report(uuid,text,text)'
+    ),
+    (
+      'audit write',
+      'public.record_product_score_audit_snapshot(uuid,text,integer,text,text,text,text,text,jsonb)'
+    )
+), roles(role_name) AS (
+  VALUES ('PUBLIC'), ('anon'), ('authenticated'), ('service_role'), ('postgres')
+)
+SELECT
+  function_name,
+  role_name,
+  CASE
+    WHEN role_name = 'PUBLIC' THEN EXISTS (
+      SELECT 1
+      FROM aclexplode(COALESCE(p.proacl, acldefault('f', p.proowner))) acl
+      WHERE acl.grantee = 0 AND acl.privilege_type = 'EXECUTE'
+    )
+    ELSE has_function_privilege(role_name, p.oid, 'EXECUTE')
+  END AS can_execute
+FROM functions
+JOIN pg_proc p ON p.oid = to_regprocedure(signature)
+CROSS JOIN roles
+ORDER BY function_name, role_name;
+
 ROLLBACK;
 SQL
 ```
@@ -299,7 +437,18 @@ authenticated INSERT/UPDATE table privileges are true but restricted by the
 admin-only RLS predicates; service-role INSERT/UPDATE are true. Direct audit
 table privileges remain false. Audit write RPC execution must be
 `anon=false`, `authenticated=true`, and `service_role=true`; audit read RPC
-execution remains true for both anon and authenticated.
+execution remains true for both anon and authenticated. For all five functions
+in the ACL matrix, execution must be `PUBLIC=false`, `anon=false`,
+`authenticated=true`, `service_role=true`, and `postgres=true`.
+
+The historical function definitions must remain unchanged after migration:
+
+- `is_freshscan_admin()` is `SECURITY INVOKER`, `STABLE`, has fixed
+  `search_path = public, pg_temp`, and checks the trusted JWT
+  `app_metadata.role = admin` claim with a non-null `auth.uid()`.
+- The three admin report RPCs are `SECURITY DEFINER`, have the same fixed
+  search path, and perform the admin gate before any privileged SELECT or
+  UPDATE operation.
 
 Then perform these application checks without creating arbitrary production
 data:
