@@ -13,6 +13,7 @@ import 'package:food_analyzer_app/features/product/models/product_review.dart';
 import 'package:food_analyzer_app/features/product/product_page.dart';
 import 'package:food_analyzer_app/features/product/repositories/product_repository.dart';
 import 'package:food_analyzer_app/features/scoring/application/product_etiketly_score_orchestrator.dart';
+import 'package:food_analyzer_app/features/scoring/application/product_score_audit_evaluator.dart';
 import 'package:food_analyzer_app/features/scoring/controllers/product_etiketly_score_controller.dart';
 import 'package:food_analyzer_app/features/scoring/data/score_audit_snapshot_repository.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/etiketly_score_audit_snapshot.dart';
@@ -65,6 +66,113 @@ void main() {
           findsOneWidget,
         );
         expect(repository.getAllIngredientsCalls, 1);
+      },
+    );
+
+    testWidgets(
+      'ordinary unmatched food with matching audit displays numeric score',
+      (tester) async {
+        final product = _productFromInput(
+          completeInput(),
+          ingredientsText: 'Pirinç unu',
+        );
+        final catalogue = [_ordinaryIngredient()];
+        final repository = _FakeProductRepository(
+          product: product,
+          allIngredients: catalogue,
+        );
+        final audit = await const ProductScoreAuditEvaluator().evaluate(
+          product,
+          catalogue,
+        );
+
+        expect(audit.additiveReady, isTrue);
+        expect(audit.finalScoreReady, isTrue);
+        await _pumpProductScreen(
+          tester,
+          repository,
+          auditSnapshot: audit.snapshot,
+        );
+
+        expect(
+          find.byKey(const ValueKey('etiketly-score-calculated')),
+          findsOneWidget,
+        );
+        expect(
+          find.byKey(const ValueKey('etiketly-score-value')),
+          findsOneWidget,
+        );
+        expect(repository.getAllIngredientsCalls, 1);
+      },
+    );
+
+    testWidgets('unresolved E-code still blocks Product Detail score', (
+      tester,
+    ) async {
+      final product = _productFromInput(
+        completeInput(),
+        ingredientsText: 'E9999',
+      );
+      final catalogue = [_ordinaryIngredient()];
+      final repository = _FakeProductRepository(
+        product: product,
+        allIngredients: catalogue,
+      );
+      final audit = await const ProductScoreAuditEvaluator().evaluate(
+        product,
+        catalogue,
+      );
+
+      expect(audit.additiveReady, isFalse);
+      expect(audit.finalScoreReady, isFalse);
+      await _pumpProductScreen(tester, repository);
+
+      _expectUnavailableWithoutNumber();
+      expect(
+        find.text('Bazı katkı maddeleri henüz doğrulanmamış.'),
+        findsOneWidget,
+      );
+    });
+
+    test(
+      'score provider assessment and audit evaluator build matching snapshots',
+      () async {
+        final product = _productFromInput(
+          completeInput(),
+          ingredientsText: 'Pirinç unu',
+        );
+        final catalogue = [_ordinaryIngredient()];
+        final repository = _FakeProductRepository(
+          product: product,
+          allIngredients: catalogue,
+        );
+        final container = ProviderContainer(
+          overrides: [productRepositoryProvider.overrideWithValue(repository)],
+        );
+        addTearDown(container.dispose);
+
+        final providerAssessment = await container.read(
+          productScoringAdditiveAssessmentProvider(product.id).future,
+        );
+        final providerEvaluation = orchestrator.calculate(
+          product: product,
+          canonicalAssessment: providerAssessment,
+        )!;
+        final providerSnapshot = const EtiketlyScoreAuditSnapshotBuilder()
+            .build(product: product, evaluation: providerEvaluation);
+        final auditEvaluation = await const ProductScoreAuditEvaluator()
+            .evaluate(product, catalogue);
+
+        expect(providerEvaluation.isCalculated, isTrue);
+        expect(auditEvaluation.finalScoreReady, isTrue);
+        expect(
+          providerSnapshot.finalScore,
+          auditEvaluation.snapshot!.finalScore,
+        );
+        expect(
+          providerSnapshot.inputFingerprint,
+          auditEvaluation.snapshot!.inputFingerprint,
+        );
       },
     );
 
@@ -396,13 +504,16 @@ int _calculateExpected(
       .futureDisplayScore!;
 }
 
-Product _productFromInput(EtiketlyScoringInput input) {
+Product _productFromInput(
+  EtiketlyScoringInput input, {
+  String ingredientsText = 'Yulaf ezmesi',
+}) {
   final now = DateTime.utc(2026, 8, 8);
   return Product(
     id: 'score-product',
     name: 'Yulaflı Test Ürünü',
     brand: 'Etiketly Test',
-    ingredientsText: 'Yulaf ezmesi',
+    ingredientsText: ingredientsText,
     nutritionText: jsonEncode(const {
       'energy_kcal': 100,
       'fat': 8,

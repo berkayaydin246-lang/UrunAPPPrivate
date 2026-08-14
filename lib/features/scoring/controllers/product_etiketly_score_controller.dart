@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:food_analyzer_app/features/analysis/models/canonical_additive_assessment.dart';
+import 'package:food_analyzer_app/features/analysis/services/canonical_ingredient_risk_service.dart';
 import 'package:food_analyzer_app/features/product/controllers/product_analysis_controller.dart';
 import 'package:food_analyzer_app/features/product/controllers/product_detail_controller.dart';
 import 'package:food_analyzer_app/features/scoring/application/product_etiketly_score_orchestrator.dart';
@@ -25,6 +27,23 @@ final etiketlyPublicScoreAuditGateProvider = Provider(
   (_) => const EtiketlyPublicScoreAuditGate(),
 );
 
+final productScoringAdditiveAssessmentProvider =
+    FutureProvider.family<CanonicalAdditiveAssessment?, String>((
+      ref,
+      productId,
+    ) async {
+      final matchingData = await ref.watch(
+        productIngredientMatchingProvider(productId).future,
+      );
+      if (matchingData == null || matchingData.matchingResult.matches.isEmpty) {
+        return null;
+      }
+      return const CanonicalIngredientRiskService().assessForScoring(
+        matchingData.matchingResult,
+        scoringCategory: matchingData.scoringCategory,
+      );
+    });
+
 final productEtiketlyScoreProvider =
     FutureProvider.family<ProductEtiketlyScoreState, String>((
       ref,
@@ -33,8 +52,8 @@ final productEtiketlyScoreProvider =
       final detailFuture = ref.watch(
         productDetailByIdProvider(productId).future,
       );
-      final analysisFuture = ref.watch(
-        productAnalysisProvider(productId).future,
+      final scoringAssessmentFuture = ref.watch(
+        productScoringAdditiveAssessmentProvider(productId).future,
       );
       final orchestrator = ref.watch(productEtiketlyScoreOrchestratorProvider);
       final auditRepository = ref.watch(scoreAuditSnapshotRepositoryProvider);
@@ -46,11 +65,11 @@ final productEtiketlyScoreProvider =
 
       try {
         final detail = await detailFuture;
-        final analysis = await analysisFuture;
+        final scoringAssessment = await scoringAssessmentFuture;
         final product = detail.product!;
         final evaluation = orchestrator.calculate(
           product: product,
-          canonicalAssessment: analysis?.additiveAssessment,
+          canonicalAssessment: scoringAssessment,
         );
         if (evaluation == null) {
           return presentationMapper.missingCanonicalAssessment();
