@@ -4,8 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:food_analyzer_app/core/services/supabase_service.dart';
 import 'package:food_analyzer_app/features/product/models/product.dart';
 import 'package:food_analyzer_app/features/product/models/nutrition_data.dart';
-import 'package:food_analyzer_app/features/scoring/application/product_score_audit_capture_service.dart';
+import 'package:food_analyzer_app/features/scoring/application/product_scoring_lifecycle.dart';
 import 'package:food_analyzer_app/features/scoring/data/score_audit_snapshot_repository.dart';
+import 'package:food_analyzer_app/features/scoring/data/product_scoring_lifecycle_data_source.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_evidence_snapshot.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/scoring_evidence_merger.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/scoring_evidence_nutrition_consistency.dart';
@@ -19,13 +20,22 @@ enum ApproveProductResult {
   alreadyProcessed, // submission is not pending
 }
 
+class ApproveProductSubmissionOutcome {
+  const ApproveProductSubmissionOutcome({required this.result, this.scoring});
+
+  final ApproveProductResult result;
+  final ProductScoringLifecycleResult? scoring;
+}
+
 class ProductSubmissionApprovalRepository {
   const ProductSubmissionApprovalRepository({
-    ProductScoreAuditCapture scoreAuditCapture =
-        const ProductScoreAuditCaptureService(),
-  }) : _scoreAuditCapture = scoreAuditCapture;
+    ProductScoringLifecycleService scoringLifecycle =
+        const ProductScoringLifecycleService(
+          dataSource: SupabaseProductScoringLifecycleDataSource(),
+        ),
+  }) : _scoringLifecycle = scoringLifecycle;
 
-  final ProductScoreAuditCapture _scoreAuditCapture;
+  final ProductScoringLifecycleService _scoringLifecycle;
 
   // ── read ──────────────────────────────────────────────────────────────────
 
@@ -60,7 +70,7 @@ class ProductSubmissionApprovalRepository {
   ///
   /// Pass [editedProductName], [editedBrand], [editedIngredientsText] to let
   /// the admin override extracted values before approval.
-  Future<ApproveProductResult> approveProductSubmission(
+  Future<ApproveProductSubmissionOutcome> approveProductSubmission(
     String submissionId, {
     String? editedProductName,
     String? editedBrand,
@@ -86,7 +96,9 @@ class ProductSubmissionApprovalRepository {
 
     if (row == null) {
       _debugSubmissionApprovalLog('[Approval] submission not found');
-      return ApproveProductResult.notFound;
+      return const ApproveProductSubmissionOutcome(
+        result: ApproveProductResult.notFound,
+      );
     }
 
     final submission = ProductSubmission.fromJson(row);
@@ -98,7 +110,9 @@ class ProductSubmissionApprovalRepository {
       _debugSubmissionApprovalLog(
         '[Approval] submission already processed (status=${submission.status})',
       );
-      return ApproveProductResult.alreadyProcessed;
+      return const ApproveProductSubmissionOutcome(
+        result: ApproveProductResult.alreadyProcessed,
+      );
     }
 
     final barcode = submission.barcode.trim();
@@ -106,7 +120,9 @@ class ProductSubmissionApprovalRepository {
       _debugSubmissionApprovalLog(
         '[Approval] barcode is empty — cannot approve',
       );
-      return ApproveProductResult.invalidBarcode;
+      return const ApproveProductSubmissionOutcome(
+        result: ApproveProductResult.invalidBarcode,
+      );
     }
 
     final rawScoringEvidence =
@@ -227,7 +243,7 @@ class ProductSubmissionApprovalRepository {
         'Approved product could not be reloaded for score audit.',
       );
     }
-    await _scoreAuditCapture.captureCurrent(
+    final scoring = await _scoringLifecycle.processCurrent(
       savedProductId,
       triggerSource: ScoreAuditTriggerSource.submissionApproval,
     );
@@ -244,7 +260,7 @@ class ProductSubmissionApprovalRepository {
       '[Approval] submission status update succeeded — result=$result',
     );
 
-    return result;
+    return ApproveProductSubmissionOutcome(result: result, scoring: scoring);
   }
 
   // ── rejection ─────────────────────────────────────────────────────────────

@@ -98,9 +98,9 @@ class SubmissionReviewNotifier extends StateNotifier<SubmissionReviewState> {
   Future<String?> createProductDraft(UserSubmission submission) async {
     state = state.copyWith(isDraftCreating: true, clearDraftCreateError: true);
     try {
-      final productId = await _draftRepo.createDraftFromSubmission(submission);
+      final result = await _draftRepo.createDraftFromSubmission(submission);
       state = state.copyWith(isDraftCreating: false);
-      return productId;
+      return result.productId;
     } on DuplicateBarcodeException {
       state = state.copyWith(
         isDraftCreating: false,

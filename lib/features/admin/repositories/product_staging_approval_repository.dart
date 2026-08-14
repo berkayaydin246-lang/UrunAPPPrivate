@@ -5,8 +5,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:food_analyzer_app/core/services/supabase_service.dart';
 import 'package:food_analyzer_app/features/product/models/product.dart';
 import 'package:food_analyzer_app/features/product_staging/models/product_candidate.dart';
-import 'package:food_analyzer_app/features/scoring/application/product_score_audit_capture_service.dart';
+import 'package:food_analyzer_app/features/scoring/application/legacy_scoring_evidence_recovery.dart';
+import 'package:food_analyzer_app/features/scoring/application/product_scoring_lifecycle.dart';
 import 'package:food_analyzer_app/features/scoring/data/score_audit_snapshot_repository.dart';
+import 'package:food_analyzer_app/features/scoring/data/product_scoring_lifecycle_data_source.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/scoring_evidence_merger.dart';
 
 /// Outcome of approving a staged product.
@@ -41,6 +43,13 @@ extension ApproveStagedResultX on ApproveStagedResult {
       this == ApproveStagedResult.updatedExisting;
 }
 
+class ApproveStagedProductOutcome {
+  const ApproveStagedProductOutcome({required this.result, this.scoring});
+
+  final ApproveStagedResult result;
+  final ProductScoringLifecycleResult? scoring;
+}
+
 /// Edited field overrides an admin may supply before approving a staged product.
 class StagingApprovalEdits {
   final String? name;
@@ -65,11 +74,17 @@ class StagingApprovalEdits {
 /// manual data is preserved); it only fills gaps.
 class ProductStagingApprovalRepository {
   const ProductStagingApprovalRepository({
-    ProductScoreAuditCapture scoreAuditCapture =
-        const ProductScoreAuditCaptureService(),
-  }) : _scoreAuditCapture = scoreAuditCapture;
+    ProductScoringLifecycleService scoringLifecycle =
+        const ProductScoringLifecycleService(
+          dataSource: SupabaseProductScoringLifecycleDataSource(),
+        ),
+    LegacyScoringEvidenceRecoveryService evidenceRecovery =
+        const LegacyScoringEvidenceRecoveryService(),
+  }) : _scoringLifecycle = scoringLifecycle,
+       _evidenceRecovery = evidenceRecovery;
 
-  final ProductScoreAuditCapture _scoreAuditCapture;
+  final ProductScoringLifecycleService _scoringLifecycle;
+  final LegacyScoringEvidenceRecoveryService _evidenceRecovery;
 
   static const String _stagingTable = 'product_staging';
   static const String _productsTable = 'products';
@@ -225,7 +240,7 @@ class ProductStagingApprovalRepository {
 
   /// Approve a staged product: create or enrich a `products` row by barcode,
   /// then flip the staging row to `approved`.
-  Future<ApproveStagedResult> approveStagedProduct(
+  Future<ApproveStagedProductOutcome> approveStagedProduct(
     String stagingId, {
     StagingApprovalEdits edits = const StagingApprovalEdits(),
   }) async {
@@ -239,7 +254,9 @@ class ProductStagingApprovalRepository {
         .maybeSingle();
     if (row == null) {
       _debugStagingApprovalLog('[Staging] not found');
-      return ApproveStagedResult.notFound;
+      return const ApproveStagedProductOutcome(
+        result: ApproveStagedResult.notFound,
+      );
     }
 
     final candidate = ProductCandidate.fromJson(row);
@@ -247,7 +264,9 @@ class ProductStagingApprovalRepository {
       _debugStagingApprovalLog(
         '[Staging] already processed (status=${candidate.status})',
       );
-      return ApproveStagedResult.alreadyProcessed;
+      return const ApproveStagedProductOutcome(
+        result: ApproveStagedResult.alreadyProcessed,
+      );
     }
 
     // Auto-reject: products with neither ingredients nor nutrition have no
@@ -271,7 +290,9 @@ class ProductStagingApprovalRepository {
           '[Staging] auto-reject update failed — ${e.message}',
         );
       }
-      return ApproveStagedResult.autoRejectedNoAnalysisData;
+      return const ApproveStagedProductOutcome(
+        result: ApproveStagedResult.autoRejectedNoAnalysisData,
+      );
     }
 
     // Eligibility: barcode present → always OK; barcode absent → only for
@@ -279,7 +300,7 @@ class ProductStagingApprovalRepository {
     final block = approvalBlockReason(candidate, edits);
     if (block != null) {
       _debugStagingApprovalLog('[Staging] approval blocked — reason=$block');
-      return block;
+      return ApproveStagedProductOutcome(result: block);
     }
 
     final barcode = candidate.barcode?.trim();
@@ -324,17 +345,34 @@ class ProductStagingApprovalRepository {
         'Approved product could not be reloaded for score audit.',
       );
     }
-    await _scoreAuditCapture.captureCurrent(
+    final scoring = await _scoringLifecycle.processCurrent(
       savedProductId,
       triggerSource: ScoreAuditTriggerSource.stagingApproval,
+      evidenceResolver: candidate.scoringEvidence != null
+          ? null
+          : (product, catalogue) async {
+              final recovery = await _evidenceRecovery.recoverEvidence(
+                product: product,
+                stagingMatches: [_legacyEvidence(candidate, stagingId)],
+                ingredientCatalogue: catalogue,
+              );
+              return ProductScoringEvidenceResolution(
+                evidence: recovery.evidence,
+                blockerReasons: recovery.blockerReasons,
+              );
+            },
     );
 
-    return _finalizeStagingApproval(
+    final approvalResult = await _finalizeStagingApproval(
       client,
       stagingId,
       candidate,
       edits,
       result,
+    );
+    return ApproveStagedProductOutcome(
+      result: approvalResult,
+      scoring: scoring,
     );
   }
 
@@ -612,6 +650,31 @@ class ProductStagingApprovalRepository {
 
   static Map<String, dynamic>? _entryList(String key, List<String>? value) =>
       (value != null && value.isNotEmpty) ? {key: value} : null;
+
+  static LegacyStagingScoringEvidence _legacyEvidence(
+    ProductCandidate candidate,
+    String stagingId,
+  ) {
+    final payload = candidate.rawSourcePayload ?? const <String, dynamic>{};
+    final warnings = payload['nutrition_warnings'];
+    return LegacyStagingScoringEvidence(
+      id: candidate.id ?? stagingId,
+      sourceUrl: candidate.sourceUrl?.trim() ?? '',
+      nutritionBasis: payload['nutrition_basis'] as String?,
+      nutritionWarnings: warnings is List
+          ? warnings.map((value) => value.toString())
+          : const [],
+      nutritionProductState: payload['nutrition_product_state'] as String?,
+      source: candidate.source,
+      ingredientsSource: candidate.ingredientsSource,
+      ingredientsRaw: payload['ingredients_raw'] as String?,
+      ingredientsText: candidate.ingredientsText,
+      ingredientsQuality: payload['ingredients_quality'] as String?,
+      nutritionSource: candidate.nutritionSource,
+      nutritionStrategy: payload['nutrition_strategy'] as String?,
+      nutritionJson: candidate.nutritionJson,
+    );
+  }
 }
 
 void _debugStagingApprovalLog(String message) {

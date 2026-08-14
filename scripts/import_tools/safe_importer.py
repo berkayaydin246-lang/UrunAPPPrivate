@@ -3,7 +3,7 @@ Safe Supabase Importer
 - Dry-run mode
 - Batch processing
 - Idempotent upserts
-- No service_role key required
+- Service-role authentication required for catalogue writes
 - Matches actual schema
 """
 
@@ -14,6 +14,15 @@ from dataclasses import dataclass
 from supabase import create_client, Client
 from dotenv import load_dotenv
 import time
+
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from product_import.scoring_lifecycle_bridge import (  # noqa: E402
+    print_scoring_lifecycle_result,
+    run_product_scoring_lifecycle,
+)
 
 load_dotenv()
 
@@ -51,11 +60,14 @@ class SafeSupabaseImporter:
         
         if not dry_run:
             supabase_url = os.getenv('SUPABASE_URL')
-            supabase_key = os.getenv('SUPABASE_ANON_KEY')
+            supabase_key = (
+                os.getenv('SUPABASE_SERVICE_ROLE_KEY')
+                or os.getenv('SUPABASE_SERVICE_KEY')
+            )
             
             if not supabase_url or not supabase_key:
                 raise ValueError(
-                    "SUPABASE_URL and SUPABASE_ANON_KEY must be set in .env file"
+                    "SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set"
                 )
             
             self.supabase: Client = create_client(supabase_url, supabase_key)
@@ -220,6 +232,9 @@ class SafeSupabaseImporter:
                     .update(product)\
                     .eq('id', product_id)\
                     .execute()
+
+                scoring = run_product_scoring_lifecycle(product_id, 'catalogue_change')
+                print_scoring_lifecycle_result(product_id, scoring)
                 
                 self.stats.products_updated += 1
                 return product_id
@@ -228,9 +243,13 @@ class SafeSupabaseImporter:
                 result = self.supabase.table('products')\
                     .insert(product)\
                     .execute()
-                
+
+                product_id = result.data[0]['id']
+                scoring = run_product_scoring_lifecycle(product_id, 'catalogue_change')
+                print_scoring_lifecycle_result(product_id, scoring)
+
                 self.stats.products_new += 1
-                return result.data[0]['id']
+                return product_id
                 
         except Exception as e:
             error_msg = f"Product {barcode}: {e}"

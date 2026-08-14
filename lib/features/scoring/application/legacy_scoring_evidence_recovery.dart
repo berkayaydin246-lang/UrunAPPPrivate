@@ -173,6 +173,38 @@ class LegacyScoringEvidenceRecoveryService {
     required Product product,
     required List<LegacyStagingScoringEvidence> stagingMatches,
     required List<Ingredient> ingredientCatalogue,
+  }) {
+    return _recover(
+      product: product,
+      stagingMatches: stagingMatches,
+      ingredientCatalogue: ingredientCatalogue,
+      evaluateScoreReadiness: true,
+    );
+  }
+
+  /// Recovers trusted evidence without running the score calculation.
+  ///
+  /// Production ingestion uses this method and delegates the only readiness,
+  /// canonical additive, score, and fingerprint calculation to the lifecycle's
+  /// [ProductScoreAuditEvaluator]. Backfill diagnostics retain [recover].
+  Future<LegacyScoringEvidenceRecoveryResult> recoverEvidence({
+    required Product product,
+    required List<LegacyStagingScoringEvidence> stagingMatches,
+    required List<Ingredient> ingredientCatalogue,
+  }) {
+    return _recover(
+      product: product,
+      stagingMatches: stagingMatches,
+      ingredientCatalogue: ingredientCatalogue,
+      evaluateScoreReadiness: false,
+    );
+  }
+
+  Future<LegacyScoringEvidenceRecoveryResult> _recover({
+    required Product product,
+    required List<LegacyStagingScoringEvidence> stagingMatches,
+    required List<Ingredient> ingredientCatalogue,
+    required bool evaluateScoreReadiness,
   }) async {
     if (stagingMatches.isEmpty) {
       return _blocked('missing_staging_match');
@@ -328,6 +360,24 @@ class LegacyScoringEvidenceRecoveryService {
       blockers.add('nns_unknown');
     }
     if (!ingredientsComplete) blockers.add('ingredients_incomplete');
+
+    if (!evaluateScoreReadiness) {
+      return LegacyScoringEvidenceRecoveryResult(
+        stagingMatch: true,
+        explicitPer100: true,
+        basisReady: recoveredBasis != NutritionBasis.unknown,
+        nutritionComplete: _nutritionComplete(nutrition),
+        classificationReady: classificationReady,
+        fvlReady: fvl.isReady,
+        nnsReady:
+            resolvedCategory != ScoringCategory.beverage || nnsEvidence.isKnown,
+        additiveReady: false,
+        finalScoreReady: false,
+        blockerReasons: (blockers.toList()..sort()),
+        evidence: evidence,
+        selectedStagingId: staging.id,
+      );
+    }
 
     final temporaryProduct = _withEvidence(product, evidence);
     final tokens = matcher.parseIngredients(product.ingredientsText ?? '');

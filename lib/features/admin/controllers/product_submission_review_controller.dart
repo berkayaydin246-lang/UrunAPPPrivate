@@ -69,7 +69,7 @@ class ProductSubmissionReviewNotifier
   }) async {
     state = state.copyWith(isProcessing: true, clearError: true);
     try {
-      final result = await _repo.approveProductSubmission(
+      final outcome = await _repo.approveProductSubmission(
         submissionId,
         editedProductName: editedProductName,
         editedBrand: editedBrand,
@@ -78,6 +78,7 @@ class ProductSubmissionReviewNotifier
         nutritionWasReviewed: nutritionWasReviewed,
         reviewedScoringEvidence: reviewedScoringEvidence,
       );
+      final result = outcome.result;
       _removeFromList(submissionId);
       state = state.copyWith(isProcessing: false);
       return result;

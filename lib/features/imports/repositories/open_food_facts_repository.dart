@@ -8,22 +8,38 @@ import 'package:food_analyzer_app/features/imports/services/normalizer.dart';
 import 'package:food_analyzer_app/features/imports/services/open_food_facts_service.dart';
 import 'package:food_analyzer_app/features/imports/services/product_name_normalizer.dart';
 import 'package:food_analyzer_app/features/product/models/product.dart';
+import 'package:food_analyzer_app/features/scoring/application/product_scoring_lifecycle.dart';
+import 'package:food_analyzer_app/features/scoring/data/product_scoring_lifecycle_data_source.dart';
+import 'package:food_analyzer_app/features/scoring/data/score_audit_snapshot_repository.dart';
 import 'package:food_analyzer_app/features/search/services/product_category_classifier.dart';
 
-/// Repository that fetches from Open Food Facts and persists new products to
-/// the local database, preventing duplicate imports.
+/// Repository that reads Open Food Facts and permits canonical catalogue
+/// enrichment only for trusted admins.
 class OpenFoodFactsRepository {
   final OpenFoodFactsService _service;
+  final ProductScoringLifecycleService _scoringLifecycle;
+  final Future<bool> Function() _canManageCatalogue;
 
-  OpenFoodFactsRepository([OpenFoodFactsService? service])
-    : _service = service ?? OpenFoodFactsService();
+  OpenFoodFactsRepository([
+    OpenFoodFactsService? service,
+    ProductScoringLifecycleService? scoringLifecycle,
+    Future<bool> Function()? canManageCatalogue,
+  ]) : _service = service ?? OpenFoodFactsService(),
+       _scoringLifecycle =
+           scoringLifecycle ??
+           const ProductScoringLifecycleService(
+             dataSource: SupabaseProductScoringLifecycleDataSource(),
+           ),
+       _canManageCatalogue =
+           canManageCatalogue ?? _currentUserCanManageCatalogue;
 
-  /// Fetch a product by barcode, persisting it to the local DB when new.
+  /// Fetch a product by barcode, enriching an existing row only for admins.
   ///
   /// Priority order:
-  ///   1. Existing local product with the same barcode → return as-is.
-  ///   2. OFF fetch → check for a name+brand merge candidate → update + return.
-  ///   3. OFF fetch → no merge candidate → insert new imported product.
+  ///   1. Existing local product with the same barcode -> return as-is.
+  ///   2. Admin + incomplete local product -> enrich through the lifecycle.
+  ///   3. Admin + OFF name/brand match -> attach the barcode.
+  ///   4. Otherwise return null so the caller can show a read-only preview.
   ///
   /// Returns null when OFF has no data for the barcode.
   /// Throws [OffNetworkException] on connectivity failures.
@@ -55,7 +71,18 @@ class OpenFoodFactsRepository {
           local.ingredientsText!.trim().isEmpty;
       final missingNutrition = local.nutritionText == null;
       if (missingImage || missingIngredients || missingNutrition) {
-        final enriched = await _enrichFromOff(
+        // Canonical catalogue enrichment is a trusted admin operation. Regular
+        // users still receive the existing local row and can use OFF previews.
+        if (!await _canManageCatalogue()) {
+          return OffImportResult(
+            product: local,
+            source: OffImportSource.existingLocal,
+            isLimitedData:
+                local.imageUrl == null &&
+                (local.ingredientsText?.trim().isEmpty ?? true),
+          );
+        }
+        final enrichment = await _enrichFromOff(
           client: client,
           local: local,
           barcode: barcode,
@@ -63,12 +90,14 @@ class OpenFoodFactsRepository {
           missingIngredients: missingIngredients,
           missingNutrition: missingNutrition,
         );
+        final enriched = enrichment.product;
         return OffImportResult(
           product: enriched,
           source: OffImportSource.existingLocal,
           isLimitedData:
               enriched.imageUrl == null &&
               (enriched.ingredientsText?.trim().isEmpty ?? true),
+          scoring: enrichment.scoring,
         );
       }
       return OffImportResult(
@@ -104,6 +133,12 @@ class OpenFoodFactsRepository {
 
     final isLimitedData =
         ingredientsText.trim().isEmpty && off.imageUrl == null;
+
+    // Name/brand barcode merges also mutate the canonical catalogue. Keep the
+    // public barcode flow read-only unless the current user is an admin.
+    if (!await _canManageCatalogue()) {
+      return null;
+    }
 
     // 4. Merge heuristic — look for an existing product with the same
     // normalized name + brand but no barcode yet.
@@ -176,7 +211,8 @@ class OpenFoodFactsRepository {
 
   /// Fetch from OFF and patch only the missing fields on an existing product.
   /// Never called for verified products. Returns the (possibly unchanged) product.
-  Future<Product> _enrichFromOff({
+  Future<({Product product, ProductScoringLifecycleResult? scoring})>
+  _enrichFromOff({
     required dynamic client,
     required Product local,
     required String barcode,
@@ -186,7 +222,7 @@ class OpenFoodFactsRepository {
   }) async {
     try {
       final off = await _service.fetchProductByBarcode(barcode);
-      if (off == null) return local;
+      if (off == null) return (product: local, scoring: null);
 
       final patch = <String, dynamic>{};
 
@@ -217,7 +253,7 @@ class OpenFoodFactsRepository {
       // not yet exist, which would silently discard the nutrition update above.
       // Keywords/tags are updated separately via _tryUpdateMetadata below.
 
-      if (patch.isEmpty) return local;
+      if (patch.isEmpty) return (product: local, scoring: null);
 
       final updated = await client
           .from('products')
@@ -256,10 +292,20 @@ class OpenFoodFactsRepository {
         );
       }
 
-      return result;
+      final scoringRelevant =
+          patch.containsKey('ingredients_text') ||
+          patch.containsKey('nutrition_text') ||
+          (local.searchKeywords == null || local.searchKeywords!.isEmpty);
+      final scoring = scoringRelevant
+          ? await _scoringLifecycle.processCurrent(
+              local.id,
+              triggerSource: ScoreAuditTriggerSource.catalogueChange,
+            )
+          : null;
+      return (product: result, scoring: scoring);
     } catch (_) {
       // Enrichment is best-effort; return the local product unchanged on error.
-      return local;
+      return (product: local, scoring: null);
     }
   }
 
@@ -287,6 +333,15 @@ class OpenFoodFactsRepository {
     } catch (_) {
       // Silently ignore: column may not exist in all environments.
     }
+  }
+}
+
+Future<bool> _currentUserCanManageCatalogue() async {
+  try {
+    final result = await SupabaseService.client.rpc('is_freshscan_admin');
+    return result == true;
+  } catch (_) {
+    return false;
   }
 }
 

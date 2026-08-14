@@ -61,7 +61,8 @@ class ProductStagingReviewNotifier
   }) async {
     state = state.copyWith(isProcessing: true, clearError: true);
     try {
-      final result = await _repo.approveStagedProduct(stagingId, edits: edits);
+      final outcome = await _repo.approveStagedProduct(stagingId, edits: edits);
+      final result = outcome.result;
       // Only drop the row from the queue when staging was actually marked
       // approved. If the staging update failed (productSavedStagingFailed), the
       // row is still pending and must remain visible.

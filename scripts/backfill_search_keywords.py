@@ -35,6 +35,11 @@ except ImportError:
     print("ERROR: 'requests' package is required. Install with: pip install requests", file=sys.stderr)
     sys.exit(1)
 
+from product_import.scoring_lifecycle_bridge import (
+    print_scoring_lifecycle_result,
+    run_product_scoring_lifecycle,
+)
+
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "").rstrip("/")
 SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
 
@@ -373,6 +378,8 @@ def patch_product(product_id: str, patch: dict[str, Any]) -> None:
     url = f"{SUPABASE_URL}/rest/v1/products?id=eq.{product_id}"
     resp = requests.patch(url, headers=HEADERS, json=patch, timeout=30)
     resp.raise_for_status()
+    scoring = run_product_scoring_lifecycle(product_id, "catalogue_change")
+    print_scoring_lifecycle_result(product_id, scoring)
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────

@@ -55,10 +55,12 @@ Create `.env` file:
 
 ```bash
 SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=your_anon_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
 ```
 
-**Important:** Only `SUPABASE_ANON_KEY` is needed (no service_role key required).
+**Important:** Real catalogue imports require a service-role key. Keep it only
+in a trusted operator environment; never place it in Flutter/client config or
+commit it. Dry-run mode does not connect or write.
 
 ### 3. Transform Ingredients
 
@@ -264,11 +266,12 @@ python upload_products.py --limit 100   # Then 100
 python upload_products.py --real        # Finally, all
 ```
 
-### No Service Role Key
+### Trusted Catalogue Credentials
 
-All scripts use `SUPABASE_ANON_KEY` only.
-
-Row-level security (RLS) policies control access.
+`safe_importer.py` and `upload_products.py` require
+`SUPABASE_SERVICE_ROLE_KEY` (or the legacy `SUPABASE_SERVICE_KEY`) for real
+catalogue writes. Anonymous credentials cannot write `products`. Both tools run
+the centralized Dart scoring lifecycle after each product insert/update.
 
 ---
 

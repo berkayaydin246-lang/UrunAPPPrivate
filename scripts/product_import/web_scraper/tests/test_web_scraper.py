@@ -19,6 +19,7 @@ _HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(os.path.dirname(_HERE)))
 
 import fix_migros_product_images_only as migros_image_fix  # noqa: E402
+from scoring_lifecycle_bridge import run_product_scoring_lifecycle  # noqa: E402
 from web_scraper import (  # noqa: E402
     extractors,
     image_scoring,
@@ -35,6 +36,44 @@ from web_scraper.source_adapters.migros_adapter import (  # noqa: E402
     _extract_dynamic_brands,
     _render_template,
 )
+
+
+class ScoringLifecycleBridgeTest(unittest.TestCase):
+    @patch("scoring_lifecycle_bridge.subprocess.run")
+    def test_bridge_passes_only_identity_and_trigger_to_dart(self, run_mock):
+        run_mock.return_value = MagicMock(
+            returncode=0,
+            stdout="final_score_ready=true\naudit_status=inserted\n",
+            stderr="",
+        )
+        environment = {
+            "SUPABASE_URL": "https://abcdefghijklmnopqrst.supabase.co",
+            "SUPABASE_SERVICE_ROLE_KEY": "never-print-this-secret",
+        }
+
+        with patch.dict(os.environ, environment, clear=True):
+            result = run_product_scoring_lifecycle(
+                "16dc5dac-4f37-4072-8e98-c2556ff76adf",
+                "staging_approval",
+            )
+
+        self.assertTrue(result.succeeded)
+        command = run_mock.call_args.args[0]
+        self.assertIn("tool/product_scoring_lifecycle.dart", command)
+        self.assertIn("staging_approval", command)
+        self.assertNotIn(environment["SUPABASE_SERVICE_ROLE_KEY"], command)
+
+    @patch("scoring_lifecycle_bridge.subprocess.run")
+    def test_bridge_fails_closed_without_service_environment(self, run_mock):
+        with patch.dict(os.environ, {}, clear=True):
+            result = run_product_scoring_lifecycle(
+                "16dc5dac-4f37-4072-8e98-c2556ff76adf",
+                "catalogue_change",
+            )
+
+        self.assertFalse(result.succeeded)
+        self.assertEqual(result.error, "missing_scoring_lifecycle_environment")
+        run_mock.assert_not_called()
 
 
 class NutritionParserTest(unittest.TestCase):

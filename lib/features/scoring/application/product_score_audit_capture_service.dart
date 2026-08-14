@@ -1,6 +1,8 @@
 import 'package:food_analyzer_app/features/product/repositories/product_repository.dart';
+import 'package:food_analyzer_app/features/scoring/application/product_scoring_lifecycle.dart';
 import 'package:food_analyzer_app/features/scoring/application/product_score_audit_evaluator.dart';
 import 'package:food_analyzer_app/features/scoring/data/score_audit_snapshot_repository.dart';
+import 'package:food_analyzer_app/features/scoring/data/product_scoring_lifecycle_data_source.dart';
 
 enum ProductScoreAuditCaptureStatus { inserted, duplicate, notScoringReady }
 
@@ -19,46 +21,43 @@ abstract interface class ProductScoreAuditCapture {
 }
 
 class ProductScoreAuditCaptureService implements ProductScoreAuditCapture {
-  const ProductScoreAuditCaptureService({
-    this.productRepository = const ProductRepository(),
-    this.auditRepository = const SupabaseScoreAuditSnapshotRepository(),
-    this.evaluator = const ProductScoreAuditEvaluator(),
-  });
+  ProductScoreAuditCaptureService({
+    ProductRepository productRepository = const ProductRepository(),
+    ScoreAuditSnapshotRepository auditRepository =
+        const SupabaseScoreAuditSnapshotRepository(),
+    ProductScoreAuditEvaluator evaluator = const ProductScoreAuditEvaluator(),
+  }) : _lifecycle = ProductScoringLifecycleService(
+         dataSource: SupabaseProductScoringLifecycleDataSource(
+           productRepository: productRepository,
+           auditRepository: auditRepository,
+         ),
+         evaluator: evaluator,
+       );
 
-  final ProductRepository productRepository;
-  final ScoreAuditSnapshotRepository auditRepository;
-  final ProductScoreAuditEvaluator evaluator;
+  final ProductScoringLifecycleService _lifecycle;
 
   @override
   Future<ProductScoreAuditCaptureResult> captureCurrent(
     String productId, {
     required ScoreAuditTriggerSource triggerSource,
   }) async {
-    final product = await productRepository.getProductById(productId);
-    if (product == null ||
-        product.scoringEvidence == null ||
-        (product.ingredientsText?.trim().isEmpty ?? true)) {
-      return const ProductScoreAuditCaptureResult(
-        status: ProductScoreAuditCaptureStatus.notScoringReady,
-      );
-    }
-    final catalogue = await productRepository.getAllIngredients();
-    final evaluation = await evaluator.evaluate(product, catalogue);
-    final snapshot = evaluation.snapshot;
-    if (snapshot == null) {
-      return const ProductScoreAuditCaptureResult(
-        status: ProductScoreAuditCaptureStatus.notScoringReady,
-      );
-    }
-    final write = await auditRepository.insertTrusted(
-      snapshot,
+    final result = await _lifecycle.processCurrent(
+      productId,
       triggerSource: triggerSource,
     );
+    if (result.auditStatus == ProductScoringAuditStatus.failed) {
+      throw StateError(result.failureType ?? 'score audit capture failed');
+    }
+    if (!result.finalScoreReady) {
+      return const ProductScoreAuditCaptureResult(
+        status: ProductScoreAuditCaptureStatus.notScoringReady,
+      );
+    }
     return ProductScoreAuditCaptureResult(
-      status: write.inserted
+      status: result.auditStatus == ProductScoringAuditStatus.inserted
           ? ProductScoreAuditCaptureStatus.inserted
           : ProductScoreAuditCaptureStatus.duplicate,
-      snapshotId: write.snapshotId,
+      snapshotId: result.snapshotId,
     );
   }
 }

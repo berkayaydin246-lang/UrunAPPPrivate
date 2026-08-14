@@ -1,27 +1,8 @@
 import 'package:food_analyzer_app/core/services/supabase_service.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/etiketly_score_audit_snapshot.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/score_audit_write.dart';
 
-enum ScoreAuditTriggerSource {
-  submissionApproval('submission_approval'),
-  stagingApproval('staging_approval'),
-  verifiedCorrection('verified_correction'),
-  catalogueChange('catalogue_change'),
-  controlledBackfill('controlled_backfill');
-
-  const ScoreAuditTriggerSource(this.databaseValue);
-
-  final String databaseValue;
-}
-
-class ScoreAuditSnapshotWriteResult {
-  const ScoreAuditSnapshotWriteResult({
-    required this.snapshotId,
-    required this.inserted,
-  });
-
-  final String snapshotId;
-  final bool inserted;
-}
+export 'package:food_analyzer_app/features/scoring/domain/models/score_audit_write.dart';
 
 abstract interface class ScoreAuditSnapshotRepository {
   Future<EtiketlyScoreAuditSnapshot?> fetchMatching(

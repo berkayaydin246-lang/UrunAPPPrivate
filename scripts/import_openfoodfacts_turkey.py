@@ -30,6 +30,11 @@ except ImportError:
     print("ERROR: 'requests' is required. Install with: pip install requests", file=sys.stderr)
     sys.exit(1)
 
+from product_import.scoring_lifecycle_bridge import (
+    print_scoring_lifecycle_result,
+    run_product_scoring_lifecycle,
+)
+
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "").rstrip("/")
 SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_KEY", "")
 
@@ -400,6 +405,8 @@ def upsert_product(product: dict[str, Any], *, dry_run: bool, backfill_existing:
             timeout=30,
         )
         resp.raise_for_status()
+        scoring = run_product_scoring_lifecycle(product_id, "catalogue_change")
+        print_scoring_lifecycle_result(product_id, scoring)
         return ("update", product_id)
 
     resp = requests.post(
@@ -409,7 +416,20 @@ def upsert_product(product: dict[str, Any], *, dry_run: bool, backfill_existing:
         timeout=30,
     )
     resp.raise_for_status()
-    return ("insert", barcode)
+    created = requests.get(
+        f"{SUPABASE_URL}/rest/v1/products",
+        headers=HEADERS,
+        params={"select": "id", "barcode": f"eq.{barcode}", "limit": "1"},
+        timeout=30,
+    )
+    created.raise_for_status()
+    created_rows = created.json()
+    if not created_rows or not created_rows[0].get("id"):
+        raise RuntimeError("inserted product could not be reloaded")
+    product_id = str(created_rows[0]["id"])
+    scoring = run_product_scoring_lifecycle(product_id, "catalogue_change")
+    print_scoring_lifecycle_result(product_id, scoring)
+    return ("insert", product_id)
 
 
 def iter_rows(path: Path, fmt: str) -> Iterable[dict[str, Any]]:

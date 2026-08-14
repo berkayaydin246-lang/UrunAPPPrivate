@@ -382,6 +382,7 @@ void main() {
 
       expect(find.text('Nitrit/Nitrat koruyucu'), findsOneWidget);
       expect(find.text('Tartrazin'), findsOneWidget);
+      expect(find.text('Çeşni artırıcı (MSG)'), findsNothing);
       expect(find.text('Tümünü gör'), findsOneWidget);
       final nitritTop = tester.getTopLeft(find.text('Nitrit/Nitrat koruyucu'));
       final palmTop = tester.getTopLeft(find.text('Palm yağı'));
@@ -391,8 +392,33 @@ void main() {
       await tester.tap(find.text('Tümünü gör'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Maltodekstrin'), findsOneWidget);
-      expect(find.text('Aroma Verici'), findsWidgets);
+      final ingredientSheet = find.byType(BottomSheet);
+      expect(ingredientSheet, findsOneWidget);
+      expect(
+        find.descendant(
+          of: ingredientSheet,
+          matching: find.text('Maltodekstrin'),
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Maltodekstrin'), findsNWidgets(2));
+      final sheetScrollable = find.descendant(
+        of: ingredientSheet,
+        matching: find.byType(Scrollable),
+      );
+      expect(sheetScrollable, findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.text('Çeşni artırıcı (MSG)'),
+        240,
+        scrollable: sheetScrollable,
+      );
+      expect(
+        find.descendant(
+          of: ingredientSheet,
+          matching: find.text('Çeşni artırıcı (MSG)'),
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('cleans raw ingredient fallback and shows allergen states', (

@@ -19,6 +19,10 @@ from datetime import datetime, timezone
 # Make the sibling `common` module importable (scripts/product_import/common.py).
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import common  # noqa: E402  (shared OFF/staging helpers; reused, not duplicated)
+from scoring_lifecycle_bridge import (  # noqa: E402
+    print_scoring_lifecycle_result,
+    run_product_scoring_lifecycle,
+)
 
 from . import extractors, image_scoring, ingredient_parser, nutrition_parser  # noqa: E402
 from . import source_adapters  # noqa: E402
@@ -1147,6 +1151,20 @@ def approve_staged_row(url: str, key: str, row: dict) -> tuple[str, str | None]:
                 )
                 resp.raise_for_status()
             action = "approved_updated"
+
+        saved = requests.get(
+            products,
+            headers=headers,
+            params={"select": "id", column: f"eq.{value}", "limit": "1"},
+            timeout=30,
+        )
+        saved.raise_for_status()
+        saved_rows = saved.json()
+        if not saved_rows or not saved_rows[0].get("id"):
+            return "failed", "saved_product_not_found"
+        product_id = str(saved_rows[0]["id"])
+        scoring = run_product_scoring_lifecycle(product_id, "staging_approval")
+        print_scoring_lifecycle_result(product_id, scoring)
 
         # Flip the staging row to approved (audit trail preserved, never deleted).
         flip = requests.patch(
