@@ -259,6 +259,25 @@ void main() {
       expect(result.unknownOrIneligibleCount, 1);
     });
 
+    test('out-of-scope flavouring is not counted as additive evidence', () {
+      final assessment = CanonicalAdditiveAssessment(
+        recognizedIngredients: const [],
+        unresolvedIngredients: const [],
+        outOfScopeFlavouringEvidence: [
+          CanonicalOutOfScopeFlavouringEvidence(
+            normalizedToken: 'aroma verici',
+            sourceTokens: const ['aroma vericiler'],
+          ),
+        ],
+        conflicts: const [],
+      );
+      final result = transformer.transform(assessment);
+
+      expect(result.qualityScore, 100);
+      expect(result.eligibleUniqueAdditiveCount, 0);
+      expect(result.unknownOrIneligibleCount, 0);
+    });
+
     test(
       'eligible item contributes while mixed unknown remains diagnostic',
       () {

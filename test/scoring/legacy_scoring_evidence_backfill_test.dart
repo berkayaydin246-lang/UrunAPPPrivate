@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:food_analyzer_app/features/analysis/services/canonical_ingredient_risk_service.dart';
+import 'package:food_analyzer_app/features/analysis/services/ingredient_matcher_service.dart';
 import 'package:food_analyzer_app/features/product/models/ingredient.dart';
 import 'package:food_analyzer_app/features/product/models/product.dart';
 import 'package:food_analyzer_app/features/scoring/application/legacy_scoring_evidence_backfill.dart';
@@ -138,6 +140,30 @@ void main() {
     });
 
     test(
+      'Turkish decimal FVL percentages sum from explicit source text',
+      () async {
+        const ingredients =
+            'un, çilek parçaları (%4), çilek püresi (%1,5), şeker. '
+            'YUMURTA, SÜT VE SERT KABUKLU MEYVELER İÇEREBİLİR. Aler';
+        final result = await _recover(
+          product: _product(ingredientsText: ingredients),
+        );
+
+        expect(result.fvlReady, isTrue);
+        expect(result.evidence!.fvlEvidence.percentage, 5.5);
+        expect(
+          result.evidence!.fvlEvidence.provenance,
+          EvidenceProvenance.declaredLabel,
+        );
+        expect(
+          result.evidence!.fvlEvidence.verification,
+          EvidenceVerification.verified,
+        );
+        expect(result.blockerReasons, isNot(contains('fvl_unknown')));
+      },
+    );
+
+    test(
       'factor-dependent dried FVL stays unknown even with a percentage',
       () async {
         final result = await _recover(
@@ -257,6 +283,85 @@ void main() {
       expect(result.blockerReasons, contains('canonical_additive_unresolved'));
     });
 
+    test(
+      'functional parents do not block and generic aroma is out of additive scope',
+      () async {
+        const text =
+            'emülgatör (yağ asitlerinin mono- ve digliseritleri), '
+            'koruyucular (kalsiyum propiyonat, potasyum sorbat), '
+            'jelleştirici (pektin), asitlik düzenleyici (sitrik asit), '
+            'aroma vericiler';
+        const matcher = IngredientMatcherService();
+        final matching = await matcher.matchIngredients(
+          text,
+          _functionalChildCatalogue(),
+        );
+        final assessment = const CanonicalIngredientRiskService()
+            .assessForScoring(matching);
+
+        expect(assessment.unresolvedIngredients, isEmpty);
+        expect(assessment.outOfScopeFlavouringEvidence, hasLength(1));
+        expect(assessment.outOfScopeFlavouringEvidence.single.sourceTokens, [
+          'aroma vericiler',
+        ]);
+        final unresolvedSourceTokens = assessment.unresolvedIngredients
+            .expand((ingredient) => ingredient.sourceTokens)
+            .toSet();
+        expect(
+          unresolvedSourceTokens.intersection(const {
+            'emülgatör',
+            'koruyucu',
+            'jelleştirici',
+            'asitlik düzenleyici',
+          }),
+          isEmpty,
+        );
+      },
+    );
+
+    test(
+      '7 Days recovery keeps only genuine canonical risk blockers',
+      () async {
+        const ingredients =
+            'un, çilek parçaları (%4), çilek püresi (%1,5), şeker, '
+            'emülgatör (yağ asitlerinin mono- ve digliseritleri), '
+            'koruyucular (kalsiyum propiyonat, potasyum sorbat), '
+            'jelleştirici (pektin), asitlik düzenleyici (sitrik asit), '
+            'aroma vericiler';
+        final product = _product(
+          name: '7 Days Çilekli Kruvasan 60 G',
+          ingredientsText: ingredients,
+        );
+        final result = await recovery.recover(
+          product: product,
+          stagingMatches: [_staging(product: product)],
+          ingredientCatalogue: _sevenDaysCatalogueWithoutE282(),
+        );
+
+        expect(result.evidence!.fvlEvidence.percentage, 5.5);
+        expect(result.fvlReady, isTrue);
+        expect(result.additiveReady, isFalse);
+        expect(result.finalScoreReady, isFalse);
+        expect(
+          result.blockerReasons,
+          contains('canonical_additive_incomplete'),
+        );
+        expect(
+          result.blockerReasons,
+          contains('canonical_additive_risk_conflict'),
+        );
+        expect(
+          result.blockerReasons,
+          contains('canonical_additive_unknown_risk'),
+        );
+        expect(
+          result.blockerReasons,
+          isNot(contains('canonical_additive_unresolved')),
+        );
+        expect(result.blockerReasons, isNot(contains('fvl_unknown')));
+      },
+    );
+
     test('product name never supplies legacy classification', () async {
       final result = await _recover(
         product: _product(
@@ -301,6 +406,97 @@ void main() {
   });
 
   group('legacy evidence backfill runner', () {
+    group('only-final-score-ready write filter', () {
+      test('ready product writes with flag', () async {
+        final source = _FakeDataSource(products: [_product()]);
+        final summary = await _run(
+          source,
+          dryRun: false,
+          maxProducts: 1,
+          onlyFinalScoreReady: true,
+        );
+
+        expect(summary.onlyFinalScoreReady, isTrue);
+        expect(summary.finalScoreReady, 1);
+        expect(summary.wouldWrite, 1);
+        expect(summary.written, 1);
+        expect(source.writeCalls, 1);
+      });
+
+      test('recoverable partial evidence does not write with flag', () async {
+        final nutrition = _nutrition()..remove('fiber');
+        final source = _FakeDataSource(
+          products: [_product(nutrition: nutrition)],
+        );
+        final summary = await _run(
+          source,
+          dryRun: false,
+          maxProducts: 1,
+          onlyFinalScoreReady: true,
+        );
+
+        expect(summary.finalScoreReady, 0);
+        expect(summary.notReady, 1);
+        expect(summary.blockerReasons['missing_fiber'], 1);
+        expect(summary.wouldWrite, 0);
+        expect(summary.written, 0);
+        expect(source.writeCalls, 0);
+        expect(source.products.single.scoringEvidence, isNull);
+      });
+
+      test(
+        'without flag partial-evidence behavior remains unchanged',
+        () async {
+          final nutrition = _nutrition()..remove('fiber');
+          final source = _FakeDataSource(
+            products: [_product(nutrition: nutrition)],
+          );
+          final summary = await _run(source, dryRun: false, maxProducts: 1);
+
+          expect(summary.onlyFinalScoreReady, isFalse);
+          expect(summary.finalScoreReady, 0);
+          expect(summary.wouldWrite, 1);
+          expect(summary.written, 1);
+          expect(source.writeCalls, 1);
+          expect(source.products.single.scoringEvidence, isNotNull);
+        },
+      );
+
+      test('dry-run performs zero writes with flag', () async {
+        final source = _FakeDataSource(products: [_product()]);
+        final summary = await _run(
+          source,
+          dryRun: true,
+          onlyFinalScoreReady: true,
+        );
+
+        expect(summary.finalScoreReady, 1);
+        expect(summary.wouldWrite, 1);
+        expect(summary.written, 0);
+        expect(source.writeCalls, 0);
+        expect(source.products.single.scoringEvidence, isNull);
+      });
+
+      test('existing evidence is not overwritten with flag', () async {
+        final existing = ScoringEvidenceSnapshot();
+        final source = _FakeDataSource(
+          products: [_product(scoringEvidence: existing)],
+        );
+        final summary = await _run(
+          source,
+          dryRun: false,
+          maxProducts: 1,
+          onlyFinalScoreReady: true,
+        );
+
+        expect(summary.existingScoringEvidence, 1);
+        expect(summary.wouldWrite, 0);
+        expect(summary.written, 0);
+        expect(source.writeCalls, 0);
+        expect(source.products.single.scoringEvidence, same(existing));
+      });
+    });
+
     test('dry-run performs zero writes', () async {
       final source = _FakeDataSource(products: [_product()]);
       final summary = await _run(source, dryRun: true);
@@ -424,10 +620,12 @@ Future<LegacyScoringEvidenceBackfillSummary> _run(
   required bool dryRun,
   int? maxProducts,
   String? startAfterProductId,
+  bool onlyFinalScoreReady = false,
 }) {
   return LegacyScoringEvidenceBackfillRunner(dataSource: source).run(
     LegacyScoringEvidenceBackfillOptions(
       dryRun: dryRun,
+      onlyFinalScoreReady: onlyFinalScoreReady,
       batchSize: 2,
       maxProducts: maxProducts,
       startAfterProductId: startAfterProductId,
@@ -473,6 +671,88 @@ Map<String, dynamic> _nutrition() => {
   'proteins': 4,
   'salt': 0.5,
 };
+
+List<Ingredient> _functionalChildCatalogue() {
+  final now = DateTime.utc(2026, 8, 8);
+  Ingredient ingredient({
+    required String id,
+    required String name,
+    required String normalizedName,
+    required String risk,
+    required String eCode,
+    required String group,
+  }) => Ingredient(
+    id: id,
+    name: name,
+    normalizedName: normalizedName,
+    eCode: eCode,
+    additiveGroup: group,
+    riskLevel: risk,
+    createdAt: now,
+    updatedAt: now,
+  );
+
+  return [
+    ingredient(
+      id: 'e471',
+      name: 'Mono ve Digliseritler',
+      normalizedName: 'mono ve digliseritler',
+      risk: 'medium',
+      eCode: 'E471',
+      group: 'emülgatör',
+    ),
+    ingredient(
+      id: 'e282',
+      name: 'Kalsiyum Propiyonat',
+      normalizedName: 'kalsiyum propiyonat',
+      risk: 'unknown',
+      eCode: 'E282',
+      group: 'koruyucu',
+    ),
+    ingredient(
+      id: 'e202',
+      name: 'Potasyum Sorbat',
+      normalizedName: 'potasyum sorbat',
+      risk: 'medium',
+      eCode: 'E202',
+      group: 'koruyucu',
+    ),
+    ingredient(
+      id: 'e440',
+      name: 'Pektin',
+      normalizedName: 'pektin',
+      risk: 'low',
+      eCode: 'E440',
+      group: 'jelleştirici',
+    ),
+    ingredient(
+      id: 'e330',
+      name: 'Sitrik Asit',
+      normalizedName: 'sitrik asit',
+      risk: 'low',
+      eCode: 'E330',
+      group: 'asitlik düzenleyici',
+    ),
+  ];
+}
+
+List<Ingredient> _sevenDaysCatalogueWithoutE282() => _functionalChildCatalogue()
+    .where((ingredient) => ingredient.eCode != 'E282')
+    .map(
+      (ingredient) => ingredient.eCode == 'E202' || ingredient.eCode == 'E471'
+          ? Ingredient(
+              id: ingredient.id,
+              name: ingredient.name,
+              normalizedName: ingredient.normalizedName,
+              eCode: ingredient.eCode,
+              additiveGroup: ingredient.additiveGroup,
+              riskLevel: 'low',
+              createdAt: ingredient.createdAt,
+              updatedAt: ingredient.updatedAt,
+            )
+          : ingredient,
+    )
+    .toList(growable: false);
 
 LegacyStagingScoringEvidence _staging({
   String id = 'staging-1',

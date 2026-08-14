@@ -73,14 +73,11 @@ void main() {
         'bitkisel yağlar',
         'ayçiçek yağı',
         'palm yağı',
-        'emülgatör',
         'mono ve digliseritler',
-        'antioksidan',
         'tokoferolce zengin ekstrakt',
         'patlamış pirinç',
         'pirinç unu',
         'malt ekstraktı',
-        'kabartıcı',
         'kalsiyum karbonat',
         'kakao tozu',
         'fındık',
@@ -94,6 +91,67 @@ void main() {
     expect(tokens, isNot(contains('palm')));
     expect(tokens, isNot(contains('7 yağı')));
     expect(tokens, isNot(contains('.7')));
+  });
+
+  test('preserves Turkish decimal percentages without numeric tokens', () {
+    const input =
+        'çilek parçaları (%4), çilek püresi (%1,5), elma püresi (%1.5)';
+
+    final cleaned = IngredientCanonicalizer.cleanIngredientTextForAnalysis(
+      input,
+    );
+    final tokens = IngredientCanonicalizer.parseIngredientsAdvanced(input);
+
+    expect(cleaned.ingredientsText, contains('(%4)'));
+    expect(cleaned.ingredientsText, contains('(%1,5)'));
+    expect(cleaned.ingredientsText, contains('(%1.5)'));
+    expect(
+      tokens,
+      containsAll(['çilek parçaı', 'çilek püresi', 'elma püresi']),
+    );
+    expect(tokens, isNot(contains('5')));
+    expect(tokens.where((token) => RegExp(r'^\d+$').hasMatch(token)), isEmpty);
+  });
+
+  test('explicit functional children replace parent labels', () {
+    const input =
+        'emülgatör (yağ asitlerinin mono- ve digliseritleri), '
+        'koruyucular (kalsiyum propiyonat, potasyum sorbat), '
+        'jelleştirici (pektin), asitlik düzenleyici (sitrik asit), '
+        'aroma vericiler';
+
+    final tokens = IngredientCanonicalizer.parseIngredientsAdvanced(input);
+
+    expect(
+      tokens,
+      containsAll([
+        'mono ve digliseritler',
+        'kalsiyum propiyonat',
+        'potasyum sorbat',
+        'pektin',
+        'sitrik asit',
+        'aroma vericiler',
+      ]),
+    );
+    expect(tokens, isNot(contains('emülgatör')));
+    expect(tokens, isNot(contains('koruyucu')));
+    expect(tokens, isNot(contains('jelleştirici')));
+    expect(tokens, isNot(contains('asitlik düzenleyici')));
+  });
+
+  test('removes implicit Turkish allergen tail before tokenization', () {
+    const input =
+        'un, çilek püresi (%1,5). YUMURTA, SÜT VE SERT KABUKLU '
+        'MEYVELER İÇEREBİLİR. Aler';
+
+    final cleaned = IngredientCanonicalizer.cleanIngredientTextForAnalysis(
+      input,
+    );
+    final tokens = IngredientCanonicalizer.parseIngredientsAdvanced(input);
+
+    expect(cleaned.ingredientsText, 'un, çilek püresi (%1,5)');
+    expect(tokens, contains('çilek püresi'));
+    expect(tokens.any((token) => token.contains('içerebilir')), isFalse);
   });
 
   test('sanitizes broken unknown fragments', () {

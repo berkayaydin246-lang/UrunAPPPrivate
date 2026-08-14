@@ -57,6 +57,7 @@ dart run tool/legacy_scoring_evidence_backfill.dart \
 dart run tool/legacy_scoring_evidence_backfill.dart \
   --project-ref PROJECT_REF \
   --dry-run \
+  --only-final-score-ready \
   --batch-size 50 \
   --max-products 100
 ```
@@ -68,6 +69,7 @@ dart run tool/legacy_scoring_evidence_backfill.dart \
   --project-ref PROJECT_REF \
   --apply \
   --confirm-write-scoring-evidence \
+  --only-final-score-ready \
   --batch-size 50 \
   --max-products 100 \
   --start-after LAST_SAFE_CURSOR
@@ -76,6 +78,9 @@ dart run tool/legacy_scoring_evidence_backfill.dart \
 The PATCH condition includes `scoring_evidence IS NULL`, so concurrent or
 repeated execution cannot overwrite evidence. Resume from
 `safe_resume_cursor`, not `last_examined_cursor`, after any product error.
-Dry-run and sample inspection perform no writes. Run
+With `--only-final-score-ready`, all products and blockers are still counted,
+but `would_write` and actual writes include only products that pass final-score
+readiness. Without the flag, the existing partial-evidence behavior is
+unchanged. Dry-run and sample inspection perform no writes. Run
 `tool/score_audit_backfill.dart` separately only after eligible scoring
 evidence has been reviewed and accepted.

@@ -459,6 +459,37 @@ void main() {
       expect(find.byKey(const Key('product-report-card')), findsOneWidget);
     });
 
+    testWidgets(
+      'generic flavouring does not produce an additive unavailable reason',
+      (tester) async {
+        final product = _legacyProduct(ingredientsText: 'aroma vericiler');
+        final repository = _FakeProductRepository(product: product);
+
+        await _pumpProductScreen(tester, repository);
+
+        expect(
+          find.text('Bazı katkı maddeleri henüz doğrulanmamış.'),
+          findsNothing,
+        );
+        expect(
+          find.text('Gerekli puanlama kanıtları henüz tamamlanmamış.'),
+          findsOneWidget,
+        );
+        expect(
+          find.text('Besin değerlerinin 100 g / 100 ml temeli doğrulanmamış.'),
+          findsNothing,
+        );
+        expect(
+          find.text('Ürünün puanlama kategorisi henüz doğrulanmamış.'),
+          findsNothing,
+        );
+        expect(
+          find.text('Ürünün değerlendirme durumu henüz doğrulanmamış.'),
+          findsNothing,
+        );
+      },
+    );
+
     testWidgets('33. scoring error does not break Product Detail', (
       tester,
     ) async {
@@ -539,12 +570,12 @@ Product _productFromInput(
   );
 }
 
-Product _legacyProduct() {
+Product _legacyProduct({String ingredientsText = 'Yulaf ezmesi'}) {
   final now = DateTime.utc(2026, 8, 8);
   return Product(
     id: 'score-product',
     name: 'Eski Katalog Ürünü',
-    ingredientsText: 'Yulaf ezmesi',
+    ingredientsText: ingredientsText,
     nutritionText: jsonEncode(const {'energy_kcal': 100, 'fiber': 3}),
     verificationStatus: 'verified',
     createdAt: now,

@@ -166,6 +166,33 @@ final IngredientRiskReference _efsaCyclamateReference = IngredientRiskReference(
   accessedAt: _catalogAccessedAt,
 );
 
+final IngredientRiskReference _efsaE202Reference = IngredientRiskReference(
+  authority: 'EFSA',
+  title:
+      'Follow-up of the re-evaluation of sorbic acid (E200) and potassium sorbate (E202) as food additives',
+  url: 'https://www.efsa.europa.eu/en/efsajournal/pub/5625',
+  accessedAt: _catalogAccessedAt,
+  documentCode: 'EFSA Journal 2019;17(3):5625',
+);
+
+final IngredientRiskReference _efsaE471Reference = IngredientRiskReference(
+  authority: 'EFSA',
+  title:
+      'Re-evaluation of mono- and di-glycerides of fatty acids (E 471) as food additives',
+  url: 'https://www.efsa.europa.eu/en/efsajournal/pub/5045',
+  accessedAt: _catalogAccessedAt,
+  documentCode: 'EFSA Journal 2017;15(11):5045',
+);
+
+final IngredientRiskReference _efsaE282Reference = IngredientRiskReference(
+  authority: 'EFSA',
+  title:
+      'Re-evaluation of propionic acid (E 280), sodium propionate (E 281), calcium propionate (E 282) and potassium propionate (E 283) as food additives',
+  url: 'https://www.efsa.europa.eu/en/efsajournal/pub/3779',
+  accessedAt: _catalogAccessedAt,
+  documentCode: 'EFSA Journal 2014;12(7):3779',
+);
+
 Ingredient enrichIngredientKnowledge(Ingredient ingredient) {
   final entry = _ingredientCatalogEntryForIngredient(ingredient);
   if (entry == null) {
@@ -237,6 +264,47 @@ Ingredient enrichIngredientKnowledge(Ingredient ingredient) {
 /// This lookup does not resolve conflicts or choose a canonical risk by itself.
 String? reviewedCatalogRiskLevelForIngredient(Ingredient ingredient) {
   return _ingredientCatalogEntryForIngredient(ingredient)?.riskLevel;
+}
+
+/// Returns only reviewed static identities that explicitly opt into matching.
+///
+/// Most catalogue entries enrich database rows and are not substitutes for a
+/// canonical ingredient identity. This narrow fallback currently exists for
+/// E282 because its reviewed identity is managed in this repository while the
+/// remote catalogue is incomplete.
+Ingredient? reviewedCanonicalIngredientIdentityForToken(String token) {
+  final form = _normalizeKey(token);
+  if (form.isEmpty) return null;
+
+  for (final entry in _catalogEntries) {
+    if (!entry.providesCanonicalIdentity || !entry.matches([form])) continue;
+
+    return Ingredient(
+      id: '',
+      name: entry.canonicalName!,
+      normalizedName: entry.canonicalNormalizedName!,
+      aliases: entry.aliases,
+      commonNames: entry.commonNames,
+      englishNames: entry.englishNames,
+      eCode: entry.eCode,
+      category: 'additive',
+      riskLevel: entry.riskLevel,
+      additiveGroup: entry.additiveGroup,
+      sourceReferences: entry.references
+          .map((reference) => reference.toDisplayString())
+          .toList(growable: false),
+      sourceReferenceEntries: entry.references,
+      sourceUrl: entry.references.isEmpty ? null : entry.references.first.url,
+      ingredientType: entry.ingredientType,
+      shortPurpose: entry.shortPurpose,
+      shortRiskSummary: entry.shortRiskSummary,
+      cautionGroups: entry.cautionGroups,
+      processingRole: entry.processingRole,
+      createdAt: _catalogAccessedAt,
+      updatedAt: _catalogAccessedAt,
+    );
+  }
+  return null;
 }
 
 _IngredientCatalogEntry? _ingredientCatalogEntryForIngredient(
@@ -371,6 +439,12 @@ class _IngredientCatalogEntry {
     this.processingRole,
     required this.riskLevel,
     required this.references,
+    this.providesCanonicalIdentity = false,
+    this.canonicalName,
+    this.canonicalNormalizedName,
+    this.commonNames,
+    this.englishNames,
+    this.additiveGroup,
   });
 
   final List<String> aliases;
@@ -383,6 +457,12 @@ class _IngredientCatalogEntry {
   final String? processingRole;
   final String riskLevel;
   final List<IngredientRiskReference> references;
+  final bool providesCanonicalIdentity;
+  final String? canonicalName;
+  final String? canonicalNormalizedName;
+  final List<String>? commonNames;
+  final List<String>? englishNames;
+  final String? additiveGroup;
 
   bool matches(List<String> forms) {
     final aliasKeys = aliases.map(_normalizeKey).toSet();
@@ -461,12 +541,38 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
         'Soslar, içecekler, unlu mamuller ve bazı sütlü ürünlerde görülebilir.',
     riskLevel: 'medium',
     references: [
+      _efsaE202Reference,
       _commissionAdditivesOverviewReference,
       _commissionDatabaseReference(
         documentCode: 'E202',
         note: 'Potasyum sorbat için AB katkı maddesi veri tabanı girişi.',
       ),
     ],
+  ),
+  _IngredientCatalogEntry(
+    aliases: const [
+      'kalsiyum propiyonat',
+      'calcium propionate',
+      'E282',
+      'E 282',
+      'E-282',
+    ],
+    eCode: 'E282',
+    ingredientType: 'Koruyucu',
+    shortPurpose:
+        'Kalsiyum propiyonat, belirli gıdalarda küf gelişimini sınırlamak için kullanılan bir koruyucudur.',
+    shortRiskSummary:
+        'Bu kimlik için Etiketly risk düzeyi, mevcut metodolojiye göre ayrıca doğrulanmadan atanmaz.',
+    processingRole:
+        'Fırıncılık ürünleri ve mevzuatta izin verilen diğer gıdalarda kullanılabilir.',
+    riskLevel: 'unknown',
+    references: [_efsaE282Reference],
+    providesCanonicalIdentity: true,
+    canonicalName: 'Kalsiyum Propiyonat',
+    canonicalNormalizedName: 'kalsiyum propiyonat',
+    commonNames: const ['Kalsiyum propiyonat'],
+    englishNames: const ['Calcium propionate'],
+    additiveGroup: 'Koruyucu',
   ),
   _IngredientCatalogEntry(
     aliases: const ['sorbik asit', 'sorbic acid'],
@@ -747,8 +853,19 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
     ],
   ),
   _IngredientCatalogEntry(
-    aliases: const ['mono ve digliseritler', 'mono and diglycerides'],
-    containsAny: const ['mono ve digliserit'],
+    aliases: const [
+      'mono ve digliseritler',
+      'mono- ve digliseritler',
+      'mono ve digliseritleri',
+      'yağ asitlerinin mono ve digliseritleri',
+      'yağ asitlerinin mono- ve digliseritleri',
+      'mono and diglycerides',
+      'mono- and diglycerides of fatty acids',
+    ],
+    containsAny: const [
+      'mono ve digliserit',
+      'yağ asitlerinin mono ve digliserit',
+    ],
     eCode: 'E471',
     ingredientType: 'Emülgatör',
     shortPurpose:
@@ -759,6 +876,7 @@ final List<_IngredientCatalogEntry> _catalogEntries = [
         'Fırıncılık ürünleri, dondurulmuş tatlılar ve kremalı ürünlerde kullanılabilir.',
     riskLevel: 'medium',
     references: [
+      _efsaE471Reference,
       _commissionAdditivesOverviewReference,
       _commissionDatabaseReference(
         documentCode: 'E471',

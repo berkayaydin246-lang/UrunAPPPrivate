@@ -54,9 +54,20 @@ class LegacyFvlEvidenceResolver {
       );
     }
 
+    final cleanedIngredients =
+        IngredientCanonicalizer.cleanIngredientTextForAnalysis(
+          ingredientsText,
+        ).ingredientsText;
+    if (cleanedIngredients.isEmpty) {
+      return const LegacyFvlEvidenceResolution(
+        evidence: CompositionPercentageEvidence.unknown(),
+        hasQualifyingIngredient: false,
+      );
+    }
+
     var foundQualifying = false;
     var percentageTotal = 0.0;
-    for (final segment in _segments(ingredientsText)) {
+    for (final segment in _segments(cleanedIngredients)) {
       final normalized = _foldTurkish(
         IngredientCanonicalizer.normalizeToken(segment),
       );

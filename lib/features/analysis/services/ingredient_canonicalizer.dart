@@ -133,7 +133,7 @@ class IngredientCanonicalizer {
   );
 
   static final RegExp _inlineAllergenTail = RegExp(
-    r'(?:^|[.!?;,]\s+)(?:eser miktarda\s+.+?(?:içerebilir|içerir)|may contain\s+.+)$',
+    r'(?:^|[.!?;]\s+)(?:(?:eser miktarda\s+)?[^.!?]+?\s+(?:[İiIı]çereb[İiIı]l[İiIı]r|[İiIı]çer[İiIı]r|bulunab[İiIı]l[İiIı]r)|may contain\s+[^.!?]+)(?:[.!?]\s*(?:aler\w*)?)?$',
     caseSensitive: false,
     dotAll: true,
   );
@@ -144,6 +144,25 @@ class IngredientCanonicalizer {
     'vitamin',
     'provitamin',
   };
+
+  static const Set<String> _functionalGroupLabels = {
+    'antioksidan',
+    'aroma vericiler',
+    'asitlik düzenleyici',
+    'emülgatör',
+    'jelleştirici',
+    'kabartıcı',
+    'kıvam artırıcı',
+    'koruyucu',
+    'renklendirici',
+    'stabilizör',
+    'tatlandırıcı',
+    'topaklanma önleyici',
+  };
+
+  static final RegExp _percentageOnly = RegExp(
+    r'^\s*(?:%\s*)?\d+(?:[.,]\d+)?\s*%?\s*$',
+  );
 
   /// E-code canonicalization: normalize variants to 'e###' lowercase
   static String normalizeECode(String input) {
@@ -228,12 +247,11 @@ class IngredientCanonicalizer {
   ///  - emülgatör (yağ asitlerinin mono- ve digliseritleri) -> ['mono ve digliseritler']
   static List<String> _deriveInnerForms(String outer, String innerRaw) {
     final out = <String>[];
-    // Split inner by comma/slash/semicolon; avoid splitting on "ve" globally
-    // because phrases like "mono- ve digliseritleri" should stay together.
-    final parts = innerRaw.split(RegExp(r',|/|;'));
+    // Decimal commas are evidence delimiters, not child-ingredient separators.
+    final parts = _splitInnerParts(innerRaw);
     for (var p in parts) {
       p = p.trim();
-      if (p.isEmpty) continue;
+      if (p.isEmpty || _percentageOnly.hasMatch(p)) continue;
       // Normalize hyphenated constructs like 'mono- ve digliseritleri' -> 'mono ve digliseritleri'
       p = p.replaceAll('-', ' ');
       p = p.replaceAll(RegExp(r'\s+'), ' ').trim();
@@ -283,6 +301,41 @@ class IngredientCanonicalizer {
 
     return out;
   }
+
+  static List<String> _splitInnerParts(String value) {
+    final parts = <String>[];
+    final buffer = StringBuffer();
+
+    void flush() {
+      final part = buffer.toString().trim();
+      buffer.clear();
+      if (part.isNotEmpty) parts.add(part);
+    }
+
+    for (var index = 0; index < value.length; index++) {
+      final character = value[index];
+      final decimalComma =
+          character == ',' &&
+          index > 0 &&
+          index + 1 < value.length &&
+          _isAsciiDigit(value[index - 1]) &&
+          _isAsciiDigit(value[index + 1]);
+      if (!decimalComma &&
+          (character == ',' || character == '/' || character == ';')) {
+        flush();
+        continue;
+      }
+      buffer.write(character);
+    }
+    flush();
+    return parts;
+  }
+
+  static bool _isAsciiDigit(String value) =>
+      value.codeUnitAt(0) >= 48 && value.codeUnitAt(0) <= 57;
+
+  static bool _isFunctionalGroupLabel(String value) =>
+      _functionalGroupLabels.contains(value);
 
   static CleanedIngredientText cleanIngredientTextForAnalysis(String raw) {
     final normalized = _normalizeRawText(raw);
@@ -456,13 +509,9 @@ class IngredientCanonicalizer {
       buffer.clear();
       if (tokenRaw.isEmpty) return;
 
-      // Normalize the outer token first, but strip any parenthetical details
-      // so we don't leak broken fragments into the output.
       final outerBase = tokenRaw.split('(').first;
       final outer = mapToCanonical(normalizeToken(outerBase));
-      if (outer.isNotEmpty) parts.add(outer);
-
-      // Extract inner parentheses groups and derive context-aware tokens
+      final innerParts = <String>[];
       final parenMatches = RegExp(r'\(([^)]*)\)').allMatches(tokenRaw);
       for (final m in parenMatches) {
         final innerRaw = m.group(1) ?? '';
@@ -470,9 +519,18 @@ class IngredientCanonicalizer {
         final derived = _deriveInnerForms(outer, innerRaw);
         for (final d in derived) {
           final nd = normalizeToken(d);
-          if (nd.isNotEmpty) parts.add(nd);
+          if (nd.isNotEmpty) innerParts.add(nd);
         }
       }
+
+      // A declared child substance carries the additive identity. Keeping the
+      // functional parent as another token would create a false unresolved
+      // additive. Unspecified labels such as "aroma vericiler" remain intact.
+      if (outer.isNotEmpty &&
+          !(_isFunctionalGroupLabel(outer) && innerParts.isNotEmpty)) {
+        parts.add(outer);
+      }
+      parts.addAll(innerParts);
     }
 
     for (var i = 0; i < s.length; i++) {

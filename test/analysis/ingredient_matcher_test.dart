@@ -148,6 +148,80 @@ void main() {
       );
     });
 
+    test('kalsiyum propiyonat never fuzzy matches Kalsiyum Forminat', () async {
+      final result = await service.matchIngredients('kalsiyum propiyonat', [
+        _ingredient(
+          id: 'forminate',
+          name: 'Kalsiyum Forminat',
+          normalizedName: 'kalsiyum format',
+        ),
+      ]);
+
+      expect(result.matches, hasLength(1));
+      expect(
+        result.matches.single.matchedIngredient?.name,
+        'Kalsiyum Propiyonat',
+      );
+      expect(result.matches.single.matchedIngredient?.eCode, 'E282');
+      expect(result.matches.single.matchedIngredient?.riskLevel, 'unknown');
+      expect(result.matches.single.matchType, MatchType.exactMatch);
+      expect(
+        result.matches.single.matchedIngredient?.name,
+        isNot('Kalsiyum Forminat'),
+      );
+    });
+
+    test('E282 Turkish, English, and E-code aliases resolve exactly', () async {
+      for (final expectation in const [
+        ('kalsiyum propiyonat', MatchType.exactMatch),
+        ('calcium propionate', MatchType.aliasMatch),
+        ('E282', MatchType.eCodeMatch),
+      ]) {
+        final result = await service.matchIngredients(expectation.$1, const []);
+
+        expect(result.matches.single.matchedIngredient?.eCode, 'E282');
+        expect(result.matches.single.matchedIngredient?.riskLevel, 'unknown');
+        expect(result.matches.single.matchType, expectation.$2);
+      }
+    });
+
+    test('exact propiyonat name beats an earlier fuzzy candidate', () async {
+      final result = await service.matchIngredients('kalsiyum propiyonat', [
+        _ingredient(
+          id: 'forminate',
+          name: 'Kalsiyum Forminat',
+          normalizedName: 'kalsiyum format',
+        ),
+        _ingredient(
+          id: 'propionate',
+          name: 'Kalsiyum Propiyonat',
+          normalizedName: 'kalsiyum propiyonat',
+          eCode: 'E282',
+        ),
+      ]);
+
+      expect(
+        result.matches.single.matchedIngredient?.name,
+        'Kalsiyum Propiyonat',
+      );
+      expect(result.matches.single.matchType, MatchType.exactMatch);
+    });
+
+    test('unspecified aroma vericiler stays unresolved', () async {
+      final result = await service.matchIngredients('aroma vericiler', [
+        _ingredient(
+          id: 'generic-flavoring',
+          name: 'Aroma Vericileri',
+          normalizedName: 'aroma vericileri',
+          aliases: const ['aroma vericiler', 'aroma verici'],
+        ),
+      ]);
+
+      expect(result.matches.single.matchedIngredient, isNull);
+      expect(result.matches.single.matchType, MatchType.unmatched);
+      expect(result.matches.single.originalToken, 'aroma vericiler');
+    });
+
     test('palm yağı should match Palm Yağı', () async {
       final result = await service.matchIngredients(
         'palm yağı',

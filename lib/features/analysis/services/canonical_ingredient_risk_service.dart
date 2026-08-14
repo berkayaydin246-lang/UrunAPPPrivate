@@ -24,9 +24,24 @@ class CanonicalIngredientRiskService {
   }) {
     final recognized = <String, _CanonicalItemBuilder>{};
     final unresolved = <String, _UnresolvedBuilder>{};
+    final outOfScopeFlavourings = <String, _OutOfScopeFlavouringBuilder>{};
 
     for (var index = 0; index < matchingResult.matches.length; index++) {
       final match = matchingResult.matches[index];
+      if (_isGenericOutOfScopeFlavouring(match)) {
+        final key = IngredientCanonicalizer.normalizeToken(
+          match.normalizedText.trim().isEmpty
+              ? match.originalToken
+              : match.normalizedText,
+        );
+        outOfScopeFlavourings
+            .putIfAbsent(
+              key,
+              () => _OutOfScopeFlavouringBuilder(normalizedToken: key),
+            )
+            .add(match.originalToken);
+        continue;
+      }
       final ingredient = match.matchedIngredient;
       if (ingredient == null ||
           match.matchType == MatchType.unmatched ||
@@ -56,6 +71,7 @@ class CanonicalIngredientRiskService {
 
       final enriched = enrichIngredientKnowledge(ingredient);
       final canonicalKey = canonicalKeyForIngredient(enriched);
+      final deduplicationKey = _deduplicationKeyForIngredient(enriched);
       final riskResolution = _resolveRisk(enriched, canonicalKey);
       final evidence = CanonicalMatchEvidence(
         sourceToken: match.originalToken,
@@ -69,7 +85,7 @@ class CanonicalIngredientRiskService {
 
       recognized
           .putIfAbsent(
-            canonicalKey,
+            deduplicationKey,
             () => _CanonicalItemBuilder(
               ingredient: enriched,
               canonicalKey: canonicalKey,
@@ -94,6 +110,9 @@ class CanonicalIngredientRiskService {
     return CanonicalAdditiveAssessment(
       recognizedIngredients: items,
       unresolvedIngredients: unresolved.values.map(
+        (builder) => builder.build(),
+      ),
+      outOfScopeFlavouringEvidence: outOfScopeFlavourings.values.map(
         (builder) => builder.build(),
       ),
       conflicts: conflicts,
@@ -161,6 +180,12 @@ class CanonicalIngredientRiskService {
           : ingredient.name,
     );
     return 'name:$canonicalName';
+  }
+
+  String _deduplicationKeyForIngredient(Ingredient ingredient) {
+    final eCode = _normalizedECode(ingredient.eCode);
+    if (eCode != null) return 'e-code:$eCode';
+    return canonicalKeyForIngredient(ingredient);
   }
 
   _RiskResolution _resolveRisk(Ingredient ingredient, String canonicalKey) {
@@ -253,9 +278,45 @@ class CanonicalIngredientRiskService {
   );
 
   static final _knownAdditiveCandidate = RegExp(
-    r'\b(?:benzoat|nitrit|nitrat|sülfit|sulfit|sorbat|tartrazin|aspartam|sukraloz|asesülfam|asesulfam|monosodyum glutamat|karmin|lesitin|digliserit|guar gam|ksantan gam)\b',
+    r'\b(?:benzoat|nitrit|nitrat|propiyonat|sülfit|sulfit|sorbat|tartrazin|aspartam|sukraloz|asesülfam|asesulfam|monosodyum glutamat|karmin|lesitin|digliserit|pektin|sitrik asit|guar gam|ksantan gam)\b',
     caseSensitive: false,
   );
+
+  static const _genericOutOfScopeFlavourings = <String>{
+    'aroma',
+    'aroma verici',
+    'doğal aroma',
+    'doğal aroma verici',
+    'flavoring',
+    'flavoring agent',
+    'flavoring agents',
+    'flavorings',
+    'natural flavoring',
+    'natural flavoring agent',
+    'natural flavoring agents',
+    'natural flavorings',
+    'flavouring',
+    'flavouring agent',
+    'flavouring agents',
+    'flavourings',
+    'natural flavouring',
+    'natural flavouring agent',
+    'natural flavouring agents',
+    'natural flavourings',
+  };
+
+  static bool _isGenericOutOfScopeFlavouring(IngredientMatch match) {
+    for (final value in [match.originalToken, match.normalizedText]) {
+      final normalized = IngredientCanonicalizer.normalizeToken(value);
+      if (_genericOutOfScopeFlavourings.contains(normalized)) return true;
+
+      final canonical = IngredientCanonicalizer.normalizeToken(
+        IngredientCanonicalizer.mapToCanonical(normalized),
+      );
+      if (_genericOutOfScopeFlavourings.contains(canonical)) return true;
+    }
+    return false;
+  }
 
   static bool _isPotentialAdditive(IngredientMatch match) {
     final ingredient = match.matchedIngredient;
@@ -523,6 +584,21 @@ class _UnresolvedBuilder {
     candidateIngredientId: candidateIngredientId,
     candidateCanonicalName: candidateCanonicalName,
   );
+}
+
+class _OutOfScopeFlavouringBuilder {
+  _OutOfScopeFlavouringBuilder({required this.normalizedToken});
+
+  final String normalizedToken;
+  final List<String> sourceTokens = [];
+
+  void add(String token) => sourceTokens.add(token);
+
+  CanonicalOutOfScopeFlavouringEvidence build() =>
+      CanonicalOutOfScopeFlavouringEvidence(
+        normalizedToken: normalizedToken,
+        sourceTokens: sourceTokens,
+      );
 }
 
 extension<T> on Set<T> {

@@ -3,6 +3,7 @@ import 'dart:developer' as developer;
 import 'package:food_analyzer_app/features/analysis/models/ingredient_match.dart';
 import 'package:food_analyzer_app/features/product/models/ingredient.dart';
 import 'package:food_analyzer_app/features/analysis/services/ingredient_canonicalizer.dart';
+import 'package:food_analyzer_app/features/product/data/ingredient_explanation_catalog.dart';
 
 /// Service for normalizing and matching ingredients
 class IngredientMatcherService {
@@ -19,6 +20,21 @@ class IngredientMatcherService {
     'glikoz surubu',
     'fruktoz şurubu',
     'fruktoz surubu',
+  };
+
+  static const Set<String> _unspecifiedFunctionalLabels = {
+    'antioksidan',
+    'aroma verici',
+    'asitlik düzenleyici',
+    'emülgatör',
+    'jelleştirici',
+    'kabartıcı',
+    'kıvam artırıcı',
+    'koruyucu',
+    'renklendirici',
+    'stabilizör',
+    'tatlandırıcı',
+    'topaklanma önleyici',
   };
 
   /// Normalize a single ingredient text for matching.
@@ -107,6 +123,33 @@ class IngredientMatcherService {
     return names.any(_highImpactIngredients.contains);
   }
 
+  Iterable<String> _aliasesFor(Ingredient ingredient) sync* {
+    yield* ingredient.aliases ?? const [];
+    yield* ingredient.alternativeNames ?? const [];
+    yield* ingredient.commonNames ?? const [];
+    yield* ingredient.englishNames ?? const [];
+  }
+
+  bool _hasCompatibleFuzzyWords(String token, String candidate) {
+    final tokenWords = token
+        .split(' ')
+        .where((word) => word.isNotEmpty)
+        .toList();
+    final candidateWords = candidate
+        .split(' ')
+        .where((word) => word.isNotEmpty)
+        .toList();
+    if (tokenWords.length < 2 || candidateWords.length < 2) return true;
+
+    final tokenLast = tokenWords.last;
+    final candidateLast = candidateWords.last;
+    if (tokenLast == candidateLast) return true;
+
+    // Shared salt prefixes (for example "kalsiyum") are not enough to fuzzy
+    // match different chemical substances such as propiyonat and format.
+    return _normalizedEditSimilarity(tokenLast, candidateLast) >= 0.72;
+  }
+
   void _debugDecision({
     required String token,
     required String candidate,
@@ -141,28 +184,25 @@ class IngredientMatcherService {
       );
     }
 
-    // Try matching in priority order
-    Ingredient? bestMatch;
-    MatchType bestMatchType = MatchType.unmatched;
-    double bestConfidence = 0.0;
-    String? bestMatchedToken;
-    bool bestAffectsAnalysis = false;
-    bool bestNeedsConfirmation = false;
+    // A function name without a declared child substance is not a canonical
+    // ingredient identity, even if the educational catalogue contains a row
+    // with a similar display name.
+    if (_unspecifiedFunctionalLabels.contains(normalized)) {
+      return IngredientMatch(
+        originalToken: rawIngredientText,
+        normalizedText: normalized,
+        matchType: MatchType.unmatched,
+        confidenceScore: 0.0,
+        shouldAffectAnalysis: false,
+        needsUserConfirmation: false,
+      );
+    }
 
+    // Complete every authoritative pass before considering fuzzy candidates.
+    // Catalogue row order must never let a fuzzy chemical name beat an exact
+    // normalized name, E-code, or alias.
     for (final ingredient in allIngredients) {
-      final ingredientNormalized = ingredient.normalizedName.toLowerCase();
-      final eCode = ingredient.eCode == null
-          ? null
-          : IngredientCanonicalizer.normalizeECode(ingredient.eCode!);
-      final aliases = <String>[
-        ...?ingredient.aliases,
-        ...?ingredient.alternativeNames,
-        ...?ingredient.commonNames,
-        ...?ingredient.englishNames,
-      ];
-
-      // 1. Exact match on normalized_name
-      if (ingredientNormalized == normalized) {
+      if (normalizeIngredient(ingredient.normalizedName) == normalized) {
         return IngredientMatch(
           originalToken: rawIngredientText,
           normalizedText: normalized,
@@ -174,9 +214,13 @@ class IngredientMatcherService {
           needsUserConfirmation: false,
         );
       }
+    }
 
-      // 2. E-code match
-      if (eCode != null && normalized == eCode) {
+    for (final ingredient in allIngredients) {
+      final eCode = ingredient.eCode == null
+          ? null
+          : IngredientCanonicalizer.normalizeECode(ingredient.eCode!);
+      if (eCode == normalized) {
         return IngredientMatch(
           originalToken: rawIngredientText,
           normalizedText: normalized,
@@ -188,26 +232,30 @@ class IngredientMatcherService {
           needsUserConfirmation: false,
         );
       }
+    }
 
-      // 3. Exact alias/common/English name match
-      for (final alias in aliases) {
+    for (final ingredient in allIngredients) {
+      for (final alias in _aliasesFor(ingredient)) {
         final normalizedAlias = normalizeIngredient(alias);
         if (normalizedAlias.isNotEmpty && normalizedAlias == normalized) {
-          if (0.95 > bestConfidence) {
-            bestMatch = ingredient;
-            bestMatchType = MatchType.aliasMatch;
-            bestMatchedToken = normalizedAlias;
-            bestConfidence = 0.95;
-            bestAffectsAnalysis = true;
-            bestNeedsConfirmation = false;
-          }
+          return IngredientMatch(
+            originalToken: rawIngredientText,
+            normalizedText: normalized,
+            matchedIngredient: ingredient,
+            matchedToken: normalizedAlias,
+            matchType: MatchType.aliasMatch,
+            confidenceScore: 0.95,
+            shouldAffectAnalysis: true,
+            needsUserConfirmation: false,
+          );
         }
       }
+    }
 
-      // 3b. Canonical mapping match: map token to canonical form and try exact match
-      final canonical = IngredientCanonicalizer.mapToCanonical(normalized);
-      if (canonical != normalized) {
-        if (ingredientNormalized == canonical) {
+    final canonical = IngredientCanonicalizer.mapToCanonical(normalized);
+    if (canonical != normalized) {
+      for (final ingredient in allIngredients) {
+        if (normalizeIngredient(ingredient.normalizedName) == canonical) {
           return IngredientMatch(
             originalToken: rawIngredientText,
             normalizedText: normalized,
@@ -219,10 +267,8 @@ class IngredientMatcherService {
             needsUserConfirmation: false,
           );
         }
-        // also check aliases against canonical
-        for (final alias in aliases) {
-          final na = normalizeIngredient(alias);
-          if (na == canonical) {
+        for (final alias in _aliasesFor(ingredient)) {
+          if (normalizeIngredient(alias) == canonical) {
             return IngredientMatch(
               originalToken: rawIngredientText,
               normalizedText: normalized,
@@ -236,10 +282,57 @@ class IngredientMatcherService {
           }
         }
       }
+    }
+
+    final reviewedStaticIdentity = reviewedCanonicalIngredientIdentityForToken(
+      normalized,
+    );
+    if (reviewedStaticIdentity != null) {
+      final normalizedECode = reviewedStaticIdentity.eCode == null
+          ? null
+          : IngredientCanonicalizer.normalizeECode(
+              reviewedStaticIdentity.eCode!,
+            );
+      final matchType = normalized == normalizedECode
+          ? MatchType.eCodeMatch
+          : normalizeIngredient(reviewedStaticIdentity.normalizedName) ==
+                normalized
+          ? MatchType.exactMatch
+          : MatchType.aliasMatch;
+      return IngredientMatch(
+        originalToken: rawIngredientText,
+        normalizedText: normalized,
+        matchedIngredient: reviewedStaticIdentity,
+        matchedToken: matchType == MatchType.eCodeMatch
+            ? normalizedECode
+            : reviewedStaticIdentity.normalizedName,
+        matchType: matchType,
+        confidenceScore: matchType == MatchType.exactMatch ? 1 : 0.95,
+        shouldAffectAnalysis: true,
+        needsUserConfirmation: false,
+      );
+    }
+
+    Ingredient? bestMatch;
+    MatchType bestMatchType = MatchType.unmatched;
+    double bestConfidence = 0.0;
+    String? bestMatchedToken;
+    bool bestAffectsAnalysis = false;
+    bool bestNeedsConfirmation = false;
+
+    for (final ingredient in allIngredients) {
+      final ingredientNormalized = normalizeIngredient(
+        ingredient.normalizedName,
+      );
+      final compatibleWords = _hasCompatibleFuzzyWords(
+        normalized,
+        ingredientNormalized,
+      );
 
       // 4. Strong fuzzy match for non-high-impact ingredients only.
       final similarity = _calculateSimilarity(normalized, ingredientNormalized);
       final strongFuzzyAllowed =
+          compatibleWords &&
           normalized.length >= 5 &&
           ingredientNormalized.length >= 5 &&
           (normalized.length - ingredientNormalized.length).abs() <= 3;
@@ -259,6 +352,7 @@ class IngredientMatcherService {
 
       // 5. Low-confidence possible match: conservative and never affects analysis until approved.
       final possibleAllowed =
+          compatibleWords &&
           normalized.length >= 5 &&
           ingredientNormalized.length >= 5 &&
           (normalized.length - ingredientNormalized.length).abs() <= 3;

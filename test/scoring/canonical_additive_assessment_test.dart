@@ -112,6 +112,37 @@ void main() {
       expect(result.canonicalAdditives.single.sourceTokens, hasLength(2));
     });
 
+    test('different catalogue rows with E471 deduplicate by E-code', () {
+      final first = _ingredient(
+        id: 'e471-hyphenated',
+        name: 'Mono- ve Digliseritler',
+        normalizedName: 'mono ve digliseritler',
+        risk: 'unknown',
+        eCode: 'E471',
+        additiveGroup: 'emülgatör',
+      );
+      final second = _ingredient(
+        id: 'e471-long-form',
+        name: 'Yağ Asitlerinin Mono ve Digliseritleri',
+        normalizedName: 'yağ asitlerinin mono ve digliseritleri',
+        risk: 'unknown',
+        eCode: 'E 471',
+        additiveGroup: 'emülgatör',
+      );
+
+      final result = _assess([
+        _match(token: 'mono- ve digliseritler', ingredient: first),
+        _match(
+          token: 'yağ asitlerinin mono ve digliseritleri',
+          ingredient: second,
+        ),
+      ]);
+
+      expect(result.canonicalAdditives, hasLength(1));
+      expect(result.canonicalAdditives.single.eCode, 'E471');
+      expect(result.canonicalAdditives.single.occurrenceCount, 2);
+    });
+
     test('different additives in the same group remain separate', () {
       final second = _ingredient(
         id: 'additive-2',
@@ -215,6 +246,68 @@ void main() {
       expect(result.unresolvedIngredients.single.sourceTokens, [
         'tanimsiz katkı',
       ]);
+    });
+
+    test(
+      'generic flavouring is preserved as out-of-scope evidence, not an unresolved additive',
+      () {
+        final result = const CanonicalIngredientRiskService().assessForScoring(
+          IngredientMatchingResult(
+            matches: [
+              _match(
+                token: 'aroma vericiler',
+                ingredient: null,
+                type: MatchType.unmatched,
+                confidence: 0,
+                affectsAnalysis: false,
+              ),
+            ],
+          ),
+        );
+
+        expect(result.unresolvedIngredients, isEmpty);
+        expect(result.outOfScopeFlavouringEvidence, hasLength(1));
+        expect(result.outOfScopeFlavouringEvidence.single.sourceTokens, [
+          'aroma vericiler',
+        ]);
+        expect(
+          result.outOfScopeFlavouringEvidence.single.normalizedToken,
+          'aroma verici',
+        );
+
+        final english = const CanonicalIngredientRiskService().assessForScoring(
+          IngredientMatchingResult(
+            matches: [
+              _match(
+                token: 'flavourings',
+                ingredient: null,
+                type: MatchType.unmatched,
+                confidence: 0,
+                affectsAnalysis: false,
+              ),
+            ],
+          ),
+        );
+        expect(english.unresolvedIngredients, isEmpty);
+        expect(english.outOfScopeFlavouringEvidence, hasLength(1));
+      },
+    );
+
+    test('specific food additives are unaffected by flavouring scope', () {
+      final potassiumSorbate = _ingredient(
+        id: 'e202',
+        name: 'Potasyum sorbat',
+        risk: 'medium',
+        eCode: 'E202',
+        additiveGroup: 'koruyucu',
+      );
+      final result = _assess([
+        _match(token: 'E202', ingredient: potassiumSorbate),
+      ]);
+
+      expect(result.outOfScopeFlavouringEvidence, isEmpty);
+      expect(result.canonicalAdditives, hasLength(1));
+      expect(result.canonicalAdditives.single.eCode, 'E202');
     });
 
     test(

@@ -134,17 +134,37 @@ class CanonicalUnresolvedIngredient {
   int get occurrenceCount => sourceTokens.length;
 }
 
+class CanonicalOutOfScopeFlavouringEvidence {
+  CanonicalOutOfScopeFlavouringEvidence({
+    required this.normalizedToken,
+    required Iterable<String> sourceTokens,
+  }) : sourceTokens = List.unmodifiable(sourceTokens);
+
+  final String normalizedToken;
+  final List<String> sourceTokens;
+
+  int get occurrenceCount => sourceTokens.length;
+}
+
 class CanonicalAdditiveAssessment {
   CanonicalAdditiveAssessment({
     required Iterable<CanonicalIngredientAssessment> recognizedIngredients,
     required Iterable<CanonicalUnresolvedIngredient> unresolvedIngredients,
+    Iterable<CanonicalOutOfScopeFlavouringEvidence>
+        outOfScopeFlavouringEvidence =
+        const [],
     required Iterable<CanonicalRiskConflict> conflicts,
   }) : recognizedIngredients = List.unmodifiable(recognizedIngredients),
        unresolvedIngredients = List.unmodifiable(unresolvedIngredients),
+       outOfScopeFlavouringEvidence = List.unmodifiable(
+         outOfScopeFlavouringEvidence,
+       ),
        conflicts = List.unmodifiable(conflicts);
 
   final List<CanonicalIngredientAssessment> recognizedIngredients;
   final List<CanonicalUnresolvedIngredient> unresolvedIngredients;
+  final List<CanonicalOutOfScopeFlavouringEvidence>
+  outOfScopeFlavouringEvidence;
   final List<CanonicalRiskConflict> conflicts;
 
   List<CanonicalIngredientAssessment> get canonicalAdditives =>

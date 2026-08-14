@@ -12,6 +12,19 @@ The canonical API is `CanonicalIngredientRiskService`. It is pure after
 ingredient matching/catalogue loading: it makes no database, network, AI,
 clock, or random call.
 
+The `additiveQuality` component covers food additives under Regulation (EC)
+No 1333/2008. A generic, unspecified flavouring label such as `aroma verici`
+or `flavourings` does not identify a food additive and falls under the separate
+flavourings scope of Regulation (EC) No 1334/2008. The parser preserves that
+ingredient text, while canonical assessment records it as
+`outOfScopeFlavouringEvidence`; it receives no risk tier or additive penalty
+and does not make additive evidence incomplete by itself. A specifically
+identified additive or chemical remains subject to the normal matching and
+readiness rules.
+
+Regulatory references: [Regulation (EC) No 1333/2008](https://eur-lex.europa.eu/eli/reg/2008/1333/oj/eng)
+and [Regulation (EC) No 1334/2008](https://eur-lex.europa.eu/eli/reg/2008/1334/oj/eng).
+
 ## Previous Multiple-Authority Problem
 
 The audit found these paths capable of assigning or changing risk:
@@ -56,12 +69,12 @@ stable fallback uses a normalized E-code, then a normalized canonical name.
 Raw OCR text is retained as evidence but is not the primary key after a
 canonical match.
 
-All matches sharing one canonical key become one
-`CanonicalIngredientAssessment`. E-code, canonical-name, alias, and repeated
-references preserve individual `CanonicalMatchEvidence` records and one
-diagnostic occurrence count. Different ingredient IDs are never merged merely
-because they share an additive/display group. Occurrence count has no numeric
-penalty.
+For scoring deduplication, catalogue rows that carry the same valid E-code
+become one `CanonicalIngredientAssessment`, even if a legacy catalogue assigned
+different row IDs. E-code, canonical-name, alias, and repeated references
+preserve individual `CanonicalMatchEvidence` records and one diagnostic
+occurrence count. Different ingredient IDs are never merged merely because
+they share an additive/display group. Occurrence count has no numeric penalty.
 
 ## Match Authority
 
@@ -129,6 +142,13 @@ them. Runtime database entries remain authoritative inputs when present.
 
 Unknown or absent coverage remains `unknown`; this phase adds no scientific
 classification or health claim.
+
+The reviewed static catalogue supplies the missing E282 identity and aliases,
+with EFSA Journal 2014;12(7):3779 as its authority reference. It deliberately
+keeps the Etiketly risk tier `unknown`: the current methodology has no
+deterministic rule that maps an EFSA conclusion directly to low/medium/high.
+The same constraint applies to unresolved E202 and E471 catalogue risk
+conflicts; adding their specific EFSA references does not choose a tier.
 
 ## Compatibility
 

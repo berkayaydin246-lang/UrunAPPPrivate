@@ -45,7 +45,10 @@ class ProductEtiketlyScoreOrchestrator {
     if (evaluation == null) {
       return presentationMapper.missingCanonicalAssessment();
     }
-    return presentationMapper.fromResult(evaluation.result);
+    return presentationMapper.fromResult(
+      evaluation.result,
+      usesLegacyFallback: product.scoringEvidence == null,
+    );
   }
 
   ProductEtiketlyScoreEvaluation? calculate({

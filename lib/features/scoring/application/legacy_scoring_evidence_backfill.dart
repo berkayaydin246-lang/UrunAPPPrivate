@@ -29,6 +29,7 @@ abstract interface class LegacyScoringEvidenceBackfillDataSource {
 class LegacyScoringEvidenceBackfillOptions {
   const LegacyScoringEvidenceBackfillOptions({
     required this.dryRun,
+    this.onlyFinalScoreReady = false,
     this.batchSize = 50,
     this.startAfterProductId,
     this.maxProducts,
@@ -36,6 +37,7 @@ class LegacyScoringEvidenceBackfillOptions {
        assert(maxProducts == null || maxProducts > 0);
 
   final bool dryRun;
+  final bool onlyFinalScoreReady;
   final int batchSize;
   final String? startAfterProductId;
   final int? maxProducts;
@@ -44,10 +46,12 @@ class LegacyScoringEvidenceBackfillOptions {
 class LegacyScoringEvidenceBackfillSummary {
   LegacyScoringEvidenceBackfillSummary({
     required this.dryRun,
+    required this.onlyFinalScoreReady,
     required this.safeResumeCursor,
   });
 
   final bool dryRun;
+  final bool onlyFinalScoreReady;
   int totalProductsExamined = 0;
   int stagingMatch = 0;
   int explicitPer100 = 0;
@@ -102,6 +106,7 @@ class LegacyScoringEvidenceBackfillRunner {
   }) async {
     final summary = LegacyScoringEvidenceBackfillSummary(
       dryRun: options.dryRun,
+      onlyFinalScoreReady: options.onlyFinalScoreReady,
       safeResumeCursor: options.startAfterProductId,
     );
     late final List<Ingredient> catalogue;
@@ -214,6 +219,7 @@ class LegacyScoringEvidenceBackfillRunner {
 
     final evidence = result.evidence;
     if (evidence == null) return true;
+    if (options.onlyFinalScoreReady && !result.finalScoreReady) return true;
     summary.wouldWrite++;
     if (options.dryRun) return true;
     try {
@@ -371,6 +377,7 @@ class LegacyScoringEvidenceBackfillFormatter {
     final lines = <String>[
       '[summary]',
       'mode=${summary.dryRun ? 'dry_run' : 'apply'}',
+      'only_final_score_ready=${summary.onlyFinalScoreReady}',
       'total_products_examined=${summary.totalProductsExamined}',
       'staging_match=${summary.stagingMatch}',
       'explicit_per100=${summary.explicitPer100}',

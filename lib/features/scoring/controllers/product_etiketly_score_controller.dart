@@ -75,7 +75,10 @@ final productEtiketlyScoreProvider =
           return presentationMapper.missingCanonicalAssessment();
         }
         if (!evaluation.isCalculated) {
-          return presentationMapper.fromResult(evaluation.result);
+          return presentationMapper.fromResult(
+            evaluation.result,
+            usesLegacyFallback: product.scoringEvidence == null,
+          );
         }
 
         final current = snapshotBuilder.build(
@@ -89,7 +92,10 @@ final productEtiketlyScoreProvider =
             trusted: trusted,
           );
           if (decision.mayDisplayNumericScore) {
-            return presentationMapper.fromResult(evaluation.result);
+            return presentationMapper.fromResult(
+              evaluation.result,
+              usesLegacyFallback: product.scoringEvidence == null,
+            );
           }
           if (kDebugMode) {
             debugPrint(

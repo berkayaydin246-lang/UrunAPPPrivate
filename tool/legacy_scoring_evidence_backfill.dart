@@ -54,6 +54,7 @@ Future<void> main(List<String> arguments) async {
           await LegacyScoringEvidenceBackfillRunner(dataSource: dataSource).run(
             LegacyScoringEvidenceBackfillOptions(
               dryRun: options.dryRun,
+              onlyFinalScoreReady: options.onlyFinalScoreReady,
               batchSize: options.batchSize,
               startAfterProductId: options.startAfterProductId,
               maxProducts: options.maxProducts,
@@ -96,6 +97,7 @@ class _CliOptions {
     required this.help,
     required this.dryRun,
     required this.runBackfill,
+    required this.onlyFinalScoreReady,
     required this.projectRef,
     required this.batchSize,
     required this.startAfterProductId,
@@ -106,6 +108,7 @@ class _CliOptions {
   final bool help;
   final bool dryRun;
   final bool runBackfill;
+  final bool onlyFinalScoreReady;
   final String projectRef;
   final int batchSize;
   final String? startAfterProductId;
@@ -119,6 +122,7 @@ class _CliOptions {
         help: true,
         dryRun: true,
         runBackfill: false,
+        onlyFinalScoreReady: false,
         projectRef: '',
         batchSize: 50,
         startAfterProductId: null,
@@ -163,6 +167,7 @@ class _CliOptions {
       help: false,
       dryRun: dryRun,
       runBackfill: runBackfill,
+      onlyFinalScoreReady: arguments.contains('--only-final-score-ready'),
       projectRef: projectRef,
       batchSize: batchSize,
       startAfterProductId: _value(arguments, '--start-after'),
@@ -204,6 +209,7 @@ class _CliOptions {
       '--dry-run',
       '--apply',
       '--confirm-write-scoring-evidence',
+      '--only-final-score-ready',
     };
     const valueOptions = {
       '--project-ref',
@@ -440,6 +446,8 @@ Options:
   --batch-size N          Product page size, 1-100 (default: 50)
   --start-after UUID      Resume strictly after this product ID
   --max-products N        Bound the number of products examined
+  --only-final-score-ready
+                          Count/write only final-score-ready evidence
   --sample-product-ids    Read-only product evidence inspection
 
 Credentials are read only from SUPABASE_URL and

@@ -95,10 +95,16 @@ class EtiketlyScorePresentationMapper {
 
   final PublicScoreBlockerMapper blockerMapper;
 
-  ProductEtiketlyScoreState fromResult(EtiketlyScoreResult result) {
+  ProductEtiketlyScoreState fromResult(
+    EtiketlyScoreResult result, {
+    bool usesLegacyFallback = false,
+  }) {
     if (!result.isCalculated) {
       return ProductEtiketlyScoreState.unavailable(
-        reasons: blockerMapper.messagesFor(result.readiness),
+        reasons: blockerMapper.messagesFor(
+          result.readiness,
+          usesLegacyFallback: usesLegacyFallback,
+        ),
       );
     }
 
@@ -199,7 +205,14 @@ class EtiketlyScorePresentationMapper {
 class PublicScoreBlockerMapper {
   const PublicScoreBlockerMapper();
 
-  List<String> messagesFor(EtiketlyScoreReadinessResult readiness) {
+  List<String> messagesFor(
+    EtiketlyScoreReadinessResult readiness, {
+    bool usesLegacyFallback = false,
+  }) {
+    if (usesLegacyFallback) {
+      return _legacyFallbackMessages(readiness);
+    }
+
     final messages = <String>{};
     final nutritionBlockers = readiness.nutritionReadiness.blockingReasons;
 
@@ -241,6 +254,29 @@ class PublicScoreBlockerMapper {
     return List.unmodifiable(messages.take(3));
   }
 
+  List<String> _legacyFallbackMessages(EtiketlyScoreReadinessResult readiness) {
+    final messages = <String>{};
+    final nutritionBlockers = readiness.nutritionReadiness.blockingReasons;
+
+    // Basis, category, state, provenance and composition values are unknown in
+    // ProductScoringInputAdapter's legacy fallback by construction. Presenting
+    // those placeholders as proven product defects is misleading; retain only
+    // blockers established directly from current product/canonical data.
+    if (readiness.blockingReasons.any(_isAdditiveBlocker)) {
+      messages.add('Bazı katkı maddeleri henüz doğrulanmamış.');
+    }
+    if (nutritionBlockers.contains(ScoringReadinessBlocker.missingFiber)) {
+      messages.add('Lif bilgisi eksik.');
+    }
+    if (nutritionBlockers.any(_isMissingDeclaredNutritionValue)) {
+      messages.add('Gerekli besin değerleri eksik.');
+    }
+    if (messages.isEmpty) {
+      messages.add('Gerekli puanlama kanıtları henüz tamamlanmamış.');
+    }
+    return List.unmodifiable(messages.take(3));
+  }
+
   bool _isBasisBlocker(ScoringReadinessBlocker blocker) => switch (blocker) {
     ScoringReadinessBlocker.unknownNutritionBasis ||
     ScoringReadinessBlocker.unsupportedPerServingOnly ||
@@ -260,6 +296,18 @@ class PublicScoreBlockerMapper {
         ScoringReadinessBlocker.unknownNutritionProvenance ||
         ScoringReadinessBlocker.invalidEvidenceValue ||
         ScoringReadinessBlocker.rejectedEvidence => true,
+        _ => false,
+      };
+
+  bool _isMissingDeclaredNutritionValue(ScoringReadinessBlocker blocker) =>
+      switch (blocker) {
+        ScoringReadinessBlocker.missingEnergyKj ||
+        ScoringReadinessBlocker.energyKjNotDeclared ||
+        ScoringReadinessBlocker.missingTotalFatForFatCategory ||
+        ScoringReadinessBlocker.missingSaturatedFat ||
+        ScoringReadinessBlocker.missingSugars ||
+        ScoringReadinessBlocker.missingSalt ||
+        ScoringReadinessBlocker.missingProtein => true,
         _ => false,
       };
 
