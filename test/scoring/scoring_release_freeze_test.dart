@@ -94,6 +94,19 @@ void main() {
       'supabase/migrations/20260814010000_restrict_product_catalogue_writes.sql',
     ).readAsStringSync();
 
+    for (final policy in [
+      'Allow products insert',
+      'Allow products select',
+      'Allow products update',
+    ]) {
+      final drop = 'DROP POLICY IF EXISTS "$policy"';
+      expect(migration, contains(drop));
+      expect(
+        migration.indexOf(drop),
+        lessThan(migration.indexOf('DO \$\$')),
+        reason: '$policy must be removed before the fail-closed guard',
+      );
+    }
     expect(
       migration,
       contains(
@@ -105,6 +118,11 @@ void main() {
       contains(
         'DROP POLICY IF EXISTS "dev: authenticated can update products"',
       ),
+    );
+    expect(
+      migration,
+      isNot(contains('DROP POLICY IF EXISTS "anyone can select products"')),
+      reason: 'the canonical public catalogue read policy must be preserved',
     );
     expect(
       migration,
@@ -128,12 +146,87 @@ void main() {
       migration,
       contains("RAISE EXCEPTION 'unexpected_products_write_policy'"),
     );
+    expect(migration, contains("cmd IN ('ALL', 'INSERT', 'UPDATE', 'DELETE')"));
+    expect(
+      migration,
+      contains(
+        'GRANT INSERT, UPDATE ON TABLE public.products TO authenticated;',
+      ),
+    );
     expect(migration, contains('WITH CHECK (public.is_freshscan_admin())'));
+    expect(migration, contains('USING (public.is_freshscan_admin())'));
+    expect(
+      RegExp(r'FOR (INSERT|UPDATE)\s+TO authenticated').allMatches(migration),
+      hasLength(2),
+    );
     expect(
       migration,
       isNot(contains('GRANT INSERT, UPDATE ON TABLE public.products TO anon')),
     );
     expect(migration, contains('BEGIN;'));
     expect(migration, contains('COMMIT;'));
+  });
+
+  test('release RLS enforces the guarded audit RPC execute matrix', () {
+    final migration = File(
+      'supabase/migrations/20260814010000_restrict_product_catalogue_writes.sql',
+    ).readAsStringSync();
+    const signature =
+        'public.record_product_score_audit_snapshot(\n'
+        '  UUID, TEXT, INTEGER, TEXT, TEXT, TEXT, TEXT, TEXT, JSONB\n'
+        ')';
+
+    expect(
+      migration,
+      contains('REVOKE EXECUTE ON FUNCTION $signature FROM PUBLIC;'),
+    );
+    expect(
+      migration,
+      contains('REVOKE EXECUTE ON FUNCTION $signature FROM anon;'),
+    );
+    expect(
+      migration,
+      contains(
+        'GRANT EXECUTE ON FUNCTION $signature '
+        'TO authenticated, service_role, postgres;',
+      ),
+    );
+    expect(
+      migration,
+      isNot(contains('CREATE OR REPLACE FUNCTION')),
+      reason: 'the access-control migration must not rewrite scoring logic',
+    );
+    expect(
+      migration,
+      isNot(contains('get_current_product_score_audit_snapshot')),
+      reason: 'the public current-audit read RPC must remain unchanged',
+    );
+  });
+
+  test('RLS rollout preflight documents runtime and ACL invariants', () {
+    final rollout = File(
+      'docs/scoring/PRODUCT_CATALOGUE_RLS_ROLLOUT.md',
+    ).readAsStringSync();
+
+    for (final marker in [
+      'auth.role()',
+      'service_role',
+      'is_freshscan_admin()',
+      'not_authorized',
+      '42501',
+      'snapshot_product_version_stale',
+      'snapshot_score_reconciliation_failed',
+      'etiketly_score_v2',
+      'nutrition_quality_transform_v2',
+      'additive_quality_transform_v1',
+    ]) {
+      expect(rollout, contains(marker), reason: marker);
+    }
+    expect(rollout, contains('anon=false'));
+    expect(rollout, contains('authenticated=true'));
+    expect(rollout, contains('service_role=true'));
+    expect(rollout, contains('20260626010000'));
+    expect(rollout, contains('supabase migration repair'));
+    expect(rollout, contains('manual insert'));
   });
 }

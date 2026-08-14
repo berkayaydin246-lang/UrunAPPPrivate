@@ -4,6 +4,15 @@
 
 BEGIN;
 
+-- Production preflight proved these dashboard-era policies are exact
+-- duplicates of the canonical development policies below.
+DROP POLICY IF EXISTS "Allow products insert"
+  ON public.products;
+DROP POLICY IF EXISTS "Allow products select"
+  ON public.products;
+DROP POLICY IF EXISTS "Allow products update"
+  ON public.products;
+
 DROP POLICY IF EXISTS "dev: authenticated can insert products"
   ON public.products;
 DROP POLICY IF EXISTS "dev: authenticated can update products"
@@ -52,5 +61,17 @@ CREATE POLICY "admins can update products"
   TO authenticated
   USING (public.is_freshscan_admin())
   WITH CHECK (public.is_freshscan_admin());
+
+-- The function body remains unchanged. Restrict invocation to the roles that
+-- are admitted by its service-role/admin authorization gate.
+REVOKE EXECUTE ON FUNCTION public.record_product_score_audit_snapshot(
+  UUID, TEXT, INTEGER, TEXT, TEXT, TEXT, TEXT, TEXT, JSONB
+) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.record_product_score_audit_snapshot(
+  UUID, TEXT, INTEGER, TEXT, TEXT, TEXT, TEXT, TEXT, JSONB
+) FROM anon;
+GRANT EXECUTE ON FUNCTION public.record_product_score_audit_snapshot(
+  UUID, TEXT, INTEGER, TEXT, TEXT, TEXT, TEXT, TEXT, JSONB
+) TO authenticated, service_role, postgres;
 
 COMMIT;
