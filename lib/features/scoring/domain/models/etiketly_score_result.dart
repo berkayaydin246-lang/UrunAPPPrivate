@@ -2,7 +2,9 @@ import 'package:food_analyzer_app/features/scoring/domain/models/additive_qualit
 import 'package:food_analyzer_app/features/scoring/domain/models/etiketly_score_readiness_result.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/nutrition_quality_result.dart';
 
-const etiketlyScoreVersion = 'etiketly_score_v1';
+const etiketlyScoreV1Version = 'etiketly_score_v1';
+const etiketlyScoreV2Version = 'etiketly_score_v2';
+const etiketlyScoreVersion = etiketlyScoreV2Version;
 
 enum EtiketlyScoreStatus { calculated, notCalculable }
 

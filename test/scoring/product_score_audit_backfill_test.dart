@@ -284,7 +284,7 @@ void main() {
       expect(result.currentCalculatedScore, current.finalScore);
       expect(result.snapshotScore, current.finalScore);
       expect(result.fingerprintMatch, isTrue);
-      expect(result.currentVersions, contains('score=etiketly_score_v1'));
+      expect(result.currentVersions, contains('score=etiketly_score_v2'));
       expect(result.validationStatus, 'valid');
       expect(result.gateStatus, 'matching');
     },

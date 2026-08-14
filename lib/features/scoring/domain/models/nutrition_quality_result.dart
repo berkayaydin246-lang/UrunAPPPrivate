@@ -1,7 +1,9 @@
 import 'package:food_analyzer_app/features/scoring/domain/models/nutrition_raw_score_result.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_types.dart';
 
-const nutritionQualityTransformVersion = 'nutrition_quality_transform_v1';
+const nutritionQualityTransformV1Version = 'nutrition_quality_transform_v1';
+const nutritionQualityTransformV2Version = 'nutrition_quality_transform_v2';
+const nutritionQualityTransformVersion = nutritionQualityTransformV2Version;
 
 enum NutritionQualitySpecialCase { none, plainWater }
 
@@ -16,8 +18,8 @@ class NutritionQualityResult {
     required this.qualityScore,
     required this.rawResult,
     required this.specialCase,
+    this.transformVersion = nutritionQualityTransformVersion,
   }) : assert(qualityScore >= 0 && qualityScore <= 100),
-       transformVersion = nutritionQualityTransformVersion,
        category = rawResult.resolvedCategory;
 
   bool get isPlainWaterSpecialCase =>

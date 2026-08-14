@@ -33,50 +33,50 @@ void main() {
       expect(_scoreText(tester), '79');
     });
 
-    testWidgets('4. score 80 uses Çok iyi', (tester) async {
-      await _pumpCard(tester, _calculatedState(80));
+    testWidgets('4. score 85 uses Çok iyi', (tester) async {
+      await _pumpCard(tester, _calculatedState(85));
 
       expect(find.text('İçerik profili: Çok iyi'), findsOneWidget);
     });
 
-    testWidgets('5. score 79 uses İyi', (tester) async {
-      await _pumpCard(tester, _calculatedState(79));
+    testWidgets('5. score 84 uses İyi', (tester) async {
+      await _pumpCard(tester, _calculatedState(84));
 
       expect(find.text('İçerik profili: İyi'), findsOneWidget);
     });
 
-    testWidgets('6. score 60 uses İyi', (tester) async {
-      await _pumpCard(tester, _calculatedState(60));
+    testWidgets('6. score 70 uses İyi', (tester) async {
+      await _pumpCard(tester, _calculatedState(70));
 
       expect(find.text('İçerik profili: İyi'), findsOneWidget);
     });
 
-    testWidgets('7. score 59 uses Orta', (tester) async {
-      await _pumpCard(tester, _calculatedState(59));
+    testWidgets('7. score 69 uses Orta', (tester) async {
+      await _pumpCard(tester, _calculatedState(69));
 
       expect(find.text('İçerik profili: Orta'), findsOneWidget);
     });
 
-    testWidgets('8. score 40 uses Orta', (tester) async {
-      await _pumpCard(tester, _calculatedState(40));
+    testWidgets('8. score 50 uses Orta', (tester) async {
+      await _pumpCard(tester, _calculatedState(50));
 
       expect(find.text('İçerik profili: Orta'), findsOneWidget);
     });
 
-    testWidgets('9. score 39 uses Zayıf', (tester) async {
-      await _pumpCard(tester, _calculatedState(39));
+    testWidgets('9. score 49 uses Zayıf', (tester) async {
+      await _pumpCard(tester, _calculatedState(49));
 
       expect(find.text('İçerik profili: Zayıf'), findsOneWidget);
     });
 
-    testWidgets('10. score 20 uses Zayıf', (tester) async {
-      await _pumpCard(tester, _calculatedState(20));
+    testWidgets('10. score 30 uses Zayıf', (tester) async {
+      await _pumpCard(tester, _calculatedState(30));
 
       expect(find.text('İçerik profili: Zayıf'), findsOneWidget);
     });
 
-    testWidgets('11. score 19 uses Çok zayıf', (tester) async {
-      await _pumpCard(tester, _calculatedState(19));
+    testWidgets('11. score 29 uses Çok zayıf', (tester) async {
+      await _pumpCard(tester, _calculatedState(29));
 
       expect(find.text('İçerik profili: Çok zayıf'), findsOneWidget);
     });
@@ -163,6 +163,37 @@ void main() {
       );
     });
 
+    testWidgets('major nutrition attention point remains visible', (
+      tester,
+    ) async {
+      await _pumpCard(
+        tester,
+        ProductEtiketlyScoreState.calculated(
+          displayScore: 75,
+          qualityLabel: 'İyi',
+          band: EtiketlyScoreBand.good,
+          nutritionDisplayScore: 71,
+          additiveDisplayScore: 89,
+          nutritionSummary:
+              '100 g / 100 ml temelindeki beslenme profili iyi düzeydedir.',
+          nutritionAttentionPoints: const [
+            'Tuz, beslenme bileşenini belirgin biçimde düşüren bir dikkat noktasıdır.',
+          ],
+          additiveSummary: 'Etiketly katkı değerlendirmesi: 1 orta düzey.',
+          hasBeverageNnsOverlap: false,
+          scoreVersion: 'etiketly_score_v2',
+        ),
+      );
+
+      expect(
+        find.text(
+          '100 g / 100 ml temelindeki beslenme profili iyi düzeydedir.',
+        ),
+        findsOneWidget,
+      );
+      expect(find.textContaining('Tuz, beslenme bileşenini'), findsOneWidget);
+    });
+
     testWidgets(
       '20. quality is communicated with text and semantics, not color alone',
       (tester) async {
@@ -189,7 +220,7 @@ void main() {
 
       expect(find.text('%80'), findsOneWidget);
       expect(find.text('%20'), findsOneWidget);
-      expect(find.text('Etiketly Puanı metodolojisi v1'), findsOneWidget);
+      expect(find.text('Etiketly Puanı metodolojisi v2'), findsOneWidget);
       expect(
         find.textContaining('0-100 arası bir içerik profili'),
         findsOneWidget,

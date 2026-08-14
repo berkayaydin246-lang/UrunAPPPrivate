@@ -59,7 +59,7 @@ void main() {
     expect(result.rawResult, same(rawResult));
     expect(result.category, ScoringCategory.beverage);
     expect(result.transformVersion, nutritionQualityTransformVersion);
-    expect(result.qualityScore, closeTo(66.875, 0.0000001));
+    expect(result.qualityScore, closeTo(86.375, 0.0000001));
     expect(result.specialCase, NutritionQualitySpecialCase.none);
   });
 
@@ -158,7 +158,7 @@ void main() {
     expect(quality(ScoringCategory.cheese, -100), 100);
     expect(quality(ScoringCategory.redMeat, -100), 100);
     expect(quality(ScoringCategory.fatsOilsNutsSeeds, -100), 100);
-    expect(quality(ScoringCategory.beverage, -100), 85);
+    expect(quality(ScoringCategory.beverage, -100), 95);
   });
 
   test('extreme adverse raw values clamp safely to zero', () {

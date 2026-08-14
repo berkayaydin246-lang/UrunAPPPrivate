@@ -448,7 +448,7 @@ const _fixtures = <_CalibrationFixture>[
 
 void main() {
   const rawCalculator = NutritionRawScoreCalculator();
-  const transformer = NutritionQualityTransformer();
+  const transformer = NutritionQualityTransformer.v1();
 
   NutritionRawScoreResult rawFor(_CalibrationFixture fixture) {
     final input = completeInput(
@@ -489,7 +489,7 @@ void main() {
     expect(_fixtures.length, 41);
   });
 
-  test('INTERNAL CALIBRATION FIXTURE production mapping stays broad', () {
+  test('INTERNAL CALIBRATION FIXTURE v1 mapping stays preserved', () {
     for (final fixture in _fixtures) {
       final raw = rawFor(fixture);
       final quality = transformer.transform(raw).qualityScore;

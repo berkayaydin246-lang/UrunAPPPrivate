@@ -208,7 +208,7 @@ void main() {
     test('15. score version is namespaced and fingerprinted', () {
       final current = ordinarySnapshot();
       final changed = _mutateAndRehash(current, (json) {
-        json['score_version'] = 'etiketly_score_v2';
+        json['score_version'] = 'etiketly_score_v1';
       });
       expect(current.inputFingerprint, isNot(changed.inputFingerprint));
       expect(
@@ -415,14 +415,14 @@ void main() {
 
     test('35. all component versions are retained separately', () {
       final snapshot = ordinarySnapshot();
-      expect(snapshot.scoreVersion, 'etiketly_score_v1');
+      expect(snapshot.scoreVersion, 'etiketly_score_v2');
       expect(
         snapshot.nutritionMethodologyVersion,
         'updated_nutrition_profile_2023_v1',
       );
       expect(
         snapshot.nutritionTransformVersion,
-        'nutrition_quality_transform_v1',
+        'nutrition_quality_transform_v2',
       );
       expect(
         snapshot.additiveTransformVersion,

@@ -46,12 +46,7 @@ class EtiketlyScoreAuditValidator {
         EtiketlyScoreAuditSnapshot.currentSchemaVersion) {
       issues.add(ScoreAuditValidationIssue.unsupportedSchema);
     }
-    if (snapshot.scoreVersion != etiketlyScoreVersion ||
-        snapshot.nutritionMethodologyVersion !=
-            nutritionRawMethodologyVersion ||
-        snapshot.nutritionTransformVersion !=
-            nutritionQualityTransformVersion ||
-        snapshot.additiveTransformVersion != additiveQualityTransformVersion) {
+    if (!_isSupportedVersionSet(snapshot)) {
       issues.add(ScoreAuditValidationIssue.unsupportedVersion);
     }
 
@@ -405,7 +400,14 @@ class EtiketlyScoreAuditValidator {
       );
     }
 
-    final expected = const NutritionQualityTransformer().transform(raw);
+    final transformer = switch (snapshot.nutritionTransformVersion) {
+      nutritionQualityTransformV1Version =>
+        const NutritionQualityTransformer.v1(),
+      nutritionQualityTransformV2Version => const NutritionQualityTransformer(),
+      _ => null,
+    };
+    if (transformer == null) return;
+    final expected = transformer.transform(raw);
     if (!_close(expected.qualityScore, nutrition.nutritionQuality)) {
       issues.add(ScoreAuditValidationIssue.nutritionBreakdownMismatch);
     }
@@ -499,4 +501,18 @@ class EtiketlyScoreAuditValidator {
 
   static bool _close(double left, double right) =>
       (left - right).abs() <= tolerance;
+
+  bool _isSupportedVersionSet(EtiketlyScoreAuditSnapshot snapshot) {
+    final scoreAndNutritionVersionsMatch =
+        (snapshot.scoreVersion == etiketlyScoreV1Version &&
+            snapshot.nutritionTransformVersion ==
+                nutritionQualityTransformV1Version) ||
+        (snapshot.scoreVersion == etiketlyScoreV2Version &&
+            snapshot.nutritionTransformVersion ==
+                nutritionQualityTransformV2Version);
+    return scoreAndNutritionVersionsMatch &&
+        snapshot.nutritionMethodologyVersion ==
+            nutritionRawMethodologyVersion &&
+        snapshot.additiveTransformVersion == additiveQualityTransformVersion;
+  }
 }

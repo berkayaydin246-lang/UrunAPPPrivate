@@ -64,7 +64,9 @@ class _CalculatedScoreContent extends StatelessWidget {
       label:
           'Etiketly Puanı $score üzerinden 100. İçerik profili: $qualityLabel. '
           'Beslenme bileşeni ${state.nutritionDisplayScore} üzerinden 100. '
-          'Katkı bileşeni ${state.additiveDisplayScore} üzerinden 100.',
+          'Katkı bileşeni ${state.additiveDisplayScore} üzerinden 100. '
+          '${state.nutritionSummary} '
+          '${state.nutritionAttentionPoints.join(' ')}',
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(18),
@@ -142,6 +144,32 @@ class _CalculatedScoreContent extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             _ComponentScores(state: state),
+            const SizedBox(height: 12),
+            Text(
+              state.nutritionSummary!,
+              key: const ValueKey('etiketly-nutrition-summary'),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppColors.textSecondary,
+                height: 1.4,
+              ),
+            ),
+            if (state.nutritionAttentionPoints.isNotEmpty) ...[
+              const SizedBox(height: 5),
+              ...state.nutritionAttentionPoints.map(
+                (point) => Padding(
+                  padding: const EdgeInsets.only(top: 3),
+                  child: Text(
+                    point,
+                    key: const ValueKey('etiketly-nutrition-attention'),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: AppColors.warning,
+                      height: 1.4,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+            ],
             const SizedBox(height: 12),
             Text(
               state.additiveSummary!,
@@ -510,7 +538,7 @@ class _ScoreMethodologySheet extends StatelessWidget {
             ),
             const SizedBox(height: 18),
             Text(
-              'Etiketly Puanı metodolojisi v1',
+              'Etiketly Puanı metodolojisi v2',
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 12),

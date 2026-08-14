@@ -17,6 +17,11 @@ strictly eligible, internal Etiketly Score v1 as an `80% nutritionQuality` and
 Product Detail score card, presentation-only public labels, deterministic
 explanations, and strict non-numeric unavailable/error states.
 
+The current public calibration is Etiketly Score v2. It retains the same raw
+nutrition methodology, additive transform, readiness rules, and `80/20`
+weighting while using `nutrition_quality_transform_v2`. V1 constants,
+transform behavior, documentation, and audit rows remain historical records.
+
 The domain module is pure Dart. It does not access UI state, Riverpod,
 repositories, Supabase, the network, or AI services.
 
@@ -238,8 +243,9 @@ Phase 2B-5 adds a separate pure normalization layer:
 - `domain/models/nutrition_quality_result.dart`
 - `domain/services/nutrition_quality_transformer.dart`
 
-All paths above are under `lib/features/scoring/`. The transform version is
-`nutrition_quality_transform_v1`, separate from the raw methodology version.
+All paths above are under `lib/features/scoring/`. The current transform version
+is `nutrition_quality_transform_v2`, separate from the unchanged raw
+methodology version.
 The transformer consumes only `NutritionRawScoreResult`; it does not access a
 product, readiness evidence, database, network, clock, AI, Riverpod, or UI.
 
@@ -250,6 +256,8 @@ internal `double` precision without rounding. Plain water maps directly from
 its typed raw special case to `100`; no raw score is fabricated. Exact anchors,
 tail behavior, candidate comparison, calibration results, and limitations are
 documented in
+[NUTRITION_QUALITY_TRANSFORM_V2.md](NUTRITION_QUALITY_TRANSFORM_V2.md). The
+original calibration remains documented in
 [NUTRITION_QUALITY_TRANSFORM_V1.md](NUTRITION_QUALITY_TRANSFORM_V1.md).
 
 The `41` synthetic cases are explicitly internal calibration fixtures, not
@@ -309,7 +317,7 @@ comparison, 50 calibration fixtures, limitations, and remaining catalogue gaps
 are documented in
 [ADDITIVE_QUALITY_TRANSFORM_V1.md](ADDITIVE_QUALITY_TRANSFORM_V1.md).
 
-## Etiketly Score v1
+## Etiketly Score architecture and versions
 
 Phase 2B-8 implements the internal final score in:
 
@@ -324,8 +332,9 @@ The only production formula is:
 EtiketlyScore = 0.80 * nutritionQuality + 0.20 * additiveQuality
 ```
 
-The transform version is `etiketly_score_v1`. It preserves unrounded component
-precision and retains the nutrition methodology, nutrition transform, additive
+The current score version is `etiketly_score_v2`; v1 remains available only for
+historical validation and comparison. Both preserve unrounded component
+precision and retain the nutrition methodology, nutrition transform, additive
 transform, and final-score versions independently.
 
 Final eligibility is stricter than numeric component availability. Nutrition

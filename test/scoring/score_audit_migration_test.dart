@@ -4,10 +4,14 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   late String sql;
+  late String scoreV2Sql;
 
   setUpAll(() {
     sql = File(
       'supabase/migrations/20260808020000_add_product_score_audit_snapshots.sql',
+    ).readAsStringSync().replaceAll(RegExp(r'\s+'), ' ').toLowerCase();
+    scoreV2Sql = File(
+      'supabase/migrations/20260814000000_enable_score_v2_audit_snapshots.sql',
     ).readAsStringSync().replaceAll(RegExp(r'\s+'), ' ').toLowerCase();
   });
 
@@ -69,4 +73,29 @@ void main() {
       ),
     );
   });
+
+  test(
+    'score v2 migration updates trusted capture without rewriting history',
+    () {
+      expect(
+        scoreV2Sql,
+        contains("p_score_version is distinct from 'etiketly_score_v2'"),
+      );
+      expect(
+        scoreV2Sql,
+        contains(
+          "p_nutrition_transform_version is distinct from 'nutrition_quality_transform_v2'",
+        ),
+      );
+      expect(scoreV2Sql, contains("'additive_quality_transform_v1'"));
+      expect(
+        scoreV2Sql,
+        isNot(contains('update public.product_score_audit_snapshots')),
+      );
+      expect(
+        scoreV2Sql,
+        isNot(contains('delete from public.product_score_audit_snapshots')),
+      );
+    },
+  );
 }

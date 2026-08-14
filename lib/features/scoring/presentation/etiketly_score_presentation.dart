@@ -1,5 +1,6 @@
 import 'package:food_analyzer_app/features/scoring/domain/models/etiketly_score_readiness_result.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/etiketly_score_result.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/nutrition_quality_result.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_types.dart';
 
 enum ProductEtiketlyScoreStatus { loading, calculated, unavailable, error }
@@ -14,6 +15,8 @@ class ProductEtiketlyScoreState {
     this.band,
     this.nutritionDisplayScore,
     this.additiveDisplayScore,
+    this.nutritionSummary,
+    this.nutritionAttentionPoints = const [],
     this.additiveSummary,
     this.hasBeverageNnsOverlap = false,
     this.message,
@@ -36,6 +39,8 @@ class ProductEtiketlyScoreState {
     required EtiketlyScoreBand band,
     required int nutritionDisplayScore,
     required int additiveDisplayScore,
+    required String nutritionSummary,
+    required Iterable<String> nutritionAttentionPoints,
     required String additiveSummary,
     required bool hasBeverageNnsOverlap,
     required String scoreVersion,
@@ -47,6 +52,8 @@ class ProductEtiketlyScoreState {
       band: band,
       nutritionDisplayScore: nutritionDisplayScore,
       additiveDisplayScore: additiveDisplayScore,
+      nutritionSummary: nutritionSummary,
+      nutritionAttentionPoints: List.unmodifiable(nutritionAttentionPoints),
       additiveSummary: additiveSummary,
       hasBeverageNnsOverlap: hasBeverageNnsOverlap,
       scoreVersion: scoreVersion,
@@ -70,6 +77,8 @@ class ProductEtiketlyScoreState {
   final EtiketlyScoreBand? band;
   final int? nutritionDisplayScore;
   final int? additiveDisplayScore;
+  final String? nutritionSummary;
+  final List<String> nutritionAttentionPoints;
   final String? additiveSummary;
   final bool hasBeverageNnsOverlap;
   final String? message;
@@ -96,13 +105,17 @@ class EtiketlyScorePresentationMapper {
     final displayScore = result.futureDisplayScore!;
     final band = bandForDisplayScore(displayScore);
     final additive = result.additiveQuality;
+    final nutrition = result.nutritionQuality!;
+    final nutritionDisplayScore = nutrition.qualityScore.round();
 
     return ProductEtiketlyScoreState.calculated(
       displayScore: displayScore,
       qualityLabel: labelForBand(band),
       band: band,
-      nutritionDisplayScore: result.nutritionQuality!.qualityScore.round(),
+      nutritionDisplayScore: nutritionDisplayScore,
       additiveDisplayScore: additive.qualityScore.round(),
+      nutritionSummary: _nutritionSummary(nutritionDisplayScore),
+      nutritionAttentionPoints: _nutritionAttentionPoints(nutrition),
       additiveSummary: _additiveSummary(
         lowCount: additive.lowCount,
         mediumCount: additive.mediumCount,
@@ -126,10 +139,10 @@ class EtiketlyScorePresentationMapper {
   }
 
   EtiketlyScoreBand bandForDisplayScore(int score) {
-    if (score >= 80) return EtiketlyScoreBand.veryGood;
-    if (score >= 60) return EtiketlyScoreBand.good;
-    if (score >= 40) return EtiketlyScoreBand.medium;
-    if (score >= 20) return EtiketlyScoreBand.weak;
+    if (score >= 85) return EtiketlyScoreBand.veryGood;
+    if (score >= 70) return EtiketlyScoreBand.good;
+    if (score >= 50) return EtiketlyScoreBand.medium;
+    if (score >= 30) return EtiketlyScoreBand.weak;
     return EtiketlyScoreBand.veryWeak;
   }
 
@@ -140,6 +153,29 @@ class EtiketlyScorePresentationMapper {
     EtiketlyScoreBand.weak => 'Zayıf',
     EtiketlyScoreBand.veryWeak => 'Çok zayıf',
   };
+
+  String _nutritionSummary(int displayScore) {
+    final label = labelForBand(bandForDisplayScore(displayScore)).toLowerCase();
+    return '100 g / 100 ml temelindeki beslenme profili $label düzeydedir.';
+  }
+
+  List<String> _nutritionAttentionPoints(
+    NutritionQualityResult nutritionQuality,
+  ) {
+    final negative = nutritionQuality.rawResult.negativePoints;
+    if (negative == null) return const [];
+
+    return [
+      if (negative.saltPoints >= 10)
+        'Tuz, beslenme bileşenini belirgin biçimde düşüren bir dikkat noktasıdır.',
+      if (negative.sugarsPoints >= 8)
+        'Şeker, beslenme bileşenini belirgin biçimde düşüren bir dikkat noktasıdır.',
+      if (negative.saturatedFatPoints >= 7 ||
+          negative.saturatedEnergyPoints >= 7 ||
+          negative.saturatedFatRatioPoints >= 7)
+        'Doymuş yağ, beslenme bileşenini belirgin biçimde düşüren bir dikkat noktasıdır.',
+    ];
+  }
 
   String _additiveSummary({
     required int lowCount,

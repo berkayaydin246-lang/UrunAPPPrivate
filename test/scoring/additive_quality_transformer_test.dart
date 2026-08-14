@@ -427,7 +427,7 @@ void main() {
     );
 
     expect(
-      const NutritionQualityTransformer().transform(rawResult).qualityScore,
+      const NutritionQualityTransformer.v1().transform(rawResult).qualityScore,
       closeTo(66.875, 0.0000001),
     );
   });
