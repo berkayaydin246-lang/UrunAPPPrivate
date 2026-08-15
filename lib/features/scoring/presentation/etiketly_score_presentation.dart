@@ -7,6 +7,24 @@ enum ProductEtiketlyScoreStatus { loading, calculated, unavailable, error }
 
 enum EtiketlyScoreBand { veryGood, good, medium, weak, veryWeak }
 
+/// Coarse, public-safe reason a score is not currently displayed. Derived
+/// only from data the consumer app is already authorized to read (the
+/// product row and the live scoring evaluation) — never from privileged
+/// `product_staging` recovery diagnostics, which stay admin/recovery-tooling
+/// only. See [ScoringBlockerDiagnosticService] for the privileged, detailed
+/// equivalent used by admin/recovery tooling.
+enum ProductEtiketlyScoreUnavailableStage {
+  /// A. No trusted scoring evidence exists for this product yet.
+  noTrustedEvidence,
+
+  /// B. Evidence exists but scoring readiness is incomplete.
+  evidenceIncompleteReadiness,
+
+  /// C. Evidence exists and a score can be calculated, but no current
+  /// matching audit snapshot is available to publish yet.
+  auditNotCurrent,
+}
+
 class ProductEtiketlyScoreState {
   const ProductEtiketlyScoreState._({
     required this.status,
@@ -22,6 +40,7 @@ class ProductEtiketlyScoreState {
     this.message,
     this.reasons = const [],
     this.scoreVersion,
+    this.unavailableStage,
   });
 
   const ProductEtiketlyScoreState.loading()
@@ -32,6 +51,16 @@ class ProductEtiketlyScoreState {
         status: ProductEtiketlyScoreStatus.error,
         message: 'Puan şu anda hesaplanamadı.',
       );
+
+  static const Map<ProductEtiketlyScoreUnavailableStage, String>
+  _unavailableStageMessages = {
+    ProductEtiketlyScoreUnavailableStage.noTrustedEvidence:
+        'Bu ürün için doğrulanmış puanlama kanıtı henüz oluşturulmadı.',
+    ProductEtiketlyScoreUnavailableStage.evidenceIncompleteReadiness:
+        'Bu ürün için puanlama kanıtı var ama bazı bilgiler henüz doğrulanmadı.',
+    ProductEtiketlyScoreUnavailableStage.auditNotCurrent:
+        'Puan kaydı güncelleniyor.',
+  };
 
   factory ProductEtiketlyScoreState.calculated({
     required int displayScore,
@@ -62,12 +91,14 @@ class ProductEtiketlyScoreState {
 
   factory ProductEtiketlyScoreState.unavailable({
     required Iterable<String> reasons,
+    ProductEtiketlyScoreUnavailableStage stage =
+        ProductEtiketlyScoreUnavailableStage.evidenceIncompleteReadiness,
   }) {
     return ProductEtiketlyScoreState._(
       status: ProductEtiketlyScoreStatus.unavailable,
-      message:
-          'Bu ürün için yeterli doğrulanmış içerik ve besin bilgisi bulunmuyor.',
+      message: _unavailableStageMessages[stage],
       reasons: List.unmodifiable(reasons.take(3)),
+      unavailableStage: stage,
     );
   }
 
@@ -84,6 +115,7 @@ class ProductEtiketlyScoreState {
   final String? message;
   final List<String> reasons;
   final String? scoreVersion;
+  final ProductEtiketlyScoreUnavailableStage? unavailableStage;
 
   bool get isCalculated => status == ProductEtiketlyScoreStatus.calculated;
 }
@@ -105,6 +137,9 @@ class EtiketlyScorePresentationMapper {
           result.readiness,
           usesLegacyFallback: usesLegacyFallback,
         ),
+        stage: usesLegacyFallback
+            ? ProductEtiketlyScoreUnavailableStage.noTrustedEvidence
+            : ProductEtiketlyScoreUnavailableStage.evidenceIncompleteReadiness,
       );
     }
 
@@ -132,15 +167,24 @@ class EtiketlyScorePresentationMapper {
     );
   }
 
-  ProductEtiketlyScoreState missingCanonicalAssessment() {
+  ProductEtiketlyScoreState missingCanonicalAssessment({
+    bool usesLegacyFallback = false,
+  }) {
     return ProductEtiketlyScoreState.unavailable(
       reasons: const ['İçerik listesi henüz tam değerlendirilememiş.'],
+      stage: usesLegacyFallback
+          ? ProductEtiketlyScoreUnavailableStage.noTrustedEvidence
+          : ProductEtiketlyScoreUnavailableStage.evidenceIncompleteReadiness,
     );
   }
 
   ProductEtiketlyScoreState auditSnapshotRequired() {
+    // The stage message ("Puan kaydı güncelleniyor.") is already the full,
+    // specific explanation for this state — no separate reason bullet is
+    // needed, and repeating it would render the same text twice.
     return ProductEtiketlyScoreState.unavailable(
-      reasons: const ['Puan kaydı güncelleniyor.'],
+      reasons: const [],
+      stage: ProductEtiketlyScoreUnavailableStage.auditNotCurrent,
     );
   }
 

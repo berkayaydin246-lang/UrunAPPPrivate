@@ -104,6 +104,8 @@ Future<void> main(List<String> arguments) async {
       );
       if (index > 0) stdout.writeln();
       stdout.writeln(formatter.format(report));
+      stdout.writeln();
+      stdout.writeln(formatIngredientCompletenessDiagnostic(report));
     }
   } on Object catch (error) {
     // Remote failures can contain request metadata. Report only the type.
@@ -317,6 +319,86 @@ Future<_BlockerSampleSummary> _collectBlockerSamples({
     completed: completed,
     samples: samples,
   );
+}
+
+/// Mirrors the private normalization helpers inside
+/// `LegacyStagingScoringEvidence.hasSourceCompleteIngredients()`
+/// (legacy_scoring_evidence_recovery.dart) exactly, operation-for-operation
+/// — those helpers are private to that file, so this diagnostic reproduces
+/// them rather than approximating them. `has_source_complete_ingredients`
+/// in [formatIngredientCompletenessDiagnostic] is never recomputed from
+/// these mirrored conditions; it always comes directly from
+/// [ScoringBlockerDiagnosticReport.ingredientsSourceComplete], which itself
+/// is the real method's result. This is read-only diagnostic output — it
+/// changes no behavior. Not prefixed with `_` so the focused test in
+/// test/scoring/scoring_blocker_report_diagnostic_test.dart can call it
+/// directly.
+String _diagNormalized(String? value) => value?.trim().toLowerCase() ?? '';
+
+String _diagNormalizedText(String? value) =>
+    _diagNormalized(value).replaceAll(RegExp(r'\s+'), ' ');
+
+bool _diagIsWebScraperSource(String? value) =>
+    _diagNormalized(value).startsWith('web_scraper:');
+
+String formatIngredientCompletenessDiagnostic(
+  ScoringBlockerDiagnosticReport report,
+) {
+  final staging = report.selectedStaging;
+  final productIngredientsText = report.product.ingredientsText;
+
+  if (staging == null) {
+    return [
+      '[INGREDIENT COMPLETENESS DIAGNOSTIC]',
+      'selected_staging_row=none',
+      'has_source_complete_ingredients=${report.ingredientsSourceComplete}',
+      'product_ingredients_text=${_diagText(productIngredientsText)}',
+    ].join('\n');
+  }
+
+  final effectiveIngredientsSource =
+      staging.ingredientsSource ?? staging.source;
+  final conditionQualityOk =
+      _diagNormalized(staging.ingredientsQuality) == 'ingredients_ok';
+  final conditionWebScraperSource = _diagIsWebScraperSource(
+    effectiveIngredientsSource,
+  );
+  final conditionIngredientsRawNonempty = _diagNormalizedText(
+    staging.ingredientsRaw,
+  ).isNotEmpty;
+  // Raw, unnormalized comparison — diagnostic-only, no equivalent condition
+  // inside hasSourceCompleteIngredients() itself.
+  final conditionTextExactMatch =
+      staging.ingredientsText == productIngredientsText;
+  // Combines hasSourceCompleteIngredients()'s two normalized-text clauses
+  // (staging normalized text non-empty AND normalized equality) into one
+  // field, matching what that method actually checks.
+  final conditionTextNormalizedMatch =
+      _diagNormalizedText(staging.ingredientsText).isNotEmpty &&
+      _diagNormalizedText(staging.ingredientsText) ==
+          _diagNormalizedText(productIngredientsText);
+
+  return [
+    '[INGREDIENT COMPLETENESS DIAGNOSTIC]',
+    'staging_ingredients_quality=${_diagText(staging.ingredientsQuality)}',
+    'staging_ingredients_source=${_diagText(staging.ingredientsSource)}',
+    'staging_source=${_diagText(staging.source)}',
+    'effective_ingredients_source=${_diagText(effectiveIngredientsSource)}',
+    'condition_quality_ok=$conditionQualityOk',
+    'condition_web_scraper_source=$conditionWebScraperSource',
+    'condition_ingredients_raw_nonempty=$conditionIngredientsRawNonempty',
+    'condition_text_exact_match=$conditionTextExactMatch',
+    'condition_text_normalized_match=$conditionTextNormalizedMatch',
+    'has_source_complete_ingredients=${report.ingredientsSourceComplete}',
+    'staging_ingredients_text=${_diagText(staging.ingredientsText)}',
+    'product_ingredients_text=${_diagText(productIngredientsText)}',
+  ].join('\n');
+}
+
+String _diagText(Object? value) {
+  final text = value?.toString().trim() ?? '';
+  if (text.isEmpty) return '-';
+  return text.replaceAll(RegExp(r'[\r\n\t]+'), ' ');
 }
 
 String _formatBlockerSamples(_BlockerSampleSummary summary) {

@@ -72,7 +72,9 @@ final productEtiketlyScoreProvider =
           canonicalAssessment: scoringAssessment,
         );
         if (evaluation == null) {
-          return presentationMapper.missingCanonicalAssessment();
+          return presentationMapper.missingCanonicalAssessment(
+            usesLegacyFallback: product.scoringEvidence == null,
+          );
         }
         if (!evaluation.isCalculated) {
           return presentationMapper.fromResult(

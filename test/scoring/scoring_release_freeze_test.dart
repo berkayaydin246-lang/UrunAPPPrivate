@@ -89,6 +89,33 @@ void main() {
     );
   });
 
+  test(
+    'historical recovery tooling never fabricates evidence or scores directly',
+    () {
+      final runner = File(
+        'lib/features/scoring/application/legacy_scoring_recovery_lifecycle_runner.dart',
+      ).readAsStringSync();
+      final tool = File(
+        'tool/legacy_scoring_recovery_lifecycle.dart',
+      ).readAsStringSync();
+
+      // Apply must route through the trusted lifecycle with the recovery
+      // service as the evidence resolver, using the reserved backfill
+      // trigger — never a raw evidence/audit write of its own.
+      expect(runner, contains('ProductScoringLifecycleService'));
+      expect(runner, contains('recovery.recoverEvidence'));
+      expect(runner, contains('ScoreAuditTriggerSource.controlledBackfill'));
+      expect(runner, isNot(contains('dataSource.writeScoringEvidence(')));
+      expect(runner, isNot(contains('dataSource.insertSnapshot(')));
+
+      // Dry-run must only ever call the read-only recovery evaluation.
+      expect(runner, contains('recovery.recover('));
+
+      expect(tool, contains('LegacyScoringRecoveryLifecycleRunner'));
+      expect(tool, isNot(contains('ScoringEvidenceSnapshot(')));
+    },
+  );
+
   test('release RLS closes anonymous and non-admin catalogue write bypass', () {
     final migration = File(
       'supabase/migrations/20260814010000_restrict_product_catalogue_writes.sql',
@@ -284,5 +311,261 @@ void main() {
     expect(rollout, contains('20260626010000'));
     expect(rollout, contains('supabase migration repair'));
     expect(rollout, contains('manual insert'));
+  });
+
+  group('product_staging access restriction', () {
+    const migrationPath =
+        'supabase/migrations/20260815000000_restrict_product_staging_access.sql';
+
+    test('explicitly enables RLS early, before final policies/grants, without FORCE', () {
+      final migration = File(migrationPath).readAsStringSync();
+      const enableStatement =
+          'ALTER TABLE public.product_staging ENABLE ROW LEVEL SECURITY;';
+
+      expect(migration, contains(enableStatement));
+      expect(
+        migration,
+        isNot(
+          contains('ALTER TABLE public.product_staging FORCE ROW LEVEL SECURITY'),
+        ),
+        reason:
+            'FORCE would also restrict the table owner and change '
+            'postgres/service-role semantics beyond this migration\'s intent',
+      );
+
+      final beginIndex = migration.indexOf('BEGIN;');
+      final enableIndex = migration.indexOf(enableStatement);
+      final firstCreatePolicyIndex = migration.indexOf('CREATE POLICY');
+      final firstGrantIndex = migration.indexOf('GRANT ');
+      expect(beginIndex, greaterThanOrEqualTo(0));
+      expect(enableIndex, greaterThan(beginIndex));
+      expect(
+        enableIndex,
+        lessThan(firstCreatePolicyIndex),
+        reason: 'RLS must be enabled before the final policies are created',
+      );
+      expect(
+        enableIndex,
+        lessThan(firstGrantIndex),
+        reason: 'RLS must be enabled before the final grants are established',
+      );
+    });
+
+    test('drops every confirmed-live broad/dev policy before the fail-closed guard', () {
+      final migration = File(migrationPath).readAsStringSync();
+      final guardIndex = migration.indexOf('DO \$\$');
+      expect(guardIndex, greaterThan(0));
+
+      for (final policy in [
+        'authenticated can insert product_staging',
+        'authenticated can select product_staging',
+        'authenticated can update product_staging',
+        'dev anon can read product_staging',
+        'dev anon can update product_staging',
+        'dev authenticated can read product_staging',
+        // Migration-history names, dropped defensively in case an
+        // environment's history diverges from the confirmed live names.
+        'dev: select product_staging',
+        'dev: insert product_staging',
+        'dev: update product_staging',
+      ]) {
+        final drop = 'DROP POLICY IF EXISTS "$policy" ON public.product_staging;';
+        expect(migration, contains(drop), reason: policy);
+        expect(
+          migration.indexOf(drop),
+          lessThan(guardIndex),
+          reason: '$policy must be dropped before the fail-closed guard',
+        );
+      }
+    });
+
+    test('fails closed on any residual policy, not just write policies', () {
+      final migration = File(migrationPath).readAsStringSync();
+
+      expect(
+        migration,
+        contains("RAISE EXCEPTION 'unexpected_product_staging_policy'"),
+      );
+      // Unlike the products migration (which intentionally keeps a public
+      // SELECT policy and only guards write commands), product_staging has
+      // no legitimate policy that should survive the drops above — the
+      // guard must not be scoped to a cmd allowlist.
+      expect(migration, isNot(contains("cmd IN (")));
+      expect(
+        migration,
+        contains(
+          "WHERE schemaname = 'public'\n"
+          "      AND tablename = 'product_staging'",
+        ),
+      );
+    });
+
+    test('anon loses all product_staging access', () {
+      final migration = File(migrationPath).readAsStringSync();
+
+      expect(
+        migration,
+        contains('REVOKE ALL ON TABLE public.product_staging FROM PUBLIC;'),
+      );
+      expect(
+        migration,
+        contains('REVOKE ALL ON TABLE public.product_staging FROM anon;'),
+      );
+      expect(migration, isNot(contains('TO anon')));
+    });
+
+    test('authenticated gets exactly SELECT + UPDATE, never INSERT or DELETE', () {
+      final migration = File(migrationPath).readAsStringSync();
+
+      expect(
+        migration,
+        contains('REVOKE ALL ON TABLE public.product_staging FROM authenticated;'),
+      );
+      expect(
+        migration,
+        contains(
+          'GRANT SELECT, UPDATE ON TABLE public.product_staging TO authenticated;',
+        ),
+      );
+      expect(
+        migration,
+        isNot(contains('INSERT ON TABLE public.product_staging TO authenticated')),
+      );
+      expect(
+        migration,
+        isNot(contains('DELETE ON TABLE public.product_staging TO authenticated')),
+      );
+    });
+
+    test(
+      'service_role is stripped to exactly SELECT/INSERT/UPDATE — live '
+      'DELETE/REFERENCES/TRIGGER/TRUNCATE are not re-granted',
+      () {
+        final migration = File(migrationPath).readAsStringSync();
+
+        expect(
+          migration,
+          contains(
+            'REVOKE ALL ON TABLE public.product_staging FROM service_role;',
+          ),
+        );
+        expect(
+          migration,
+          contains(
+            'GRANT SELECT, INSERT, UPDATE ON TABLE public.product_staging '
+            'TO service_role;',
+          ),
+        );
+        final revokeIndex = migration.indexOf(
+          'REVOKE ALL ON TABLE public.product_staging FROM service_role;',
+        );
+        final grantIndex = migration.indexOf(
+          'GRANT SELECT, INSERT, UPDATE ON TABLE public.product_staging '
+          'TO service_role;',
+        );
+        expect(
+          revokeIndex,
+          lessThan(grantIndex),
+          reason: 'must revoke the live broad grant before re-granting least '
+              'privilege',
+        );
+        expect(
+          migration,
+          isNot(contains('DELETE ON TABLE public.product_staging TO service_role')),
+        );
+        expect(
+          migration,
+          isNot(
+            contains('REFERENCES ON TABLE public.product_staging TO service_role'),
+          ),
+        );
+        expect(
+          migration,
+          isNot(contains('TRIGGER ON TABLE public.product_staging TO service_role')),
+        );
+        expect(
+          migration,
+          isNot(
+            contains('TRUNCATE ON TABLE public.product_staging TO service_role'),
+          ),
+        );
+      },
+    );
+
+    test('exactly two admin policies exist, both gated by is_freshscan_admin, neither INSERT nor DELETE', () {
+      final migration = File(migrationPath).readAsStringSync();
+
+      expect(
+        RegExp(r'CREATE POLICY "admins can \w+ product_staging"').allMatches(migration),
+        hasLength(2),
+      );
+      expect(
+        migration,
+        contains(
+          'CREATE POLICY "admins can select product_staging"\n'
+          '  ON public.product_staging\n'
+          '  FOR SELECT\n'
+          '  TO authenticated\n'
+          '  USING (public.is_freshscan_admin());',
+        ),
+      );
+      expect(
+        migration,
+        contains(
+          'CREATE POLICY "admins can update product_staging"\n'
+          '  ON public.product_staging\n'
+          '  FOR UPDATE\n'
+          '  TO authenticated\n'
+          '  USING (public.is_freshscan_admin())\n'
+          '  WITH CHECK (public.is_freshscan_admin());',
+        ),
+      );
+      expect(migration, isNot(contains('FOR INSERT')));
+      expect(migration, isNot(contains('FOR DELETE')));
+      expect(migration, isNot(contains('FOR ALL')));
+    });
+
+    test('migration is transactional and touches no scoring logic or data', () {
+      final migration = File(migrationPath).readAsStringSync();
+
+      expect(migration, contains('BEGIN;'));
+      expect(migration, contains('COMMIT;'));
+      expect(migration, isNot(contains('CREATE OR REPLACE FUNCTION')));
+      expect(migration, isNot(contains('UPDATE public.product_staging SET')));
+      expect(migration, isNot(contains('DELETE FROM public.product_staging')));
+      expect(migration, isNot(contains('INSERT INTO public.product_staging')));
+      // Must not touch the two migrations explicitly out of scope.
+      expect(
+        Directory('supabase/migrations')
+            .listSync()
+            .whereType<File>()
+            .map((f) => f.path.split('/').last)
+            .where(
+              (name) =>
+                  name.startsWith('20260626010000') ||
+                  name.startsWith('20260814010000'),
+            ),
+        hasLength(2),
+        reason:
+            'both referenced migrations must still exist untouched alongside '
+            'the new one',
+      );
+    });
+
+    test('the read-only preflight script never writes and is never auto-executed', () {
+      final script = File(
+        'tmp/product_staging_rls_preflight.sh',
+      ).readAsStringSync();
+
+      expect(script, contains('BEGIN TRANSACTION READ ONLY;'));
+      expect(script, contains('ROLLBACK;'));
+      expect(script, contains('DO NOT execute this script as part of an agent task'));
+      expect(
+        script,
+        isNot(
+          contains(RegExp(r'\b(INSERT INTO|UPDATE public|DELETE FROM|DROP |ALTER )')),
+        ),
+      );
+    });
   });
 }
