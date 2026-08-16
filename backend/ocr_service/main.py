@@ -1379,6 +1379,12 @@ For nutrition facts:
 - If a field is not printed on the label, write: not_visible
 - serving_size: copy the serving size text exactly as printed (e.g. "30 g", "1 bardak (250 ml)").
 - If no nutrition table is visible, write not_visible for all fields.
+- basis_declaration: copy ONLY the exact printed header/wording that introduces the
+  nutrition table (e.g. "100 g'da", "100 ml için", "Her 100 g", "100 g / 100 ml",
+  "1 porsiyonda (30 g)"), exactly as printed, immediately above/beside that table.
+  Do NOT copy this from anywhere else on the label (not from the product name, the
+  ingredients list, or any other text). Write not_visible if no such header is
+  printed next to the nutrition table.
 
 Output format rules (strictly enforced):
 - Return ONLY the plain-text format shown in the user message.
@@ -1410,6 +1416,7 @@ WARNINGS:
 - any extraction issue (e.g. image blurry, no ingredients section visible)
 
 NUTRITION_FACTS:
+basis_declaration: <exact printed header text next to the nutrition table, or not_visible>
 energy_kj: <value or not_visible>
 energy_kcal: <value or not_visible>
 fat: <value or not_visible>
@@ -1428,6 +1435,8 @@ Rules:
 - Preserve Turkish characters: ç, ğ, ı, ö, ş, ü.
 - Preserve E-codes exactly as printed.
 - For NUTRITION_FACTS: use numeric values with decimal dot (e.g. 9.3). Write not_visible if the field is absent.
+- basis_declaration is text, not a number — copy it verbatim from beside the nutrition
+  table only, never inferred from the product name/category/package type.
 - If a section has no items, write exactly: "- none"\
 """
 
@@ -1565,14 +1574,55 @@ def _detect_explicit_text_candidate(
     return matches[0]
 
 
+_COMBINED_100G_100ML_RE = re.compile(
+    r"100\s*g[r]?\s*/\s*(?:100\s*)?m\s*l\b", re.IGNORECASE
+)
+
+
 def _detect_nutrition_basis_candidate(text: str) -> tuple[str, str | None]:
-    """Return a basis only when explicit label wording supports one basis."""
+    """Return a basis only when explicit label wording supports one basis.
+
+    A single combined declaration ("100 g / ml", "100 g / 100 ml") never
+    identifies which values belong to which unit — that stays "unknown",
+    exactly like every other generic/ambiguous form, checked BEFORE the
+    two-separate-declarations case below.
+
+    When the SAME text instead explicitly names both a per-100g and a
+    per-100mL value as two SEPARATE statements (no combined slash), this
+    returns the structured "both100gAnd100ml" value rather than silently
+    collapsing to unknown or guessing between them — selecting one is the
+    frozen project rule owned by the scoring/CLI layer, never this backend
+    (see tool/final_retained_label_basis_ocr_dry_run.dart).
+    """
     value, evidence_text = _detect_explicit_text_candidate(text, _BASIS_PATTERNS)
+    if _COMBINED_100G_100ML_RE.search(text):
+        return "unknown", None
     mentions_100g = re.search(r"\b100\s*g(?:ram)?\b", text, re.IGNORECASE)
     mentions_100ml = re.search(r"\b100\s*ml\b", text, re.IGNORECASE)
     if mentions_100g is not None and mentions_100ml is not None:
-        return "unknown", None
+        return "both100gAnd100ml", None
     return value, evidence_text
+
+
+def _extract_basis_declaration_text(nutrition_lines: list[str]) -> str:
+    """Pull the dedicated `basis_declaration:` line out of the isolated
+    NUTRITION_FACTS lines — the ONLY text this backend ever derives a
+    nutrition-basis candidate from. Deliberately never falls back to the
+    ingredient-side RAW_TEXT: that section describes the WHOLE label
+    (including unrelated text), so a stray "100 g" mention there must
+    never manufacture nutrition-basis evidence.
+    """
+    for line in nutrition_lines:
+        if ":" not in line:
+            continue
+        key, _, value = line.partition(":")
+        if key.strip().lower() != "basis_declaration":
+            continue
+        cleaned = value.strip()
+        if not cleaned or cleaned.lower() in {"not_visible", "none", "-", "yok", ""}:
+            return ""
+        return cleaned
+    return ""
 
 
 def _detect_product_state_candidate(text: str) -> tuple[str, str | None]:
@@ -1647,11 +1697,25 @@ def _extract_explicit_ingredient_percentages(
 
 
 def _build_product_label_evidence_candidates(
-    raw_text: str,
+    nutrition_lines: list[str],
+    ingredient_raw_text: str,
 ) -> ProductLabelEvidenceCandidates | None:
-    basis, basis_text = _detect_nutrition_basis_candidate(raw_text)
-    product_state, product_state_text = _detect_product_state_candidate(raw_text)
-    percentages = _extract_explicit_ingredient_percentages(raw_text)
+    """Section: OCR basis-evidence contract fix.
+
+    `nutrition_basis`/`nutrition_basis_text` are derived ONLY from the
+    isolated NUTRITION_FACTS `basis_declaration:` line
+    (`_extract_basis_declaration_text`) — never from `ingredient_raw_text`,
+    which is the WHOLE label's RAW_TEXT and could contain an unrelated
+    "100 g" mention with nothing to do with the nutrition table. Product
+    state and ingredient percentages remain genuinely ingredient-scoped
+    concerns and are correctly sourced from `ingredient_raw_text`.
+    """
+    basis_declaration_text = _extract_basis_declaration_text(nutrition_lines)
+    basis, basis_text = _detect_nutrition_basis_candidate(basis_declaration_text)
+    product_state, product_state_text = _detect_product_state_candidate(
+        ingredient_raw_text
+    )
+    percentages = _extract_explicit_ingredient_percentages(ingredient_raw_text)
     if basis == "unknown" and product_state == "unknown" and not percentages:
         return None
     return ProductLabelEvidenceCandidates(
@@ -1732,6 +1796,7 @@ async def _extract_product_label_with_claude(
     # Parse the plain-text sections.
     ingredient_response: IngredientResponse
     nutrition_dict: dict[str, Any] | None = None
+    nutrition_lines: list[str] = []
 
     if _looks_like_plain_text_format(raw_content):
         try:
@@ -1754,11 +1819,19 @@ async def _extract_product_label_with_claude(
         except Exception as exc:
             logger.warning("product-label plain-text parsing error: %s", exc)
             ingredient_response = _build_fallback_response(raw_content, str(exc))
+            nutrition_lines = []
     else:
         ingredient_response = _build_fallback_response(raw_content, "Unrecognised response format")
 
+    # Nutrition-basis evidence MUST come from the isolated NUTRITION_FACTS
+    # declaration text, never from the ingredient-side RAW_TEXT (which
+    # describes the WHOLE label and could contain an unrelated "100 g"
+    # mention with nothing to do with the nutrition table). Product-state
+    # wording and ingredient percentages remain ingredient-scoped concerns,
+    # correctly sourced from the ingredient raw text as before.
     evidence_candidates = _build_product_label_evidence_candidates(
-        ingredient_response.raw_text
+        nutrition_lines,
+        ingredient_response.raw_text,
     )
     has_ingredients = len(ingredient_response.ingredients) > 0
     has_nutrition = bool(nutrition_dict)
