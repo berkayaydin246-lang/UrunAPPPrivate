@@ -277,8 +277,14 @@ class CanonicalIngredientRiskService {
     caseSensitive: false,
   );
 
+  // "pirofosfat"/"fosfat" cover the E338-E341/E450-E452 phosphate family
+  // (e.g. "sodyum asit pirofosfat" — sodium acid pyrophosphate). Without
+  // this, an unmatched phosphate-family chemical silently falls into the
+  // ordinary-food bucket and stops blocking additive readiness even though
+  // it is a recognizable additive-like compound with no trusted canonical
+  // match yet — a false pass, not a false block.
   static final _knownAdditiveCandidate = RegExp(
-    r'\b(?:benzoat|nitrit|nitrat|propiyonat|sülfit|sulfit|sorbat|tartrazin|aspartam|sukraloz|asesülfam|asesulfam|monosodyum glutamat|karmin|lesitin|digliserit|pektin|sitrik asit|guar gam|ksantan gam)\b',
+    r'\b(?:benzoat|nitrit|nitrat|propiyonat|sülfit|sulfit|sorbat|tartrazin|aspartam|sukraloz|asesülfam|asesulfam|monosodyum glutamat|karmin|lesitin|digliserit|pektin|sitrik asit|guar gam|ksantan gam|pirofosfat|fosfat)\b',
     caseSensitive: false,
   );
 

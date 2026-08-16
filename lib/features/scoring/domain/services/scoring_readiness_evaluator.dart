@@ -1,7 +1,9 @@
 import 'package:food_analyzer_app/features/scoring/domain/models/etiketly_scoring_input.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/evidence_value.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/scoring_nutrition_data.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_readiness_result.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_types.dart';
+import 'package:food_analyzer_app/features/scoring/domain/services/nutrition_point_calculator.dart';
 
 class ScoringReadinessEvaluator {
   const ScoringReadinessEvaluator();
@@ -103,7 +105,6 @@ class ScoringReadinessEvaluator {
           case ScoringRequirement.saturatedFat:
           case ScoringRequirement.sugars:
           case ScoringRequirement.salt:
-          case ScoringRequirement.protein:
           case ScoringRequirement.fiber:
             _checkNutritionRequirement(
               requirement,
@@ -112,6 +113,22 @@ class ScoringReadinessEvaluator {
               warnings,
               missing,
               needsEvidence,
+            );
+          case ScoringRequirement.protein:
+            // Branch-conditional: protein only blocks scoring when its
+            // absence could change the selected deterministic score
+            // branch (see NUTRITION_METHODOLOGY_2023.md and
+            // _isProteinRequired). A present-but-invalid protein value is
+            // still fully validated regardless — this relaxation is only
+            // ever about missing-ness, never about tolerating bad data.
+            _checkNutritionRequirement(
+              requirement,
+              _nutritionEvidence(input, requirement),
+              blockers,
+              warnings,
+              missing,
+              needsEvidence,
+              requireIfMissing: _isProteinRequired(input, category),
             );
           case ScoringRequirement.fvlPercentage:
             _checkFvl(input, blockers, warnings, missing, needsEvidence);
@@ -126,6 +143,18 @@ class ScoringReadinessEvaluator {
       }
     }
 
+    // Cross-field / cross-evidence checks that no single per-requirement
+    // check above can see: two individually-present, individually-finite,
+    // individually-non-negative values can still be jointly nonsensical
+    // (e.g. saturated fat greater than total fat), or a numeric value that
+    // is technically "present" can still fail a category-specific physical
+    // constraint (e.g. zero total fat for a fats/oils/nuts/seeds product).
+    // Without these, such source data reaches
+    // ValidatedNutritionScoringInput.validate() unblocked and throws
+    // NutritionScoringInputValidationException as an uncaught exception
+    // instead of a diagnosable, fail-closed readiness blocker.
+    _checkCrossFieldNutritionInvariants(input, category, blockers);
+
     return _result(
       category: category,
       blockers: blockers,
@@ -133,6 +162,36 @@ class ScoringReadinessEvaluator {
       missing: missing,
       needsEvidence: needsEvidence,
     );
+  }
+
+  void _checkCrossFieldNutritionInvariants(
+    EtiketlyScoringInput input,
+    ScoringCategory category,
+    Set<ScoringReadinessBlocker> blockers,
+  ) {
+    final totalFat = input.nutrition.totalFat.value;
+    final saturatedFat = input.nutrition.saturatedFat.value;
+    final totalFatIsCleanNonNegative =
+        totalFat != null && totalFat.isFinite && totalFat >= 0;
+    final saturatedFatIsCleanNonNegative =
+        saturatedFat != null && saturatedFat.isFinite && saturatedFat >= 0;
+
+    if (totalFatIsCleanNonNegative &&
+        saturatedFatIsCleanNonNegative &&
+        saturatedFat > totalFat) {
+      blockers.add(ScoringReadinessBlocker.saturatedFatExceedsTotalFat);
+    }
+
+    if (category == ScoringCategory.fatsOilsNutsSeeds &&
+        totalFatIsCleanNonNegative &&
+        totalFat <= 0) {
+      blockers.add(ScoringReadinessBlocker.nonPositiveTotalFatForFatCategory);
+    }
+
+    if (input.classificationFacts.isPlainWater?.trustedValue == true &&
+        category != ScoringCategory.beverage) {
+      blockers.add(ScoringReadinessBlocker.plainWaterCategoryMismatch);
+    }
   }
 
   void _checkBasis(
@@ -165,12 +224,15 @@ class ScoringReadinessEvaluator {
     Set<ScoringReadinessBlocker> blockers,
     Set<ScoringReadinessWarning> warnings,
     Set<ScoringRequirement> missing,
-    Set<ScoringRequirement> needsEvidence,
-  ) {
+    Set<ScoringRequirement> needsEvidence, {
+    bool requireIfMissing = true,
+  }) {
     final value = evidence.value;
     if (value == null) {
-      blockers.add(_missingBlocker(requirement));
-      missing.add(requirement);
+      if (requireIfMissing) {
+        blockers.add(_missingBlocker(requirement));
+        missing.add(requirement);
+      }
       return;
     }
     if (!value.isFinite || value < 0) {
@@ -203,6 +265,146 @@ class ScoringReadinessEvaluator {
     if (evidence.verification != EvidenceVerification.verified) {
       warnings.add(ScoringReadinessWarning.containsUnverifiedEvidence);
     }
+  }
+
+  static const _pointCalculator = NutritionPointCalculator();
+
+  /// Whether missing protein evidence can actually change this product's
+  /// deterministic score branch — the dependency-graph correction required
+  /// by NUTRITION_METHODOLOGY_2023.md. Cheese and beverage never suppress
+  /// protein, so it is always required for them. General food and red meat
+  /// suppress protein once `N >= 11`; fats/oils/nuts/seeds suppress it once
+  /// `N >= 7`. `N` is computed here purely from the OTHER already-present,
+  /// individually-clean negative-point inputs, reusing
+  /// [NutritionPointCalculator]'s exact frozen point tables (never
+  /// reimplemented) — never from protein itself, so there is no
+  /// circularity. If any of those other inputs is missing/invalid, `N`
+  /// cannot be determined, and protein remains conservatively required
+  /// (unchanged, fail-closed behavior) rather than guessed.
+  bool _isProteinRequired(EtiketlyScoringInput input, ScoringCategory category) {
+    return isProteinRequiredForNutrition(category, input.nutrition);
+  }
+
+  /// Public, reusable form of the SAME branch-conditional protein
+  /// determination [_isProteinRequired] uses internally — exposed so
+  /// other callers (e.g. the historical basis revalidation service's
+  /// nutrition-consistency gate) can ask "does this specific
+  /// category/nutrition combination actually need protein" without
+  /// re-deriving a second, hardcoded copy of this dependency logic. Pure,
+  /// frozen, unchanged behavior from [_isProteinRequired] — only the
+  /// parameter type changed (nutrition data directly, not a full scoring
+  /// input), since that was always the only part of the input this logic
+  /// ever read.
+  bool isProteinRequiredForNutrition(
+    ScoringCategory category,
+    ScoringNutritionData nutrition,
+  ) {
+    switch (category) {
+      case ScoringCategory.cheese:
+      case ScoringCategory.beverage:
+        return true;
+      case ScoringCategory.generalFood:
+      case ScoringCategory.redMeat:
+        final n = _generalNegativeTotalIfDetermined(nutrition);
+        return n == null || n < 11;
+      case ScoringCategory.fatsOilsNutsSeeds:
+        final n = _fatsNegativeTotalIfDetermined(nutrition);
+        return n == null || n < 7;
+      case ScoringCategory.unknown:
+      case ScoringCategory.outOfScope:
+        // Unreachable in practice: evaluate() already returns before this
+        // point for both categories. Conservative default if ever reached.
+        return true;
+    }
+  }
+
+  /// Public: every [ScoringRequirement] that is actually nutrition-numeric
+  /// AND score-relevant for [category] given [nutrition] (used only to
+  /// resolve the branch-conditional protein threshold above — never to
+  /// second-guess the other, always-required fields). Deliberately
+  /// excludes [ScoringRequirement.fvlPercentage]/[ScoringRequirement.nnsPresence]
+  /// and every non-numeric requirement — those are not nutrition-consistency
+  /// concerns. Reuses [_categoryRequirements] and
+  /// [isProteinRequiredForNutrition] directly; this is not a second,
+  /// independently-maintained dependency table.
+  Set<ScoringRequirement> requiredNutritionFields(
+    ScoringCategory category,
+    ScoringNutritionData nutrition,
+  ) {
+    const nutritionNumericRequirements = {
+      ScoringRequirement.energyKj,
+      ScoringRequirement.totalFat,
+      ScoringRequirement.saturatedFat,
+      ScoringRequirement.sugars,
+      ScoringRequirement.salt,
+      ScoringRequirement.protein,
+      ScoringRequirement.fiber,
+    };
+    final categoryRequirements = _categoryRequirements[category] ?? const {};
+    final result = <ScoringRequirement>{};
+    for (final requirement in categoryRequirements) {
+      if (!nutritionNumericRequirements.contains(requirement)) continue;
+      if (requirement == ScoringRequirement.protein &&
+          !isProteinRequiredForNutrition(category, nutrition)) {
+        continue;
+      }
+      result.add(requirement);
+    }
+    return result;
+  }
+
+  int? _generalNegativeTotalIfDetermined(ScoringNutritionData nutrition) {
+    final energyKj = _cleanValue(nutrition.energyKj);
+    final sugars = _cleanValue(nutrition.sugars);
+    final saturatedFat = _cleanValue(nutrition.saturatedFat);
+    final salt = _cleanValue(nutrition.salt);
+    if (energyKj == null ||
+        sugars == null ||
+        saturatedFat == null ||
+        salt == null) {
+      return null;
+    }
+    return _pointCalculator.generalEnergyPoints(energyKj) +
+        _pointCalculator.saturatedFatPoints(saturatedFat) +
+        _pointCalculator.generalSugarPoints(sugars) +
+        _pointCalculator.saltPoints(salt);
+  }
+
+  int? _fatsNegativeTotalIfDetermined(ScoringNutritionData nutrition) {
+    final sugars = _cleanValue(nutrition.sugars);
+    final saturatedFat = _cleanValue(nutrition.saturatedFat);
+    final salt = _cleanValue(nutrition.salt);
+    final totalFat = _cleanValue(nutrition.totalFat);
+    if (sugars == null ||
+        saturatedFat == null ||
+        salt == null ||
+        totalFat == null ||
+        totalFat <= 0) {
+      return null;
+    }
+    if (saturatedFat > totalFat) {
+      // Physically impossible ratio (>100%). This is a genuine data
+      // contradiction handled independently by
+      // _checkCrossFieldNutritionInvariants's saturatedFatExceedsTotalFat
+      // blocker — N cannot be safely determined here, so fall back to
+      // conservatively requiring protein rather than feeding an
+      // out-of-range percentage into fatSaturatedRatioPoints.
+      return null;
+    }
+    final saturatedEnergyKj = saturatedFat * 37;
+    final ratioPercent = 100 * saturatedFat / totalFat;
+    return _pointCalculator.generalSugarPoints(sugars) +
+        _pointCalculator.saltPoints(salt) +
+        _pointCalculator.fatSaturatedEnergyPoints(saturatedEnergyKj) +
+        _pointCalculator.fatSaturatedRatioPoints(ratioPercent);
+  }
+
+  double? _cleanValue(EvidenceValue<double> evidence) {
+    final value = evidence.value;
+    if (value == null || !value.isFinite || value < 0 || evidence.isRejected) {
+      return null;
+    }
+    return value;
   }
 
   void _checkFvl(

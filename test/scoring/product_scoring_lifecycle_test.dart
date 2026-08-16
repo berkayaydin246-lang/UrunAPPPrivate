@@ -438,7 +438,11 @@ LegacyStagingScoringEvidence _legacyA101Staging(Product product) {
   return LegacyStagingScoringEvidence(
     id: 'a101-staging-row',
     sourceUrl: product.sourceUrl!,
-    nutritionBasis: 'per_100',
+    // Basis independence correction: a generic 'per_100' never
+    // distinguishes g/ml and resolves to NutritionBasis.unknown. This
+    // fixture models a source that DOES retain the distinct unit — exactly
+    // the forward-compatible case the fix explicitly supports.
+    nutritionBasis: 'per_100g',
     source: 'web_scraper:a101',
     ingredientsSource: 'web_scraper:a101',
     ingredientsRaw: 'İçindekiler: ${product.ingredientsText}',

@@ -288,7 +288,11 @@ LegacyStagingScoringEvidence _staging(Product product) {
   return LegacyStagingScoringEvidence(
     id: 'staging-${product.id}',
     sourceUrl: product.sourceUrl!,
-    nutritionBasis: 'per_100',
+    // Basis independence correction: the real Migros contract's generic
+    // 'per_100' never distinguishes g/ml and now correctly resolves to
+    // NutritionBasis.unknown. This file's tests are about additive
+    // coverage rollout, not basis, so this models proven evidence.
+    nutritionBasis: 'per_100g',
     source: 'web_scraper:migros',
     ingredientsSource: 'web_scraper:migros',
     ingredientsRaw: 'İçindekiler: ${product.ingredientsText}',

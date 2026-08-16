@@ -33,9 +33,18 @@ class NutritionRawScoreCalculator {
     ValidatedNutritionScoringInput input,
   ) {
     final negative = _generalNegative(input);
-    final proteinCalculated = pointCalculator.generalProteinPoints(
-      input.protein,
+    // ScoringReadinessEvaluator only allows protein to be null here when it
+    // has independently proven N >= 11 (general food suppresses protein at
+    // N >= 11 per NUTRITION_METHODOLOGY_2023.md) — in that case any real
+    // protein value would be suppressed to 0 anyway, so 0 is exact, not a
+    // guess.
+    assert(
+      input.protein != null || negative.total >= 11,
+      'protein must be known whenever N < 11 for generalFood',
     );
+    final proteinCalculated = input.protein == null
+        ? 0
+        : pointCalculator.generalProteinPoints(input.protein!);
     final proteinApplied = negative.total < 11 ? proteinCalculated : 0;
     return _result(
       category: input.category,
@@ -55,7 +64,9 @@ class NutritionRawScoreCalculator {
     ValidatedNutritionScoringInput input,
   ) {
     final negative = _generalNegative(input);
-    final protein = pointCalculator.generalProteinPoints(input.protein);
+    // Cheese always subtracts protein regardless of N — never suppressed —
+    // so ScoringReadinessEvaluator must always require it here.
+    final protein = pointCalculator.generalProteinPoints(input.protein!);
     return _result(
       category: input.category,
       negative: negative,
@@ -74,9 +85,14 @@ class NutritionRawScoreCalculator {
     ValidatedNutritionScoringInput input,
   ) {
     final negative = _generalNegative(input);
-    final proteinCalculated = pointCalculator.generalProteinPoints(
-      input.protein,
+    // Same N >= 11 suppression guarantee as generalFood — see there.
+    assert(
+      input.protein != null || negative.total >= 11,
+      'protein must be known whenever N < 11 for redMeat',
     );
+    final proteinCalculated = input.protein == null
+        ? 0
+        : pointCalculator.generalProteinPoints(input.protein!);
     final cappedProtein = math.min(proteinCalculated, 2);
     final proteinApplied = negative.total < 11 ? cappedProtein : 0;
     return _result(
@@ -111,9 +127,16 @@ class NutritionRawScoreCalculator {
       saturatedEnergyKj: saturatedEnergyKj,
       saturatedFatRatioPercent: saturatedFatRatioPercent,
     );
-    final proteinCalculated = pointCalculator.generalProteinPoints(
-      input.protein,
+    // Fats/oils/nuts/seeds suppress protein at N >= 7 (distinct threshold
+    // from generalFood/redMeat's N >= 11) per
+    // NUTRITION_METHODOLOGY_2023.md.
+    assert(
+      input.protein != null || negative.total >= 7,
+      'protein must be known whenever N < 7 for fatsOilsNutsSeeds',
     );
+    final proteinCalculated = input.protein == null
+        ? 0
+        : pointCalculator.generalProteinPoints(input.protein!);
     final proteinApplied = negative.total < 7 ? proteinCalculated : 0;
     return _result(
       category: input.category,
@@ -143,7 +166,8 @@ class NutritionRawScoreCalculator {
       saltPoints: pointCalculator.saltPoints(input.salt),
       nnsPoints: pointCalculator.beverageNnsPoints(nnsPresent),
     );
-    final protein = pointCalculator.beverageProteinPoints(input.protein);
+    // Beverage never suppresses protein — always required by readiness.
+    final protein = pointCalculator.beverageProteinPoints(input.protein!);
     return _result(
       category: input.category,
       negative: negative,

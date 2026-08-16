@@ -202,9 +202,15 @@ Map<String, dynamic> _nutrition() => {
   'salt': 0.5,
 };
 
+// Basis independence correction: 'per_100' (the real Migros contract's
+// only value) never distinguishes g/ml and now correctly resolves to
+// NutritionBasis.unknown rather than a category-invented value. This
+// file's tests are about diagnostic reporting, not basis itself, so the
+// default models proven basis evidence ('per_100g', forward-compatible —
+// see legacy_scoring_evidence_recovery.dart's _recoveredBasisFromEvidence).
 LegacyStagingScoringEvidence _staging({
   required Product product,
-  String basis = 'per_100',
+  String basis = 'per_100g',
 }) {
   return LegacyStagingScoringEvidence(
     id: 'staging-${product.id}',

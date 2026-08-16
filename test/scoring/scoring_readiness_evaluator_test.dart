@@ -154,6 +154,161 @@ void main() {
     });
   });
 
+  group('cross-field nutrition invariants', () {
+    test(
+      'saturated fat greater than total fat is blocked (both individually valid)',
+      () {
+        expectBlocked(
+          ScoringReadinessBlocker.saturatedFatExceedsTotalFat,
+          completeInput(
+            nutrition: completeNutrition(
+              totalFat: verifiedValue(5),
+              saturatedFat: verifiedValue(9),
+            ),
+          ),
+        );
+      },
+    );
+
+    test('saturated fat equal to total fat is not blocked', () {
+      final result = evaluator.evaluate(
+        completeInput(
+          nutrition: completeNutrition(
+            totalFat: verifiedValue(5),
+            saturatedFat: verifiedValue(5),
+          ),
+        ),
+      );
+      expect(result.isScorable, isTrue);
+      expect(
+        result.blockingReasons,
+        isNot(contains(ScoringReadinessBlocker.saturatedFatExceedsTotalFat)),
+      );
+    });
+
+    test('fats/oils/nuts/seeds category with zero total fat is blocked', () {
+      expectBlocked(
+        ScoringReadinessBlocker.nonPositiveTotalFatForFatCategory,
+        completeInput(
+          category: ScoringCategory.fatsOilsNutsSeeds,
+          nutrition: completeNutrition(totalFat: verifiedValue(0)),
+        ),
+      );
+    });
+
+    test(
+      'zero total fat is not blocked for a category where total fat is not required',
+      () {
+        final result = evaluator.evaluate(
+          completeInput(
+            nutrition: completeNutrition(
+              totalFat: verifiedValue(0),
+              saturatedFat: verifiedValue(0),
+            ),
+          ),
+        );
+        expect(result.isScorable, isTrue);
+        expect(
+          result.blockingReasons,
+          isNot(
+            contains(ScoringReadinessBlocker.nonPositiveTotalFatForFatCategory),
+          ),
+        );
+      },
+    );
+
+    test(
+      'positive total fat for fats/oils/nuts/seeds category is not blocked',
+      () {
+        final result = evaluator.evaluate(
+          completeInput(
+            category: ScoringCategory.fatsOilsNutsSeeds,
+            nutrition: completeNutrition(totalFat: verifiedValue(60)),
+          ),
+        );
+        expect(result.isScorable, isTrue);
+        expect(
+          result.blockingReasons,
+          isNot(
+            contains(ScoringReadinessBlocker.nonPositiveTotalFatForFatCategory),
+          ),
+        );
+      },
+    );
+
+    test(
+      'trusted plain-water fact outside the beverage category is blocked',
+      () {
+        expectBlocked(
+          ScoringReadinessBlocker.plainWaterCategoryMismatch,
+          completeInput(
+            classificationFacts: ScoringClassificationFacts(
+              isPlainWater: verifiedValue(true),
+            ),
+          ),
+        );
+      },
+    );
+
+    test(
+      'trusted plain-water fact inside the beverage category is not blocked',
+      () {
+        final result = evaluator.evaluate(
+          completeInput(
+            category: ScoringCategory.beverage,
+            classificationFacts: ScoringClassificationFacts(
+              isPlainWater: verifiedValue(true),
+            ),
+          ),
+        );
+        expect(result.isScorable, isTrue);
+        expect(
+          result.blockingReasons,
+          isNot(contains(ScoringReadinessBlocker.plainWaterCategoryMismatch)),
+        );
+      },
+    );
+
+    test(
+      'plain-water fact with unknown provenance does not block (not trusted)',
+      () {
+        final result = evaluator.evaluate(
+          completeInput(
+            classificationFacts: ScoringClassificationFacts(
+              isPlainWater: const EvidenceValue<bool>(
+                value: true,
+                provenance: EvidenceProvenance.unknown,
+                verification: EvidenceVerification.verified,
+              ),
+            ),
+          ),
+        );
+        expect(
+          result.blockingReasons,
+          isNot(contains(ScoringReadinessBlocker.plainWaterCategoryMismatch)),
+        );
+      },
+    );
+
+    test('rejected plain-water fact does not block (not trusted)', () {
+      final result = evaluator.evaluate(
+        completeInput(
+          classificationFacts: ScoringClassificationFacts(
+            isPlainWater: const EvidenceValue<bool>(
+              value: true,
+              provenance: EvidenceProvenance.declaredLabel,
+              verification: EvidenceVerification.rejected,
+            ),
+          ),
+        ),
+      );
+      expect(
+        result.blockingReasons,
+        isNot(contains(ScoringReadinessBlocker.plainWaterCategoryMismatch)),
+      );
+    });
+  });
+
   group('FVL evidence', () {
     test('unknown FVL is blocked', () {
       expectBlocked(

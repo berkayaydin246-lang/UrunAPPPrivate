@@ -3,18 +3,35 @@ import 'dart:io';
 
 import 'package:food_analyzer_app/features/product/models/ingredient.dart';
 import 'package:food_analyzer_app/features/product/models/product.dart';
+import 'package:food_analyzer_app/features/scoring/application/basis_revalidation_candidate_planner.dart';
+import 'package:food_analyzer_app/features/scoring/application/basis_source_fetcher.dart';
+import 'package:food_analyzer_app/features/scoring/application/historical_basis_revalidation_service.dart';
 import 'package:food_analyzer_app/features/scoring/application/legacy_scoring_evidence_recovery.dart';
 import 'package:food_analyzer_app/features/scoring/application/legacy_scoring_recovery_lifecycle_runner.dart';
+import 'package:food_analyzer_app/features/scoring/application/migros_basis_source_fetcher.dart';
+import 'package:food_analyzer_app/features/scoring/application/product_scoring_lifecycle.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/basis_revalidation_result.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/etiketly_score_audit_snapshot.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/evidence_value.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/score_audit_write.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_evidence_snapshot.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/scoring_types.dart';
 
-/// Historical scoring recovery CLI.
+/// Sections F-L of the basis remediation pass: the historical basis
+/// revalidation CLI.
 ///
-/// Reuses [LegacyScoringEvidenceRecoveryService] and
-/// [ProductScoringLifecycleService] (via [LegacyScoringRecoveryLifecycleRunner])
-/// exclusively. This tool never constructs a [ScoringEvidenceSnapshot] itself
-/// and never writes `scoring_evidence` directly.
+/// This tool never writes scoring math, never invents evidence, and never
+/// touches history — it drives exactly ONE new capability: independently
+/// re-proving the exact per-100g/per-100mL unit for products whose only
+/// historical evidence is generically ambiguous (see
+/// [HistoricalBasisRevalidationService]), through the SAME central
+/// [ProductScoringLifecycleService] write path every other evidence write
+/// in this system already uses.
+///
+/// Default mode is a ZERO-WRITE dry-run. Apply mode (--apply) additionally
+/// requires an explicit confirmation flag and only ever persists evidence
+/// for [BasisRevalidationOutcome.exactBasisRevalidated] candidates — no
+/// numeric score, no audit snapshot is ever fabricated directly here.
 Future<void> main(List<String> arguments) async {
   late final _CliOptions options;
   try {
@@ -46,34 +63,112 @@ Future<void> main(List<String> arguments) async {
     return;
   }
 
-  final dataSource = _RestRecoveryLifecycleDataSource(
+  final dataSource = _RestBasisRevalidationDataSource(
     baseUri: baseUri,
     serviceRoleKey: serviceRoleKey,
   );
-  const formatter = LegacyScoringRecoveryReportFormatter();
-  final runner = LegacyScoringRecoveryLifecycleRunner(dataSource: dataSource);
+  final fetchersBySourcePrefix = <String, BasisSourceFetcher>{
+    'migros': const MigrosBasisSourceFetcher(),
+  };
+
   try {
-    final summary = options.productIds.isNotEmpty
-        ? await runner.runForProductIds(
-            dryRun: options.dryRun,
-            productIds: options.productIds,
-          )
-        : await runner.runForSource(
-            dryRun: options.dryRun,
-            source: options.source!,
-            limit: options.limit!,
-            batchSize: options.batchSize,
-            startAfterProductId: options.startAfterProductId,
-          );
-
-    for (final result in summary.results) {
-      stdout.writeln(formatter.formatProduct(result));
+    // Candidate SELECTION always runs as a read-only dry-run scan,
+    // regardless of whether this tool's own mode is --apply — Section J
+    // never writes anything while planning.
+    final runner = LegacyScoringRecoveryLifecycleRunner(dataSource: dataSource);
+    final closure = await runner.runFullCatalogueClosure(
+      dryRun: true,
+      limit: options.scanLimit,
+      batchSize: options.batchSize,
+    );
+    if (closure.halted) {
+      stderr.writeln('error=candidate_scan_halted_before_completion');
+      exitCode = 1;
+      return;
     }
-    stdout.writeln(formatter.formatSummary(summary));
 
-    if (summary.unexpectedErrors > 0 || summary.halted) exitCode = 1;
+    final currentCandidateIds = closure.results
+        .where((r) => classifyFinalState(r) == ScoringFinalState.current)
+        .map((r) => r.productId)
+        .toSet();
+    final productsById = <String, Product>{};
+    for (final id in currentCandidateIds) {
+      final product = await dataSource.fetchProduct(id);
+      if (product != null) productsById[id] = product;
+    }
+
+    final candidates = planBasisRevalidationCandidates(
+      closureResults: closure.results,
+      productsById: productsById,
+    );
+    final bounded = candidates.take(options.maxFetches).toList(growable: false);
+
+    stdout.writeln('[candidate_selection]');
+    stdout.writeln('scan_total_examined=${closure.totalExamined}');
+    stdout.writeln('total_candidates=${candidates.length}');
+    stdout.writeln(
+      'current_public_basis_unverified='
+      '${candidates.where((c) => c.reason == BasisRevalidationCandidateReason.currentPublicBasisUnverified).length}',
+    );
+    stdout.writeln(
+      'otherwise_scoreable_basis_only='
+      '${candidates.where((c) => c.reason == BasisRevalidationCandidateReason.otherwiseReadyExceptBasis).length}',
+    );
+    stdout.writeln('bounded_for_this_run=${bounded.length} (--max-fetches=${options.maxFetches})');
+
+    final results = <BasisRevalidationResult>[];
+    for (final candidate in bounded) {
+      final product =
+          productsById[candidate.productId] ??
+          await dataSource.fetchProduct(candidate.productId);
+      if (product == null) {
+        results.add(
+          BasisRevalidationResult(
+            productId: candidate.productId,
+            outcome: BasisRevalidationOutcome.unexpectedError,
+            errorType: 'product_not_found',
+          ),
+        );
+        continue;
+      }
+      final source = product.source ?? '';
+      final prefix = source.startsWith('web_scraper:')
+          ? source.substring('web_scraper:'.length)
+          : source;
+      final fetcher = fetchersBySourcePrefix[prefix];
+      final service = fetcher == null
+          ? null
+          : HistoricalBasisRevalidationService(
+              fetcher: fetcher,
+              extractCanonicalIdentifier:
+                  MigrosBasisSourceFetcher.extractCanonicalIdentifier,
+            );
+      final result = service == null
+          ? BasisRevalidationResult(
+              productId: product.id,
+              outcome: BasisRevalidationOutcome.sourceUnavailable,
+              source: source,
+              sourceUrl: product.sourceUrl,
+            )
+          : await service.revalidate(product);
+      results.add(result);
+
+      if (!options.quietPerProduct) {
+        stdout.writeln(_formatResult(result));
+      }
+
+      if (options.apply &&
+          result.outcome == BasisRevalidationOutcome.exactBasisRevalidated) {
+        await _applyRevalidatedBasis(
+          product: product,
+          result: result,
+          dataSource: dataSource,
+        );
+      }
+    }
+
+    stdout.writeln(_formatSummary(results));
   } on Object catch (error) {
-    // Remote failures can contain request metadata. Report only the type.
     stderr.writeln('error=${error.runtimeType}');
     exitCode = 1;
   } finally {
@@ -81,43 +176,124 @@ Future<void> main(List<String> arguments) async {
   }
 }
 
-// Bounded, deliberately conservative for a backfill tool that can trigger a
-// batch of database writes in apply mode.
-const _maxLimit = 500;
+/// Apply-mode write: constructs a new evidence object identical to the
+/// product's existing evidence in every field EXCEPT nutrition basis,
+/// which is replaced with the independently revalidated exact value,
+/// tagged `declaredLabel` provenance (source-proven — see
+/// legacy_scoring_evidence_recovery.dart's identical convention). Routes
+/// through the ordinary [ProductScoringLifecycleService] — never writes
+/// `scoring_evidence` directly, never fabricates a numeric score or audit
+/// snapshot itself. The product's prior evidence and every historical
+/// audit snapshot remain untouched; this only ever changes what
+/// `products.scoring_evidence` currently points to and may insert one new
+/// current audit row.
+Future<void> _applyRevalidatedBasis({
+  required Product product,
+  required BasisRevalidationResult result,
+  required _RestBasisRevalidationDataSource dataSource,
+}) async {
+  final existing = product.scoringEvidence;
+  if (existing == null || result.revalidatedBasis == null) return;
+  final revalidated = existing.copyWith(
+    nutritionBasis: result.revalidatedBasis,
+    nutritionBasisEvidence: EvidenceValue<NutritionBasis>(
+      value: result.revalidatedBasis!,
+      provenance: EvidenceProvenance.declaredLabel,
+      verification: EvidenceVerification.verified,
+    ),
+  );
+  final lifecycle = ProductScoringLifecycleService(dataSource: dataSource);
+  await lifecycle.processCurrent(
+    product.id,
+    triggerSource: ScoreAuditTriggerSource.controlledBackfill,
+    evidenceResolver: (currentProduct, _) async {
+      return ProductScoringEvidenceResolution(
+        evidence: revalidated,
+        blockerReasons: const [],
+      );
+    },
+  );
+}
+
+String _formatResult(BasisRevalidationResult result) {
+  return [
+    'product_id=${result.productId}',
+    'outcome=${result.outcome.name}',
+    'source=${result.source ?? '-'}',
+    'normalized_basis=${result.normalizedBasis ?? '-'}',
+    'revalidated_basis=${result.revalidatedBasis?.name ?? '-'}',
+    'identity_method=${result.identityVerificationMethod ?? '-'}',
+    'nutrition_mismatch_fields=${result.nutritionMismatchFields.isEmpty ? '-' : result.nutritionMismatchFields.join(',')}',
+    'nutrition_missing_required_fields=${result.nutritionMissingRequiredFields.isEmpty ? '-' : result.nutritionMissingRequiredFields.join(',')}',
+    'adapter_version=${result.adapterVersion ?? '-'}',
+    if (result.errorType != null) 'error_type=${result.errorType}',
+  ].join(' ');
+}
+
+String _formatSummary(List<BasisRevalidationResult> results) {
+  final counts = {for (final outcome in BasisRevalidationOutcome.values) outcome: 0};
+  for (final result in results) {
+    counts[result.outcome] = counts[result.outcome]! + 1;
+  }
+  final lines = <String>[
+    '[basis_revalidation_summary]',
+    'total_processed=${results.length}',
+    for (final outcome in BasisRevalidationOutcome.values)
+      '${outcome.name}=${counts[outcome]}',
+  ];
+  return lines.join('\n');
+}
+
+void _printUsage() {
+  stdout.writeln('''
+Usage:
+  dart run tool/final_legacy_basis_revalidation.dart --dry-run --project-ref <ref> --scan-limit <n> --max-fetches <n>
+  dart run tool/final_legacy_basis_revalidation.dart --apply --confirm-apply-legacy-basis-revalidation --project-ref <ref> --scan-limit <n> --max-fetches <n>
+
+Options:
+  --dry-run / --apply           Exactly one required. Default is dry-run.
+  --confirm-apply-legacy-basis-revalidation   Required alongside --apply.
+  --project-ref <ref>           Supabase project ref (20 lowercase alnum chars).
+  --scan-limit <n>               Bound on the read-only candidate-selection scan.
+  --batch-size <n>               Scan page size (default 50, max 100).
+  --max-fetches <n>               Bound on live source fetches this run performs.
+  --quiet-per-product            Suppress per-product lines; summary only.
+''');
+}
+
+const _maxScanLimit = 10000;
+const _maxFetchesLimit = 2000;
 
 class _CliOptions {
   const _CliOptions({
     required this.help,
-    required this.dryRun,
+    required this.apply,
     required this.projectRef,
-    required this.productIds,
-    required this.source,
-    required this.limit,
+    required this.scanLimit,
     required this.batchSize,
-    required this.startAfterProductId,
+    required this.maxFetches,
+    required this.quietPerProduct,
   });
 
   final bool help;
-  final bool dryRun;
+  final bool apply;
   final String projectRef;
-  final List<String> productIds;
-  final String? source;
-  final int? limit;
+  final int scanLimit;
   final int batchSize;
-  final String? startAfterProductId;
+  final int maxFetches;
+  final bool quietPerProduct;
 
   static _CliOptions parse(List<String> arguments) {
     _validateArguments(arguments);
     if (arguments.contains('--help') || arguments.contains('-h')) {
       return const _CliOptions(
         help: true,
-        dryRun: true,
+        apply: false,
         projectRef: '',
-        productIds: [],
-        source: null,
-        limit: null,
+        scanLimit: 0,
         batchSize: 50,
-        startAfterProductId: null,
+        maxFetches: 0,
+        quietPerProduct: false,
       );
     }
 
@@ -126,64 +302,35 @@ class _CliOptions {
     if (explicitDryRun && apply) {
       throw const FormatException('choose exactly one of --dry-run or --apply');
     }
+    if (!explicitDryRun && !apply) {
+      throw const FormatException('one of --dry-run or --apply is required');
+    }
     if (apply &&
-        !arguments.contains('--confirm-apply-legacy-scoring-recovery')) {
+        !arguments.contains('--confirm-apply-legacy-basis-revalidation')) {
       throw const FormatException(
-        '--apply requires --confirm-apply-legacy-scoring-recovery',
+        '--apply requires --confirm-apply-legacy-basis-revalidation',
       );
     }
-    // Default to dry-run whenever --apply is not explicitly requested.
-    final dryRun = !apply;
 
-    // Deduplicate while preserving first-seen order — repeated IDs must
-    // never be processed more than once.
-    final productIds = <String>[..._values(arguments, '--product-id').toSet()];
-    for (final id in productIds) {
-      if (!RegExp(
-        r'^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$',
-      ).hasMatch(id)) {
-        // Never echo the raw value: a mistakenly pasted secret/JWT here
-        // must not be reflected back in terminal output.
-        throw const FormatException('invalid_product_id_format');
-      }
+    final scanLimit = _intValue(arguments, '--scan-limit');
+    if (scanLimit == null) {
+      throw const FormatException('--scan-limit is required (no unbounded mode)');
     }
-    final source = _value(arguments, '--source')?.trim();
-    final limit = _intValue(arguments, '--limit');
-    final startAfterProductId = _value(arguments, '--start-after')?.trim();
-
-    final hasProductIds = productIds.isNotEmpty;
-    final hasSource = source != null && source.isNotEmpty;
-    if (hasProductIds == hasSource) {
-      throw const FormatException(
-        'choose exactly one of --product-id (repeatable) or --source '
-        '(with --limit)',
-      );
-    }
-    if (hasSource && limit == null) {
-      throw const FormatException('--source requires --limit');
-    }
-    if (!hasSource && limit != null) {
-      throw const FormatException('--limit is only valid with --source');
-    }
-    if (limit != null && limit < 1) {
-      throw const FormatException('--limit must be positive');
-    }
-    if (limit != null && limit > _maxLimit) {
-      throw const FormatException('--limit must be $_maxLimit or fewer');
-    }
-    if (startAfterProductId != null && !hasSource) {
-      throw const FormatException('--start-after is only valid with --source');
-    }
-    if (startAfterProductId != null &&
-        !RegExp(
-          r'^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$',
-        ).hasMatch(startAfterProductId)) {
-      throw const FormatException('invalid_start_after_format');
+    if (scanLimit < 1 || scanLimit > _maxScanLimit) {
+      throw FormatException('--scan-limit must be between 1 and $_maxScanLimit');
     }
 
     final batchSize = _intValue(arguments, '--batch-size') ?? 50;
     if (batchSize < 1 || batchSize > 100) {
       throw const FormatException('--batch-size must be between 1 and 100');
+    }
+
+    final maxFetches = _intValue(arguments, '--max-fetches');
+    if (maxFetches == null) {
+      throw const FormatException('--max-fetches is required (no unbounded mode)');
+    }
+    if (maxFetches < 1 || maxFetches > _maxFetchesLimit) {
+      throw FormatException('--max-fetches must be between 1 and $_maxFetchesLimit');
     }
 
     final projectRef = _requiredValue(arguments, '--project-ref');
@@ -193,13 +340,12 @@ class _CliOptions {
 
     return _CliOptions(
       help: false,
-      dryRun: dryRun,
+      apply: apply,
       projectRef: projectRef,
-      productIds: productIds,
-      source: source,
-      limit: limit,
+      scanLimit: scanLimit,
       batchSize: batchSize,
-      startAfterProductId: startAfterProductId,
+      maxFetches: maxFetches,
+      quietPerProduct: arguments.contains('--quiet-per-product'),
     );
   }
 
@@ -229,41 +375,25 @@ class _CliOptions {
     return arguments[index + 1];
   }
 
-  static List<String> _values(List<String> arguments, String name) {
-    final values = <String>[];
-    for (var index = 0; index < arguments.length; index++) {
-      if (arguments[index] != name) continue;
-      if (index + 1 >= arguments.length ||
-          arguments[index + 1].startsWith('--')) {
-        throw FormatException('$name requires a value');
-      }
-      values.add(arguments[index + 1]);
-    }
-    return values;
-  }
-
   static void _validateArguments(List<String> arguments) {
     const flags = {
       '--help',
       '-h',
       '--dry-run',
       '--apply',
-      '--confirm-apply-legacy-scoring-recovery',
+      '--confirm-apply-legacy-basis-revalidation',
+      '--quiet-per-product',
     };
     const valueOptions = {
       '--project-ref',
-      '--product-id',
-      '--source',
-      '--limit',
+      '--scan-limit',
       '--batch-size',
-      '--start-after',
+      '--max-fetches',
     };
     for (var index = 0; index < arguments.length; index++) {
       final argument = arguments[index];
       if (flags.contains(argument)) continue;
       if (!valueOptions.contains(argument)) {
-        // Never echo the raw stray token: a mistakenly pasted secret/JWT
-        // here must not be reflected back in terminal output.
         throw const FormatException('unknown_argument');
       }
       if (index + 1 >= arguments.length ||
@@ -275,9 +405,9 @@ class _CliOptions {
   }
 }
 
-class _RestRecoveryLifecycleDataSource
+class _RestBasisRevalidationDataSource
     implements LegacyScoringRecoveryLifecycleDataSource {
-  _RestRecoveryLifecycleDataSource({
+  _RestBasisRevalidationDataSource({
     required this.baseUri,
     required this.serviceRoleKey,
   });
@@ -322,9 +452,6 @@ class _RestRecoveryLifecycleDataSource
     required String? afterProductId,
     required int limit,
   }) async {
-    // Exact match only — never ILIKE/LIKE. A prefix or wildcard pattern
-    // built from caller-supplied text could be broadened by embedded
-    // %/_ metacharacters; `eq.` cannot be broadened this way.
     final rows = await _getRows('products', {
       'select': '*',
       'scoring_evidence': 'is.null',
@@ -341,10 +468,6 @@ class _RestRecoveryLifecycleDataSource
     required String? afterProductId,
     required int limit,
   }) async {
-    // Not used by this targeted/source-batch tool — implemented only to
-    // satisfy the shared interface (see
-    // tool/final_scoring_catalogue_closure.dart for the whole-catalogue
-    // closure pass that actually calls this).
     final rows = await _getRows('products', {
       'select': '*',
       'order': 'id.asc',
@@ -496,7 +619,7 @@ class _RestRecoveryLifecycleDataSource
       ..set(HttpHeaders.acceptHeader, 'application/json')
       ..set(
         HttpHeaders.userAgentHeader,
-        'etiketly-legacy-scoring-recovery-lifecycle/1',
+        'etiketly-final-legacy-basis-revalidation/1',
       );
     if (prefer != null) request.headers.set('Prefer', prefer);
     if (body != null) {
@@ -511,49 +634,8 @@ class _RestRecoveryLifecycleDataSource
     return responseBody.trim().isEmpty ? null : jsonDecode(responseBody);
   }
 
-  static Map<String, dynamic>? _map(Object? value) =>
+  Map<String, dynamic>? _map(Object? value) =>
       value is Map ? Map<String, dynamic>.from(value) : null;
 
-  static String? _string(Object? value) => value is String ? value : null;
-}
-
-void _printUsage() {
-  stdout.writeln(r'''
-Usage (dry-run is the default; nothing is written):
-  dart run tool/legacy_scoring_recovery_lifecycle.dart \
-    --project-ref REF --product-id UUID [--product-id UUID ...]
-
-  dart run tool/legacy_scoring_recovery_lifecycle.dart \
-    --project-ref REF --source web_scraper:migros --limit 50
-
-Apply (writes evidence + a current audit snapshot through the trusted
-ProductScoringLifecycleService, triggerSource=controlled_backfill):
-  dart run tool/legacy_scoring_recovery_lifecycle.dart \
-    --project-ref REF --apply --confirm-apply-legacy-scoring-recovery \
-    --product-id UUID [--product-id UUID ...]
-
-  dart run tool/legacy_scoring_recovery_lifecycle.dart \
-    --project-ref REF --apply --confirm-apply-legacy-scoring-recovery \
-    --source web_scraper:migros --limit 50
-
-Options:
-  --product-id UUID     Repeatable (duplicates are deduplicated). Targeted
-                          mode — never scans the catalogue. A product that
-                          already has scoring_evidence is never overwritten;
-                          it is only diagnosed (already_current or
-                          existing_evidence_audit_unavailable).
-  --source VALUE          Bounded batch by an EXACT products.source match
-                          (e.g. web_scraper:migros) — never a prefix or
-                          wildcard pattern. Requires --limit.
-  --limit N               Required with --source. Max 500.
-  --batch-size N          Page size for --source scans, 1-100 (default: 50).
-  --start-after UUID      Resume a --source batch strictly after this
-                          product ID. Only valid with --source.
-
-Exactly one of --product-id (repeatable) or --source (+--limit) is required.
-
-Credentials are read only from SUPABASE_URL and
-SUPABASE_SERVICE_ROLE_KEY (or legacy SUPABASE_SERVICE_KEY). They are never
-printed or loaded from a file.
-''');
+  String? _string(Object? value) => value is String ? value : null;
 }

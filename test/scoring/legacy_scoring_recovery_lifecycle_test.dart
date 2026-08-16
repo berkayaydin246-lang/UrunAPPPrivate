@@ -10,6 +10,7 @@ import 'package:food_analyzer_app/features/scoring/application/product_score_aud
 import 'package:food_analyzer_app/features/scoring/domain/models/composition_percentage_evidence.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/etiketly_score_audit_snapshot.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/etiketly_score_result.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/evidence_value.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/presence_evidence.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/score_audit_write.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_evidence_snapshot.dart';
@@ -24,7 +25,9 @@ void main() {
     test('1. recoverable legacy Migros fixture reports recoverable', () async {
       final dataSource = _FakeRecoveryDataSource(
         products: {_product().id: _product()},
-        staging: {_product().sourceUrl!: [_staging()]},
+        staging: {
+          _product().sourceUrl!: [_staging()],
+        },
       );
       final runner = LegacyScoringRecoveryLifecycleRunner(
         dataSource: dataSource,
@@ -35,7 +38,10 @@ void main() {
         productIds: [_product().id],
       );
 
-      expect(summary.results.single.outcome, LegacyScoringRecoveryOutcome.recoverable);
+      expect(
+        summary.results.single.outcome,
+        LegacyScoringRecoveryOutcome.recoverable,
+      );
       expect(summary.results.single.wouldApply, isTrue);
       expect(summary.results.single.blockerReasons, isEmpty);
       expect(dataSource.writeScoringEvidenceCalls, 0);
@@ -65,7 +71,9 @@ void main() {
 
         final dataSource = _FakeRecoveryDataSource(
           products: {product.id: product},
-          staging: {product.sourceUrl!: [_staging(product: product)]},
+          staging: {
+            product.sourceUrl!: [_staging(product: product)],
+          },
         );
         final runner = LegacyScoringRecoveryLifecycleRunner(
           dataSource: dataSource,
@@ -100,7 +108,10 @@ void main() {
         productIds: [product.id],
       );
 
-      expect(summary.results.single.outcome, LegacyScoringRecoveryOutcome.blocked);
+      expect(
+        summary.results.single.outcome,
+        LegacyScoringRecoveryOutcome.blocked,
+      );
       expect(
         summary.results.single.blockerReasons,
         contains('missing_staging_match'),
@@ -113,7 +124,9 @@ void main() {
         products: {product.id: product},
         staging: {
           product.sourceUrl!: [
-            _staging(warnings: const ['nutrition_basis_unknown_assumed_per_100']),
+            _staging(
+              warnings: const ['nutrition_basis_unknown_assumed_per_100'],
+            ),
           ],
         },
       );
@@ -126,7 +139,10 @@ void main() {
         productIds: [product.id],
       );
 
-      expect(summary.results.single.outcome, LegacyScoringRecoveryOutcome.blocked);
+      expect(
+        summary.results.single.outcome,
+        LegacyScoringRecoveryOutcome.blocked,
+      );
       expect(
         summary.results.single.blockerReasons,
         contains('basis_unknown_assumed_per100'),
@@ -150,7 +166,10 @@ void main() {
         productIds: [product.id],
       );
 
-      expect(summary.results.single.outcome, LegacyScoringRecoveryOutcome.blocked);
+      expect(
+        summary.results.single.outcome,
+        LegacyScoringRecoveryOutcome.blocked,
+      );
       expect(
         summary.results.single.blockerReasons,
         contains('basis_per_serving'),
@@ -163,8 +182,38 @@ void main() {
         products: {product.id: product},
         staging: {
           product.sourceUrl!: [
+            _staging(nutritionJson: {..._nutrition(), 'sugars': 999}),
+          ],
+        },
+      );
+      final runner = LegacyScoringRecoveryLifecycleRunner(
+        dataSource: dataSource,
+      );
+
+      final summary = await runner.runForProductIds(
+        dryRun: true,
+        productIds: [product.id],
+      );
+
+      expect(
+        summary.results.single.outcome,
+        LegacyScoringRecoveryOutcome.blocked,
+      );
+      expect(
+        summary.results.single.blockerReasons,
+        contains('nutrition_source_unverified'),
+      );
+    });
+
+    test('incomplete trusted nutrition evidence is rejected', () async {
+      final product = _product(nutrition: {..._nutrition()}..remove('fiber'));
+      final dataSource = _FakeRecoveryDataSource(
+        products: {product.id: product},
+        staging: {
+          product.sourceUrl!: [
             _staging(
-              nutritionJson: {..._nutrition(), 'sugars': 999},
+              product: product,
+              nutritionJson: product.nutrition?.toMap(),
             ),
           ],
         },
@@ -178,33 +227,10 @@ void main() {
         productIds: [product.id],
       );
 
-      expect(summary.results.single.outcome, LegacyScoringRecoveryOutcome.blocked);
       expect(
-        summary.results.single.blockerReasons,
-        contains('nutrition_source_unverified'),
+        summary.results.single.outcome,
+        LegacyScoringRecoveryOutcome.blocked,
       );
-    });
-
-    test('incomplete trusted nutrition evidence is rejected', () async {
-      final product = _product(
-        nutrition: {..._nutrition()}..remove('fiber'),
-      );
-      final dataSource = _FakeRecoveryDataSource(
-        products: {product.id: product},
-        staging: {
-          product.sourceUrl!: [_staging(product: product, nutritionJson: product.nutrition?.toMap())],
-        },
-      );
-      final runner = LegacyScoringRecoveryLifecycleRunner(
-        dataSource: dataSource,
-      );
-
-      final summary = await runner.runForProductIds(
-        dryRun: true,
-        productIds: [product.id],
-      );
-
-      expect(summary.results.single.outcome, LegacyScoringRecoveryOutcome.blocked);
       expect(summary.results.single.blockerReasons, contains('missing_fiber'));
     });
 
@@ -232,43 +258,50 @@ void main() {
   });
 
   group('apply', () {
-    test('9 & 10 & 11. apply routes through the lifecycle and verifies evidence + a matching current audit', () async {
-      final product = _product();
-      final dataSource = _FakeRecoveryDataSource(
-        products: {product.id: product},
-        staging: {product.sourceUrl!: [_staging()]},
-      );
-      final runner = LegacyScoringRecoveryLifecycleRunner(
-        dataSource: dataSource,
-      );
+    test(
+      '9 & 10 & 11. apply routes through the lifecycle and verifies evidence + a matching current audit',
+      () async {
+        final product = _product();
+        final dataSource = _FakeRecoveryDataSource(
+          products: {product.id: product},
+          staging: {
+            product.sourceUrl!: [_staging()],
+          },
+        );
+        final runner = LegacyScoringRecoveryLifecycleRunner(
+          dataSource: dataSource,
+        );
 
-      final summary = await runner.runForProductIds(
-        dryRun: false,
-        productIds: [product.id],
-      );
+        final summary = await runner.runForProductIds(
+          dryRun: false,
+          productIds: [product.id],
+        );
 
-      expect(
-        summary.results.single.outcome,
-        LegacyScoringRecoveryOutcome.recoveredAndCurrent,
-      );
-      expect(dataSource.writeScoringEvidenceCalls, 1);
-      expect(dataSource.insertSnapshotCalls, 1);
-      expect(dataSource.products[product.id]!.scoringEvidence, isNotNull);
-      expect(dataSource.audits, hasLength(1));
-      // The runner never fabricates ScoringEvidenceSnapshot itself — the
-      // written evidence must be exactly what
-      // LegacyScoringEvidenceRecoveryService.recoverEvidence produced.
-      final expected = await const LegacyScoringEvidenceRecoveryService()
-          .recoverEvidence(
-            product: product,
-            stagingMatches: [_staging()],
-            ingredientCatalogue: const [],
-          );
-      expect(
-        jsonEncode(dataSource.products[product.id]!.scoringEvidence!.toJson()),
-        jsonEncode(expected.evidence!.toJson()),
-      );
-    });
+        expect(
+          summary.results.single.outcome,
+          LegacyScoringRecoveryOutcome.recoveredAndCurrent,
+        );
+        expect(dataSource.writeScoringEvidenceCalls, 1);
+        expect(dataSource.insertSnapshotCalls, 1);
+        expect(dataSource.products[product.id]!.scoringEvidence, isNotNull);
+        expect(dataSource.audits, hasLength(1));
+        // The runner never fabricates ScoringEvidenceSnapshot itself — the
+        // written evidence must be exactly what
+        // LegacyScoringEvidenceRecoveryService.recoverEvidence produced.
+        final expected = await const LegacyScoringEvidenceRecoveryService()
+            .recoverEvidence(
+              product: product,
+              stagingMatches: [_staging()],
+              ingredientCatalogue: const [],
+            );
+        expect(
+          jsonEncode(
+            dataSource.products[product.id]!.scoringEvidence!.toJson(),
+          ),
+          jsonEncode(expected.evidence!.toJson()),
+        );
+      },
+    );
 
     test(
       '9. apply eligibility matches dry-run eligibility exactly (readiness-blocked product never applies)',
@@ -283,7 +316,9 @@ void main() {
           blockedProduct.id: blockedProduct,
         };
         final staging = {
-          recoverableProduct.sourceUrl!: [_staging(product: recoverableProduct)],
+          recoverableProduct.sourceUrl!: [
+            _staging(product: recoverableProduct),
+          ],
           blockedProduct.sourceUrl!: [_staging(product: blockedProduct)],
         };
 
@@ -291,23 +326,25 @@ void main() {
           products: products,
           staging: staging,
         );
-        final dryRunSummary = await LegacyScoringRecoveryLifecycleRunner(
-          dataSource: dryRunSource,
-        ).runForProductIds(
-          dryRun: true,
-          productIds: [recoverableProduct.id, blockedProduct.id],
-        );
+        final dryRunSummary =
+            await LegacyScoringRecoveryLifecycleRunner(
+              dataSource: dryRunSource,
+            ).runForProductIds(
+              dryRun: true,
+              productIds: [recoverableProduct.id, blockedProduct.id],
+            );
 
         final applySource = _FakeRecoveryDataSource(
           products: products,
           staging: staging,
         );
-        final applySummary = await LegacyScoringRecoveryLifecycleRunner(
-          dataSource: applySource,
-        ).runForProductIds(
-          dryRun: false,
-          productIds: [recoverableProduct.id, blockedProduct.id],
-        );
+        final applySummary =
+            await LegacyScoringRecoveryLifecycleRunner(
+              dataSource: applySource,
+            ).runForProductIds(
+              dryRun: false,
+              productIds: [recoverableProduct.id, blockedProduct.id],
+            );
 
         bool wouldSucceed(LegacyScoringRecoveryOutcome outcome) =>
             outcome == LegacyScoringRecoveryOutcome.recoverable ||
@@ -326,29 +363,35 @@ void main() {
       },
     );
 
-    test('blocked product makes zero writes and reports exact blockers', () async {
-      final product = _product();
-      final dataSource = _FakeRecoveryDataSource(
-        products: {product.id: product},
-        staging: const {},
-      );
-      final runner = LegacyScoringRecoveryLifecycleRunner(
-        dataSource: dataSource,
-      );
+    test(
+      'blocked product makes zero writes and reports exact blockers',
+      () async {
+        final product = _product();
+        final dataSource = _FakeRecoveryDataSource(
+          products: {product.id: product},
+          staging: const {},
+        );
+        final runner = LegacyScoringRecoveryLifecycleRunner(
+          dataSource: dataSource,
+        );
 
-      final summary = await runner.runForProductIds(
-        dryRun: false,
-        productIds: [product.id],
-      );
+        final summary = await runner.runForProductIds(
+          dryRun: false,
+          productIds: [product.id],
+        );
 
-      expect(summary.results.single.outcome, LegacyScoringRecoveryOutcome.blocked);
-      expect(
-        summary.results.single.blockerReasons,
-        contains('missing_staging_match'),
-      );
-      expect(dataSource.writeScoringEvidenceCalls, 0);
-      expect(dataSource.insertSnapshotCalls, 0);
-    });
+        expect(
+          summary.results.single.outcome,
+          LegacyScoringRecoveryOutcome.blocked,
+        );
+        expect(
+          summary.results.single.blockerReasons,
+          contains('missing_staging_match'),
+        );
+        expect(dataSource.writeScoringEvidenceCalls, 0);
+        expect(dataSource.insertSnapshotCalls, 0);
+      },
+    );
 
     test(
       '12. evidence written but current audit not independently verifiable is never reported as success',
@@ -356,7 +399,9 @@ void main() {
         final product = _product();
         final dataSource = _FakeRecoveryDataSource(
           products: {product.id: product},
-          staging: {product.sourceUrl!: [_staging()]},
+          staging: {
+            product.sourceUrl!: [_staging()],
+          },
           // The 1st fetchMatchingSnapshot call is processCurrent's own
           // pre-insert check (legitimately empty). Starting at the 2nd
           // call — the runner's independent postcondition re-check — force
@@ -394,7 +439,9 @@ void main() {
         final product = _product();
         final laggingDataSource = _FakeRecoveryDataSource(
           products: {product.id: product},
-          staging: {product.sourceUrl!: [_staging()]},
+          staging: {
+            product.sourceUrl!: [_staging()],
+          },
           failVerificationFromCall: 2,
         );
         final runner = LegacyScoringRecoveryLifecycleRunner(
@@ -413,7 +460,9 @@ void main() {
         // "The replica has caught up": retry with verification restored.
         final recoveredDataSource = _FakeRecoveryDataSource(
           products: laggingDataSource.products,
-          staging: {product.sourceUrl!: [_staging()]},
+          staging: {
+            product.sourceUrl!: [_staging()],
+          },
           audits: laggingDataSource.audits,
         );
         final retryRunner = LegacyScoringRecoveryLifecycleRunner(
@@ -424,7 +473,10 @@ void main() {
           productIds: [product.id],
         );
 
-        expect(retry.results.single.outcome, LegacyScoringRecoveryOutcome.alreadyCurrent);
+        expect(
+          retry.results.single.outcome,
+          LegacyScoringRecoveryOutcome.alreadyCurrent,
+        );
         expect(recoveredDataSource.writeScoringEvidenceCalls, 0);
         expect(recoveredDataSource.insertSnapshotCalls, 0);
         expect(recoveredDataSource.audits, hasLength(1));
@@ -448,7 +500,8 @@ void main() {
             provenance: EvidenceProvenance.declaredLabel,
             verification: EvidenceVerification.verified,
           ),
-          ingredientEvidenceCompleteness: IngredientEvidenceCompleteness.complete,
+          ingredientEvidenceCompleteness:
+              IngredientEvidenceCompleteness.complete,
           categoryEvidence: explicitCategory(ScoringCategory.generalFood),
           adminVerification: ScoringEvidenceAdminMetadata(
             verifiedBy: 'admin-1',
@@ -486,8 +539,8 @@ void main() {
           summary.results.single.outcome,
           isNot(LegacyScoringRecoveryOutcome.unexpectedError),
         );
-        final storedEvidence = dataSource.products[productWithEvidence.id]!
-            .scoringEvidence!;
+        final storedEvidence =
+            dataSource.products[productWithEvidence.id]!.scoringEvidence!;
         expect(
           jsonEncode(storedEvidence.toJson()),
           jsonEncode(existingEvidence.toJson()),
@@ -542,6 +595,1109 @@ void main() {
         expect(dataSource.audits, hasLength(1));
       },
     );
+
+    test(
+      'dry-run for a product with existing evidence and a current matching audit reports alreadyCurrent, not recoverable — and performs zero writes',
+      () async {
+        final input = completeInput();
+        final product = auditProductFromInput(
+          input,
+          id: 'evidenced-already-current-dry-run',
+          ingredientsText: 'Su',
+        );
+        final matchingAudit = buildAuditSnapshot(
+          product: product,
+          assessment: auditOrdinaryAssessment(),
+        );
+        // No staging row at all. If dry-run mistakenly routed this product
+        // through LegacyScoringEvidenceRecoveryService.recover() (the bug
+        // under test), the product's own minimal nutritionText
+        // ({'energy_kcal': 100}) has no staging fallback for classification/
+        // FVL/etc. and would report `blocked`, never `alreadyCurrent` —
+        // so asserting `alreadyCurrent` here proves recover() was never
+        // consulted.
+        final dataSource = _FakeRecoveryDataSource(
+          products: {product.id: product},
+          staging: const {},
+          catalogue: [auditOrdinaryIngredient()],
+          audits: [matchingAudit],
+        );
+        final runner = LegacyScoringRecoveryLifecycleRunner(
+          dataSource: dataSource,
+        );
+
+        final summary = await runner.runForProductIds(
+          dryRun: true,
+          productIds: [product.id],
+        );
+
+        expect(summary.results.single.dryRun, isTrue);
+        expect(
+          summary.results.single.outcome,
+          LegacyScoringRecoveryOutcome.alreadyCurrent,
+        );
+        expect(
+          summary.results.single.outcome,
+          isNot(LegacyScoringRecoveryOutcome.recoverable),
+        );
+        expect(dataSource.writeScoringEvidenceCalls, 0);
+        expect(dataSource.insertSnapshotCalls, 0);
+        expect(dataSource.audits, hasLength(1));
+      },
+    );
+
+    test(
+      'dry-run for a product with score-ready existing evidence but NO current matching audit reports auditRepairable, not recoverable',
+      () async {
+        final input = completeInput();
+        final product = auditProductFromInput(
+          input,
+          id: 'evidenced-no-current-audit-dry-run',
+          ingredientsText: 'Su',
+        );
+        final dataSource = _FakeRecoveryDataSource(
+          products: {product.id: product},
+          staging: const {},
+          catalogue: [auditOrdinaryIngredient()],
+          // No audits recorded — there is nothing current to match.
+        );
+        final runner = LegacyScoringRecoveryLifecycleRunner(
+          dataSource: dataSource,
+        );
+
+        final summary = await runner.runForProductIds(
+          dryRun: true,
+          productIds: [product.id],
+        );
+
+        expect(summary.results.single.dryRun, isTrue);
+        expect(
+          summary.results.single.outcome,
+          LegacyScoringRecoveryOutcome.auditRepairable,
+          reason:
+              'the evidence itself IS score-ready — this is a repairable '
+              'audit gap, not a genuine evidence-readiness blocker',
+        );
+        expect(
+          summary.results.single.outcome,
+          isNot(LegacyScoringRecoveryOutcome.recoverable),
+        );
+        expect(dataSource.writeScoringEvidenceCalls, 0);
+        expect(dataSource.insertSnapshotCalls, 0);
+      },
+    );
+
+    group(
+      'pre-APPLY trust correction: audit repairability requires '
+      'independently trusted basis provenance on the CURRENT evidence',
+      () {
+        // A product whose CURRENT scoring_evidence basis provenance is
+        // exactly [provenance] (including null, for missing provenance) —
+        // otherwise completely score-ready (declaredLabel-grade nutrition/
+        // FVL/NNS/category evidence from completeInput()). Deliberately
+        // NEVER calls buildAuditSnapshot on this directly: for untrusted
+        // [provenance] that would now correctly throw (see
+        // ScoringEvidenceSnapshot.toScoringInput's basis-provenance-trust
+        // downgrade to NutritionBasis.unknown) — the whole point of these
+        // tests is that such a product can no longer be mathematically
+        // scored at all, not merely "has no current audit yet".
+        Product basisProvenanceProduct({
+          required EvidenceProvenance? provenance,
+          required String id,
+          ScoringCategory category = ScoringCategory.generalFood,
+        }) {
+          final input = completeInput(category: category);
+          final baseProduct = auditProductFromInput(
+            input,
+            id: id,
+            ingredientsText: 'Su',
+          );
+          final base = baseProduct.scoringEvidence!;
+          final evidence = provenance == null
+              ? ScoringEvidenceSnapshot(
+                  nutritionBasis: base.nutritionBasis,
+                  nutritionBasisEvidence: null,
+                  nutritionProductState: base.nutritionProductState,
+                  nutritionProductStateEvidence:
+                      base.nutritionProductStateEvidence,
+                  nutrition: base.nutrition,
+                  fvlEvidence: base.fvlEvidence,
+                  nnsEvidence: base.nnsEvidence,
+                  ingredientEvidenceCompleteness:
+                      base.ingredientEvidenceCompleteness,
+                  categoryEvidence: base.categoryEvidence,
+                  classificationFacts: base.classificationFacts,
+                )
+              : base.copyWith(
+                  nutritionBasisEvidence: EvidenceValue<NutritionBasis>(
+                    value: input.nutritionBasis,
+                    provenance: provenance,
+                    verification: EvidenceVerification.verified,
+                  ),
+                );
+          return _copyProduct(baseProduct, scoringEvidence: evidence);
+        }
+
+        test(
+          'A: missing basis provenance, otherwise completely score-ready -> '
+          'blocked insufficient evidence, never auditRepairable, never '
+          'scoreableNotCurrent, would_apply=false',
+          () async {
+            final product = basisProvenanceProduct(
+              provenance: null,
+              id: 'trust-a-missing-provenance',
+            );
+            final dataSource = _FakeRecoveryDataSource(
+              products: {product.id: product},
+              staging: const {},
+              catalogue: [auditOrdinaryIngredient()],
+            );
+            final runner = LegacyScoringRecoveryLifecycleRunner(
+              dataSource: dataSource,
+            );
+
+            final summary = await runner.runForProductIds(
+              dryRun: true,
+              productIds: [product.id],
+            );
+
+            final result = summary.results.single;
+            expect(
+              result.outcome,
+              LegacyScoringRecoveryOutcome.existingEvidenceAuditUnavailable,
+            );
+            expect(
+              result.outcome,
+              isNot(LegacyScoringRecoveryOutcome.auditRepairable),
+            );
+            expect(result.wouldApply, isFalse);
+            expect(
+              result.blockerReasons,
+              contains('nutrition:unknownNutritionBasis'),
+              reason: 'an untrusted-provenance basis must fail readiness '
+                  'even though the stored enum says per100g',
+            );
+            expect(
+              classifyFinalState(result),
+              ScoringFinalState.blockedInsufficientEvidence,
+            );
+            expect(dataSource.writeScoringEvidenceCalls, 0);
+            expect(dataSource.insertSnapshotCalls, 0);
+          },
+        );
+
+        test(
+          'B: databaseImport basis provenance -> the same fail-closed '
+          'result as missing provenance',
+          () async {
+            final product = basisProvenanceProduct(
+              provenance: EvidenceProvenance.databaseImport,
+              id: 'trust-b-databaseimport',
+            );
+            final dataSource = _FakeRecoveryDataSource(
+              products: {product.id: product},
+              staging: const {},
+              catalogue: [auditOrdinaryIngredient()],
+            );
+            final runner = LegacyScoringRecoveryLifecycleRunner(
+              dataSource: dataSource,
+            );
+
+            final summary = await runner.runForProductIds(
+              dryRun: true,
+              productIds: [product.id],
+            );
+
+            final result = summary.results.single;
+            expect(
+              result.outcome,
+              LegacyScoringRecoveryOutcome.existingEvidenceAuditUnavailable,
+            );
+            expect(result.wouldApply, isFalse);
+            expect(
+              result.blockerReasons,
+              contains('nutrition:unknownNutritionBasis'),
+              reason: 'databaseImport is exactly the historical '
+                  '_basisForCategory-invented signature — never trusted, '
+                  'even though it is a "known" provenance value',
+            );
+            expect(
+              classifyFinalState(result),
+              ScoringFinalState.blockedInsufficientEvidence,
+            );
+          },
+        );
+
+        test(
+          'C: declaredLabel basis provenance, otherwise fully ready, audit '
+          'missing -> auditRepairable',
+          () async {
+            final product = basisProvenanceProduct(
+              provenance: EvidenceProvenance.declaredLabel,
+              id: 'trust-c-declaredlabel',
+            );
+            final dataSource = _FakeRecoveryDataSource(
+              products: {product.id: product},
+              staging: const {},
+              catalogue: [auditOrdinaryIngredient()],
+            );
+            final runner = LegacyScoringRecoveryLifecycleRunner(
+              dataSource: dataSource,
+            );
+
+            final summary = await runner.runForProductIds(
+              dryRun: true,
+              productIds: [product.id],
+            );
+
+            final result = summary.results.single;
+            expect(result.outcome, LegacyScoringRecoveryOutcome.auditRepairable);
+            expect(result.wouldApply, isTrue);
+          },
+        );
+
+        test(
+          'D: per100ml basis, adminVerified provenance (beverage category), '
+          'otherwise fully ready, audit missing -> auditRepairable',
+          () async {
+            final product = basisProvenanceProduct(
+              provenance: EvidenceProvenance.adminVerified,
+              id: 'trust-d-adminverified',
+              category: ScoringCategory.beverage,
+            );
+            expect(
+              product.scoringEvidence!.nutritionBasis,
+              NutritionBasis.per100ml,
+              reason: 'beverage category resolves per100ml by fixture '
+                  'default — see completeInput()',
+            );
+            final dataSource = _FakeRecoveryDataSource(
+              products: {product.id: product},
+              staging: const {},
+              catalogue: [auditOrdinaryIngredient()],
+            );
+            final runner = LegacyScoringRecoveryLifecycleRunner(
+              dataSource: dataSource,
+            );
+
+            final summary = await runner.runForProductIds(
+              dryRun: true,
+              productIds: [product.id],
+            );
+
+            final result = summary.results.single;
+            expect(result.outcome, LegacyScoringRecoveryOutcome.auditRepairable);
+            expect(result.wouldApply, isTrue);
+          },
+        );
+
+        test(
+          'E: a HISTORICAL audit predating this correction (missing basis '
+          'provenance, immutable, never deleted) sitting in the data '
+          'source does not block repair once CURRENT evidence has trusted '
+          'declaredLabel basis — never unnecessarily blocked just because '
+          'the historical audit itself is old',
+          () async {
+            const id = 'trust-e-current-trusted';
+            final product = basisProvenanceProduct(
+              provenance: EvidenceProvenance.declaredLabel,
+              id: id,
+            );
+            final historicalAudit =
+                buildHistoricalAuditSnapshotWithBasisProvenance(null, id: id);
+            final dataSource = _FakeRecoveryDataSource(
+              products: {product.id: product},
+              staging: const {},
+              catalogue: [auditOrdinaryIngredient()],
+              audits: [historicalAudit],
+            );
+            final runner = LegacyScoringRecoveryLifecycleRunner(
+              dataSource: dataSource,
+            );
+
+            final summary = await runner.runForProductIds(
+              dryRun: true,
+              productIds: [product.id],
+            );
+
+            final result = summary.results.single;
+            expect(result.outcome, LegacyScoringRecoveryOutcome.auditRepairable);
+            expect(result.wouldApply, isTrue);
+          },
+        );
+
+        test(
+          'F: a historical audit AND the underlying CURRENT evidence are '
+          'both untrusted -> blocked insufficient evidence, never audit '
+          'repair, regardless of what historical audit rows exist',
+          () async {
+            const id = 'trust-f-both-untrusted';
+            final product = basisProvenanceProduct(provenance: null, id: id);
+            final historicalAudit =
+                buildHistoricalAuditSnapshotWithBasisProvenance(null, id: id);
+            final dataSource = _FakeRecoveryDataSource(
+              products: {product.id: product},
+              staging: const {},
+              catalogue: [auditOrdinaryIngredient()],
+              audits: [historicalAudit],
+            );
+            final runner = LegacyScoringRecoveryLifecycleRunner(
+              dataSource: dataSource,
+            );
+
+            final summary = await runner.runForProductIds(
+              dryRun: true,
+              productIds: [product.id],
+            );
+
+            final result = summary.results.single;
+            expect(
+              result.outcome,
+              LegacyScoringRecoveryOutcome.existingEvidenceAuditUnavailable,
+            );
+            expect(
+              result.outcome,
+              isNot(LegacyScoringRecoveryOutcome.auditRepairable),
+            );
+            expect(result.wouldApply, isFalse);
+          },
+        );
+
+        // G) a generic current Migros `100 g / ml` fresh source remaining
+        // insufficient to upgrade legacy exact-unit provenance is basis
+        // REVALIDATION behavior (HistoricalBasisRevalidationService), not
+        // this lifecycle boundary — already covered, unmodified and still
+        // passing, by historical_basis_revalidation_service_test.dart's
+        // "generic current source header -> still ambiguous" group
+        // ('per_100_generic never becomes a success',
+        // 'the historical bare per_100 string is also still ambiguous').
+      },
+    );
+
+    test(
+      'dry-run for a product with genuinely NOT-ready existing evidence reports existingEvidenceAuditUnavailable',
+      () async {
+        // Evidence exists but is missing required fields (fiber) — the
+        // ProductScoreAuditEvaluator cannot build a snapshot from it at
+        // all, which is a real readiness gap, not a repairable audit gap.
+        final incompleteEvidence = ScoringEvidenceSnapshot(
+          nutritionBasis: NutritionBasis.per100g,
+          nutritionProductState: NutritionProductState.asSold,
+          nutrition: completeNutrition(includeFiber: false),
+          fvlEvidence: const CompositionPercentageEvidence.provenAbsent(
+            provenance: EvidenceProvenance.declaredLabel,
+            verification: EvidenceVerification.verified,
+          ),
+          nnsEvidence: const PresenceEvidence.absent(
+            provenance: EvidenceProvenance.declaredLabel,
+            verification: EvidenceVerification.verified,
+          ),
+          ingredientEvidenceCompleteness:
+              IngredientEvidenceCompleteness.complete,
+          categoryEvidence: explicitCategory(ScoringCategory.generalFood),
+        );
+        final product = auditProductFromInput(
+          incompleteEvidence.toScoringInput(),
+          id: 'evidenced-not-ready-dry-run',
+          ingredientsText: 'Su',
+        );
+        final productWithEvidence = _copyProduct(
+          product,
+          scoringEvidence: incompleteEvidence,
+        );
+        final dataSource = _FakeRecoveryDataSource(
+          products: {productWithEvidence.id: productWithEvidence},
+          staging: const {},
+          catalogue: [auditOrdinaryIngredient()],
+        );
+        final runner = LegacyScoringRecoveryLifecycleRunner(
+          dataSource: dataSource,
+        );
+
+        final summary = await runner.runForProductIds(
+          dryRun: true,
+          productIds: [productWithEvidence.id],
+        );
+
+        expect(summary.results.single.dryRun, isTrue);
+        expect(
+          summary.results.single.outcome,
+          LegacyScoringRecoveryOutcome.existingEvidenceAuditUnavailable,
+        );
+        expect(dataSource.writeScoringEvidenceCalls, 0);
+        expect(dataSource.insertSnapshotCalls, 0);
+      },
+    );
+  });
+
+  group(
+    'Section 8: existing evidence upgrade from current trusted source data',
+    () {
+      // Same shape as the "genuinely NOT-ready" test above (missing fiber),
+      // but this time a full, matching staging row IS available — proving
+      // the product is not permanently stuck just because it already has
+      // some (incomplete) evidence on file.
+      ScoringEvidenceSnapshot buildIncompleteEvidence() =>
+          ScoringEvidenceSnapshot(
+            nutritionBasis: NutritionBasis.per100g,
+            nutritionProductState: NutritionProductState.asSold,
+            nutrition: completeNutrition(includeFiber: false),
+            fvlEvidence: const CompositionPercentageEvidence.provenAbsent(
+              provenance: EvidenceProvenance.declaredLabel,
+              verification: EvidenceVerification.verified,
+            ),
+            nnsEvidence: const PresenceEvidence.absent(
+              provenance: EvidenceProvenance.declaredLabel,
+              verification: EvidenceVerification.verified,
+            ),
+            ingredientEvidenceCompleteness:
+                IngredientEvidenceCompleteness.complete,
+            categoryEvidence: explicitCategory(ScoringCategory.generalFood),
+          );
+
+      test(
+        'dry-run reports existingEvidenceUpgradable when fresh recovery from '
+        'current staging data would now succeed',
+        () async {
+          final product = _copyProduct(
+            _product(),
+            scoringEvidence: buildIncompleteEvidence(),
+          );
+          final dataSource = _FakeRecoveryDataSource(
+            products: {product.id: product},
+            staging: {
+              product.sourceUrl!: [_staging(product: product)],
+            },
+            catalogue: const [],
+          );
+          final runner = LegacyScoringRecoveryLifecycleRunner(
+            dataSource: dataSource,
+          );
+
+          final summary = await runner.runForProductIds(
+            dryRun: true,
+            productIds: [product.id],
+          );
+
+          expect(
+            summary.results.single.outcome,
+            LegacyScoringRecoveryOutcome.existingEvidenceUpgradable,
+          );
+          expect(dataSource.writeScoringEvidenceCalls, 0);
+          expect(dataSource.insertSnapshotCalls, 0);
+        },
+      );
+
+      test(
+        'apply performs the upgrade, writes new evidence, inserts a new '
+        'current audit snapshot, and reports existingEvidenceUpgraded',
+        () async {
+          final incompleteEvidence = buildIncompleteEvidence();
+          final product = _copyProduct(
+            _product(),
+            scoringEvidence: incompleteEvidence,
+          );
+          final dataSource = _FakeRecoveryDataSource(
+            products: {product.id: product},
+            staging: {
+              product.sourceUrl!: [_staging(product: product)],
+            },
+            catalogue: const [],
+          );
+          final runner = LegacyScoringRecoveryLifecycleRunner(
+            dataSource: dataSource,
+          );
+
+          final summary = await runner.runForProductIds(
+            dryRun: false,
+            productIds: [product.id],
+          );
+
+          expect(
+            summary.results.single.outcome,
+            LegacyScoringRecoveryOutcome.existingEvidenceUpgraded,
+          );
+          expect(dataSource.writeScoringEvidenceCalls, 1);
+          expect(dataSource.insertSnapshotCalls, 1);
+          final storedEvidence = dataSource.products[product.id]!.scoringEvidence!;
+          expect(
+            storedEvidence.nutrition.fiber.value,
+            isNotNull,
+            reason: 'the new evidence must actually be more complete than '
+                'the old evidence it replaced',
+          );
+          expect(
+            jsonEncode(storedEvidence.toJson()),
+            isNot(jsonEncode(incompleteEvidence.toJson())),
+          );
+        },
+      );
+
+      test(
+        'a second apply run afterward is idempotent — reports alreadyCurrent, '
+        'never upgrades a second time, and performs zero further writes',
+        () async {
+          final product = _copyProduct(
+            _product(),
+            scoringEvidence: buildIncompleteEvidence(),
+          );
+          final dataSource = _FakeRecoveryDataSource(
+            products: {product.id: product},
+            staging: {
+              product.sourceUrl!: [_staging(product: product)],
+            },
+            catalogue: const [],
+          );
+          final runner = LegacyScoringRecoveryLifecycleRunner(
+            dataSource: dataSource,
+          );
+
+          final first = await runner.runForProductIds(
+            dryRun: false,
+            productIds: [product.id],
+          );
+          expect(
+            first.results.single.outcome,
+            LegacyScoringRecoveryOutcome.existingEvidenceUpgraded,
+          );
+
+          final second = await runner.runForProductIds(
+            dryRun: false,
+            productIds: [product.id],
+          );
+
+          expect(
+            second.results.single.outcome,
+            LegacyScoringRecoveryOutcome.alreadyCurrent,
+          );
+          expect(dataSource.writeScoringEvidenceCalls, 1, reason: 'unchanged from the first run');
+          expect(dataSource.insertSnapshotCalls, 1, reason: 'unchanged from the first run');
+        },
+      );
+
+      test(
+        'admin-verified existing evidence is NEVER upgraded, even when '
+        'staging data would otherwise support it',
+        () async {
+          final adminEvidence = ScoringEvidenceSnapshot(
+            nutritionBasis: NutritionBasis.per100g,
+            nutritionProductState: NutritionProductState.asSold,
+            nutrition: completeNutrition(includeFiber: false),
+            fvlEvidence: const CompositionPercentageEvidence.provenAbsent(
+              provenance: EvidenceProvenance.declaredLabel,
+              verification: EvidenceVerification.verified,
+            ),
+            nnsEvidence: const PresenceEvidence.absent(
+              provenance: EvidenceProvenance.declaredLabel,
+              verification: EvidenceVerification.verified,
+            ),
+            ingredientEvidenceCompleteness:
+                IngredientEvidenceCompleteness.complete,
+            categoryEvidence: explicitCategory(ScoringCategory.generalFood),
+            adminVerification: ScoringEvidenceAdminMetadata(
+              verifiedBy: 'admin-1',
+              verifiedAt: DateTime.utc(2026, 1, 1),
+              note: 'manually verified, incomplete by design',
+            ),
+          );
+          final product = _copyProduct(
+            _product(),
+            scoringEvidence: adminEvidence,
+          );
+          final dataSource = _FakeRecoveryDataSource(
+            products: {product.id: product},
+            staging: {
+              product.sourceUrl!: [_staging(product: product)],
+            },
+            catalogue: const [],
+          );
+          final runner = LegacyScoringRecoveryLifecycleRunner(
+            dataSource: dataSource,
+          );
+
+          final summary = await runner.runForProductIds(
+            dryRun: false,
+            productIds: [product.id],
+          );
+
+          expect(
+            summary.results.single.outcome,
+            LegacyScoringRecoveryOutcome.existingEvidenceAuditUnavailable,
+          );
+          expect(dataSource.writeScoringEvidenceCalls, 0);
+          expect(dataSource.insertSnapshotCalls, 0);
+          final storedEvidence = dataSource.products[product.id]!.scoringEvidence!;
+          expect(storedEvidence.adminVerification?.verifiedBy, 'admin-1');
+          expect(
+            jsonEncode(storedEvidence.toJson()),
+            jsonEncode(adminEvidence.toJson()),
+            reason: 'admin-verified evidence must be byte-for-byte unchanged',
+          );
+        },
+      );
+    },
+  );
+
+  group(
+    'audit repair (apply, existing score-ready evidence, no current audit)',
+    () {
+      Product buildRepairableProduct(String id) {
+        final input = completeInput();
+        return auditProductFromInput(input, id: id, ingredientsText: 'Su');
+      }
+
+      test(
+        'apply inserts the missing current snapshot without touching evidence, reporting auditRepairedCurrent',
+        () async {
+          final product = buildRepairableProduct('repair-me-0001');
+          final dataSource = _FakeRecoveryDataSource(
+            products: {product.id: product},
+            staging: const {},
+            catalogue: [auditOrdinaryIngredient()],
+            // No audits recorded — the missing/stale audit to be repaired.
+          );
+          final runner = LegacyScoringRecoveryLifecycleRunner(
+            dataSource: dataSource,
+          );
+
+          final summary = await runner.runForProductIds(
+            dryRun: false,
+            productIds: [product.id],
+          );
+
+          expect(
+            summary.results.single.outcome,
+            LegacyScoringRecoveryOutcome.auditRepairedCurrent,
+          );
+          expect(
+            dataSource.writeScoringEvidenceCalls,
+            0,
+            reason: 'the identity evidence resolver must never write evidence',
+          );
+          expect(dataSource.insertSnapshotCalls, 1);
+          expect(dataSource.audits, hasLength(1));
+          expect(
+            jsonEncode(
+              dataSource.products[product.id]!.scoringEvidence!.toJson(),
+            ),
+            jsonEncode(product.scoringEvidence!.toJson()),
+            reason: 'evidence must remain byte-for-byte unchanged after repair',
+          );
+        },
+      );
+
+      test(
+        'repeating apply is idempotent: second run reports alreadyCurrent, zero further writes',
+        () async {
+          final product = buildRepairableProduct('repair-me-idempotent');
+          final dataSource = _FakeRecoveryDataSource(
+            products: {product.id: product},
+            staging: const {},
+            catalogue: [auditOrdinaryIngredient()],
+          );
+          final runner = LegacyScoringRecoveryLifecycleRunner(
+            dataSource: dataSource,
+          );
+
+          final first = await runner.runForProductIds(
+            dryRun: false,
+            productIds: [product.id],
+          );
+          expect(
+            first.results.single.outcome,
+            LegacyScoringRecoveryOutcome.auditRepairedCurrent,
+          );
+
+          final second = await runner.runForProductIds(
+            dryRun: false,
+            productIds: [product.id],
+          );
+          expect(
+            second.results.single.outcome,
+            LegacyScoringRecoveryOutcome.alreadyCurrent,
+          );
+          expect(dataSource.writeScoringEvidenceCalls, 0);
+          expect(
+            dataSource.insertSnapshotCalls,
+            1,
+            reason: 'no duplicate current audit snapshot on the second run',
+          );
+          expect(dataSource.audits, hasLength(1));
+        },
+      );
+
+      test(
+        'admin-verified evidence metadata survives an audit repair untouched',
+        () async {
+          final input = completeInput();
+          final baseProduct = auditProductFromInput(
+            input,
+            id: 'repair-admin-verified',
+            ingredientsText: 'Su',
+          );
+          final adminEvidence = ScoringEvidenceSnapshot(
+            nutritionBasis: baseProduct.scoringEvidence!.nutritionBasis,
+            // Basis remediation Section E: an admin-verified evidence
+            // object's basis provenance must itself say adminVerified —
+            // the public gate now checks this field specifically, not
+            // merely whether whole-snapshot adminVerification is present.
+            nutritionBasisEvidence: EvidenceValue<NutritionBasis>(
+              value: baseProduct.scoringEvidence!.nutritionBasis,
+              provenance: EvidenceProvenance.adminVerified,
+              verification: EvidenceVerification.verified,
+            ),
+            nutritionProductState:
+                baseProduct.scoringEvidence!.nutritionProductState,
+            nutrition: baseProduct.scoringEvidence!.nutrition,
+            fvlEvidence: baseProduct.scoringEvidence!.fvlEvidence,
+            nnsEvidence: baseProduct.scoringEvidence!.nnsEvidence,
+            ingredientEvidenceCompleteness:
+                baseProduct.scoringEvidence!.ingredientEvidenceCompleteness,
+            categoryEvidence: baseProduct.scoringEvidence!.categoryEvidence,
+            adminVerification: ScoringEvidenceAdminMetadata(
+              verifiedBy: 'admin-1',
+              verifiedAt: DateTime.utc(2026, 1, 1),
+              note: 'manually verified by admin',
+            ),
+          );
+          final product = _copyProduct(
+            baseProduct,
+            scoringEvidence: adminEvidence,
+          );
+          final dataSource = _FakeRecoveryDataSource(
+            products: {product.id: product},
+            staging: const {},
+            catalogue: [auditOrdinaryIngredient()],
+          );
+          final runner = LegacyScoringRecoveryLifecycleRunner(
+            dataSource: dataSource,
+          );
+
+          final summary = await runner.runForProductIds(
+            dryRun: false,
+            productIds: [product.id],
+          );
+
+          expect(
+            summary.results.single.outcome,
+            LegacyScoringRecoveryOutcome.auditRepairedCurrent,
+          );
+          expect(dataSource.writeScoringEvidenceCalls, 0);
+          final stored = dataSource.products[product.id]!.scoringEvidence!;
+          expect(stored.adminVerification?.verifiedBy, 'admin-1');
+          expect(stored.adminVerification?.note, 'manually verified by admin');
+        },
+      );
+    },
+  );
+
+  group('whole-catalogue closure (runFullCatalogueClosure)', () {
+    test(
+      'covers products regardless of scoring_evidence nullness in one pass',
+      () async {
+        final neverRecoveredNoEvidence = _product(
+          id: 'closure-never-recovered',
+        );
+        final alreadyEvidenced = auditProductFromInput(
+          completeInput(),
+          id: 'closure-needs-repair',
+          ingredientsText: 'Su',
+        );
+        final dataSource = _FakeRecoveryDataSource(
+          products: {
+            neverRecoveredNoEvidence.id: neverRecoveredNoEvidence,
+            alreadyEvidenced.id: alreadyEvidenced,
+          },
+          staging: {
+            neverRecoveredNoEvidence.sourceUrl!: [
+              _staging(product: neverRecoveredNoEvidence),
+            ],
+          },
+          catalogue: [auditOrdinaryIngredient()],
+        );
+        final runner = LegacyScoringRecoveryLifecycleRunner(
+          dataSource: dataSource,
+        );
+
+        final summary = await runner.runFullCatalogueClosure(
+          dryRun: false,
+          limit: 10,
+        );
+
+        expect(summary.totalExamined, 2);
+        expect(dataSource.fetchCataloguePageCalls, isNotEmpty);
+        expect(
+          dataSource.fetchRecoveryCandidatesCalls,
+          isEmpty,
+          reason:
+              'the whole-catalogue pass must never use the '
+              'scoring_evidence-IS-NULL-only candidate query',
+        );
+        final outcomes = {
+          for (final result in summary.results)
+            result.productId: result.outcome,
+        };
+        expect(
+          outcomes[neverRecoveredNoEvidence.id],
+          LegacyScoringRecoveryOutcome.recoveredAndCurrent,
+        );
+        expect(
+          outcomes[alreadyEvidenced.id],
+          LegacyScoringRecoveryOutcome.auditRepairedCurrent,
+        );
+      },
+    );
+  });
+
+  group('category grouping and closure postcondition (pure functions)', () {
+    LegacyScoringRecoveryProductResult result({
+      required String id,
+      required LegacyScoringRecoveryOutcome outcome,
+      ScoringCategory? category,
+    }) => LegacyScoringRecoveryProductResult(
+      productId: id,
+      productName: id,
+      dryRun: false,
+      outcome: outcome,
+      blockerReasons: const [],
+      resolvedCategory: category,
+    );
+
+    test(
+      'groupResultsByCategory buckets by resolved category, including unknown',
+      () {
+        final results = [
+          result(
+            id: '1',
+            outcome: LegacyScoringRecoveryOutcome.alreadyCurrent,
+            category: ScoringCategory.generalFood,
+          ),
+          result(
+            id: '2',
+            outcome: LegacyScoringRecoveryOutcome.blocked,
+            category: ScoringCategory.generalFood,
+          ),
+          result(
+            id: '3',
+            outcome: LegacyScoringRecoveryOutcome.recoveredAndCurrent,
+            category: ScoringCategory.beverage,
+          ),
+          result(
+            id: '4',
+            outcome: LegacyScoringRecoveryOutcome.unexpectedError,
+          ),
+        ];
+
+        final grouped = groupResultsByCategory(results);
+
+        expect(grouped['generalFood']!.totalProducts, 2);
+        expect(grouped['generalFood']!.alreadyCurrent, 1);
+        expect(grouped['generalFood']!.blocked, 1);
+        expect(grouped['beverage']!.totalProducts, 1);
+        expect(grouped['beverage']!.recoveredAndCurrent, 1);
+        expect(grouped['unknown']!.totalProducts, 1);
+        expect(grouped['unknown']!.unexpectedErrors, 1);
+      },
+    );
+
+    test(
+      'computeClosurePostcondition is clean when nothing is stuck or erroring',
+      () {
+        final results = [
+          result(id: '1', outcome: LegacyScoringRecoveryOutcome.alreadyCurrent),
+          result(
+            id: '2',
+            outcome: LegacyScoringRecoveryOutcome.recoveredAndCurrent,
+          ),
+          result(
+            id: '3',
+            outcome: LegacyScoringRecoveryOutcome.auditRepairedCurrent,
+          ),
+          result(id: '4', outcome: LegacyScoringRecoveryOutcome.blocked),
+        ];
+
+        final postcondition = computeClosurePostcondition(results);
+
+        expect(postcondition.isClean, isTrue);
+        expect(postcondition.scoreableButNotCurrent, 0);
+        expect(postcondition.unexpectedErrors, 0);
+        expect(postcondition.currentPublicScores, 3);
+        expect(postcondition.catalogueTotal, 4);
+      },
+    );
+
+    test(
+      'computeClosurePostcondition surfaces exact product ids when dirty',
+      () {
+        final results = [
+          result(
+            id: 'good',
+            outcome: LegacyScoringRecoveryOutcome.alreadyCurrent,
+          ),
+          result(
+            id: 'stuck',
+            outcome: LegacyScoringRecoveryOutcome.auditNotCurrentAfterApply,
+          ),
+          result(
+            id: 'broken',
+            outcome: LegacyScoringRecoveryOutcome.unexpectedError,
+          ),
+        ];
+
+        final postcondition = computeClosurePostcondition(results);
+
+        expect(postcondition.isClean, isFalse);
+        expect(postcondition.scoreableButNotCurrent, 1);
+        expect(postcondition.scoreableButNotCurrentProductIds, ['stuck']);
+        expect(postcondition.unexpectedErrors, 1);
+        expect(postcondition.unexpectedErrorProductIds, ['broken']);
+      },
+    );
+
+    test('auditRepairable counts as scoreable-but-not-current in dry-run: by '
+        'definition the evidence is already score-ready, it just has no '
+        'current audit yet', () {
+      final results = [
+        result(
+          id: 'ready',
+          outcome: LegacyScoringRecoveryOutcome.auditRepairable,
+        ),
+      ];
+
+      final postcondition = computeClosurePostcondition(results);
+
+      expect(postcondition.scoreableButNotCurrent, 1);
+      expect(postcondition.scoreableButNotCurrentProductIds, ['ready']);
+      expect(postcondition.isClean, isFalse);
+    });
+
+    test('reproduces the exact reported production accounting gap: '
+        'already_current + audit_repairable + blocked + '
+        'existing_evidence_audit_unavailable == catalogue_total, and '
+        'closure_clean is false because of the audit_repairable backlog', () {
+      final results = [
+        for (var i = 0; i < 728; i++)
+          result(
+            id: 'already-$i',
+            outcome: LegacyScoringRecoveryOutcome.alreadyCurrent,
+          ),
+        for (var i = 0; i < 93; i++)
+          result(
+            id: 'repairable-$i',
+            outcome: LegacyScoringRecoveryOutcome.auditRepairable,
+          ),
+        for (var i = 0; i < 4958; i++)
+          result(
+            id: 'blocked-$i',
+            outcome: LegacyScoringRecoveryOutcome.blocked,
+          ),
+        // The missing 80: existing, non-null scoring_evidence that is
+        // itself not (or no longer) score-ready — a real, distinct,
+        // previously-unprinted outcome in the dry-run [summary].
+        for (var i = 0; i < 80; i++)
+          result(
+            id: 'evidence-not-ready-$i',
+            outcome:
+                LegacyScoringRecoveryOutcome.existingEvidenceAuditUnavailable,
+          ),
+      ];
+      expect(results, hasLength(5859));
+
+      final postcondition = computeClosurePostcondition(results);
+
+      expect(postcondition.catalogueTotal, 5859);
+      expect(postcondition.currentPublicScores, 728);
+      expect(
+        postcondition.scoreableButNotCurrent,
+        93,
+        reason: 'exactly the audit_repairable count in dry-run',
+      );
+      expect(postcondition.isClean, isFalse);
+      expect(postcondition.unexpectedErrors, 0);
+    });
+
+    test('LegacyScoringRecoveryBatchSummary.outcomeCountsSum equals '
+        'totalExamined for a realistic mixed-outcome dry-run batch', () {
+      final summary = LegacyScoringRecoveryBatchSummary(
+        dryRun: true,
+        safeResumeCursor: null,
+      );
+      final mixedResults = [
+        result(id: 'a', outcome: LegacyScoringRecoveryOutcome.alreadyCurrent),
+        result(id: 'b', outcome: LegacyScoringRecoveryOutcome.auditRepairable),
+        result(id: 'c', outcome: LegacyScoringRecoveryOutcome.blocked),
+        result(
+          id: 'd',
+          outcome:
+              LegacyScoringRecoveryOutcome.existingEvidenceAuditUnavailable,
+        ),
+        result(id: 'e', outcome: LegacyScoringRecoveryOutcome.recoverable),
+        result(id: 'f', outcome: LegacyScoringRecoveryOutcome.unexpectedError),
+      ];
+      for (final r in mixedResults) {
+        summary.totalExamined++;
+        summary.record(r);
+      }
+
+      expect(summary.outcomeCountsSum, summary.totalExamined);
+      expect(summary.outcomeCountsAreConsistent, isTrue);
+    });
+
+    test('category breakdown uses the same mutually-exclusive outcome '
+        'semantics as the global summary: category-level blocked never '
+        'silently absorbs audit_repairable or '
+        'existing_evidence_audit_unavailable', () {
+      final results = [
+        result(
+          id: '1',
+          outcome: LegacyScoringRecoveryOutcome.blocked,
+          category: ScoringCategory.generalFood,
+        ),
+        result(
+          id: '2',
+          outcome: LegacyScoringRecoveryOutcome.auditRepairable,
+          category: ScoringCategory.generalFood,
+        ),
+        result(
+          id: '3',
+          outcome:
+              LegacyScoringRecoveryOutcome.existingEvidenceAuditUnavailable,
+          category: ScoringCategory.generalFood,
+        ),
+      ];
+
+      final grouped = groupResultsByCategory(results);
+      final stats = grouped['generalFood']!;
+
+      expect(
+        stats.blocked,
+        1,
+        reason: 'must count only outcome==blocked, not the other two',
+      );
+      expect(stats.auditRepairable, 1);
+      expect(stats.existingEvidenceAuditUnavailable, 1);
+      expect(stats.outcomeCountsSum, stats.totalProducts);
+      expect(stats.outcomeCountsAreConsistent, isTrue);
+
+      // Summing this category's per-outcome fields must reproduce what a
+      // global summary would report for the same results — the exact
+      // property that was broken (category blocked=5131 vs global
+      // blocked=4958 in the reported production run).
+      final globalSummary = LegacyScoringRecoveryBatchSummary(
+        dryRun: true,
+        safeResumeCursor: null,
+      );
+      for (final r in results) {
+        globalSummary.totalExamined++;
+        globalSummary.record(r);
+      }
+      expect(stats.blocked, globalSummary.blocked);
+      expect(stats.auditRepairable, globalSummary.auditRepairable);
+      expect(
+        stats.existingEvidenceAuditUnavailable,
+        globalSummary.existingEvidenceAuditUnavailable,
+      );
+    });
   });
 
   group('JSON round-trip', () {
@@ -598,7 +1754,9 @@ void main() {
         final product = _product();
         final dataSource = _FakeRecoveryDataSource(
           products: {product.id: product},
-          staging: {product.sourceUrl!: [_staging()]},
+          staging: {
+            product.sourceUrl!: [_staging()],
+          },
         );
         final runner = LegacyScoringRecoveryLifecycleRunner(
           dataSource: dataSource,
@@ -631,7 +1789,9 @@ void main() {
         final product = _product();
         final dataSource = _FakeRecoveryDataSource(
           products: {product.id: product},
-          staging: {product.sourceUrl!: [_staging()]},
+          staging: {
+            product.sourceUrl!: [_staging()],
+          },
           corruptPersistedEvidenceJson: true,
         );
         final runner = LegacyScoringRecoveryLifecycleRunner(
@@ -673,7 +1833,9 @@ void main() {
             widerVariant.id: widerVariant,
             percentInjection.id: percentInjection,
           },
-          staging: {exact.sourceUrl!: [_staging(product: exact)]},
+          staging: {
+            exact.sourceUrl!: [_staging(product: exact)],
+          },
         );
         final runner = LegacyScoringRecoveryLifecycleRunner(
           dataSource: dataSource,
@@ -694,7 +1856,9 @@ void main() {
       final products = List.generate(5, (i) => _product(id: '0${i + 1}00'));
       final dataSource = _FakeRecoveryDataSource(
         products: {for (final p in products) p.id: p},
-        staging: {for (final p in products) p.sourceUrl!: [_staging(product: p)]},
+        staging: {
+          for (final p in products) p.sourceUrl!: [_staging(product: p)],
+        },
       );
       final runner = LegacyScoringRecoveryLifecycleRunner(
         dataSource: dataSource,
@@ -709,38 +1873,49 @@ void main() {
 
       expect(summary.totalExamined, 2);
       expect(summary.reachedLimit, isTrue);
-      expect(dataSource.fetchRecoveryCandidatesCalls.every((c) => c.limit <= 2), isTrue);
-    });
-
-    test('--source resumes strictly after the supplied start-after cursor', () async {
-      final products = List.generate(5, (i) => _product(id: '0${i + 1}00'));
-      final dataSource = _FakeRecoveryDataSource(
-        products: {for (final p in products) p.id: p},
-        staging: {for (final p in products) p.sourceUrl!: [_staging(product: p)]},
-      );
-      final runner = LegacyScoringRecoveryLifecycleRunner(
-        dataSource: dataSource,
-      );
-
-      final summary = await runner.runForSource(
-        dryRun: true,
-        source: 'web_scraper:migros',
-        limit: 10,
-        startAfterProductId: '0200',
-      );
-
-      expect(summary.totalExamined, 3);
       expect(
-        summary.results.map((r) => r.productId),
-        ['0300', '0400', '0500'],
+        dataSource.fetchRecoveryCandidatesCalls.every((c) => c.limit <= 2),
+        isTrue,
       );
     });
+
+    test(
+      '--source resumes strictly after the supplied start-after cursor',
+      () async {
+        final products = List.generate(5, (i) => _product(id: '0${i + 1}00'));
+        final dataSource = _FakeRecoveryDataSource(
+          products: {for (final p in products) p.id: p},
+          staging: {
+            for (final p in products) p.sourceUrl!: [_staging(product: p)],
+          },
+        );
+        final runner = LegacyScoringRecoveryLifecycleRunner(
+          dataSource: dataSource,
+        );
+
+        final summary = await runner.runForSource(
+          dryRun: true,
+          source: 'web_scraper:migros',
+          limit: 10,
+          startAfterProductId: '0200',
+        );
+
+        expect(summary.totalExamined, 3);
+        expect(summary.results.map((r) => r.productId), [
+          '0300',
+          '0400',
+          '0500',
+        ]);
+      },
+    );
 
     test('17. --product-id targeted mode never scans the catalogue', () async {
       final product = _product();
       final dataSource = _FakeRecoveryDataSource(
         products: {product.id: product},
-        staging: {product.sourceUrl!: [_staging()]},
+        staging: {
+          product.sourceUrl!: [_staging()],
+        },
       );
       final runner = LegacyScoringRecoveryLifecycleRunner(
         dataSource: dataSource,
@@ -796,7 +1971,10 @@ void main() {
         productIds: [failing.id, recoverable.id],
       );
 
-      expect(summary.results[0].outcome, LegacyScoringRecoveryOutcome.unexpectedError);
+      expect(
+        summary.results[0].outcome,
+        LegacyScoringRecoveryOutcome.unexpectedError,
+      );
       expect(
         summary.results[1].outcome,
         LegacyScoringRecoveryOutcome.recoverable,
@@ -850,16 +2028,19 @@ void main() {
       );
     });
 
-    test('C. evidence is scoring-ready but current matching audit unavailable', () {
-      final state = mapper.auditSnapshotRequired();
+    test(
+      'C. evidence is scoring-ready but current matching audit unavailable',
+      () {
+        final state = mapper.auditSnapshotRequired();
 
-      expect(
-        state.unavailableStage,
-        ProductEtiketlyScoreUnavailableStage.auditNotCurrent,
-      );
-      expect(state.message, 'Puan kaydı güncelleniyor.');
-      expect(state.displayScore, isNull);
-    });
+        expect(
+          state.unavailableStage,
+          ProductEtiketlyScoreUnavailableStage.auditNotCurrent,
+        );
+        expect(state.message, 'Puan kaydı güncelleniyor.');
+        expect(state.displayScore, isNull);
+      },
+    );
 
     test(
       'D. current matching trusted audit produces a real calculated numeric score with no unavailable stage or message',
@@ -886,10 +2067,9 @@ void main() {
           assessment: auditOrdinaryAssessment(),
         );
         const evaluator = ProductScoreAuditEvaluator();
-        final auditEvaluation = await evaluator.evaluate(
-          product,
-          [auditOrdinaryIngredient()],
-        );
+        final auditEvaluation = await evaluator.evaluate(product, [
+          auditOrdinaryIngredient(),
+        ]);
         expect(auditEvaluation.finalScoreReady, isTrue);
         expect(
           auditEvaluation.snapshot!.inputFingerprint,
@@ -909,6 +2089,152 @@ void main() {
       },
     );
   });
+
+  group(
+    'Section 12: source-neutral lifecycle (synthetic future-adapter fixtures)',
+    () {
+      // Deliberately NOT scraping a101/bim — these are synthetic fixtures
+      // proving the scoring lifecycle is source-neutral by construction
+      // (the only place a "source" string is ever inspected anywhere in
+      // this pipeline is _isWebScraperSource()'s prefix check), not that
+      // any real integration with these retailers exists.
+      Product syntheticSourceProduct(String source, String id) {
+        final now = DateTime.utc(2026, 8, 8);
+        return Product(
+          id: id,
+          barcode: '869000000$id',
+          name: 'Synthetic $source product',
+          ingredientsText: 'mısır unu, bitkisel yağ, tuz',
+          nutritionText: jsonEncode(_nutrition()),
+          source: source,
+          sourceUrl: 'https://example-$source.test/product-$id',
+          verificationStatus: 'imported',
+          categoryTags: const ['cips_kraker'],
+          createdAt: now,
+          updatedAt: now,
+        );
+      }
+
+      LegacyStagingScoringEvidence syntheticStaging(Product product) {
+        return LegacyStagingScoringEvidence(
+          id: '${product.id}-staging',
+          sourceUrl: product.sourceUrl!,
+          // A future adapter proving the distinct unit — see the basis
+          // independence fix — is exactly the "forward-compatible" case
+          // this string models, unlike the real (unit-ambiguous) Migros
+          // contract's generic 'per_100'.
+          nutritionBasis: 'per_100g',
+          source: product.source,
+          ingredientsSource: product.source,
+          ingredientsRaw: 'İçindekiler: ${product.ingredientsText}',
+          ingredientsText: product.ingredientsText,
+          ingredientsQuality: 'ingredients_ok',
+          nutritionSource: product.source,
+          nutritionStrategy: 'dom',
+          nutritionJson: _nutrition(),
+        );
+      }
+
+      test(
+        'a generic A101-like trusted source (web_scraper:a101) reaches the '
+        'central lifecycle and produces a current audit snapshot, with no '
+        'retailer-specific code path involved',
+        () async {
+          final product = syntheticSourceProduct('web_scraper:a101', 'a101-1');
+          final dataSource = _FakeRecoveryDataSource(
+            products: {product.id: product},
+            staging: {
+              product.sourceUrl!: [syntheticStaging(product)],
+            },
+            catalogue: const [],
+          );
+          final runner = LegacyScoringRecoveryLifecycleRunner(
+            dataSource: dataSource,
+          );
+
+          final summary = await runner.runForProductIds(
+            dryRun: false,
+            productIds: [product.id],
+          );
+
+          expect(
+            summary.results.single.outcome,
+            LegacyScoringRecoveryOutcome.recoveredAndCurrent,
+          );
+          expect(dataSource.insertSnapshotCalls, 1);
+        },
+      );
+
+      test(
+        'a generic BIM-like trusted source (web_scraper:bim) reaches the '
+        'central lifecycle and produces a current audit snapshot',
+        () async {
+          final product = syntheticSourceProduct('web_scraper:bim', 'bim-1');
+          final dataSource = _FakeRecoveryDataSource(
+            products: {product.id: product},
+            staging: {
+              product.sourceUrl!: [syntheticStaging(product)],
+            },
+            catalogue: const [],
+          );
+          final runner = LegacyScoringRecoveryLifecycleRunner(
+            dataSource: dataSource,
+          );
+
+          final summary = await runner.runForProductIds(
+            dryRun: false,
+            productIds: [product.id],
+          );
+
+          expect(
+            summary.results.single.outcome,
+            LegacyScoringRecoveryOutcome.recoveredAndCurrent,
+          );
+          expect(dataSource.insertSnapshotCalls, 1);
+        },
+      );
+
+      test(
+        'identical trusted input produces the identical calculated score '
+        'regardless of which retailer source it came from — no '
+        'retailer-specific scoring formula exists',
+        () async {
+          final a101 = syntheticSourceProduct('web_scraper:a101', 'a101-2');
+          final bim = syntheticSourceProduct('web_scraper:bim', 'bim-2');
+          final migros = _product(id: 'migros-2');
+          final dataSource = _FakeRecoveryDataSource(
+            products: {
+              a101.id: a101,
+              bim.id: bim,
+              migros.id: migros,
+            },
+            staging: {
+              a101.sourceUrl!: [syntheticStaging(a101)],
+              bim.sourceUrl!: [syntheticStaging(bim)],
+              migros.sourceUrl!: [_staging(product: migros)],
+            },
+            catalogue: const [],
+          );
+          final runner = LegacyScoringRecoveryLifecycleRunner(
+            dataSource: dataSource,
+          );
+
+          final summary = await runner.runForProductIds(
+            dryRun: false,
+            productIds: [a101.id, bim.id, migros.id],
+          );
+
+          final scores = {
+            for (final result in summary.results)
+              result.productId: result.calculatedScore,
+          };
+          expect(scores[a101.id], isNotNull);
+          expect(scores[bim.id], scores[a101.id]);
+          expect(scores[migros.id], scores[a101.id]);
+        },
+      );
+    },
+  );
 }
 
 class _FetchRecoveryCandidatesCall {
@@ -919,6 +2245,16 @@ class _FetchRecoveryCandidatesCall {
   });
 
   final String source;
+  final String? afterProductId;
+  final int limit;
+}
+
+class _FetchCataloguePageCall {
+  const _FetchCataloguePageCall({
+    required this.afterProductId,
+    required this.limit,
+  });
+
   final String? afterProductId;
   final int limit;
 }
@@ -987,6 +2323,24 @@ class _FakeRecoveryDataSource
         .toList(growable: false);
   }
 
+  final List<_FetchCataloguePageCall> fetchCataloguePageCalls = [];
+
+  @override
+  Future<List<Product>> fetchCataloguePage({
+    required String? afterProductId,
+    required int limit,
+  }) async {
+    fetchCataloguePageCalls.add(
+      _FetchCataloguePageCall(afterProductId: afterProductId, limit: limit),
+    );
+    final ordered = products.values.toList()
+      ..sort((a, b) => a.id.compareTo(b.id));
+    final afterIndex = afterProductId == null
+        ? -1
+        : ordered.indexWhere((p) => p.id == afterProductId);
+    return ordered.skip(afterIndex + 1).take(limit).toList(growable: false);
+  }
+
   @override
   Future<List<LegacyStagingScoringEvidence>> fetchStagingMatches(
     String? sourceUrl,
@@ -1023,9 +2377,7 @@ class _FakeRecoveryDataSource
       // corrupting only the legacy field would have no effect on
       // readiness. Corrupt the wrapped nutrition value itself.
       final mutable = Map<String, dynamic>.from(json);
-      final nutrition = Map<String, dynamic>.from(
-        mutable['nutrition'] as Map,
-      );
+      final nutrition = Map<String, dynamic>.from(mutable['nutrition'] as Map);
       nutrition['energy_kj'] = null;
       mutable['nutrition'] = nutrition;
       json = mutable;
@@ -1133,9 +2485,18 @@ Product _product({
   );
 }
 
+// Basis independence correction: 'per_100' (the ONLY value the real
+// historical Migros scraper contract ever produces) never distinguishes g
+// from ml and now correctly resolves to NutritionBasis.unknown, not a
+// category-invented value (see _recoveredBasisFromEvidence in
+// legacy_scoring_evidence_recovery.dart). Most tests in this file are
+// about the LIFECYCLE (dedup, cursor, idempotency, error isolation, audit
+// repair) rather than basis itself, so they need a fixture with genuinely
+// PROVEN basis evidence to exercise what they actually test — 'per_100g'
+// is the forward-compatible, explicitly supported distinct-unit string.
 LegacyStagingScoringEvidence _staging({
   String id = 'staging-1',
-  String? basis = 'per_100',
+  String? basis = 'per_100g',
   List<String> warnings = const [],
   Product? product,
   Map<String, dynamic>? nutritionJson,

@@ -65,13 +65,14 @@ class IngredientCanonicalizer {
       'yağ asitlerinin mono- ve digliseritleri',
       'e471',
     ],
-    'lesitin': [
-      'lesitin',
-      'lesitinler',
-      'soya lesitini',
-      'soy lecithin',
-      'lecithin',
-    ],
+    // "soya lesitini"/"soy lecithin" are deliberately NOT listed here even
+    // though they are lecithin (E322) evidence: they explicitly declare a
+    // soy source, and collapsing them into the generic "lesitin" canonical
+    // key would discard that source information. They are left to resolve
+    // through the ingredient catalogue's own source-specific row (matched
+    // via its aliases) instead, preserving the distinction between "E322,
+    // source unstated" and "E322, soy-derived" the raw label actually draws.
+    'lesitin': ['lesitin', 'lesitinler', 'lecithin'],
     'emülgatör': ['emülgatör', 'emulgator', 'emulsifier'],
 
     'antioksidan': ['antioksidan', 'antioxidant', 'antioksidanlar'],
@@ -91,10 +92,30 @@ class IngredientCanonicalizer {
       'kabartma tozu',
     ],
     'kalsiyum karbonat': ['kalsiyum karbonat', 'calcium carbonate'],
+    // E500 (Sodium carbonates) is an official regulatory group covering
+    // sodium carbonate, sodium bicarbonate/hydrogen carbonate, and sodium
+    // sesquicarbonate as subtypes of the same additive number — these are
+    // not distinct E-codes being merged, just documented aliases of E500.
     'sodyum karbonat': [
       'sodyum karbonat',
       'sodyum karbonatlar',
+      'sodyum bikarbonat',
+      'sodyum bikarbonatlar',
+      'sodyum hidrojen karbonat',
       'sodium carbonate',
+      'sodium bicarbonate',
+      'sodium hydrogen carbonate',
+    ],
+    // E503 (Ammonium carbonates) likewise covers ammonium carbonate and
+    // ammonium bicarbonate/hydrogen carbonate as subtypes of one E-code.
+    'amonyum karbonat': [
+      'amonyum karbonat',
+      'amonyum karbonatlar',
+      'amonyum bikarbonat',
+      'amonyum bikarbonatlar',
+      'amonyum hidrojen karbonat',
+      'ammonium carbonate',
+      'ammonium bicarbonate',
     ],
     'kakao tozu': [
       'kakao tozu',
@@ -153,6 +174,9 @@ class IngredientCanonicalizer {
     'jelleştirici',
     'kabartıcı',
     'kıvam artırıcı',
+    // "arttırıcı" (double t) is a very common misspelling of "artırıcı" on
+    // real product labels — same functional class, not a different label.
+    'kıvam arttırıcı',
     'koruyucu',
     'renklendirici',
     'stabilizör',
@@ -162,6 +186,24 @@ class IngredientCanonicalizer {
 
   static final RegExp _percentageOnly = RegExp(
     r'^\s*(?:%\s*)?\d+(?:[.,]\d+)?\s*%?\s*$',
+  );
+
+  // Up to three words immediately followed by a colon — a broad capture,
+  // deliberately not limited to the exact known label spellings, so plural
+  // forms ("kabartıcılar:", "emülgatörler:") are also captured. The actual
+  // label decision happens afterward via _isFunctionalGroupLabel on the
+  // normalized (plural-stripped) text, not via this regex alone.
+  static final RegExp _wordsBeforeColon = RegExp(
+    r'([A-Za-zÇĞİÖŞÜçğıöşüİı]+(?:\s+[A-Za-zÇĞİÖŞÜçğıöşüİı]+){0,2})\s*:\s*',
+  );
+
+  // Matches the end of a bracket-delimited ingredient composition list
+  // followed by a new, unrelated declaration sentence (e.g. a minimum
+  // cocoa/milk-solids disclosure) — only when no further composition
+  // bracket appears anywhere after it, so this never truncates legitimate
+  // further ingredient content.
+  static final RegExp _trailingDeclarationAfterComposition = RegExp(
+    r'[)\]](?![\s\S]*[()\[\]])\s*\.\s*[A-ZÇĞİÖŞÜ][\s\S]*$',
   );
 
   /// E-code canonicalization: normalize variants to 'e###' lowercase
@@ -217,11 +259,16 @@ class IngredientCanonicalizer {
       (m) => 'e${m[1]}',
     );
 
-    // Common OCR corrections and plural -> singular normalizations
+    // Common OCR corrections and plural -> singular normalizations.
+    // "digliserid" (d) is a common spelling variant of "digliserit" (t) for
+    // the same E471 substance, not a different additive.
     s = s.replaceAllMapped(
-      RegExp(r'\b(digliseritleri|digliseritler)\b'),
+      RegExp(
+        r'\b(digliseritleri|digliseritler|digliseridleri|digliseridler)\b',
+      ),
       (_) => 'digliseritler',
     );
+    s = s.replaceAllMapped(RegExp(r'\bdigliserid\b'), (_) => 'digliserit');
     s = s.replaceAllMapped(RegExp(r'\b(lesitinler)\b'), (_) => 'lesitin');
     s = _stripTurkishPluralSuffixes(s);
     s = _stripPossessiveSuffixes(s);
@@ -258,24 +305,38 @@ class IngredientCanonicalizer {
 
       // Specific canonical phrases first.
       final lowered = p.toLowerCase();
-      if (lowered.contains('mono') && lowered.contains('digliserit')) {
+      // "digliserid" (d) is a common spelling variant of "digliserit" (t)
+      // for the same E471 substance, not a different additive.
+      if (lowered.contains('mono') &&
+          (lowered.contains('digliserit') || lowered.contains('digliserid'))) {
         out.add('mono ve digliseritler');
+        _appendLeftoverNestedContent(p, out);
         continue;
       }
       if (lowered.contains('lesitin')) {
         out.add('lesitin');
+        // A doubly-nested source declaration like "lesitin (soya" can reach
+        // here as one unsplit chunk (the non-nested-paren-aware capture
+        // regex above stops at the first closing paren). Without this, the
+        // source ingredient (e.g. soya, an allergen-relevant ordinary food
+        // token) would be silently discarded instead of derived alongside
+        // "lesitin".
+        _appendLeftoverNestedContent(p, out);
         continue;
       }
       if (lowered.contains('sodyum karbonat')) {
         out.add('sodyum karbonat');
+        _appendLeftoverNestedContent(p, out);
         continue;
       }
       if (lowered.contains('kalsiyum karbonat')) {
         out.add('kalsiyum karbonat');
+        _appendLeftoverNestedContent(p, out);
         continue;
       }
       if (lowered.contains('malt ekstrakt')) {
         out.add('malt ekstraktı');
+        _appendLeftoverNestedContent(p, out);
         continue;
       }
 
@@ -300,6 +361,86 @@ class IngredientCanonicalizer {
     }
 
     return out;
+  }
+
+  /// Appends any leftover nested-parenthetical content trailing a matched
+  /// canonical-phrase shortcut (e.g. the "(soya" in "lesitin (soya", left
+  /// unsplit because the outer non-nested-aware paren capture stops at the
+  /// first closing paren) so it is not silently discarded. The leftover is
+  /// only ever simple source/qualifier text (never itself another
+  /// canonical-phrase trigger for these shortcuts), so it is added as-is
+  /// rather than recursively re-derived.
+  static void _appendLeftoverNestedContent(String part, List<String> out) {
+    final openIndex = part.indexOf('(');
+    if (openIndex < 0) return;
+    final leftover = part
+        .substring(openIndex + 1)
+        .replaceAll(RegExp(r'[()]'), '');
+    for (final piece in _splitInnerParts(leftover)) {
+      final cleaned = piece.trim();
+      if (cleaned.isNotEmpty && !_percentageOnly.hasMatch(cleaned)) {
+        out.add(cleaned);
+      }
+    }
+  }
+
+  /// Wraps "functionalLabel: child" into "functionalLabel (child)" so the
+  /// existing paren-aware label/child suppression logic in
+  /// [parseIngredientsAdvanced] can treat colon-introduced children exactly
+  /// like parenthetical ones. Only wraps when the text immediately before
+  /// the colon normalizes to a known functional group label — any other
+  /// colon (including ones already stripped earlier as section headings) is
+  /// left untouched for the existing blanket colon-to-comma fallback.
+  ///
+  /// The child span is bounded by the next top-level comma/semicolon/
+  /// newline, tracked with its own paren-depth counter so it works whether
+  /// the label appears at the top level or already nested inside another
+  /// compound ingredient's own parenthetical breakdown.
+  static String _wrapFunctionalLabelColonChildren(String text) {
+    final buffer = StringBuffer();
+    var i = 0;
+    while (i < text.length) {
+      final match = _wordsBeforeColon.matchAsPrefix(text, i);
+      final label = match?.group(1);
+      if (match != null &&
+          label != null &&
+          _isFunctionalGroupLabel(normalizeToken(label))) {
+        var j = match.end;
+        var relativeDepth = 0;
+        while (j < text.length) {
+          final c = text[j];
+          if (c == '(') {
+            relativeDepth++;
+            j++;
+            continue;
+          }
+          if (c == ')') {
+            // A close paren at relative depth 0 belongs to an enclosing
+            // scope, not to this label's child — stop before consuming it.
+            if (relativeDepth == 0) break;
+            relativeDepth--;
+            j++;
+            continue;
+          }
+          if (relativeDepth == 0 && (c == ',' || c == ';' || c == '\n')) {
+            break;
+          }
+          j++;
+        }
+        final child = text.substring(match.end, j).trim();
+        buffer.write(label);
+        if (child.isNotEmpty) {
+          buffer.write(' (');
+          buffer.write(child);
+          buffer.write(')');
+        }
+        i = j;
+        continue;
+      }
+      buffer.write(text[i]);
+      i++;
+    }
+    return buffer.toString();
   }
 
   static List<String> _splitInnerParts(String value) {
@@ -373,6 +514,7 @@ class IngredientCanonicalizer {
       }
     }
 
+    ingredientText = _stripTrailingDeclarationAfterComposition(ingredientText);
     ingredientText =
         _cleanupSectionText(ingredientText, stripTrailingSingleLetter: true) ??
         '';
@@ -493,7 +635,14 @@ class IngredientCanonicalizer {
     }
 
     // Normalize separators and keep parentheses for inner extraction.
-    var s = cleaned.ingredientsText;
+    // Functional-class labels followed by a colon (e.g. "emülgatör: lesitin
+    // (soya)") must be wrapped into the same "label (child)" shape a
+    // parenthetical label already gets, BEFORE colons are flattened to
+    // commas below — otherwise the colon-comma conversion splits the label
+    // from its declared child and the label leaks through as a false
+    // unresolved additive blocker (its child is discovered and canonicalized
+    // separately, but the label itself is orphaned).
+    var s = _wrapFunctionalLabelColonChildren(cleaned.ingredientsText);
     s = s.replaceAll('\n', ',');
     s = s.replaceAll('•', ',');
     s = s.replaceAll('·', ',');
@@ -599,6 +748,20 @@ class IngredientCanonicalizer {
     }
 
     return t;
+  }
+
+  /// Removes a trailing declaration sentence (e.g. a minimum cocoa/milk
+  /// solids disclosure) that immediately follows the close of a
+  /// bracket-delimited compound-ingredient composition list, such as
+  /// "...aroma verici]. Bitter çikolata min. %55 kakao kuru maddesi
+  /// içermektedir." Without this, the parser has no comma to flush on and
+  /// the declaration sentence gets glued onto the last ingredient token,
+  /// producing a garbled, misleading blocker instead of correctly ending
+  /// the ingredient list at the composition's closing bracket.
+  static String _stripTrailingDeclarationAfterComposition(String text) {
+    final match = _trailingDeclarationAfterComposition.firstMatch(text);
+    if (match == null) return text;
+    return text.substring(0, match.start + 1);
   }
 
   static String _normalizeRawText(String raw) {

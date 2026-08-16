@@ -139,6 +139,16 @@ void main() {
       );
     });
 
+    // ScoringReadinessEvaluator now catches these same three conditions
+    // itself (see the "cross-field nutrition invariants" group in
+    // scoring_readiness_evaluator_test.dart) — a real caller never reaches
+    // ValidatedNutritionScoringInput.validate() at all for them anymore,
+    // since ProductEtiketlyScoreOrchestrator only calls it when
+    // nutritionReadiness.isScorable is already true. validate() still
+    // throws when called directly (as here) — via its own first check
+    // (`if (!readiness.isScorable) throw ...`), which fires before its
+    // internal `issues` detection ever runs — so the exception's `readiness`
+    // field, not `issues`, now carries the reason.
     test('fat input rejects zero total fat and impossible fat ratio', () {
       expect(
         () => ValidatedNutritionScoringInput.validate(
@@ -152,9 +162,9 @@ void main() {
         ),
         throwsA(
           isA<NutritionScoringInputValidationException>().having(
-            (error) => error.issues,
-            'issues',
-            contains(NutritionScoringInputIssue.nonPositiveTotalFat),
+            (error) => error.readiness.blockingReasons,
+            'readiness.blockingReasons',
+            contains(ScoringReadinessBlocker.nonPositiveTotalFatForFatCategory),
           ),
         ),
       );
@@ -170,13 +180,78 @@ void main() {
         ),
         throwsA(
           isA<NutritionScoringInputValidationException>().having(
-            (error) => error.issues,
-            'issues',
-            contains(NutritionScoringInputIssue.saturatedFatExceedsTotalFat),
+            (error) => error.readiness.blockingReasons,
+            'readiness.blockingReasons',
+            contains(ScoringReadinessBlocker.saturatedFatExceedsTotalFat),
           ),
         ),
       );
     });
+
+    // Regression for the branch-conditional-protein readiness correction:
+    // ScoringReadinessEvaluator._fatsNegativeTotalIfDetermined now runs an
+    // internal N computation to decide whether missing protein can be
+    // safely excused. That helper must fall back to null (protein
+    // conservatively required) rather than crash or silently accept an
+    // out-of-range ratio when saturatedFat > totalFat — but the product
+    // must still terminate as the deterministic
+    // saturatedFatExceedsTotalFat blocker regardless of whether protein
+    // evidence is present at all, in every category that uses this
+    // invariant (not just fatsOilsNutsSeeds).
+    test(
+      'saturatedFat > totalFat is blocked as invalid source data even '
+      'when protein evidence is entirely absent, and even outside the '
+      'fats/oils/nuts/seeds category',
+      () {
+        expect(
+          () => ValidatedNutritionScoringInput.validate(
+            completeInput(
+              category: ScoringCategory.fatsOilsNutsSeeds,
+              nutrition: completeNutrition(
+                totalFat: verifiedValue(10),
+                saturatedFat: verifiedValue(11),
+                includeProtein: false,
+              ),
+            ),
+          ),
+          throwsA(
+            isA<NutritionScoringInputValidationException>().having(
+              (error) => error.readiness.blockingReasons,
+              'readiness.blockingReasons',
+              contains(ScoringReadinessBlocker.saturatedFatExceedsTotalFat),
+            ),
+          ),
+          reason:
+              'must never fall through to a calculated score merely '
+              'because the N-determination helper could not compute a '
+              'ratio and conservatively required protein',
+        );
+
+        expect(
+          () => ValidatedNutritionScoringInput.validate(
+            completeInput(
+              category: ScoringCategory.generalFood,
+              nutrition: completeNutrition(
+                totalFat: verifiedValue(5),
+                saturatedFat: verifiedValue(10),
+                includeProtein: false,
+              ),
+            ),
+          ),
+          throwsA(
+            isA<NutritionScoringInputValidationException>().having(
+              (error) => error.readiness.blockingReasons,
+              'readiness.blockingReasons',
+              contains(ScoringReadinessBlocker.saturatedFatExceedsTotalFat),
+            ),
+          ),
+          reason:
+              'generalFood does not use totalFat in its own score formula, '
+              'but the cross-field invariant must still fire whenever both '
+              'values are present and contradictory',
+        );
+      },
+    );
 
     test('trusted plain-water fact cannot target a food category', () {
       expect(
@@ -189,9 +264,9 @@ void main() {
         ),
         throwsA(
           isA<NutritionScoringInputValidationException>().having(
-            (error) => error.issues,
-            'issues',
-            contains(NutritionScoringInputIssue.plainWaterCategoryMismatch),
+            (error) => error.readiness.blockingReasons,
+            'readiness.blockingReasons',
+            contains(ScoringReadinessBlocker.plainWaterCategoryMismatch),
           ),
         ),
       );

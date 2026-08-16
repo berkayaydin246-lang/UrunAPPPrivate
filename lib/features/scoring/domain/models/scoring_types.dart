@@ -102,6 +102,9 @@ enum ScoringReadinessBlocker {
   unknownNnsEvidenceProvenance,
   invalidEvidenceValue,
   rejectedEvidence,
+  saturatedFatExceedsTotalFat,
+  nonPositiveTotalFatForFatCategory,
+  plainWaterCategoryMismatch,
 }
 
 enum ScoringReadinessWarning {

@@ -9,12 +9,31 @@ import 'package:food_analyzer_app/features/scoring/domain/models/etiketly_score_
 import 'package:food_analyzer_app/features/scoring/domain/models/score_audit_write.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_evidence_snapshot.dart';
 
-/// Historical scoring recovery CLI.
+/// Final whole-catalogue scoring closure CLI.
 ///
-/// Reuses [LegacyScoringEvidenceRecoveryService] and
-/// [ProductScoringLifecycleService] (via [LegacyScoringRecoveryLifecycleRunner])
-/// exclusively. This tool never constructs a [ScoringEvidenceSnapshot] itself
-/// and never writes `scoring_evidence` directly.
+/// This is the terminal pass for the Etiketly historical scoring project:
+/// for every product in the catalogue, regardless of whether
+/// `scoring_evidence` is null or already populated, it drives exactly one
+/// of the two valid terminal states — currently scoreable (evidence +
+/// matching current audit snapshot + public gate approval) or
+/// deterministically blocked with exact reasons — using ONLY the existing,
+/// frozen scoring services:
+///
+///   - [LegacyScoringEvidenceRecoveryService] (CASE 1: recover trusted
+///     historical evidence for never-recovered products)
+///   - [ProductScoringLifecycleService] (via
+///     [LegacyScoringRecoveryLifecycleRunner], the single write path for
+///     both evidence persistence and audit-snapshot insertion)
+///   - [ProductScoreAuditEvaluator] / [EtiketlyPublicScoreAuditGate] (CASE
+///     2: evaluate and, if needed, repair the audit for products that
+///     already have score-ready evidence)
+///
+/// This tool contains no scoring math, no category rules, and no additive
+/// logic of its own — it only orchestrates and reports. It never
+/// constructs a [ScoringEvidenceSnapshot] itself and never writes
+/// `scoring_evidence` for a product that already has it (see
+/// [LegacyScoringRecoveryLifecycleRunner]'s audit-repair path, which uses
+/// an identity evidence resolver).
 Future<void> main(List<String> arguments) async {
   late final _CliOptions options;
   try {
@@ -46,32 +65,71 @@ Future<void> main(List<String> arguments) async {
     return;
   }
 
-  final dataSource = _RestRecoveryLifecycleDataSource(
+  final dataSource = _RestCatalogueClosureDataSource(
     baseUri: baseUri,
     serviceRoleKey: serviceRoleKey,
   );
   const formatter = LegacyScoringRecoveryReportFormatter();
   final runner = LegacyScoringRecoveryLifecycleRunner(dataSource: dataSource);
   try {
-    final summary = options.productIds.isNotEmpty
-        ? await runner.runForProductIds(
-            dryRun: options.dryRun,
-            productIds: options.productIds,
-          )
-        : await runner.runForSource(
-            dryRun: options.dryRun,
-            source: options.source!,
-            limit: options.limit!,
-            batchSize: options.batchSize,
-            startAfterProductId: options.startAfterProductId,
-          );
+    final summary = await runner.runFullCatalogueClosure(
+      dryRun: options.dryRun,
+      limit: options.limit,
+      batchSize: options.batchSize,
+      startAfterProductId: options.startAfterProductId,
+    );
 
-    for (final result in summary.results) {
-      stdout.writeln(formatter.formatProduct(result));
+    if (!options.quietPerProduct) {
+      for (final result in summary.results) {
+        stdout.writeln(formatter.formatProduct(result));
+      }
     }
     stdout.writeln(formatter.formatSummary(summary));
+    final byCategory = groupResultsByCategory(summary.results);
+    stdout.writeln(formatter.formatCategoryBreakdown(byCategory));
 
-    if (summary.unexpectedErrors > 0 || summary.halted) exitCode = 1;
+    final postcondition = computeClosurePostcondition(summary.results);
+    stdout.writeln(formatter.formatPostcondition(postcondition));
+    stdout.writeln(formatter.formatFinalStateSummary(summary.results));
+
+    // Internal-accounting assertion: every recorded result increments
+    // exactly one of the nine mutually-exclusive terminal outcome
+    // counters, so this sum must always equal total_examined. This is not
+    // a diagnostic backlog signal (unlike closure_clean) — a mismatch here
+    // means the report itself is not trustworthy, so it fails in BOTH
+    // modes, never only apply.
+    if (!summary.outcomeCountsAreConsistent) {
+      stderr.writeln(
+        'error=outcome_accounting_inconsistent '
+        'outcome_counts_sum=${summary.outcomeCountsSum} '
+        'total_examined=${summary.totalExamined}',
+      );
+      exitCode = 1;
+      return;
+    }
+
+    if (summary.halted) {
+      stderr.writeln('error=run_halted_before_completion');
+      exitCode = 1;
+      return;
+    }
+    if (options.dryRun) {
+      // closure_clean reflects the real state in both modes (see
+      // ClosurePostcondition) — a dry-run legitimately reports a nonzero
+      // scoreable_but_not_current backlog (that is its purpose), so this
+      // is diagnostic only and never fails the dry-run exit code. Only a
+      // genuine unexpectedError count is ever a dry-run failure signal.
+      if (postcondition.unexpectedErrors > 0) exitCode = 1;
+      return;
+    }
+    if (!postcondition.isClean) {
+      stderr.writeln(
+        'error=closure_not_clean '
+        'scoreable_but_not_current=${postcondition.scoreableButNotCurrent} '
+        'unexpected_errors=${postcondition.unexpectedErrors}',
+      );
+      exitCode = 1;
+    }
   } on Object catch (error) {
     // Remote failures can contain request metadata. Report only the type.
     stderr.writeln('error=${error.runtimeType}');
@@ -81,30 +139,29 @@ Future<void> main(List<String> arguments) async {
   }
 }
 
-// Bounded, deliberately conservative for a backfill tool that can trigger a
-// batch of database writes in apply mode.
-const _maxLimit = 500;
+// Bounded, deliberately conservative for a whole-catalogue pass that can
+// trigger a large batch of database writes in apply mode. Raise only with a
+// deliberate, reviewed change — never silently.
+const _maxLimit = 10000;
 
 class _CliOptions {
   const _CliOptions({
     required this.help,
     required this.dryRun,
     required this.projectRef,
-    required this.productIds,
-    required this.source,
     required this.limit,
     required this.batchSize,
     required this.startAfterProductId,
+    required this.quietPerProduct,
   });
 
   final bool help;
   final bool dryRun;
   final String projectRef;
-  final List<String> productIds;
-  final String? source;
-  final int? limit;
+  final int limit;
   final int batchSize;
   final String? startAfterProductId;
+  final bool quietPerProduct;
 
   static _CliOptions parse(List<String> arguments) {
     _validateArguments(arguments);
@@ -113,11 +170,10 @@ class _CliOptions {
         help: true,
         dryRun: true,
         projectRef: '',
-        productIds: [],
-        source: null,
-        limit: null,
+        limit: 0,
         batchSize: 50,
         startAfterProductId: null,
+        quietPerProduct: false,
       );
     }
 
@@ -127,63 +183,36 @@ class _CliOptions {
       throw const FormatException('choose exactly one of --dry-run or --apply');
     }
     if (apply &&
-        !arguments.contains('--confirm-apply-legacy-scoring-recovery')) {
+        !arguments.contains(
+          '--confirm-apply-final-scoring-catalogue-closure',
+        )) {
       throw const FormatException(
-        '--apply requires --confirm-apply-legacy-scoring-recovery',
+        '--apply requires --confirm-apply-final-scoring-catalogue-closure',
       );
     }
     // Default to dry-run whenever --apply is not explicitly requested.
     final dryRun = !apply;
 
-    // Deduplicate while preserving first-seen order — repeated IDs must
-    // never be processed more than once.
-    final productIds = <String>[..._values(arguments, '--product-id').toSet()];
-    for (final id in productIds) {
-      if (!RegExp(
-        r'^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$',
-      ).hasMatch(id)) {
-        // Never echo the raw value: a mistakenly pasted secret/JWT here
-        // must not be reflected back in terminal output.
-        throw const FormatException('invalid_product_id_format');
-      }
-    }
-    final source = _value(arguments, '--source')?.trim();
     final limit = _intValue(arguments, '--limit');
-    final startAfterProductId = _value(arguments, '--start-after')?.trim();
-
-    final hasProductIds = productIds.isNotEmpty;
-    final hasSource = source != null && source.isNotEmpty;
-    if (hasProductIds == hasSource) {
-      throw const FormatException(
-        'choose exactly one of --product-id (repeatable) or --source '
-        '(with --limit)',
-      );
+    if (limit == null) {
+      throw const FormatException('--limit is required (no unbounded mode)');
     }
-    if (hasSource && limit == null) {
-      throw const FormatException('--source requires --limit');
-    }
-    if (!hasSource && limit != null) {
-      throw const FormatException('--limit is only valid with --source');
-    }
-    if (limit != null && limit < 1) {
-      throw const FormatException('--limit must be positive');
-    }
-    if (limit != null && limit > _maxLimit) {
+    if (limit < 1) throw const FormatException('--limit must be positive');
+    if (limit > _maxLimit) {
       throw const FormatException('--limit must be $_maxLimit or fewer');
-    }
-    if (startAfterProductId != null && !hasSource) {
-      throw const FormatException('--start-after is only valid with --source');
-    }
-    if (startAfterProductId != null &&
-        !RegExp(
-          r'^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$',
-        ).hasMatch(startAfterProductId)) {
-      throw const FormatException('invalid_start_after_format');
     }
 
     final batchSize = _intValue(arguments, '--batch-size') ?? 50;
     if (batchSize < 1 || batchSize > 100) {
       throw const FormatException('--batch-size must be between 1 and 100');
+    }
+
+    final startAfterProductId = _value(arguments, '--start-after')?.trim();
+    if (startAfterProductId != null &&
+        !RegExp(
+          r'^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$',
+        ).hasMatch(startAfterProductId)) {
+      throw const FormatException('invalid_start_after_format');
     }
 
     final projectRef = _requiredValue(arguments, '--project-ref');
@@ -195,11 +224,10 @@ class _CliOptions {
       help: false,
       dryRun: dryRun,
       projectRef: projectRef,
-      productIds: productIds,
-      source: source,
       limit: limit,
       batchSize: batchSize,
       startAfterProductId: startAfterProductId,
+      quietPerProduct: arguments.contains('--quiet-per-product'),
     );
   }
 
@@ -229,31 +257,17 @@ class _CliOptions {
     return arguments[index + 1];
   }
 
-  static List<String> _values(List<String> arguments, String name) {
-    final values = <String>[];
-    for (var index = 0; index < arguments.length; index++) {
-      if (arguments[index] != name) continue;
-      if (index + 1 >= arguments.length ||
-          arguments[index + 1].startsWith('--')) {
-        throw FormatException('$name requires a value');
-      }
-      values.add(arguments[index + 1]);
-    }
-    return values;
-  }
-
   static void _validateArguments(List<String> arguments) {
     const flags = {
       '--help',
       '-h',
       '--dry-run',
       '--apply',
-      '--confirm-apply-legacy-scoring-recovery',
+      '--confirm-apply-final-scoring-catalogue-closure',
+      '--quiet-per-product',
     };
     const valueOptions = {
       '--project-ref',
-      '--product-id',
-      '--source',
       '--limit',
       '--batch-size',
       '--start-after',
@@ -275,9 +289,9 @@ class _CliOptions {
   }
 }
 
-class _RestRecoveryLifecycleDataSource
+class _RestCatalogueClosureDataSource
     implements LegacyScoringRecoveryLifecycleDataSource {
-  _RestRecoveryLifecycleDataSource({
+  _RestCatalogueClosureDataSource({
     required this.baseUri,
     required this.serviceRoleKey,
   });
@@ -322,9 +336,11 @@ class _RestRecoveryLifecycleDataSource
     required String? afterProductId,
     required int limit,
   }) async {
-    // Exact match only — never ILIKE/LIKE. A prefix or wildcard pattern
-    // built from caller-supplied text could be broadened by embedded
-    // %/_ metacharacters; `eq.` cannot be broadened this way.
+    // Not used by the whole-catalogue closure pass (see
+    // fetchCataloguePage below) — implemented only to satisfy the shared
+    // interface, kept identical to the historical-recovery tool's exact
+    // (never LIKE/ILIKE) match semantics in case a future caller reuses
+    // this data source for a targeted recovery run.
     final rows = await _getRows('products', {
       'select': '*',
       'scoring_evidence': 'is.null',
@@ -341,10 +357,9 @@ class _RestRecoveryLifecycleDataSource
     required String? afterProductId,
     required int limit,
   }) async {
-    // Not used by this targeted/source-batch tool — implemented only to
-    // satisfy the shared interface (see
-    // tool/final_scoring_catalogue_closure.dart for the whole-catalogue
-    // closure pass that actually calls this).
+    // Deliberately unconditional — no scoring_evidence filter, no source
+    // filter. This is what makes the closure pass cover already-evidenced
+    // products (CASE 2) as well as never-recovered ones (CASE 1).
     final rows = await _getRows('products', {
       'select': '*',
       'order': 'id.asc',
@@ -496,7 +511,7 @@ class _RestRecoveryLifecycleDataSource
       ..set(HttpHeaders.acceptHeader, 'application/json')
       ..set(
         HttpHeaders.userAgentHeader,
-        'etiketly-legacy-scoring-recovery-lifecycle/1',
+        'etiketly-final-scoring-catalogue-closure/1',
       );
     if (prefer != null) request.headers.set('Prefer', prefer);
     if (body != null) {
@@ -520,37 +535,40 @@ class _RestRecoveryLifecycleDataSource
 void _printUsage() {
   stdout.writeln(r'''
 Usage (dry-run is the default; nothing is written):
-  dart run tool/legacy_scoring_recovery_lifecycle.dart \
-    --project-ref REF --product-id UUID [--product-id UUID ...]
+  dart run tool/final_scoring_catalogue_closure.dart \
+    --project-ref REF --limit 6000
 
-  dart run tool/legacy_scoring_recovery_lifecycle.dart \
-    --project-ref REF --source web_scraper:migros --limit 50
-
-Apply (writes evidence + a current audit snapshot through the trusted
-ProductScoringLifecycleService, triggerSource=controlled_backfill):
-  dart run tool/legacy_scoring_recovery_lifecycle.dart \
-    --project-ref REF --apply --confirm-apply-legacy-scoring-recovery \
-    --product-id UUID [--product-id UUID ...]
-
-  dart run tool/legacy_scoring_recovery_lifecycle.dart \
-    --project-ref REF --apply --confirm-apply-legacy-scoring-recovery \
-    --source web_scraper:migros --limit 50
+Apply (writes ONLY via ProductScoringLifecycleService — recovers evidence
+for never-recovered products, or repairs a missing/stale audit for
+already-evidenced score-ready products; existing evidence is never
+overwritten):
+  dart run tool/final_scoring_catalogue_closure.dart \
+    --project-ref REF --apply \
+    --confirm-apply-final-scoring-catalogue-closure --limit 6000
 
 Options:
-  --product-id UUID     Repeatable (duplicates are deduplicated). Targeted
-                          mode — never scans the catalogue. A product that
-                          already has scoring_evidence is never overwritten;
-                          it is only diagnosed (already_current or
-                          existing_evidence_audit_unavailable).
-  --source VALUE          Bounded batch by an EXACT products.source match
-                          (e.g. web_scraper:migros) — never a prefix or
-                          wildcard pattern. Requires --limit.
-  --limit N               Required with --source. Max 500.
-  --batch-size N          Page size for --source scans, 1-100 (default: 50).
-  --start-after UUID      Resume a --source batch strictly after this
-                          product ID. Only valid with --source.
+  --limit N               Required. Max products examined this run
+                          (max $_maxLimit — no unbounded mode).
+  --batch-size N           Page size, 1-100 (default: 50).
+  --start-after UUID       Resume strictly after this product ID.
+  --quiet-per-product      Suppress the per-product lines; print only the
+                          summary, category breakdown, and postcondition.
 
-Exactly one of --product-id (repeatable) or --source (+--limit) is required.
+Covers EVERY product regardless of scoring_evidence nullness in one pass —
+never only `scoring_evidence IS NULL` rows.
+
+closure_clean in [postcondition] always reflects the real state in both
+modes: false whenever scoreable_but_not_current > 0 (this includes
+audit_repairable in dry-run — score-ready evidence with no current audit IS
+scoreable, just not yet current) or unexpected_errors > 0. A dry-run
+legitimately reports closure_clean=false when there is a real backlog to
+apply — that is diagnostic, not a failure, so dry-run's exit code only
+reacts to unexpectedError. Exit code is non-zero if the run halted, if the
+internal outcome-accounting assertion fails (in either mode — this signals
+the report itself is untrustworthy, not a backlog), if any unexpectedError
+occurred, or (apply mode only) if closure_clean is false after processing —
+in which case the affected product IDs are printed under
+[scoreable_but_not_current_product_ids] and [unexpected_error_product_ids].
 
 Credentials are read only from SUPABASE_URL and
 SUPABASE_SERVICE_ROLE_KEY (or legacy SUPABASE_SERVICE_KEY). They are never

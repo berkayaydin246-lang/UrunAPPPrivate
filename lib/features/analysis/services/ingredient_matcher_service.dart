@@ -5,6 +5,18 @@ import 'package:food_analyzer_app/features/product/models/ingredient.dart';
 import 'package:food_analyzer_app/features/analysis/services/ingredient_canonicalizer.dart';
 import 'package:food_analyzer_app/features/product/data/ingredient_explanation_catalog.dart';
 
+class _AliasCandidate {
+  const _AliasCandidate({
+    required this.ingredient,
+    required this.matchedAlias,
+    required this.fieldPriority,
+  });
+
+  final Ingredient ingredient;
+  final String matchedAlias;
+  final int fieldPriority;
+}
+
 /// Service for normalizing and matching ingredients
 class IngredientMatcherService {
   const IngredientMatcherService();
@@ -30,6 +42,9 @@ class IngredientMatcherService {
     'jelleştirici',
     'kabartıcı',
     'kıvam artırıcı',
+    // "arttırıcı" (double t) is a very common misspelling of "artırıcı" on
+    // real product labels — same functional class, not a different label.
+    'kıvam arttırıcı',
     'koruyucu',
     'renklendirici',
     'stabilizör',
@@ -130,6 +145,75 @@ class IngredientMatcherService {
     yield* ingredient.englishNames ?? const [];
   }
 
+  // Field priority used only to break ties between multiple canonical rows
+  // that independently claim the same alias text (a genuine, observed
+  // production condition — e.g. three separate "palm oil" rows). Direct
+  // `aliases` are curated most deliberately; `englishNames` are the most
+  // auxiliary, so they rank lowest.
+  Iterable<({List<String> values, int priority})> _aliasFieldsFor(
+    Ingredient ingredient,
+  ) sync* {
+    yield (values: ingredient.aliases ?? const [], priority: 0);
+    yield (values: ingredient.alternativeNames ?? const [], priority: 1);
+    yield (values: ingredient.commonNames ?? const [], priority: 2);
+    yield (values: ingredient.englishNames ?? const [], priority: 3);
+  }
+
+  bool _hasValidECode(Ingredient ingredient) =>
+      ingredient.eCode?.trim().isNotEmpty == true;
+
+  /// Deterministic, source-order-independent tie-break for the exact and
+  /// e-code tiers: a candidate with its own explicit, verified e-code
+  /// identity is preferred over an alias-only duplicate; a final id-based
+  /// ordering guarantees the same token always resolves to the same row
+  /// regardless of how allIngredients happened to be ordered.
+  Ingredient _pickPreferredCandidate(List<Ingredient> candidates) {
+    final sorted = [...candidates]
+      ..sort((a, b) {
+        final aRank = _hasValidECode(a) ? 0 : 1;
+        final bRank = _hasValidECode(b) ? 0 : 1;
+        if (aRank != bRank) return aRank - bRank;
+        return a.id.compareTo(b.id);
+      });
+    return sorted.first;
+  }
+
+  /// Same determinism guarantee as [_pickPreferredCandidate], additionally
+  /// preferring a match found via a higher-priority alias field.
+  _AliasCandidate _pickPreferredAliasCandidate(
+    List<_AliasCandidate> candidates,
+  ) {
+    final sorted = [...candidates]
+      ..sort((a, b) {
+        final aRank = _hasValidECode(a.ingredient) ? 0 : 1;
+        final bRank = _hasValidECode(b.ingredient) ? 0 : 1;
+        if (aRank != bRank) return aRank - bRank;
+        if (a.fieldPriority != b.fieldPriority) {
+          return a.fieldPriority - b.fieldPriority;
+        }
+        return a.ingredient.id.compareTo(b.ingredient.id);
+      });
+    return sorted.first;
+  }
+
+  // Generic Turkish food head-nouns shared by dozens of otherwise-unrelated
+  // ingredients (many distinct oils all end in "yağı", many distinct powders
+  // all end in "tozu", etc.). A last-word match against one of these carries
+  // no discriminating evidence by itself — see _hasCompatibleFuzzyWords.
+  static const Set<String> _genericHeadNouns = {
+    'yağı',
+    'yagi',
+    'tozu',
+    'şurubu',
+    'surubu',
+    'proteini',
+    'ekstraktı',
+    'ekstrakti',
+    'aroması',
+    'aromasi',
+    'unu',
+  };
+
   bool _hasCompatibleFuzzyWords(String token, String candidate) {
     final tokenWords = token
         .split(' ')
@@ -143,7 +227,19 @@ class IngredientMatcherService {
 
     final tokenLast = tokenWords.last;
     final candidateLast = candidateWords.last;
-    if (tokenLast == candidateLast) return true;
+    if (tokenLast == candidateLast) {
+      // A shared last word is only meaningful compatibility evidence when it
+      // is NOT a generic head noun (e.g. "pamuk yağı" and "palm yağı" both
+      // end in "yağı" despite being unrelated oils). For a generic head
+      // noun, the distinguishing (non-final) word(s) must also be similar.
+      if (!_genericHeadNouns.contains(tokenLast)) return true;
+      final tokenLead = tokenWords.sublist(0, tokenWords.length - 1).join(' ');
+      final candidateLead = candidateWords
+          .sublist(0, candidateWords.length - 1)
+          .join(' ');
+      if (tokenLead == candidateLead) return true;
+      return _normalizedEditSimilarity(tokenLead, candidateLead) >= 0.72;
+    }
 
     // Shared salt prefixes (for example "kalsiyum") are not enough to fuzzy
     // match different chemical substances such as propiyonat and format.
@@ -200,56 +296,86 @@ class IngredientMatcherService {
 
     // Complete every authoritative pass before considering fuzzy candidates.
     // Catalogue row order must never let a fuzzy chemical name beat an exact
-    // normalized name, E-code, or alias.
-    for (final ingredient in allIngredients) {
-      if (normalizeIngredient(ingredient.normalizedName) == normalized) {
-        return IngredientMatch(
-          originalToken: rawIngredientText,
-          normalizedText: normalized,
-          matchedIngredient: ingredient,
-          matchedToken: ingredient.normalizedName,
-          matchType: MatchType.exactMatch,
-          confidenceScore: 1.0,
-          shouldAffectAnalysis: true,
-          needsUserConfirmation: false,
-        );
-      }
+    // normalized name, E-code, or alias. Within each authoritative tier,
+    // candidates are collected first rather than returning on the first
+    // iteration hit — production data contains genuine duplicate canonical
+    // rows (e.g. three separate "palm oil" rows, two separate E471 rows)
+    // whose relative order in allIngredients is an incidental artifact of
+    // ProductRepository.getAllIngredients() (ORDER BY name), not a
+    // deliberate precedence signal. _pickPreferredCandidate /
+    // _pickPreferredAliasCandidate apply an explicit, source-order-
+    // independent tie-break so the same token always resolves to the same
+    // canonical id.
+    final exactCandidates = <Ingredient>[
+      for (final ingredient in allIngredients)
+        if (normalizeIngredient(ingredient.normalizedName) == normalized)
+          ingredient,
+    ];
+    if (exactCandidates.isNotEmpty) {
+      final winner = _pickPreferredCandidate(exactCandidates);
+      return IngredientMatch(
+        originalToken: rawIngredientText,
+        normalizedText: normalized,
+        matchedIngredient: winner,
+        matchedToken: winner.normalizedName,
+        matchType: MatchType.exactMatch,
+        confidenceScore: 1.0,
+        shouldAffectAnalysis: true,
+        needsUserConfirmation: false,
+      );
     }
 
-    for (final ingredient in allIngredients) {
-      final eCode = ingredient.eCode == null
-          ? null
-          : IngredientCanonicalizer.normalizeECode(ingredient.eCode!);
-      if (eCode == normalized) {
-        return IngredientMatch(
-          originalToken: rawIngredientText,
-          normalizedText: normalized,
-          matchedIngredient: ingredient,
-          matchedToken: eCode,
-          matchType: MatchType.eCodeMatch,
-          confidenceScore: 0.98,
-          shouldAffectAnalysis: true,
-          needsUserConfirmation: false,
-        );
-      }
+    final eCodeCandidates = <Ingredient>[
+      for (final ingredient in allIngredients)
+        if (ingredient.eCode != null &&
+            IngredientCanonicalizer.normalizeECode(ingredient.eCode!) ==
+                normalized)
+          ingredient,
+    ];
+    if (eCodeCandidates.isNotEmpty) {
+      final winner = _pickPreferredCandidate(eCodeCandidates);
+      final eCode = IngredientCanonicalizer.normalizeECode(winner.eCode!);
+      return IngredientMatch(
+        originalToken: rawIngredientText,
+        normalizedText: normalized,
+        matchedIngredient: winner,
+        matchedToken: eCode,
+        matchType: MatchType.eCodeMatch,
+        confidenceScore: 0.98,
+        shouldAffectAnalysis: true,
+        needsUserConfirmation: false,
+      );
     }
 
+    final aliasCandidates = <_AliasCandidate>[];
     for (final ingredient in allIngredients) {
-      for (final alias in _aliasesFor(ingredient)) {
-        final normalizedAlias = normalizeIngredient(alias);
-        if (normalizedAlias.isNotEmpty && normalizedAlias == normalized) {
-          return IngredientMatch(
-            originalToken: rawIngredientText,
-            normalizedText: normalized,
-            matchedIngredient: ingredient,
-            matchedToken: normalizedAlias,
-            matchType: MatchType.aliasMatch,
-            confidenceScore: 0.95,
-            shouldAffectAnalysis: true,
-            needsUserConfirmation: false,
-          );
+      for (final field in _aliasFieldsFor(ingredient)) {
+        for (final alias in field.values) {
+          final normalizedAlias = normalizeIngredient(alias);
+          if (normalizedAlias.isNotEmpty && normalizedAlias == normalized) {
+            aliasCandidates.add(
+              _AliasCandidate(
+                ingredient: ingredient,
+                matchedAlias: normalizedAlias,
+                fieldPriority: field.priority,
+              ),
+            );
+          }
         }
       }
+    }
+    if (aliasCandidates.isNotEmpty) {
+      final winner = _pickPreferredAliasCandidate(aliasCandidates);
+      return IngredientMatch(
+        originalToken: rawIngredientText,
+        normalizedText: normalized,
+        matchedIngredient: winner.ingredient,
+        matchedToken: winner.matchedAlias,
+        matchType: MatchType.aliasMatch,
+        confidenceScore: 0.95,
+        shouldAffectAnalysis: true,
+        needsUserConfirmation: false,
+      );
     }
 
     final canonical = IngredientCanonicalizer.mapToCanonical(normalized);

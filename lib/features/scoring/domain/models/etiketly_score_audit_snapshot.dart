@@ -125,6 +125,7 @@ class ScoreAuditResolvedInputSnapshot {
   ScoreAuditResolvedInputSnapshot({
     required Map<String, ScoreAuditEvidenceValueSnapshot> nutrition,
     required this.nutritionBasis,
+    this.nutritionBasisProvenance,
     required this.productState,
     required this.resolvedCategory,
     required this.categorySource,
@@ -141,6 +142,17 @@ class ScoreAuditResolvedInputSnapshot {
 
   final Map<String, ScoreAuditEvidenceValueSnapshot> nutrition;
   final String nutritionBasis;
+  // Section E of the basis remediation pass. Null for every snapshot built
+  // BEFORE this field existed (backward-compatible — tryFromJson simply
+  // does not find the key) as well as for any snapshot whose basis was
+  // never independently proven. This absence is itself the load-bearing
+  // signal: a null/`databaseImport` provenance here means the basis value
+  // above cannot be trusted as currently-verified evidence, EVEN THOUGH
+  // the bare value (e.g. "per100g") looks superficially valid — see
+  // EtiketlyPublicScoreAuditGate's basis-trust check. Only `declaredLabel`
+  // (source-proven, see legacy_scoring_evidence_recovery.dart) and
+  // `adminVerified` (a human genuinely confirmed it) are trusted.
+  final String? nutritionBasisProvenance;
   final String productState;
   final String resolvedCategory;
   final String categorySource;
@@ -156,6 +168,8 @@ class ScoreAuditResolvedInputSnapshot {
       for (final entry in nutrition.entries) entry.key: entry.value.toJson(),
     },
     'nutrition_basis': nutritionBasis,
+    if (nutritionBasisProvenance != null)
+      'nutrition_basis_provenance': nutritionBasisProvenance,
     'product_state': productState,
     'resolved_category': resolvedCategory,
     'category_source': categorySource,
@@ -218,6 +232,10 @@ class ScoreAuditResolvedInputSnapshot {
     return ScoreAuditResolvedInputSnapshot(
       nutrition: nutrition,
       nutritionBasis: nutritionBasis,
+      // Absent on every snapshot written before this field existed —
+      // deliberately not required here (unlike the other fields above),
+      // since that absence is itself meaningful, not malformed data.
+      nutritionBasisProvenance: _readString(json['nutrition_basis_provenance']),
       productState: productState,
       resolvedCategory: resolvedCategory,
       categorySource: categorySource,

@@ -46,8 +46,13 @@ void main() {
         CompositionPercentageState.provenAbsent,
       );
       expect(
+        // Basis remediation Section E: proven exact basis (per_100g/
+        // per_100ml, as this fixture's staging row declares) is now
+        // tagged declaredLabel specifically so it is retroactively
+        // distinguishable from the old category-invented databaseImport
+        // tagging — see _recoveredBasisFromEvidence.
         result.evidence!.nutritionBasisEvidence!.provenance,
-        EvidenceProvenance.databaseImport,
+        EvidenceProvenance.declaredLabel,
       );
       expect(
         result.evidence!.nutritionBasisEvidence!.verification,
@@ -100,14 +105,258 @@ void main() {
       expect(result.evidence!.nutrition.fiber.value, isNull);
     });
 
-    test('missing category keeps generic per_100 unit ambiguous', () async {
-      final result = await _recover(product: _product(categoryTags: const []));
+    // Reopened Section F/G verification: an EXPLICIT, declared fiber value
+    // of exactly 0 is a real numeric declaration (the label states zero
+    // fibre), not an absence of data — it must be accepted and scored as
+    // zero fibre points, and must NOT be conflated with the missing/null
+    // case above. The two cases must produce opposite readiness outcomes
+    // despite the eventual fiberPoints() contribution numerically
+    // coinciding at 0 in both the "declared 0" and "would-be-zero-filled"
+    // hypothetical — the ARCHITECTURAL distinction (blocked vs. ready) is
+    // what this guards, not the point-table arithmetic.
+    test(
+      'explicit trusted fiber = 0 is a real declaration, accepted and '
+      'scored as zero fibre points — never treated as missing',
+      () async {
+        final result = await _recover(
+          product: _product(nutrition: {..._nutrition(), 'fiber': 0}),
+        );
 
-      expect(result.classificationReady, isFalse);
-      expect(result.basisReady, isFalse);
-      expect(result.evidence!.nutritionBasis, NutritionBasis.unknown);
-      expect(result.blockerReasons, contains('missing_classification'));
-      expect(result.blockerReasons, contains('basis_unit_ambiguous'));
+        expect(result.nutritionComplete, isTrue);
+        expect(result.blockerReasons, isNot(contains('missing_fiber')));
+        expect(result.evidence!.nutrition.fiber.value, 0);
+      },
+    );
+
+    test(
+      'explicit trusted fiber present only in staging is recovered generically',
+      () async {
+        final product = _product(nutrition: _nutrition()..remove('fiber'));
+        // Staging's raw nutrition JSON matches the product on every field
+        // the product DOES have, and additionally carries the fiber value
+        // the product itself is missing.
+        final staging = _staging(product: product, nutritionJson: _nutrition());
+
+        final result = await recovery.recover(
+          product: product,
+          stagingMatches: [staging],
+          ingredientCatalogue: const [],
+        );
+
+        expect(result.nutritionComplete, isTrue);
+        expect(result.blockerReasons, isNot(contains('missing_fiber')));
+        expect(result.evidence!.nutrition.fiber.value, 2);
+        expect(
+          result.evidence!.nutrition.fiber.provenance,
+          EvidenceProvenance.databaseImport,
+          reason:
+              'recovered from staging, not the product\'s own declared label',
+        );
+        expect(
+          result.evidence!.nutrition.fiber.verification,
+          EvidenceVerification.unverified,
+        );
+      },
+    );
+
+    test(
+      'staging fiber is never borrowed when another field genuinely disagrees',
+      () async {
+        final product = _product(nutrition: _nutrition()..remove('fiber'));
+        final conflicting = _nutrition()
+          ..['fiber'] = 9
+          ..['sugars'] = 999; // disagrees with product's declared sugars
+        final staging = _staging(product: product, nutritionJson: conflicting);
+
+        final result = await recovery.recover(
+          product: product,
+          stagingMatches: [staging],
+          ingredientCatalogue: const [],
+        );
+
+        expect(
+          result.blockerReasons,
+          contains('missing_fiber'),
+          reason:
+              'a genuine conflict on another field means staging cannot be '
+              'trusted to fill in the gap either',
+        );
+        expect(result.evidence!.nutrition.fiber.value, isNull);
+      },
+    );
+
+    test(
+      'missing category with proven basis blocks on classification only — '
+      'basis and category are independent evidence dimensions',
+      () async {
+        final product = _product(categoryTags: const []);
+        final result = await _recover(
+          product: product,
+          staging: _staging(product: product, basis: 'per_100g'),
+        );
+
+        expect(result.classificationReady, isFalse);
+        expect(
+          result.basisReady,
+          isTrue,
+          reason: 'basis was independently proven; category being '
+              'unresolved must not retroactively make basis ambiguous',
+        );
+        expect(result.evidence!.nutritionBasis, NutritionBasis.per100g);
+        expect(result.blockerReasons, contains('missing_classification'));
+        expect(result.blockerReasons, isNot(contains('basis_unit_ambiguous')));
+      },
+    );
+
+    // Reopened correctness fix: scoring category and nutrition basis are
+    // independent evidence dimensions. A resolved category tells the
+    // formula which point tables to use; it must never manufacture proof
+    // that the source declaration actually used the basis that formula
+    // expects. One data-driven check per resolvable category — each
+    // proves category resolves confidently (classificationReady=true)
+    // while basis, on its own, independently gates readiness.
+    group('basis independence across every resolvable category', () {
+      final cases = <String, (List<String> tags, ScoringCategory category, NutritionBasis expectedBasis)>{
+        'generalFood (cips_kraker)': (
+          ['cips_kraker'],
+          ScoringCategory.generalFood,
+          NutritionBasis.per100g,
+        ),
+        'generalFood via dry tea (cay)': (
+          ['cay'],
+          ScoringCategory.generalFood,
+          NutritionBasis.per100g,
+        ),
+        'beverage (gazli_icecek)': (
+          ['gazli_icecek'],
+          ScoringCategory.beverage,
+          NutritionBasis.per100ml,
+        ),
+        'cheese (peynir)': (
+          ['peynir'],
+          ScoringCategory.cheese,
+          NutritionBasis.per100g,
+        ),
+        'redMeat (kirmizi_et)': (
+          ['kirmizi_et'],
+          ScoringCategory.redMeat,
+          NutritionBasis.per100g,
+        ),
+        'fatsOilsNutsSeeds (sivi_yag)': (
+          ['sivi_yag'],
+          ScoringCategory.fatsOilsNutsSeeds,
+          NutritionBasis.per100g,
+        ),
+      };
+
+      for (final entry in cases.entries) {
+        final (tags, category, expectedBasis) = entry.value;
+
+        test(
+          '${entry.key}: category resolves confidently, but a generic '
+          '(unit-ambiguous) basis alone still blocks on basis',
+          () async {
+            final product = _product(categoryTags: tags);
+            final result = await _recover(
+              product: product,
+              staging: _staging(product: product, basis: 'per_100'),
+            );
+
+            expect(
+              result.evidence!.categoryEvidence.resolvedCategory,
+              category,
+              reason: 'category must resolve regardless of basis',
+            );
+            expect(result.classificationReady, isTrue);
+            expect(
+              result.basisReady,
+              isFalse,
+              reason: 'category resolving must never manufacture basis proof',
+            );
+            expect(result.evidence!.nutritionBasis, NutritionBasis.unknown);
+            expect(result.blockerReasons, contains('basis_unit_ambiguous'));
+            expect(result.finalScoreReady, isFalse);
+          },
+        );
+
+        test(
+          '${entry.key}: an explicit, independently proven, compatible '
+          'basis lets readiness continue',
+          () async {
+            final product = _product(categoryTags: tags);
+            final basisString = expectedBasis == NutritionBasis.per100ml
+                ? 'per_100ml'
+                : 'per_100g';
+            final result = await _recover(
+              product: product,
+              staging: _staging(product: product, basis: basisString),
+            );
+
+            expect(result.classificationReady, isTrue);
+            expect(result.basisReady, isTrue);
+            expect(result.evidence!.nutritionBasis, expectedBasis);
+            expect(result.blockerReasons, isNot(contains('basis_unit_ambiguous')));
+            expect(
+              result.blockerReasons,
+              isNot(contains('nutrition_basis_does_not_match_category')),
+            );
+          },
+        );
+      }
+
+      test(
+        'beverage with an explicit, proven, but INCOMPATIBLE basis (per100g) '
+        'is never silently rewritten to per100ml — it blocks',
+        () async {
+          final product = _product(categoryTags: const ['gazli_icecek']);
+          final result = await _recover(
+            product: product,
+            staging: _staging(product: product, basis: 'per_100g'),
+          );
+
+          expect(result.classificationReady, isTrue);
+          expect(
+            result.evidence!.nutritionBasis,
+            NutritionBasis.per100g,
+            reason: 'the proven value itself must never be silently '
+                'reinterpreted as per100ml just because category is beverage',
+          );
+          expect(result.finalScoreReady, isFalse);
+          expect(
+            result.blockerReasons,
+            contains('nutrition_basis_does_not_match_category'),
+          );
+        },
+      );
+
+      test(
+        'dry tea (cay) never resolves to beverage merely because it is tea '
+        '— even with a fully proven per100ml basis',
+        () async {
+          final product = _product(categoryTags: const ['cay']);
+          final result = await _recover(
+            product: product,
+            staging: _staging(product: product, basis: 'per_100ml'),
+          );
+
+          expect(
+            result.evidence!.categoryEvidence.resolvedCategory,
+            ScoringCategory.generalFood,
+          );
+          expect(
+            result.evidence!.categoryEvidence.resolvedCategory,
+            isNot(ScoringCategory.beverage),
+          );
+          // generalFood expects per100g; an actually-proven per100ml value
+          // is then the INCOMPATIBLE one for this (correctly non-beverage)
+          // category — proving the category decision itself, independent
+          // of this specific basis mismatch, was never influenced by it.
+          expect(
+            result.blockerReasons,
+            contains('nutrition_basis_does_not_match_category'),
+          );
+        },
+      );
     });
 
     test(
@@ -200,17 +449,21 @@ void main() {
     test(
       'source-complete beverage resolves per100ml and NNS presence or absence',
       () async {
+        final presentProduct = _product(
+          categoryTags: const ['gazli_icecek'],
+          ingredientsText: 'su, şeker, aspartam',
+        );
         final present = await _recover(
-          product: _product(
-            categoryTags: const ['gazli_icecek'],
-            ingredientsText: 'su, şeker, aspartam',
-          ),
+          product: presentProduct,
+          staging: _staging(product: presentProduct, basis: 'per_100ml'),
+        );
+        final absentProduct = _product(
+          categoryTags: const ['gazli_icecek'],
+          ingredientsText: 'su, şeker, doğal aroma',
         );
         final absent = await _recover(
-          product: _product(
-            categoryTags: const ['gazli_icecek'],
-            ingredientsText: 'su, şeker, doğal aroma',
-          ),
+          product: absentProduct,
+          staging: _staging(product: absentProduct, basis: 'per_100ml'),
         );
 
         expect(present.evidence!.nutritionBasis, NutritionBasis.per100ml);
@@ -254,6 +507,119 @@ void main() {
         expect(result.fvlReady, isFalse);
         expect(result.nnsReady, isFalse);
         expect(result.blockerReasons, contains('ingredients_incomplete'));
+      },
+    );
+
+    // Section G of the methodology/readiness correction (reopened): a
+    // staging row whose EFFECTIVE ingredients_quality (after checking both
+    // the top-level raw_source_payload.ingredients_quality field AND the
+    // nested raw_source_payload.debug.ingredient_quality field — see
+    // resolveEffectiveIngredientsQuality) is genuinely null — i.e. neither
+    // location has a trusted value at all — cannot be proven
+    // source-complete. This is deliberately NOT the same as "the top-level
+    // field alone is absent": a real, confirmed production row (see
+    // ingredients_quality_provenance_resolver_test.dart) has an absent
+    // top-level field but a trusted value in the nested debug location, and
+    // that case IS provable — covered separately there. This test exercises
+    // the remaining genuine case: nothing trusted anywhere.
+    test(
+      'a staging row with no trusted ingredients_quality in either known '
+      'location cannot be proven source-complete, same as an explicit '
+      'suspicious value',
+      () {
+        final product = _product(
+          categoryTags: const ['peynir'],
+          ingredientsText: 'pastörize inek sütü, tuz, peynir mayası',
+        );
+        final staging = _staging(product: product, ingredientsQuality: null);
+
+        expect(
+          staging.hasSourceCompleteIngredients(product.ingredientsText),
+          isFalse,
+          reason:
+              'a genuinely absent quality value (checked at both trusted '
+              'locations) must never be treated as an implicit pass',
+        );
+      },
+    );
+
+    // Reopened Section G/5 reassessment: a cheese-shaped product whose
+    // staging row's raw_source_payload carries the quality judgment ONLY
+    // in the nested debug location — the exact real production shape
+    // confirmed for "7 Days Çilekli Kruvasan 60 G" and, by the same
+    // scraper contract, plausibly explaining a meaningful share of the
+    // 311/319 cheese ingredients_incomplete/fvl_unknown blocks — now
+    // recovers ingredient completeness generically, with FVL correctly
+    // resolving to proven-absent (plain dairy ingredients contain no
+    // qualifying FVL items). This does NOT automatically make the product
+    // scoreable: fibre is a separate, genuinely undeclared field on this
+    // fixture (mirroring real cheese labels that commonly omit it) and
+    // must still block independently, exactly as Section E requires.
+    test(
+      'a cheese product with quality evidence only in raw_source_payload.'
+      'debug.ingredient_quality recovers ingredient completeness and FVL '
+      'generically, but a genuinely separate missing-fibre blocker still '
+      'blocks the product',
+      () async {
+        final product = _product(
+          categoryTags: const ['peynir'],
+          ingredientsText: 'pastörize inek sütü, tuz, peynir mayası',
+          nutrition: _nutrition()..remove('fiber'),
+        );
+        final resolvedQuality = resolveEffectiveIngredientsQuality({
+          'meta': {'title': 'irrelevant'},
+          'debug': {
+            'image_front_role': 'unknown',
+            'ingredient_quality': 'ingredients_ok',
+            'brand_source_method': 'api_metadata',
+          },
+          'jsonld': null,
+          'ingredients_raw': 'İçindekiler: pastörize inek sütü, tuz, peynir mayası',
+        });
+        expect(
+          resolvedQuality,
+          'ingredients_ok',
+          reason: 'sanity-check the resolver ran before asserting on it',
+        );
+        final staging = _staging(
+          product: product,
+          ingredientsQuality: resolvedQuality,
+        );
+        expect(staging.hasSourceCompleteIngredients(product.ingredientsText), isTrue);
+
+        final recovered = await recovery.recover(
+          product: product,
+          stagingMatches: [staging],
+          ingredientCatalogue: const [],
+        );
+
+        expect(
+          recovered.evidence!.ingredientEvidenceCompleteness,
+          IngredientEvidenceCompleteness.complete,
+        );
+        expect(
+          recovered.evidence!.fvlEvidence.state,
+          CompositionPercentageState.provenAbsent,
+          reason:
+              'plain dairy ingredients contain no qualifying FVL item, so '
+              'completeness alone is enough to prove absence',
+        );
+        expect(
+          recovered.blockerReasons,
+          isNot(contains('ingredients_incomplete')),
+        );
+        expect(recovered.blockerReasons, isNot(contains('fvl_unknown')));
+        // The honest, required caveat: recovering ingredient completeness
+        // is not sufficient for final score readiness by itself. A
+        // genuinely separate, undeclared fibre value must still block.
+        expect(
+          recovered.blockerReasons,
+          contains('missing_fiber'),
+          reason:
+              'restoring ingredient completeness must never be conflated '
+              'with restoring nutrition completeness',
+        );
+        expect(recovered.finalScoreReady, isFalse);
       },
     );
 
@@ -356,7 +722,11 @@ void main() {
       );
 
       expect(result.classificationReady, isFalse);
-      expect(result.evidence!.nutritionBasis, NutritionBasis.unknown);
+      // Basis independence: category being unresolved (the name alone
+      // suggests several categories, none trusted) must not retroactively
+      // make the separately, independently proven basis ambiguous too —
+      // see the "missing category with proven basis" test above.
+      expect(result.evidence!.nutritionBasis, NutritionBasis.per100g);
       expect(result.blockerReasons, contains('missing_classification'));
     });
 
@@ -724,12 +1094,26 @@ List<Ingredient> _sevenDaysCatalogueWithoutE282() => _functionalChildCatalogue()
     .where((ingredient) => ingredient.eCode != 'E282')
     .toList(growable: false);
 
+// Basis independence correction: 'per_100' (the ONLY value the real
+// historical Migros scraper contract ever produces — see
+// _recoveredBasisFromEvidence's doc comment) never distinguishes g from
+// ml and therefore now correctly resolves to NutritionBasis.unknown, not
+// a category-invented value. Tests whose actual subject is something OTHER
+// than basis (dedup, fibre recovery, FVL, additive readiness, etc.) need a
+// fixture with genuinely PROVEN basis evidence to exercise what they are
+// actually testing — 'per_100g' is the forward-compatible, explicitly
+// supported distinct-unit string (never produced by the real Migros
+// contract today, but a legitimate, sanctioned form of trusted evidence
+// for a fixture that intentionally models proof, same as "existing
+// trusted/versioned admin evidence" would). Tests specifically about basis
+// ambiguity itself pass 'per_100' explicitly — see the dedicated
+// "basis independence" group below.
 LegacyStagingScoringEvidence _staging({
   String id = 'staging-1',
-  String? basis = 'per_100',
+  String? basis = 'per_100g',
   List<String> warnings = const [],
   Product? product,
-  String ingredientsQuality = 'ingredients_ok',
+  String? ingredientsQuality = 'ingredients_ok',
   Map<String, dynamic>? nutritionJson,
 }) {
   final target = product ?? _product();

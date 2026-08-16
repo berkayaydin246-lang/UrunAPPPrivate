@@ -18,12 +18,15 @@ import 'package:food_analyzer_app/features/scoring/controllers/product_etiketly_
 import 'package:food_analyzer_app/features/scoring/data/score_audit_snapshot_repository.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/etiketly_score_audit_snapshot.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/etiketly_scoring_input.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/evidence_value.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/presence_evidence.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/scoring_classification_facts.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_evidence_snapshot.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_types.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/validated_nutrition_scoring_input.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/additive_quality_transformer.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/etiketly_score_calculator.dart';
+import 'package:food_analyzer_app/features/scoring/domain/services/etiketly_public_score_audit_gate.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/etiketly_score_audit_snapshot_builder.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/etiketly_score_readiness_evaluator.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/nutrition_quality_transformer.dart';
@@ -506,6 +509,207 @@ void main() {
       expect(find.textContaining('DioException'), findsNothing);
       expect(find.byKey(const Key('product-report-card')), findsOneWidget);
     });
+
+    group(
+      'cross-field nutrition invariants never reach the numeric scorer as an exception',
+      () {
+        final assessment = CanonicalAdditiveAssessment(
+          recognizedIngredients: const [],
+          unresolvedIngredients: const [],
+          conflicts: const [],
+        );
+
+        test(
+          'saturated fat exceeding total fat is a clean blocked evaluation, not an exception',
+          () {
+            final product = _productFromInput(
+              completeInput(
+                nutrition: completeNutrition(
+                  totalFat: verifiedValue(5),
+                  saturatedFat: verifiedValue(9),
+                ),
+              ),
+            );
+
+            final evaluation = orchestrator.calculate(
+              product: product,
+              canonicalAssessment: assessment,
+            );
+
+            expect(evaluation, isNotNull);
+            expect(evaluation!.nutritionReadiness.isScorable, isFalse);
+            expect(
+              evaluation.nutritionReadiness.blockingReasons,
+              contains(ScoringReadinessBlocker.saturatedFatExceedsTotalFat),
+            );
+            expect(evaluation.rawNutrition, isNull);
+            expect(evaluation.result.isCalculated, isFalse);
+          },
+        );
+
+        test(
+          'zero total fat for a fats/oils/nuts/seeds product is a clean blocked evaluation, not an exception',
+          () {
+            final product = _productFromInput(
+              completeInput(
+                category: ScoringCategory.fatsOilsNutsSeeds,
+                nutrition: completeNutrition(
+                  totalFat: verifiedValue(0),
+                  saturatedFat: verifiedValue(0),
+                ),
+              ),
+            );
+
+            final evaluation = orchestrator.calculate(
+              product: product,
+              canonicalAssessment: assessment,
+            );
+
+            expect(evaluation, isNotNull);
+            expect(evaluation!.nutritionReadiness.isScorable, isFalse);
+            expect(
+              evaluation.nutritionReadiness.blockingReasons,
+              contains(
+                ScoringReadinessBlocker.nonPositiveTotalFatForFatCategory,
+              ),
+            );
+            expect(evaluation.rawNutrition, isNull);
+            expect(evaluation.result.isCalculated, isFalse);
+          },
+        );
+
+        test(
+          'a trusted plain-water fact outside the beverage category is a clean blocked evaluation, not an exception',
+          () {
+            final product = _productFromInput(
+              completeInput(
+                classificationFacts: ScoringClassificationFacts(
+                  isPlainWater: verifiedValue(true),
+                ),
+              ),
+            );
+
+            final evaluation = orchestrator.calculate(
+              product: product,
+              canonicalAssessment: assessment,
+            );
+
+            expect(evaluation, isNotNull);
+            expect(evaluation!.nutritionReadiness.isScorable, isFalse);
+            expect(
+              evaluation.nutritionReadiness.blockingReasons,
+              contains(ScoringReadinessBlocker.plainWaterCategoryMismatch),
+            );
+            expect(evaluation.rawNutrition, isNull);
+            expect(evaluation.result.isCalculated, isFalse);
+          },
+        );
+
+        test(
+          'a genuinely valid fats/oils/nuts/seeds product still scores normally',
+          () {
+            final product = _productFromInput(
+              completeInput(
+                category: ScoringCategory.fatsOilsNutsSeeds,
+                nutrition: completeNutrition(
+                  totalFat: verifiedValue(60),
+                  saturatedFat: verifiedValue(8),
+                ),
+              ),
+            );
+
+            final evaluation = orchestrator.calculate(
+              product: product,
+              canonicalAssessment: assessment,
+            );
+
+            expect(evaluation, isNotNull);
+            expect(evaluation!.nutritionReadiness.isScorable, isTrue);
+            expect(evaluation.rawNutrition, isNotNull);
+            expect(evaluation.result.isCalculated, isTrue);
+          },
+        );
+      },
+    );
+
+    // Reopened Section 7 verification: the frozen pure-water special rule
+    // must produce a correct, numeric PUBLIC score end-to-end — not just a
+    // correct internal NutritionRawScoreResult. Traces the complete chain:
+    // validated input -> nutrition result (non-numeric internal
+    // representation, by design) -> Etiketly v2 80/20 composition -> audit
+    // snapshot -> public score gate. "Non-numeric nutrition sub-result" and
+    // "no public numeric score" are NOT the same thing — this proves the
+    // former never causes the latter.
+    group('plain water full-pipeline public score', () {
+      final assessment = CanonicalAdditiveAssessment(
+        recognizedIngredients: const [],
+        unresolvedIngredients: const [],
+        conflicts: const [],
+      );
+
+      test(
+        'a correctly-classified plain water product produces a nutrition '
+        'quality of exactly 100, composes into the frozen 80/20 formula, '
+        'and yields an actually publishable numeric audit snapshot',
+        () {
+          final input = completeInput(
+            category: ScoringCategory.beverage,
+            classificationFacts: ScoringClassificationFacts(
+              isPlainWater: verifiedValue(true),
+            ),
+          );
+          final product = _productFromInput(input, ingredientsText: 'Su');
+
+          final evaluation = orchestrator.calculate(
+            product: product,
+            canonicalAssessment: assessment,
+          );
+
+          expect(evaluation, isNotNull);
+          expect(evaluation!.nutritionReadiness.isScorable, isTrue);
+          expect(evaluation.rawNutrition, isNotNull);
+          expect(evaluation.rawNutrition!.isPlainWaterSpecialCase, isTrue);
+          // The internal raw breakdown is genuinely non-numeric — this is
+          // the frozen, intended internal representation, not a defect.
+          expect(evaluation.rawNutrition!.rawScore, isNull);
+          expect(evaluation.nutritionQuality, isNotNull);
+          expect(
+            evaluation.nutritionQuality!.qualityScore,
+            100,
+            reason: 'the frozen pure-water rule: maximum nutrition quality',
+          );
+          expect(evaluation.result.isCalculated, isTrue);
+          expect(
+            evaluation.result.nutritionContribution,
+            100 * EtiketlyScoreCalculator.nutritionWeight,
+            reason: 'the frozen 80/20 composition must still apply exactly',
+          );
+
+          // Build the real audit snapshot exactly as production does, then
+          // run it through the actual public score gate — proving the
+          // "non-numeric nutrition result" never blocks final publication.
+          final snapshot = const EtiketlyScoreAuditSnapshotBuilder().build(
+            product: product,
+            evaluation: evaluation,
+          );
+          expect(snapshot.nutritionResult.isPlainWaterSpecialCase, isTrue);
+          expect(snapshot.finalScore, isNotNull);
+
+          final decision = const EtiketlyPublicScoreAuditGate().evaluate(
+            current: snapshot,
+            trusted: snapshot,
+          );
+          expect(
+            decision.mayDisplayNumericScore,
+            isTrue,
+            reason:
+                'the complete pipeline must end in an actually publishable '
+                'numeric public score for correctly-classified plain water, '
+                'not merely a correct internal representation',
+          );
+        },
+      );
+    });
   });
 }
 
@@ -557,6 +761,17 @@ Product _productFromInput(
     verificationStatus: 'verified',
     scoringEvidence: ScoringEvidenceSnapshot(
       nutritionBasis: input.nutritionBasis,
+      // Basis remediation Section E: the public gate now requires trusted
+      // basis provenance before treating a snapshot as currently
+      // publishable — see support/score_audit_test_support.dart's matching
+      // fix for the shared fixture helper.
+      nutritionBasisEvidence: input.nutritionBasis == NutritionBasis.unknown
+          ? null
+          : EvidenceValue<NutritionBasis>(
+              value: input.nutritionBasis,
+              provenance: EvidenceProvenance.declaredLabel,
+              verification: EvidenceVerification.verified,
+            ),
       nutritionProductState: input.productState,
       nutrition: input.nutrition,
       fvlEvidence: input.fvlEvidence,

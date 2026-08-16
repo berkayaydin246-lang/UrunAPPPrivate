@@ -129,11 +129,20 @@ class ScoringEvidenceSnapshot {
   EtiketlyScoringInput toScoringInput() {
     return EtiketlyScoringInput(
       nutrition: nutrition,
-      nutritionBasis: _verifiedEnumValue(
-        nutritionBasisEvidence,
-        legacyValue: nutritionBasis,
-        unknownValue: NutritionBasis.unknown,
-      ),
+      // Pre-APPLY trust correction: basis is the ONE evidence dimension
+      // where "known, verified provenance" is not enough — an untrusted
+      // provenance (missing entirely, or the historical category-derived
+      // `databaseImport` signature) must never let the bare per100g/
+      // per100ml enum flow through as if it were proven. This mirrors
+      // EtiketlyPublicScoreAuditGate's own trusted-provenance set
+      // (declaredLabel/adminVerified) so the SAME evidence is judged the
+      // SAME way whether it is about to be scored or about to be
+      // displayed — see _trustedBasisFromEvidence below. Never falls back
+      // to the bare legacy [nutritionBasis] enum the way [productState]
+      // still does just below: a basis with no evidence object at all is
+      // exactly the pre-remediation legacy-invented signature, not a
+      // reason to trust it.
+      nutritionBasis: _trustedBasisFromEvidence(nutritionBasisEvidence),
       productState: _verifiedEnumValue(
         nutritionProductStateEvidence,
         legacyValue: nutritionProductState,
@@ -337,6 +346,34 @@ T _verifiedEnumValue<T extends Enum>(
       evidence.provenance == EvidenceProvenance.unknown ||
       evidence.verification != EvidenceVerification.verified) {
     return unknownValue;
+  }
+  return evidence.value!;
+}
+
+// The single source of truth for "is this nutrition-basis provenance
+// independently trusted exact-unit evidence" for SCORING/READINESS
+// purposes — deliberately the exact same two values
+// EtiketlyPublicScoreAuditGate._trustedBasisProvenances already trusts
+// for DISPLAY purposes, so the same evidence is never judged more
+// leniently on the way to a computed score than it is on the way to
+// public display. `databaseImport` (the only provenance the historical,
+// pre-remediation `_basisForCategory` bug could ever produce) and a
+// missing evidence object entirely (every snapshot written before this
+// field existed) are both, deliberately, NOT trusted here.
+bool _hasTrustedBasisProvenance(EvidenceValue<NutritionBasis>? evidence) {
+  if (evidence == null) return false;
+  return evidence.provenance == EvidenceProvenance.declaredLabel ||
+      evidence.provenance == EvidenceProvenance.adminVerified;
+}
+
+NutritionBasis _trustedBasisFromEvidence(
+  EvidenceValue<NutritionBasis>? evidence,
+) {
+  if (evidence == null || !_hasTrustedBasisProvenance(evidence)) {
+    return NutritionBasis.unknown;
+  }
+  if (evidence.value == null || evidence.verification != EvidenceVerification.verified) {
+    return NutritionBasis.unknown;
   }
   return evidence.value!;
 }

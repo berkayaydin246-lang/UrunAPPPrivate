@@ -34,8 +34,46 @@ _LABELS: list[tuple[str, list[str]]] = [
 
 # Per-serving indicators (avoid normalizing per-serving data as if per-100g).
 _PER_SERVING_HINTS = ("porsiyon", "servis", "per serving", "serving", "adet")
-# Per-100 markers. "100 g / ml", "100 g/ml", "100g/ml" all contain one of these.
-_PER_100_HINTS = ("100 g", "100g", "100 ml", "100ml", "100 gr", "100gr", "per 100")
+
+# Basis unit detection (Section B of the basis remediation pass). A source
+# nutrition header can name grams, millilitres, BOTH (e.g. "100 g / ml" —
+# genuinely ambiguous, does not identify which values belong to which unit),
+# or neither specifically (a bare "per 100" phrase). These must never be
+# collapsed into one generic string again — that collapse is exactly what
+# made basis-vs-category independence unverifiable for the entire historical
+# catalogue. Combined-unit patterns are checked BEFORE single-unit patterns
+# so "100 g / ml" is never misread as a standalone gram declaration.
+_PER_100_COMBINED_RE = re.compile(r"100\s*g[r]?\s*/\s*m\s*l\b")
+_PER_100G_RE = re.compile(r"100\s*g[r]?\b")
+_PER_100ML_RE = re.compile(r"100\s*m\s*l\b")
+_PER_100_BARE_RE = re.compile(r"\bper\s*100\b")
+
+BASIS_PER_100G = "per_100g"
+BASIS_PER_100ML = "per_100ml"
+BASIS_PER_100_GENERIC = "per_100_generic"
+BASIS_PER_SERVING = "per_serving"
+BASIS_UNKNOWN = "unknown"
+
+# Section O of the basis remediation pass — the official liquid-food rule,
+# documented here even though this scraper does NOT yet implement it:
+#
+#   For liquid foods such as soups or oils, use the unit actually stated on
+#   the nutrition declaration. If both a per-100g and a per-100mL value are
+#   given, use per-100g.
+#
+# This rule applies to a DIFFERENT, rarer situation than BASIS_PER_100_GENERIC
+# above: it is about a label presenting TWO FULLY SEPARATE, complete value
+# sets (one per-100g column, one per-100mL column) for the same product —
+# not a single ambiguous header naming both units for ONE set of numbers
+# (which is exactly what BASIS_PER_100_GENERIC already handles, correctly,
+# by staying blocked rather than guessing). extract_nutrition()/parse_pairs()
+# only ever extract ONE (label, value) set per product today — there is no
+# two-column extraction mode, so this rule is currently UNREACHABLE, never
+# silently violated. A future implementation of dual-column extraction MUST
+# apply this exact per-100g tie-break rule, not invent a different one, and
+# must not retroactively change any product that this scraper has already
+# classified as BASIS_PER_100_GENERIC (that classification remains correct
+# for the single-ambiguous-header case regardless).
 
 
 def _ascii_fold(text: str) -> str:
@@ -69,15 +107,36 @@ def _to_float(token: str) -> float | None:
 
 
 def detect_basis(text: str) -> str:
-    """Return 'per_100', 'per_serving' or 'unknown' for a nutrition block."""
+    """Classify the declared basis unit for a nutrition block.
+
+    Returns one of BASIS_PER_100G / BASIS_PER_100ML / BASIS_PER_100_GENERIC /
+    BASIS_PER_SERVING / BASIS_UNKNOWN. Distinguishing g from ml matters:
+    collapsing both into one generic value (the historical behavior) makes
+    it impossible to ever prove which unit the source actually declared,
+    which is exactly the defect this correction fixes. Per Section O of the
+    remediation pass: when a source genuinely states BOTH a per-100g and a
+    per-100mL value without indicating which values belong to which unit
+    (e.g. "100 g / ml"), that is BASIS_PER_100_GENERIC — never guessed as
+    either single unit.
+    """
     folded = _ascii_fold(text)
-    has_100 = any(h in folded for h in _PER_100_HINTS)
+    has_combined = bool(_PER_100_COMBINED_RE.search(folded))
+    has_g = bool(_PER_100G_RE.search(folded)) and not has_combined
+    has_ml = bool(_PER_100ML_RE.search(folded)) and not has_combined
+    has_bare_100 = bool(_PER_100_BARE_RE.search(folded))
     has_serving = any(h in folded for h in _PER_SERVING_HINTS)
-    if has_100:
-        return "per_100"
+
+    if has_combined or (has_g and has_ml):
+        return BASIS_PER_100_GENERIC
+    if has_g:
+        return BASIS_PER_100G
+    if has_ml:
+        return BASIS_PER_100ML
+    if has_bare_100:
+        return BASIS_PER_100_GENERIC
     if has_serving:
-        return "per_serving"
-    return "unknown"
+        return BASIS_PER_SERVING
+    return BASIS_UNKNOWN
 
 
 def _blank_span(text: str, start: int, end: int) -> str:
@@ -113,10 +172,10 @@ def parse_nutrition(text: str | None) -> tuple[dict[str, float], list[str]]:
         return {}, warnings
 
     basis = detect_basis(text)
-    if basis == "per_serving":
+    if basis == BASIS_PER_SERVING:
         warnings.append("nutrition_per_serving_not_normalized")
         return {}, warnings
-    if basis == "unknown":
+    if basis == BASIS_UNKNOWN:
         warnings.append("nutrition_basis_unknown_assumed_per_100")
 
     working = _ascii_fold(text)
@@ -220,10 +279,10 @@ def parse_pairs(
     warnings: list[str] = []
     combined = (basis_text or "") + " " + " ".join(f"{l} {v}" for l, v in pairs)
     basis = detect_basis(combined)
-    if basis == "per_serving":
+    if basis == BASIS_PER_SERVING:
         warnings.append("nutrition_per_serving_not_normalized")
         return {}, warnings
-    if basis == "unknown":
+    if basis == BASIS_UNKNOWN:
         warnings.append("nutrition_basis_unknown_assumed_per_100")
 
     out: dict[str, float] = {}

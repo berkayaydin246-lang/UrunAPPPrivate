@@ -66,7 +66,13 @@ class LegacyFvlEvidenceResolver {
     }
 
     var foundQualifying = false;
-    var percentageTotal = 0.0;
+    // The known-percentage sum across ONLY the qualifying ingredients that
+    // declare a single, clean percentage. Ingredients with a
+    // dried/concentrated form ambiguity, or with zero/multiple percentage
+    // matches in their own segment, are never folded into this sum — they
+    // fall through to `hasUnquantifiedQualifying` instead.
+    var knownPercentageSum = 0.0;
+    var hasUnquantifiedQualifying = false;
     for (final segment in _segments(cleanedIngredients)) {
       final normalized = _foldTurkish(
         IngredientCanonicalizer.normalizeToken(segment),
@@ -80,6 +86,11 @@ class LegacyFvlEvidenceResolver {
 
       foundQualifying = true;
       if (_factorOrStateAmbiguous.hasMatch(normalized)) {
+        // Dried/concentrated qualifying FVL uses an official factor-of-2
+        // rule this resolver does not implement — never guess which factor
+        // applies, so this specific ingredient's contribution can never be
+        // safely bounded either. Blocks the whole product, unchanged from
+        // before.
         return const LegacyFvlEvidenceResolution(
           evidence: CompositionPercentageEvidence.unknown(),
           hasQualifyingIngredient: true,
@@ -92,13 +103,17 @@ class LegacyFvlEvidenceResolver {
           .whereType<double>()
           .toList(growable: false);
       if (percentages.length != 1) {
-        return const LegacyFvlEvidenceResolution(
-          evidence: CompositionPercentageEvidence.unknown(),
-          hasQualifyingIngredient: true,
-        );
+        // No explicit percentage for THIS ingredient (or a malformed
+        // multi-match segment) does not by itself make the product's FVL
+        // bucket unknown — it only means this ingredient's own
+        // contribution is unquantified. The other, explicitly declared
+        // qualifying ingredients may already prove a safe lower bound (see
+        // below).
+        hasUnquantifiedQualifying = true;
+        continue;
       }
-      percentageTotal += percentages.single;
-      if (percentageTotal > 100) {
+      knownPercentageSum += percentages.single;
+      if (knownPercentageSum > 100) {
         return const LegacyFvlEvidenceResolution(
           evidence: CompositionPercentageEvidence.unknown(),
           hasQualifyingIngredient: true,
@@ -115,13 +130,44 @@ class LegacyFvlEvidenceResolver {
         hasQualifyingIngredient: false,
       );
     }
-    return LegacyFvlEvidenceResolution(
-      evidence: CompositionPercentageEvidence.known(
-        percentageTotal,
-        provenance: EvidenceProvenance.declaredLabel,
-        verification: EvidenceVerification.verified,
-        dependency: EvidenceDependency.completeIngredientList,
-      ),
+
+    if (!hasUnquantifiedQualifying) {
+      // Every qualifying ingredient declared its own single, clean
+      // percentage — the exact literal sum (unchanged behavior).
+      return LegacyFvlEvidenceResolution(
+        evidence: CompositionPercentageEvidence.known(
+          knownPercentageSum,
+          provenance: EvidenceProvenance.declaredLabel,
+          verification: EvidenceVerification.verified,
+          dependency: EvidenceDependency.completeIngredientList,
+        ),
+        hasQualifyingIngredient: true,
+      );
+    }
+
+    // Safe bound only: at least one qualifying ingredient's own percentage
+    // is undeclared, so the true total is >= knownPercentageSum (an
+    // undeclared qualifying ingredient can only add non-negative mass, it
+    // can never subtract from what other ingredients already declared).
+    // This lower bound is only usable when it already exceeds the top,
+    // open-ended FVL bucket threshold (80%) — the ONE bucket where "at
+    // least X%" alone proves membership without also needing an upper
+    // bound. Any lower bucket boundary would still require knowing the
+    // undeclared ingredient cannot push the total past that bucket, which
+    // this resolver does not — and must not — infer.
+    if (knownPercentageSum > 80) {
+      return LegacyFvlEvidenceResolution(
+        evidence: CompositionPercentageEvidence.known(
+          knownPercentageSum,
+          provenance: EvidenceProvenance.declaredLabel,
+          verification: EvidenceVerification.verified,
+          dependency: EvidenceDependency.completeIngredientList,
+        ),
+        hasQualifyingIngredient: true,
+      );
+    }
+    return const LegacyFvlEvidenceResolution(
+      evidence: CompositionPercentageEvidence.unknown(),
       hasQualifyingIngredient: true,
     );
   }

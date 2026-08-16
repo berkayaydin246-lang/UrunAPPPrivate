@@ -9,6 +9,7 @@ import 'package:food_analyzer_app/features/scoring/domain/models/etiketly_scorin
 import 'package:food_analyzer_app/features/scoring/domain/models/evidence_value.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/nutrition_raw_score_result.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_classification_facts.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/scoring_types.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/score_audit_fingerprint.dart';
 
 class EtiketlyScoreAuditSnapshotBuilder {
@@ -46,7 +47,10 @@ class EtiketlyScoreAuditSnapshotBuilder {
       nutritionMethodologyVersion: result.nutritionMethodologyVersion!,
       nutritionTransformVersion: result.nutritionTransformVersion!,
       additiveTransformVersion: result.additiveTransformVersion,
-      resolvedInput: _resolvedInput(evaluation.input),
+      resolvedInput: _resolvedInput(
+        evaluation.input,
+        product.scoringEvidence?.nutritionBasisEvidence?.provenance,
+      ),
       canonicalAdditives: additiveQuality.canonicalAssessment.canonicalAdditives
           .map((item) => _canonicalAdditive(item, itemPenalties[item]))
           .toList(growable: false),
@@ -64,7 +68,10 @@ class EtiketlyScoreAuditSnapshotBuilder {
     );
   }
 
-  ScoreAuditResolvedInputSnapshot _resolvedInput(EtiketlyScoringInput input) {
+  ScoreAuditResolvedInputSnapshot _resolvedInput(
+    EtiketlyScoringInput input,
+    EvidenceProvenance? nutritionBasisProvenance,
+  ) {
     final nutrition = input.nutrition;
     return ScoreAuditResolvedInputSnapshot(
       nutrition: {
@@ -79,6 +86,7 @@ class EtiketlyScoreAuditSnapshotBuilder {
         'sodium': _evidence(nutrition.sodium),
       },
       nutritionBasis: input.nutritionBasis.name,
+      nutritionBasisProvenance: nutritionBasisProvenance?.name,
       productState: input.productState.name,
       resolvedCategory: input.categoryEvidence.resolvedCategory.name,
       categorySource: input.categoryEvidence.source.name,

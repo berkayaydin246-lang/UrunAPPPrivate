@@ -263,9 +263,13 @@ Map<String, dynamic> _nutrition() => const {
   'salt': 0.5,
 };
 
+// Basis independence correction: the real Migros contract's generic
+// 'per_100' never distinguishes g/ml and now correctly resolves to
+// NutritionBasis.unknown. This file's tests are about ingredient
+// completeness diagnostics, not basis, so this models proven evidence.
 LegacyStagingScoringEvidence _staging({
   required Product product,
-  String basis = 'per_100',
+  String basis = 'per_100g',
   String source = 'web_scraper:migros',
   String? ingredientsSource = 'web_scraper:migros',
   String ingredientsQuality = 'ingredients_ok',

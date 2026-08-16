@@ -39,6 +39,18 @@ void main() {
   }) {
     return ScoringEvidenceSnapshot(
       nutritionBasis: basis,
+      // Pre-APPLY trust correction: toScoringInput() now requires
+      // independently trusted basis provenance (declaredLabel/
+      // adminVerified) before it will let the bare NutritionBasis enum
+      // flow through at all — matching every other evidence dimension in
+      // this fully admin-reviewed fixture (fvl/nns/category are all
+      // tagged adminVerified, and the whole snapshot carries
+      // adminVerification metadata below).
+      nutritionBasisEvidence: EvidenceValue<NutritionBasis>(
+        value: basis,
+        provenance: EvidenceProvenance.adminVerified,
+        verification: EvidenceVerification.verified,
+      ),
       nutritionProductState: NutritionProductState.asSold,
       nutrition: ScoringNutritionData(
         energyKj: energyKj ?? numeric(180),

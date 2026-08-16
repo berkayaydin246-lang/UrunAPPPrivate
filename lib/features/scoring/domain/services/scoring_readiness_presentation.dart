@@ -53,5 +53,11 @@ abstract final class ScoringReadinessPresentation {
           'Puanlama verilerinden biri geçersiz.',
         ScoringReadinessBlocker.rejectedEvidence =>
           'Reddedilmiş bir kanıt yeniden incelenmeli.',
+        ScoringReadinessBlocker.saturatedFatExceedsTotalFat =>
+          'Doymuş yağ, toplam yağdan fazla görünüyor.',
+        ScoringReadinessBlocker.nonPositiveTotalFatForFatCategory =>
+          'Bu ürün sınıfı için toplam yağ sıfır veya eksi görünüyor.',
+        ScoringReadinessBlocker.plainWaterCategoryMismatch =>
+          'Ürün sade su olarak görünüyor ancak içecek sınıfında değil.',
       };
 }

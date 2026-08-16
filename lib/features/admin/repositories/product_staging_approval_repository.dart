@@ -657,6 +657,7 @@ class ProductStagingApprovalRepository {
   ) {
     final payload = candidate.rawSourcePayload ?? const <String, dynamic>{};
     final warnings = payload['nutrition_warnings'];
+    final ingredientsRaw = payload['ingredients_raw'] as String?;
     return LegacyStagingScoringEvidence(
       id: candidate.id ?? stagingId,
       sourceUrl: candidate.sourceUrl?.trim() ?? '',
@@ -667,9 +668,13 @@ class ProductStagingApprovalRepository {
       nutritionProductState: payload['nutrition_product_state'] as String?,
       source: candidate.source,
       ingredientsSource: candidate.ingredientsSource,
-      ingredientsRaw: payload['ingredients_raw'] as String?,
+      ingredientsRaw: ingredientsRaw,
       ingredientsText: candidate.ingredientsText,
-      ingredientsQuality: payload['ingredients_quality'] as String?,
+      ingredientsQuality: resolveEffectiveIngredientsQuality(
+        payload,
+        ingredientsRaw: ingredientsRaw,
+        ingredientsText: candidate.ingredientsText,
+      ),
       nutritionSource: candidate.nutritionSource,
       nutritionStrategy: payload['nutrition_strategy'] as String?,
       nutritionJson: candidate.nutritionJson,

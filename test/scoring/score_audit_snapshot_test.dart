@@ -324,6 +324,298 @@ void main() {
       );
     });
 
+    group('basis remediation Section N: public score safety', () {
+      // Models a snapshot whose basis provenance is exactly [provenance]
+      // (including null, for a pre-remediation legacy row) as a HISTORICAL
+      // audit row — i.e. via [buildHistoricalAuditSnapshotWithBasisProvenance],
+      // never via plain [buildAuditSnapshot] directly on an untrusted-basis
+      // product. Pre-APPLY trust correction: since
+      // ScoringEvidenceSnapshot.toScoringInput now downgrades an
+      // untrusted-provenance basis to NutritionBasis.unknown before
+      // readiness is ever evaluated, [buildAuditSnapshot] itself can no
+      // longer produce ANY calculated evaluation for such a product — but
+      // this frozen public gate must still correctly judge a genuinely
+      // historical (immutable, never-deleted, pre-correction) row, which
+      // is exactly what this helper constructs: self-consistently
+      // fingerprinted, never JSON-surgeried.
+      EtiketlyScoreAuditSnapshot snapshotWithBasisProvenance(
+        EvidenceProvenance? provenance,
+      ) {
+        return buildHistoricalAuditSnapshotWithBasisProvenance(provenance);
+      }
+
+      test(
+        'a legacy snapshot with no basis provenance recorded at all cannot '
+        'pass the public gate merely because its fingerprint matches — '
+        'category-derived legacy basis is never newly trusted',
+        () {
+          final legacy = snapshotWithBasisProvenance(null);
+
+          expect(
+            const EtiketlyScoreAuditValidator().validate(legacy).isValid,
+            isTrue,
+            reason: 'this snapshot is genuinely self-consistent — only the '
+                'basis-trust check should block it, nothing else',
+          );
+          final decision = gate.evaluate(current: legacy, trusted: legacy);
+
+          expect(decision.status, PublicScoreAuditStatus.basisUnverified);
+          expect(decision.mayDisplayNumericScore, isFalse);
+        },
+      );
+
+      test(
+        'databaseImport basis provenance — the exact legacy-invented '
+        'signature — is never trusted, even with a perfectly matching '
+        'fingerprint',
+        () {
+          final legacyInvented = snapshotWithBasisProvenance(
+            EvidenceProvenance.databaseImport,
+          );
+
+          final decision = gate.evaluate(
+            current: legacyInvented,
+            trusted: legacyInvented,
+          );
+
+          expect(decision.status, PublicScoreAuditStatus.basisUnverified);
+        },
+      );
+
+      test(
+        'declaredLabel (source-proven) basis provenance passes normally',
+        () {
+          final proven = snapshotWithBasisProvenance(
+            EvidenceProvenance.declaredLabel,
+          );
+
+          final decision = gate.evaluate(current: proven, trusted: proven);
+
+          expect(decision.status, PublicScoreAuditStatus.matching);
+          expect(decision.mayDisplayNumericScore, isTrue);
+        },
+      );
+
+      test('adminVerified basis provenance passes normally', () {
+        final adminProven = snapshotWithBasisProvenance(
+          EvidenceProvenance.adminVerified,
+        );
+
+        final decision = gate.evaluate(
+          current: adminProven,
+          trusted: adminProven,
+        );
+
+        expect(decision.status, PublicScoreAuditStatus.matching);
+      });
+
+      test(
+        'only ONE side (current) having untrusted basis provenance is '
+        'still enough to block — both sides must be trusted',
+        () {
+          final untrustedCurrent = snapshotWithBasisProvenance(
+            EvidenceProvenance.databaseImport,
+          );
+          final trustedStored = snapshotWithBasisProvenance(
+            EvidenceProvenance.declaredLabel,
+          );
+
+          final decision = gate.evaluate(
+            current: untrustedCurrent,
+            trusted: trustedStored,
+          );
+
+          expect(decision.status, PublicScoreAuditStatus.basisUnverified);
+        },
+      );
+
+      test(
+        'a second, identical revalidated-basis evaluation is idempotent — '
+        'still matching, never flips to stale or basisUnverified',
+        () {
+          final proven = snapshotWithBasisProvenance(
+            EvidenceProvenance.declaredLabel,
+          );
+
+          final first = gate.evaluate(current: proven, trusted: proven);
+          final second = gate.evaluate(current: proven, trusted: proven);
+
+          expect(first.status, PublicScoreAuditStatus.matching);
+          expect(second.status, PublicScoreAuditStatus.matching);
+        },
+      );
+
+      group(
+        'wouldBeCurrentIgnoringBasisTrust: the basis-revalidation '
+        'candidate-selection circular-dependency fix',
+        () {
+          // (A) missing provenance entirely (pre-remediation legacy row):
+          // otherwise a perfectly matching, structurally-valid audit — the
+          // gate itself still reports basisUnverified (never bypassed) —
+          // but this diagnostic helper reports it WOULD be current if
+          // basis were trusted.
+          test(
+            'A: missing basis provenance, otherwise matching -> gate says '
+            'basisUnverified, but wouldBeCurrentIgnoringBasisTrust is true',
+            () {
+              final legacy = snapshotWithBasisProvenance(null);
+
+              expect(
+                gate.evaluate(current: legacy, trusted: legacy).status,
+                PublicScoreAuditStatus.basisUnverified,
+              );
+              expect(
+                gate.wouldBeCurrentIgnoringBasisTrust(
+                  current: legacy,
+                  trusted: legacy,
+                ),
+                isTrue,
+              );
+            },
+          );
+
+          // (B) databaseImport provenance (the exact legacy-invented
+          // signature): same shape as (A).
+          test(
+            'B: databaseImport basis provenance, otherwise matching -> gate '
+            'says basisUnverified, but wouldBeCurrentIgnoringBasisTrust is '
+            'true',
+            () {
+              final legacyInvented = snapshotWithBasisProvenance(
+                EvidenceProvenance.databaseImport,
+              );
+
+              expect(
+                gate
+                    .evaluate(
+                      current: legacyInvented,
+                      trusted: legacyInvented,
+                    )
+                    .status,
+                PublicScoreAuditStatus.basisUnverified,
+              );
+              expect(
+                gate.wouldBeCurrentIgnoringBasisTrust(
+                  current: legacyInvented,
+                  trusted: legacyInvented,
+                ),
+                isTrue,
+              );
+            },
+          );
+
+          // (C) declaredLabel (already independently trusted): the gate
+          // itself already permits display, so the diagnostic distinction
+          // this helper exists for is moot — but it still reports true,
+          // since the audit genuinely IS current either way.
+          test(
+            'C: declaredLabel basis provenance -> already gate-trusted, '
+            'wouldBeCurrentIgnoringBasisTrust is also true',
+            () {
+              final proven = snapshotWithBasisProvenance(
+                EvidenceProvenance.declaredLabel,
+              );
+
+              expect(
+                gate.evaluate(current: proven, trusted: proven).status,
+                PublicScoreAuditStatus.matching,
+              );
+              expect(
+                gate.wouldBeCurrentIgnoringBasisTrust(
+                  current: proven,
+                  trusted: proven,
+                ),
+                isTrue,
+              );
+            },
+          );
+
+          // (D) adminVerified: same shape as (C).
+          test(
+            'D: adminVerified basis provenance -> already gate-trusted, '
+            'wouldBeCurrentIgnoringBasisTrust is also true',
+            () {
+              final adminProven = snapshotWithBasisProvenance(
+                EvidenceProvenance.adminVerified,
+              );
+
+              expect(
+                gate
+                    .evaluate(current: adminProven, trusted: adminProven)
+                    .status,
+                PublicScoreAuditStatus.matching,
+              );
+              expect(
+                gate.wouldBeCurrentIgnoringBasisTrust(
+                  current: adminProven,
+                  trusted: adminProven,
+                ),
+                isTrue,
+              );
+            },
+          );
+
+          // (E) stale for an UNRELATED reason (ingredients changed, hence
+          // a different fingerprint) on top of missing basis provenance:
+          // must not be reported as "would be current" — the underlying
+          // audit genuinely disagrees, basis aside.
+          test(
+            'E: stale fingerprint for an unrelated reason PLUS missing '
+            'basis provenance -> wouldBeCurrentIgnoringBasisTrust is false, '
+            'never falsely promoted to "otherwise current except basis"',
+            () {
+              final currentLegacy = snapshotWithBasisProvenance(null);
+              final staleTrustedLegacy = buildAuditSnapshot(
+                product: auditProductFromInput(
+                  completeInput(),
+                  ingredientsText: 'Su, su',
+                ),
+                assessment: auditOrdinaryAssessment(),
+              );
+
+              expect(
+                gate
+                    .evaluate(
+                      current: currentLegacy,
+                      trusted: staleTrustedLegacy,
+                    )
+                    .status,
+                PublicScoreAuditStatus.basisUnverified,
+                reason: 'basis-trust is checked before the fingerprint '
+                    'comparison, so the gate itself still reports '
+                    'basisUnverified here — but that must not be conflated '
+                    'with "otherwise current"',
+              );
+              expect(
+                gate.wouldBeCurrentIgnoringBasisTrust(
+                  current: currentLegacy,
+                  trusted: staleTrustedLegacy,
+                ),
+                isFalse,
+              );
+            },
+          );
+
+          // (F) no persisted trusted snapshot at all.
+          test(
+            'F: no persisted trusted snapshot -> wouldBeCurrentIgnoringBasisTrust '
+            'is false',
+            () {
+              final legacy = snapshotWithBasisProvenance(null);
+
+              expect(
+                gate.wouldBeCurrentIgnoringBasisTrust(
+                  current: legacy,
+                  trusted: null,
+                ),
+                isFalse,
+              );
+            },
+          );
+        },
+      );
+    });
+
     test('25. legacy product remains an ordinary unavailable state', () {
       final state = const ProductEtiketlyScoreOrchestrator().evaluate(
         product: auditProductFromInput(completeInput()),

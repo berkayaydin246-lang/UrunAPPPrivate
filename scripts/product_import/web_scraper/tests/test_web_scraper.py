@@ -317,8 +317,12 @@ class GenericNutritionExtractionTest(unittest.TestCase):
         self.assertEqual(data["fat"], 15.0)
         self.assertEqual(data["saturated_fat"], 3.0)
 
-    def test_basis_per_100_from_table_header(self):
-        # "100 g / ml" header in the table → basis per_100, no unknown warning.
+    def test_basis_per_100_generic_from_table_header(self):
+        # "100 g / ml" genuinely names BOTH units without identifying which
+        # values belong to which — basis remediation Section B: this must
+        # classify as per_100_generic, never guessed as either single unit,
+        # but still proceeds with value extraction (no unknown warning —
+        # we DO know it's some per-100 basis, just not which exact unit).
         html = """
         <table>
           <tr><th>Besin Değeri</th><td class="value">100 g / ml</td></tr>
@@ -330,7 +334,10 @@ class GenericNutritionExtractionTest(unittest.TestCase):
         """
         soup = extractors.make_soup(html)
         nutri = extractors.extract_nutrition(soup)
-        self.assertEqual(nutrition_parser.detect_basis(nutri["basis_text"]), "per_100")
+        self.assertEqual(
+            nutrition_parser.detect_basis(nutri["basis_text"]),
+            nutrition_parser.BASIS_PER_100_GENERIC,
+        )
         _data, warnings = nutrition_parser.build_nutrition(
             nutri["pairs"],
             basis_text=nutri["basis_text"],
@@ -338,13 +345,87 @@ class GenericNutritionExtractionTest(unittest.TestCase):
         )
         self.assertNotIn("nutrition_basis_unknown_assumed_per_100", warnings)
 
-    def test_detect_basis_recognizes_100g_ml_variants(self):
-        for header in ("100 g / ml", "100 g/ml", "100g/ml", "100 gr", "100gr"):
+    def test_detect_basis_recognizes_combined_g_ml_variants_as_generic(self):
+        for header in ("100 g / ml", "100 g/ml", "100g/ml"):
             self.assertEqual(
                 nutrition_parser.detect_basis(f"Besin Değerleri {header} Enerji 200"),
-                "per_100",
+                nutrition_parser.BASIS_PER_100_GENERIC,
                 header,
             )
+
+    def test_detect_basis_recognizes_gram_only_variants_as_per_100g(self):
+        for header in ("100 g", "100g", "100 gr", "100gr"):
+            self.assertEqual(
+                nutrition_parser.detect_basis(f"Besin Değerleri {header} Enerji 200"),
+                nutrition_parser.BASIS_PER_100G,
+                header,
+            )
+
+    def test_detect_basis_recognizes_ml_only_as_per_100ml(self):
+        for header in ("100 ml", "100ml"):
+            self.assertEqual(
+                nutrition_parser.detect_basis(f"Besin Değerleri {header} Enerji 200"),
+                nutrition_parser.BASIS_PER_100ML,
+                header,
+            )
+
+    def test_detect_basis_bare_per_100_phrase_is_generic(self):
+        self.assertEqual(
+            nutrition_parser.detect_basis("per 100 Enerji 200"),
+            nutrition_parser.BASIS_PER_100_GENERIC,
+        )
+
+    def test_detect_basis_both_units_named_separately_is_generic(self):
+        # Both a gram AND a millilitre mention appear, just not combined
+        # into one "g / ml" token — still ambiguous, still generic.
+        self.assertEqual(
+            nutrition_parser.detect_basis(
+                "100 g toz halinde veya 100 ml hazırlanmış olarak Enerji 200"
+            ),
+            nutrition_parser.BASIS_PER_100_GENERIC,
+        )
+
+    def test_section_o_liquid_food_soup_header_never_silently_resolved(self):
+        # Section O of the basis remediation pass: a soup/oil-style label
+        # naming both units in one combined header (as opposed to two fully
+        # separate value columns, which this scraper does not yet extract —
+        # see nutrition_parser.py's BASIS rule documentation) must stay
+        # BASIS_PER_100_GENERIC — never silently resolved to per-100g via
+        # the official tie-break rule, since that rule only applies once
+        # two genuinely separate value sets are actually extracted.
+        self.assertEqual(
+            nutrition_parser.detect_basis("Çorba Besin Değerleri 100 g / ml Enerji 45"),
+            nutrition_parser.BASIS_PER_100_GENERIC,
+        )
+
+    def test_detect_basis_raw_text_retained_in_candidate(self):
+        html = """
+        <table>
+          <tr><th>Besin Değeri</th><td class="value">100 g</td></tr>
+          <tr><td>Enerji (kcal)</td><td>248.0</td></tr>
+        </table>
+        """
+        soup = extractors.make_soup(html)
+        nutri = extractors.extract_nutrition(soup)
+        candidate = runner.assemble_candidate(
+            source_id="migros",
+            url="https://www.migros.com.tr/product-p-abc",
+            jsonld={"name": "Test Ürün"},
+            meta={},
+            sections={},
+            image_candidates=[],
+            category="et",
+            nutrition_basis=nutrition_parser.detect_basis(nutri["basis_text"]),
+            nutrition_basis_raw_text=nutri["basis_text"],
+        )
+        self.assertEqual(
+            candidate["raw_source_payload"]["nutrition_basis"],
+            nutrition_parser.BASIS_PER_100G,
+        )
+        self.assertIn(
+            "100 g",
+            candidate["raw_source_payload"]["nutrition_basis_raw_text"],
+        )
 
     def test_text_fallback_style(self):
         html = (

@@ -339,7 +339,10 @@ class PublicScoreBlockerMapper {
         ScoringReadinessBlocker.missingProtein ||
         ScoringReadinessBlocker.unknownNutritionProvenance ||
         ScoringReadinessBlocker.invalidEvidenceValue ||
-        ScoringReadinessBlocker.rejectedEvidence => true,
+        ScoringReadinessBlocker.rejectedEvidence ||
+        ScoringReadinessBlocker.saturatedFatExceedsTotalFat ||
+        ScoringReadinessBlocker.nonPositiveTotalFatForFatCategory ||
+        ScoringReadinessBlocker.plainWaterCategoryMismatch => true,
         _ => false,
       };
 

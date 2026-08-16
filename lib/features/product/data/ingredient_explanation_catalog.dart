@@ -483,7 +483,7 @@ class _IngredientCatalogEntry {
         return true;
       }
       for (final token in containsKeys) {
-        if (token.isNotEmpty && form.contains(token)) {
+        if (token.isNotEmpty && _containsAtLeadingWordBoundary(form, token)) {
           return true;
         }
       }
@@ -493,6 +493,28 @@ class _IngredientCatalogEntry {
     }
     return false;
   }
+}
+
+// A `containsAny` token must begin a word within `form`, not appear fused
+// onto the tail of a longer, unrelated word — e.g. a short token like "bht"
+// must not accidentally match inside some longer coincidental substring. The
+// trailing edge is intentionally NOT required to be a boundary: Turkish
+// suffixes attach directly (no separator), so legitimate matches like
+// "süt tozu" against "yağsız süt tozuna" or "mono ve digliserit" against
+// "mono ve digliseritleri" must keep working.
+bool _containsAtLeadingWordBoundary(String form, String token) {
+  var searchStart = 0;
+  while (true) {
+    final index = form.indexOf(token, searchStart);
+    if (index == -1) return false;
+    final precededByWordChar = index > 0 && _isWordChar(form[index - 1]);
+    if (!precededByWordChar) return true;
+    searchStart = index + 1;
+  }
+}
+
+bool _isWordChar(String char) {
+  return RegExp(r'[a-zA-ZçğıöşüÇĞİÖŞÜ0-9]').hasMatch(char);
 }
 
 final List<_IngredientCatalogEntry> _catalogEntries = [

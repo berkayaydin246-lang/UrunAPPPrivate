@@ -37,6 +37,12 @@ class ScoringCategoryResolver {
     'kraker',
     'sekerleme',
     'misir_pirinc_patlagi',
+    // Same real-world product family as 'misir_pirinc_patlagi' above under
+    // a differently-formatted production tag string (inserts '_ve_' =
+    // "and") — confirmed via the read-only taxonomy-closure inventory
+    // (Section: FINAL scoring-category taxonomy gap). Not a new category
+    // interpretation, just the same one under a second spelling.
+    'misir_ve_pirinc_patlagi',
     'kuru_meyve',
     'sakiz',
     'makarna_bakliyat',
@@ -46,6 +52,20 @@ class ScoringCategoryResolver {
     'makarna',
     'bakliyat',
     'tuz_baharat_harc',
+    // Dry/loose tea and ground/whole-bean coffee are sold by weight
+    // (per-100g labels), not as prepared drinks — they must never be
+    // confused with the prepared-beverage tags in _directBeverageTags
+    // (gazli_icecek/gazsiz_icecek/meyve_suyu/maden_suyu, all per-100ml).
+    // Exemption from mandatory nutritional declaration does not by itself
+    // make a product ineligible: when an adequate trusted declaration
+    // exists, these score via the ordinary solid-food formula like any
+    // other generalFood product. Confirmed via saved production samples
+    // (tmp/legacy_recovery_root_cause_probe_v2_output.txt) that 'cay'/
+    // 'kahve'-tagged rows in this catalogue are dry/bagged/ground products
+    // (e.g. "Migros Demlik Poşet Siyah Çay", "Joe&Co Filtre Kahve"), never
+    // ready-to-drink beverages.
+    'cay',
+    'kahve',
     'hamur_pasta_malzemeleri',
     'ozel_beslenme_urunleri',
     'hazir_yemek',
@@ -78,6 +98,14 @@ class ScoringCategoryResolver {
     'galeta_grissini_gevrek',
     'tatli',
     'pasta',
+    // Table/jarred olives — an ordinary solid conserve-style food, never a
+    // beverage/cheese/red-meat product, and never the fatsOilsNutsSeeds
+    // branch (that branch is reserved for products whose fat/nut/seed
+    // content methodology applies to, e.g. bottled oil or >50% nut/seed
+    // products — not brined table olives). A distinct Migros department
+    // from 'zeytinyağı' (olive OIL, which falls under 'sivi_yag' above),
+    // confirmed via the read-only taxonomy-closure inventory.
+    'zeytin',
   };
 
   static const _legacyGeneralFoodCanonicalCategories = {

@@ -477,6 +477,7 @@ def assemble_candidate(
     nutrition_json: dict | None = None,
     nutrition_warnings: list | None = None,
     nutrition_basis: str | None = None,
+    nutrition_basis_raw_text: str | None = None,
     nutrition_strategy: str | None = None,
     ingredients_raw: str | None = None,
     breadcrumb_category: str | None = None,
@@ -583,6 +584,14 @@ def assemble_candidate(
             "ingredients_raw": ingredients_raw,
             "ingredients_quality": _ing_quality,
             "nutrition_basis": basis,
+            # The exact source text detect_basis() classified — retained so
+            # a future, more precise classifier can be re-run against it
+            # without needing to re-scrape. Never overwritten/reinterpreted
+            # after this point; this is the ONLY place unit information is
+            # preserved verbatim (see Section B of the basis remediation
+            # pass — the historical contract discarded this and could
+            # never prove basis again afterward).
+            "nutrition_basis_raw_text": nutrition_basis_raw_text,
             "nutrition_strategy": nutrition_strategy,
             "nutrition_warnings": nutrition_warnings,
             "image_candidates": image_data["image_candidates"],
@@ -812,6 +821,7 @@ def scrape_product_page(
         nutrition_json=nutrition_json,
         nutrition_warnings=nutrition_warnings,
         nutrition_basis=nutrition_basis,
+        nutrition_basis_raw_text=nutri["basis_text"],
         nutrition_strategy=nutri["strategy"],
         ingredients_raw=ingredients_raw,
         breadcrumb_category=breadcrumb_category,

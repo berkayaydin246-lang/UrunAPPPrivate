@@ -40,7 +40,13 @@ class ValidatedNutritionScoringInput {
   final double saturatedFat;
   final double sugars;
   final double salt;
-  final double protein;
+  // Null exactly when ScoringReadinessEvaluator independently proved N
+  // already places this category/branch on the protein-excluded side of
+  // its documented threshold (see NUTRITION_METHODOLOGY_2023.md) — never
+  // null for cheese or beverage, which always require it. When null,
+  // NutritionRawScoreCalculator applies zero protein points, which is
+  // mathematically identical to applying any real value in that branch.
+  final double? protein;
   final double fiber;
   final double fvlPercentage;
   final bool? nnsPresent;
@@ -79,7 +85,10 @@ class ValidatedNutritionScoringInput {
     final saturatedFat = nutrition.saturatedFat.value!;
     final sugars = nutrition.sugars.value!;
     final salt = nutrition.salt.value!;
-    final protein = nutrition.protein.value!;
+    // Nullable: readiness only guarantees this is present when the
+    // category/branch actually requires it (cheese, beverage, or N below
+    // the documented per-category threshold). Cannot use `!` here.
+    final protein = nutrition.protein.value;
     final fiber = nutrition.fiber.value!;
     final fvlPercentage = input.fvlEvidence.percentage!;
     final isPlainWater =
@@ -90,7 +99,7 @@ class ValidatedNutritionScoringInput {
       saturatedFat,
       sugars,
       salt,
-      protein,
+      ?protein,
       fiber,
       fvlPercentage,
       if (category != ScoringCategory.fatsOilsNutsSeeds) energyKj!,
