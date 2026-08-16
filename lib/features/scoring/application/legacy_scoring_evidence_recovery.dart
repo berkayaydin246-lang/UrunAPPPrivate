@@ -15,6 +15,7 @@ import 'package:food_analyzer_app/features/scoring/domain/models/scoring_classif
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_evidence_snapshot.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_nutrition_data.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_types.dart';
+import 'package:food_analyzer_app/features/scoring/domain/services/category_derived_basis_resolver.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/legacy_fvl_evidence_resolver.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/nns_evidence_detector.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/scoring_category_resolver.dart';
@@ -356,6 +357,7 @@ class LegacyScoringEvidenceRecoveryService {
     this.matcher = const IngredientMatcherService(),
     this.riskService = const CanonicalIngredientRiskService(),
     this.orchestrator = const ProductEtiketlyScoreOrchestrator(),
+    this.categoryDerivedBasisResolver = const CategoryDerivedBasisResolver(),
   });
 
   static const _assumedPer100Warning =
@@ -394,6 +396,7 @@ class LegacyScoringEvidenceRecoveryService {
   final IngredientMatcherService matcher;
   final CanonicalIngredientRiskService riskService;
   final ProductEtiketlyScoreOrchestrator orchestrator;
+  final CategoryDerivedBasisResolver categoryDerivedBasisResolver;
 
   Future<LegacyScoringEvidenceRecoveryResult> recover({
     required Product product,
@@ -540,6 +543,27 @@ class LegacyScoringEvidenceRecoveryService {
         resolvedCategory != ScoringCategory.outOfScope &&
         categoryEvidence.isSufficient;
     final recoveredBasis = _recoveredBasisFromEvidence(basis);
+    // Controlled category-derived basis fallback (product decision): only
+    // ever consulted when independent source evidence itself proved
+    // nothing exact (recoveredBasis is unknown) AND the source was
+    // genuinely generic/combined ("100 g / ml" and equivalents), never
+    // when there was no basis signal at all (basis_unknown, handled far
+    // earlier) and never when the source explicitly declared a
+    // conflicting unit — in that case recoveredBasis would already be
+    // non-unknown and this is never reached, so explicit evidence always
+    // wins. Never silently tagged as declaredLabel — see
+    // categoryDerivedProvenance below.
+    final categoryDerivedBasis =
+        recoveredBasis == NutritionBasis.unknown &&
+            _genericAmbiguousBasisStrings.contains(basis)
+        ? categoryDerivedBasisResolver.resolve(product.categoryTags ?? const [])
+        : NutritionBasis.unknown;
+    final effectiveBasis = recoveredBasis != NutritionBasis.unknown
+        ? recoveredBasis
+        : categoryDerivedBasis;
+    final categoryDerivedBasisApplied =
+        recoveredBasis == NutritionBasis.unknown &&
+        categoryDerivedBasis != NutritionBasis.unknown;
     // Whether a product is sold ready-to-consume ("as sold") versus needing
     // preparation is a fact about the product itself — it does not depend on
     // which of the five scoring categories the product resolves into. Gating
@@ -602,28 +626,36 @@ class LegacyScoringEvidenceRecoveryService {
         : const PresenceEvidence.unknown();
 
     final evidence = ScoringEvidenceSnapshot(
-      nutritionBasis: recoveredBasis,
+      nutritionBasis: effectiveBasis,
       nutritionProductState: productState,
       // Section E of the basis remediation pass: `declaredLabel`, never
-      // `databaseImport`, is deliberate and load-bearing. This branch is
-      // now ONLY ever reached when `recoveredBasis` came from an exact,
-      // genuinely-proven `per_100g`/`per_100ml` staging string (see
-      // _recoveredBasisFromEvidence — every generic/ambiguous case already
-      // resolves to `unknown` above and never reaches here). Tagging it
-      // `declaredLabel` — "the source declared this exact unit" — makes it
-      // retroactively distinguishable from every historical evidence
-      // object written by the OLD, pre-fix `_basisForCategory` bug, which
-      // always used `databaseImport` for this same field regardless of
-      // whether the unit was actually proven. See
-      // EtiketlyPublicScoreAuditGate / historical basis trust check: a
-      // current snapshot's basis provenance must be `declaredLabel` or
-      // `adminVerified` — `databaseImport` basis provenance is exactly the
-      // legacy-invented signature and is never trusted as current again.
-      nutritionBasisEvidence: recoveredBasis == NutritionBasis.unknown
+      // `databaseImport`, is deliberate and load-bearing. The `declaredLabel`
+      // branch below is ONLY ever reached when `recoveredBasis` came from an
+      // exact, genuinely-proven `per_100g`/`per_100ml` staging string (see
+      // _recoveredBasisFromEvidence). Tagging it `declaredLabel` — "the
+      // source declared this exact unit" — makes it retroactively
+      // distinguishable from every historical evidence object written by
+      // the OLD, pre-fix `_basisForCategory` bug, which always used
+      // `databaseImport` for this same field regardless of whether the
+      // unit was actually proven. See EtiketlyPublicScoreAuditGate /
+      // historical basis trust check: a current snapshot's basis
+      // provenance must be `declaredLabel`, `adminVerified`, or (product
+      // decision, this pass) `categoryDerived` — `databaseImport` basis
+      // provenance is exactly the legacy-invented signature and is never
+      // trusted as current again.
+      //
+      // `categoryDerived` is used ONLY when categoryDerivedBasisApplied is
+      // true — i.e. source evidence itself proved nothing exact, but an
+      // explicit, unambiguous taxonomy-tag allowlist did (see
+      // CategoryDerivedBasisResolver). Never silently conflated with
+      // `declaredLabel`: it is its own, distinguishable, real provenance.
+      nutritionBasisEvidence: effectiveBasis == NutritionBasis.unknown
           ? null
           : EvidenceValue<NutritionBasis>(
-              value: recoveredBasis,
-              provenance: EvidenceProvenance.declaredLabel,
+              value: effectiveBasis,
+              provenance: categoryDerivedBasisApplied
+                  ? EvidenceProvenance.categoryDerived
+                  : EvidenceProvenance.declaredLabel,
               verification: EvidenceVerification.verified,
             ),
       nutritionProductStateEvidence:
@@ -652,7 +684,7 @@ class LegacyScoringEvidenceRecoveryService {
     if (!notScoreEligible && !classificationReady) {
       blockers.add('missing_classification');
     }
-    if (recoveredBasis == NutritionBasis.unknown) {
+    if (effectiveBasis == NutritionBasis.unknown) {
       blockers.add('basis_unit_ambiguous');
       // Distinct signal for the historical revalidation planner (Section
       // J): a product blocked ONLY because the exact g/ml unit was never
@@ -688,7 +720,7 @@ class LegacyScoringEvidenceRecoveryService {
       return LegacyScoringEvidenceRecoveryResult(
         stagingMatch: true,
         explicitPer100: true,
-        basisReady: recoveredBasis != NutritionBasis.unknown,
+        basisReady: effectiveBasis != NutritionBasis.unknown,
         nutritionComplete: _nutritionComplete(scoringNutrition),
         classificationReady: classificationReady,
         fvlReady: fvl.isReady,
@@ -746,7 +778,7 @@ class LegacyScoringEvidenceRecoveryService {
     return LegacyScoringEvidenceRecoveryResult(
       stagingMatch: true,
       explicitPer100: true,
-      basisReady: recoveredBasis != NutritionBasis.unknown,
+      basisReady: effectiveBasis != NutritionBasis.unknown,
       nutritionComplete: _nutritionComplete(scoringNutrition),
       classificationReady: classificationReady,
       fvlReady: fvl.isReady,

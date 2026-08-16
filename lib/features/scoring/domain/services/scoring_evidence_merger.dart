@@ -430,6 +430,12 @@ class ScoringEvidenceMerger {
     final provenanceRank = switch (provenance) {
       EvidenceProvenance.adminVerified => 70,
       EvidenceProvenance.declaredLabel => 60,
+      // Deterministic taxonomy-tag-derived fallback: trusted for
+      // readiness/public-display purposes (see
+      // EtiketlyPublicScoreAuditGate), but ranked below genuinely
+      // source-declared evidence since it is a policy inference, not
+      // something the source itself stated.
+      EvidenceProvenance.categoryDerived => 55,
       EvidenceProvenance.ocrDeclaredLabel => 50,
       EvidenceProvenance.databaseImport => 40,
       EvidenceProvenance.derivedFromSodium ||

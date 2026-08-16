@@ -1235,6 +1235,87 @@ void main() {
           );
         },
       );
+
+      test(
+        'category-derived basis fallback (product decision): existing '
+        'evidence whose basis provenance is untrusted, but whose matching '
+        'staging is genuinely generic and whose OWN category tag is in the '
+        'deterministic allowlist, becomes existingEvidenceUpgradable in '
+        'dry-run and existingEvidenceUpgraded on apply, tagged '
+        'categoryDerived — this is the exact real-world path an '
+        'already-current-with-untrusted-basis product (e.g. a biscuit '
+        'whose Migros nutrition header only ever said "100 g / ml") takes '
+        'back to a displayable score',
+        () async {
+          final untrustedBasisEvidence = ScoringEvidenceSnapshot(
+            nutritionBasis: NutritionBasis.per100g,
+            nutritionBasisEvidence: null,
+            nutritionProductState: NutritionProductState.asSold,
+            nutrition: completeNutrition(),
+            fvlEvidence: const CompositionPercentageEvidence.provenAbsent(
+              provenance: EvidenceProvenance.declaredLabel,
+              verification: EvidenceVerification.verified,
+            ),
+            nnsEvidence: const PresenceEvidence.absent(
+              provenance: EvidenceProvenance.declaredLabel,
+              verification: EvidenceVerification.verified,
+            ),
+            ingredientEvidenceCompleteness:
+                IngredientEvidenceCompleteness.complete,
+            categoryEvidence: explicitCategory(ScoringCategory.generalFood),
+          );
+          // _product()'s default categoryTags is ['cips_kraker'] — already
+          // in CategoryDerivedBasisResolver's per100g allowlist.
+          final product = _copyProduct(
+            _product(),
+            scoringEvidence: untrustedBasisEvidence,
+          );
+          final dataSource = _FakeRecoveryDataSource(
+            products: {product.id: product},
+            staging: {
+              product.sourceUrl!: [
+                _staging(product: product, basis: 'per_100'),
+              ],
+            },
+            catalogue: const [],
+          );
+          final runner = LegacyScoringRecoveryLifecycleRunner(
+            dataSource: dataSource,
+          );
+
+          final dryRun = await runner.runForProductIds(
+            dryRun: true,
+            productIds: [product.id],
+          );
+          expect(
+            dryRun.results.single.outcome,
+            LegacyScoringRecoveryOutcome.existingEvidenceUpgradable,
+          );
+          expect(dataSource.writeScoringEvidenceCalls, 0);
+          expect(dataSource.insertSnapshotCalls, 0);
+
+          final apply = await runner.runForProductIds(
+            dryRun: false,
+            productIds: [product.id],
+          );
+          expect(
+            apply.results.single.outcome,
+            LegacyScoringRecoveryOutcome.existingEvidenceUpgraded,
+          );
+          expect(apply.results.single.calculatedScore, isNotNull);
+          final updatedEvidence =
+              dataSource.products[product.id]!.scoringEvidence!;
+          expect(updatedEvidence.nutritionBasis, NutritionBasis.per100g);
+          expect(
+            updatedEvidence.nutritionBasisEvidence?.provenance,
+            EvidenceProvenance.categoryDerived,
+          );
+          expect(
+            updatedEvidence.nutritionBasisEvidence?.verification,
+            EvidenceVerification.verified,
+          );
+        },
+      );
     },
   );
 

@@ -73,7 +73,11 @@ const _currentPublicBasisUnverifiedBlocker = 'current_public_basis_unverified';
 // here as a tiny, easily-audited constant rather than widening that
 // gate's API surface for one internal caller). Used only by the
 // defensive fallback below.
-const _trustedBasisProvenances = {'declaredLabel', 'adminVerified'};
+const _trustedBasisProvenances = {
+  'declaredLabel',
+  'adminVerified',
+  'categoryDerived',
+};
 
 /// Pure, deterministic planner — given a completed closure dry-run's
 /// results and the corresponding product rows, returns exactly the

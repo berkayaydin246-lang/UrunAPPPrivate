@@ -19,6 +19,15 @@ enum EvidenceProvenance {
   derivedFromSodium,
   derivedFromKcal,
   adminVerified,
+  // Deterministic, code-derived nutrition-basis fallback from an explicit,
+  // unambiguous taxonomy-tag allowlist (never AI, never product-name
+  // fuzzy matching, never the broad ScoringCategory alone) — see
+  // CategoryDerivedBasisResolver. Distinct from `declaredLabel` (the
+  // source itself declared the exact unit) and `adminVerified` (a human
+  // confirmed it): this is neither — it is a controlled, reviewable
+  // policy inference, trusted for the SAME public/readiness purposes but
+  // never silently conflated with genuinely proven source evidence.
+  categoryDerived,
   unknown,
 }
 

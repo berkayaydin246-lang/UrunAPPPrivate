@@ -253,8 +253,10 @@ void main() {
         final (tags, category, expectedBasis) = entry.value;
 
         test(
-          '${entry.key}: category resolves confidently, but a generic '
-          '(unit-ambiguous) basis alone still blocks on basis',
+          '${entry.key}: category resolves confidently, and a generic '
+          '(unit-ambiguous) basis now resolves via the deterministic '
+          'category-derived fallback (product decision, taxonomy-tag '
+          'allowlist)',
           () async {
             final product = _product(categoryTags: tags);
             final result = await _recover(
@@ -268,14 +270,42 @@ void main() {
               reason: 'category must resolve regardless of basis',
             );
             expect(result.classificationReady, isTrue);
+            expect(result.basisReady, isTrue);
+            expect(result.evidence!.nutritionBasis, expectedBasis);
             expect(
-              result.basisReady,
-              isFalse,
-              reason: 'category resolving must never manufacture basis proof',
+              result.evidence!.nutritionBasisEvidence?.provenance,
+              EvidenceProvenance.categoryDerived,
+              reason: 'never silently tagged as declaredLabel — this is a '
+                  'distinguishable, real provenance',
             );
-            expect(result.evidence!.nutritionBasis, NutritionBasis.unknown);
-            expect(result.blockerReasons, contains('basis_unit_ambiguous'));
-            expect(result.finalScoreReady, isFalse);
+            expect(
+              result.evidence!.nutritionBasisEvidence?.verification,
+              EvidenceVerification.verified,
+            );
+            expect(
+              result.blockerReasons,
+              isNot(contains('basis_unit_ambiguous')),
+            );
+          },
+        );
+
+        test(
+          '${entry.key}: a generic combined "100 g / ml" declaration (the '
+          'corrected scraper contract'
+          '\'s per_100_generic value) also resolves via the same fallback',
+          () async {
+            final product = _product(categoryTags: tags);
+            final result = await _recover(
+              product: product,
+              staging: _staging(product: product, basis: 'per_100_generic'),
+            );
+
+            expect(result.basisReady, isTrue);
+            expect(result.evidence!.nutritionBasis, expectedBasis);
+            expect(
+              result.evidence!.nutritionBasisEvidence?.provenance,
+              EvidenceProvenance.categoryDerived,
+            );
           },
         );
 
@@ -295,6 +325,13 @@ void main() {
             expect(result.classificationReady, isTrue);
             expect(result.basisReady, isTrue);
             expect(result.evidence!.nutritionBasis, expectedBasis);
+            expect(
+              result.evidence!.nutritionBasisEvidence?.provenance,
+              EvidenceProvenance.declaredLabel,
+              reason: 'genuinely explicit source evidence is tagged '
+                  'declaredLabel, never categoryDerived, even though the '
+                  'category fallback would have agreed here',
+            );
             expect(result.blockerReasons, isNot(contains('basis_unit_ambiguous')));
             expect(
               result.blockerReasons,
@@ -303,6 +340,31 @@ void main() {
           },
         );
       }
+
+      test(
+        'a category tag NOT in the fallback allowlist (e.g. a sauce) '
+        'remains genuinely ambiguous — the fallback is a closed allowlist, '
+        'never the broad resolved ScoringCategory alone',
+        () async {
+          final product = _product(categoryTags: const ['sos']);
+          final result = await _recover(
+            product: product,
+            staging: _staging(product: product, basis: 'per_100'),
+          );
+
+          expect(
+            result.evidence!.categoryEvidence.resolvedCategory,
+            ScoringCategory.generalFood,
+            reason: 'category itself resolves fine — sauces are ordinary '
+                'generalFood — but that is exactly why the broad category '
+                'alone must never be trusted for basis',
+          );
+          expect(result.classificationReady, isTrue);
+          expect(result.basisReady, isFalse);
+          expect(result.evidence!.nutritionBasis, NutritionBasis.unknown);
+          expect(result.blockerReasons, contains('basis_unit_ambiguous'));
+        },
+      );
 
       test(
         'beverage with an explicit, proven, but INCOMPATIBLE basis (per100g) '

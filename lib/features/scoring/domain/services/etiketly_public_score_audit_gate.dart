@@ -35,15 +35,23 @@ class EtiketlyPublicScoreAuditGate {
 
   final EtiketlyScoreAuditValidator validator;
 
-  // The only two provenance values that can ever mean "the exact g/mL unit
-  // was genuinely proven" — see legacy_scoring_evidence_recovery.dart
-  // (declaredLabel, source-proven) and scoring_evidence_admin_review_service
-  // .dart (adminVerified, human-confirmed). `databaseImport` — the ONLY
-  // value the pre-remediation `_basisForCategory` bug ever produced — and a
+  // The only three provenance values that can ever mean "the exact g/mL
+  // unit was genuinely proven or deterministically, controllably inferred"
+  // — see legacy_scoring_evidence_recovery.dart (declaredLabel,
+  // source-proven), scoring_evidence_admin_review_service.dart
+  // (adminVerified, human-confirmed), and CategoryDerivedBasisResolver /
+  // categoryDerived (product decision: a closed, explicit taxonomy-tag
+  // allowlist, never AI, never product-name matching, never overriding
+  // contradictory explicit evidence). `databaseImport` — the ONLY value
+  // the pre-remediation `_basisForCategory` bug ever produced — and a
   // missing/null provenance (every snapshot written before this field
   // existed) are both deliberately excluded: both are indistinguishable
   // from legacy category-invented basis, so neither is ever trusted here.
-  static const _trustedBasisProvenances = {'declaredLabel', 'adminVerified'};
+  static const _trustedBasisProvenances = {
+    'declaredLabel',
+    'adminVerified',
+    'categoryDerived',
+  };
 
   bool _hasTrustedBasisProvenance(EtiketlyScoreAuditSnapshot snapshot) {
     final provenance = snapshot.resolvedInput.nutritionBasisProvenance;
