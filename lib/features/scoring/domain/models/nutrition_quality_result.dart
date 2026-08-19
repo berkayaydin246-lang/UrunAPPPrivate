@@ -3,7 +3,13 @@ import 'package:food_analyzer_app/features/scoring/domain/models/scoring_types.d
 
 const nutritionQualityTransformV1Version = 'nutrition_quality_transform_v1';
 const nutritionQualityTransformV2Version = 'nutrition_quality_transform_v2';
-const nutritionQualityTransformVersion = nutritionQualityTransformV2Version;
+const nutritionQualityTransformV3Version = 'nutrition_quality_transform_v3';
+// Production-current version, cut over from V2 to V3 after full shadow
+// backfill coverage (4330/4330) was verified. V2 remains fully
+// reconstructable forever via NutritionQualityTransformer.v2() — this
+// constant switching does not touch V2's anchors, validator support, or
+// any existing V2 audit snapshot.
+const nutritionQualityTransformVersion = nutritionQualityTransformV3Version;
 
 enum NutritionQualitySpecialCase { none, plainWater }
 

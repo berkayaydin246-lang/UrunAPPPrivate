@@ -59,7 +59,7 @@ void main() {
     expect(result.rawResult, same(rawResult));
     expect(result.category, ScoringCategory.beverage);
     expect(result.transformVersion, nutritionQualityTransformVersion);
-    expect(result.qualityScore, closeTo(86.375, 0.0000001));
+    expect(result.qualityScore, closeTo(82.0, 0.0000001));
     expect(result.specialCase, NutritionQualitySpecialCase.none);
   });
 

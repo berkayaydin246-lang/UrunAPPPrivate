@@ -32,7 +32,7 @@ void main() {
     lifecycle = ProductScoringLifecycleService(dataSource: dataSource);
   });
 
-  test('A. ready A101-like ingestion persists evidence and v2 audit', () async {
+  test('A. ready A101-like ingestion persists evidence and v3 audit', () async {
     dataSource.product = _legacyA101Product();
 
     final result = await lifecycle.processCurrent(
@@ -60,7 +60,7 @@ void main() {
     expect(dataSource.audits.single.scoreVersion, 'etiketly_score_v2');
     expect(
       dataSource.audits.single.nutritionTransformVersion,
-      'nutrition_quality_transform_v2',
+      'nutrition_quality_transform_v3',
     );
   });
 

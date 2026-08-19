@@ -344,7 +344,7 @@ ScoreV2CalibrationResult evaluateScoreV2Calibration(
     ValidatedNutritionScoringInput.validate(input),
   );
   final v1 = const NutritionQualityTransformer.v1().transform(raw).qualityScore;
-  final v2 = const NutritionQualityTransformer().transform(raw).qualityScore;
+  final v2 = const NutritionQualityTransformer.v2().transform(raw).qualityScore;
   final assessment = const CanonicalIngredientRiskService().assessIngredients(
     fixture.additives.map(_ingredientFor),
     scoringCategory: fixture.category,

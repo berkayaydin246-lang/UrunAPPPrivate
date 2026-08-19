@@ -67,8 +67,10 @@ Product auditProductFromInput(
 EtiketlyScoreAuditSnapshot buildAuditSnapshot({
   required Product product,
   required CanonicalAdditiveAssessment assessment,
+  ProductEtiketlyScoreOrchestrator orchestrator =
+      const ProductEtiketlyScoreOrchestrator(),
 }) {
-  final evaluation = const ProductEtiketlyScoreOrchestrator().calculate(
+  final evaluation = orchestrator.calculate(
     product: product,
     canonicalAssessment: assessment,
   );

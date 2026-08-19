@@ -403,7 +403,10 @@ class EtiketlyScoreAuditValidator {
     final transformer = switch (snapshot.nutritionTransformVersion) {
       nutritionQualityTransformV1Version =>
         const NutritionQualityTransformer.v1(),
-      nutritionQualityTransformV2Version => const NutritionQualityTransformer(),
+      nutritionQualityTransformV2Version =>
+        const NutritionQualityTransformer.v2(),
+      nutritionQualityTransformV3Version =>
+        const NutritionQualityTransformer.v3(),
       _ => null,
     };
     if (transformer == null) return;
@@ -503,13 +506,21 @@ class EtiketlyScoreAuditValidator {
       (left - right).abs() <= tolerance;
 
   bool _isSupportedVersionSet(EtiketlyScoreAuditSnapshot snapshot) {
+    // etiketlyScoreVersion was deliberately NOT bumped for V3 (see PART A
+    // of the V3 rollout design — nutrition_transform_version is its own
+    // independent axis in the version tuple, already enforced separately
+    // by get_current_product_score_audit_snapshot/
+    // record_product_score_audit_snapshot), so v3 pairs with the SAME
+    // etiketlyScoreV2Version as v2, not a new score version.
     final scoreAndNutritionVersionsMatch =
         (snapshot.scoreVersion == etiketlyScoreV1Version &&
             snapshot.nutritionTransformVersion ==
                 nutritionQualityTransformV1Version) ||
         (snapshot.scoreVersion == etiketlyScoreV2Version &&
-            snapshot.nutritionTransformVersion ==
-                nutritionQualityTransformV2Version);
+            (snapshot.nutritionTransformVersion ==
+                    nutritionQualityTransformV2Version ||
+                snapshot.nutritionTransformVersion ==
+                    nutritionQualityTransformV3Version));
     return scoreAndNutritionVersionsMatch &&
         snapshot.nutritionMethodologyVersion ==
             nutritionRawMethodologyVersion &&

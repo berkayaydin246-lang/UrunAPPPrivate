@@ -16,7 +16,7 @@ import 'support/score_audit_test_support.dart';
 
 void main() {
   const v1 = NutritionQualityTransformer.v1();
-  const v2 = NutritionQualityTransformer();
+  const v2 = NutritionQualityTransformer.v2();
 
   const generalAnchors = <(double, double)>[
     (-5.5, 100),
@@ -307,28 +307,31 @@ void main() {
     }
   });
 
-  test('historical v1 snapshot stays valid but cannot satisfy current v2', () {
-    final current = buildAuditSnapshot(
-      product: auditProductFromInput(
-        results['A strong balanced general food']!.input,
-      ),
-      assessment: auditOrdinaryAssessment(),
-    );
-    final historical = _asHistoricalV1(current);
-    const validator = EtiketlyScoreAuditValidator();
-    const gate = EtiketlyPublicScoreAuditGate();
+  test(
+    'historical v1 snapshot stays valid but cannot satisfy current (v3)',
+    () {
+      final current = buildAuditSnapshot(
+        product: auditProductFromInput(
+          results['A strong balanced general food']!.input,
+        ),
+        assessment: auditOrdinaryAssessment(),
+      );
+      final historical = _asHistoricalV1(current);
+      const validator = EtiketlyScoreAuditValidator();
+      const gate = EtiketlyPublicScoreAuditGate();
 
-    expect(validator.validate(historical).isValid, isTrue);
-    expect(current.scoreVersion, etiketlyScoreV2Version);
-    expect(
-      current.nutritionTransformVersion,
-      nutritionQualityTransformV2Version,
-    );
-    expect(
-      gate.evaluate(current: current, trusted: historical).status,
-      PublicScoreAuditStatus.stale,
-    );
-  });
+      expect(validator.validate(historical).isValid, isTrue);
+      expect(current.scoreVersion, etiketlyScoreV2Version);
+      expect(
+        current.nutritionTransformVersion,
+        nutritionQualityTransformVersion,
+      );
+      expect(
+        gate.evaluate(current: current, trusted: historical).status,
+        PublicScoreAuditStatus.stale,
+      );
+    },
+  );
 }
 
 EtiketlyScoreAuditSnapshot _asHistoricalV1(EtiketlyScoreAuditSnapshot current) {

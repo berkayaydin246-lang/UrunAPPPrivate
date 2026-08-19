@@ -7,19 +7,75 @@ import 'package:food_analyzer_app/features/scoring/domain/models/etiketly_score_
 import 'package:food_analyzer_app/features/scoring/domain/models/nutrition_quality_result.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/nutrition_raw_score_result.dart';
 import 'package:food_analyzer_app/features/scoring/domain/models/scoring_evidence_snapshot.dart';
+import 'package:food_analyzer_app/features/scoring/domain/models/scoring_types.dart';
 import 'package:food_analyzer_app/features/scoring/domain/services/etiketly_score_calculator.dart';
+import 'package:food_analyzer_app/features/scoring/domain/services/nutrition_quality_transformer.dart';
+import 'package:food_analyzer_app/features/scoring/presentation/etiketly_score_presentation.dart';
 
 void main() {
-  test('release freeze pins the complete Etiketly Score v2 contract', () {
-    expect(etiketlyScoreVersion, 'etiketly_score_v2');
-    expect(nutritionRawMethodologyVersion, 'updated_nutrition_profile_2023_v1');
-    expect(nutritionQualityTransformVersion, 'nutrition_quality_transform_v2');
-    expect(additiveQualityTransformVersion, 'additive_quality_transform_v1');
-    expect(ScoringEvidenceSnapshot.currentSchemaVersion, 1);
-    expect(EtiketlyScoreAuditSnapshot.currentSchemaVersion, 1);
-    expect(EtiketlyScoreCalculator.nutritionWeight, 0.80);
-    expect(EtiketlyScoreCalculator.additiveWeight, 0.20);
-  });
+  test(
+    'release freeze pins the complete Etiketly Score CURRENT (v3) contract',
+    () {
+      // CURRENT as of the V3 cutover.
+      expect(etiketlyScoreVersion, 'etiketly_score_v2');
+      expect(
+        nutritionRawMethodologyVersion,
+        'updated_nutrition_profile_2023_v1',
+      );
+      expect(
+        nutritionQualityTransformVersion,
+        'nutrition_quality_transform_v3',
+        reason: 'production default was cut over from v2 to v3 after full '
+            'shadow backfill coverage (4330/4330) was verified',
+      );
+      expect(additiveQualityTransformVersion, 'additive_quality_transform_v1');
+      expect(ScoringEvidenceSnapshot.currentSchemaVersion, 1);
+      expect(EtiketlyScoreAuditSnapshot.currentSchemaVersion, 1);
+      // Unchanged by the cutover: weighting.
+      expect(EtiketlyScoreCalculator.nutritionWeight, 0.80);
+      expect(EtiketlyScoreCalculator.additiveWeight, 0.20);
+      // Unchanged by the cutover: score bands (thresholds and labels).
+      const presentation = EtiketlyScorePresentationMapper();
+      expect(presentation.bandForDisplayScore(85), EtiketlyScoreBand.veryGood);
+      expect(presentation.bandForDisplayScore(84), EtiketlyScoreBand.good);
+      expect(presentation.bandForDisplayScore(70), EtiketlyScoreBand.good);
+      expect(presentation.bandForDisplayScore(69), EtiketlyScoreBand.medium);
+      expect(presentation.bandForDisplayScore(50), EtiketlyScoreBand.medium);
+      expect(presentation.bandForDisplayScore(49), EtiketlyScoreBand.weak);
+      expect(presentation.bandForDisplayScore(30), EtiketlyScoreBand.weak);
+      expect(presentation.bandForDisplayScore(29), EtiketlyScoreBand.veryWeak);
+      expect(presentation.labelForBand(EtiketlyScoreBand.veryGood), 'Çok iyi');
+      expect(presentation.labelForBand(EtiketlyScoreBand.good), 'İyi');
+      expect(presentation.labelForBand(EtiketlyScoreBand.medium), 'Orta');
+      expect(presentation.labelForBand(EtiketlyScoreBand.weak), 'Zayıf');
+      expect(presentation.labelForBand(EtiketlyScoreBand.veryWeak), 'Çok zayıf');
+    },
+  );
+
+  test(
+    'historical V2 remains frozen and fully reconstructable via '
+    'NutritionQualityTransformer.v2() — never deleted, never mutated',
+    () {
+      expect(nutritionQualityTransformV2Version, 'nutrition_quality_transform_v2');
+      const v2 = NutritionQualityTransformer.v2();
+      expect(v2.transformVersion, 'nutrition_quality_transform_v2');
+      // Original V2 generalFood/beverage anchors, spot-checked exactly.
+      expect(v2.qualityForRawScore(0.5, ScoringCategory.generalFood), 94);
+      expect(v2.qualityForRawScore(2.5, ScoringCategory.generalFood), 86);
+      expect(v2.qualityForRawScore(10.5, ScoringCategory.generalFood), 72);
+      expect(v2.qualityForRawScore(2.5, ScoringCategory.beverage), 88);
+      expect(v2.qualityForRawScore(6.5, ScoringCategory.beverage), 75);
+
+      // The production-current default is NOW v3, not v2 — confirms the
+      // cutover actually happened, not merely that v2 still exists.
+      const current = NutritionQualityTransformer();
+      expect(current.transformVersion, 'nutrition_quality_transform_v3');
+      expect(
+        current.qualityForRawScore(2.5, ScoringCategory.generalFood),
+        isNot(v2.qualityForRawScore(2.5, ScoringCategory.generalFood)),
+      );
+    },
+  );
 
   test('production RPC accepts exactly the frozen v2 version tuple', () {
     final migration = File(
@@ -33,6 +89,183 @@ void main() {
     expect(migration, contains('p_snapshot_schema_version IS DISTINCT FROM 1'));
     expect(migration, contains('0.80 * v_nutrition_quality'));
     expect(migration, contains('0.20 * v_additive_quality'));
+  });
+
+  group('V3 (approved Candidate A) release freeze — additive to V2, never a mutation', () {
+    const v2 = NutritionQualityTransformer.v2();
+    const v3 = NutritionQualityTransformer.v3();
+
+    test(
+      'V3 is now the production-current default — cut over from V2 after '
+      'full shadow backfill coverage (4330/4330) was verified',
+      () {
+        expect(
+          nutritionQualityTransformV3Version,
+          'nutrition_quality_transform_v3',
+        );
+        expect(
+          nutritionQualityTransformVersion,
+          nutritionQualityTransformV3Version,
+          reason: 'production default was cut over from v2 to v3',
+        );
+        // The bare (unnamed) constructor IS the production-current one —
+        // it now behaves identically to the explicit .v3() constructor.
+        const bareDefault = NutritionQualityTransformer();
+        expect(bareDefault.transformVersion, v3.transformVersion);
+        expect(
+          bareDefault.qualityForRawScore(5, ScoringCategory.generalFood),
+          v3.qualityForRawScore(5, ScoringCategory.generalFood),
+        );
+      },
+    );
+
+    test('unchanged: raw nutrition methodology, additive transform, 80/20 weights', () {
+      // Re-asserted here (not just in the V2 test above) so this group
+      // stands alone as documentation of exactly what V3 did NOT change.
+      expect(nutritionRawMethodologyVersion, 'updated_nutrition_profile_2023_v1');
+      expect(additiveQualityTransformVersion, 'additive_quality_transform_v1');
+      expect(EtiketlyScoreCalculator.nutritionWeight, 0.80);
+      expect(EtiketlyScoreCalculator.additiveWeight, 0.20);
+    });
+
+    test('V3 approved Candidate A generalFood anchors, exact', () {
+      const anchors = <(double, double)>[
+        (-5.5, 100),
+        (0.5, 92),
+        (2.5, 78),
+        (6.5, 74),
+        (10.5, 72),
+        (18.5, 66),
+        (26.5, 42),
+        (34.5, 18),
+        (42.5, 0),
+      ];
+      for (final (raw, quality) in anchors) {
+        expect(
+          v3.qualityForRawScore(raw, ScoringCategory.generalFood),
+          quality,
+          reason: 'generalFood v3 anchor raw=$raw',
+        );
+      }
+    });
+
+    test('V3 approved Candidate A beverage anchors, exact', () {
+      const anchors = <(double, double)>[
+        (-3.5, 95),
+        (2.5, 84),
+        (4.5, 76),
+        (6.5, 70),
+        (9.5, 60),
+        (13.5, 40),
+        (17.5, 20),
+        (21.5, 0),
+      ];
+      for (final (raw, quality) in anchors) {
+        expect(
+          v3.qualityForRawScore(raw, ScoringCategory.beverage),
+          quality,
+          reason: 'beverage v3 anchor raw=$raw',
+        );
+      }
+    });
+
+    test(
+      'V3 leaves cheese/redMeat/fatsOilsNutsSeeds byte-identical to V2 — '
+      'the approved recalibration touched generalFood/beverage only',
+      () {
+        const rawSamples = <double>[-11.5, -5.5, 0, 2.5, 8, 10.5, 18.5, 26.5, 34.5, 42.5];
+        for (final category in [
+          ScoringCategory.cheese,
+          ScoringCategory.redMeat,
+          ScoringCategory.fatsOilsNutsSeeds,
+        ]) {
+          for (final raw in rawSamples) {
+            expect(
+              v3.qualityForRawScore(raw, category),
+              v2.qualityForRawScore(raw, category),
+              reason: '${category.name} raw=$raw must be untouched by V3',
+            );
+          }
+        }
+      },
+    );
+
+    test('V2 curve is completely unchanged by the existence of V3', () {
+      // Guards against V3's implementation ever accidentally sharing
+      // mutable state or a mutated constant with V2.
+      const v2GeneralAnchors = <(double, double)>[
+        (-5.5, 100),
+        (0.5, 94),
+        (2.5, 86),
+        (10.5, 72),
+        (18.5, 66),
+        (26.5, 42),
+        (34.5, 18),
+        (42.5, 0),
+      ];
+      const v2BeverageAnchors = <(double, double)>[
+        (-3.5, 95),
+        (2.5, 88),
+        (6.5, 75),
+        (9.5, 60),
+        (13.5, 40),
+        (17.5, 20),
+        (21.5, 0),
+      ];
+      for (final (raw, quality) in v2GeneralAnchors) {
+        expect(v2.qualityForRawScore(raw, ScoringCategory.generalFood), quality);
+      }
+      for (final (raw, quality) in v2BeverageAnchors) {
+        expect(v2.qualityForRawScore(raw, ScoringCategory.beverage), quality);
+      }
+    });
+
+    test(
+      'the v3-enabling migration ADDS v3 alongside v2 — never narrows, '
+      'never rewrites the frozen v2-enabling migration',
+      () {
+        final v2Migration = File(
+          'supabase/migrations/20260814000000_enable_score_v2_audit_snapshots.sql',
+        ).readAsStringSync();
+        // The original v2 migration must remain byte-for-byte the same
+        // historical artifact — still v2-only, exactly as release-frozen
+        // above.
+        expect(v2Migration, contains("'nutrition_quality_transform_v2'"));
+        expect(
+          v2Migration,
+          isNot(contains('nutrition_quality_transform_v3')),
+          reason: 'the historical v2 migration must never be rewritten to '
+              'know about v3',
+        );
+
+        final v3Migration = File(
+          'supabase/migrations/20260819000000_enable_score_v3_audit_snapshots.sql',
+        ).readAsStringSync();
+        // Widened tuple: v3 added, v2 still accepted (Phase 1 shadow
+        // rollout needs the RPC to keep accepting ordinary v2 writes from
+        // the still-live production orchestrator while the backfill tool
+        // writes v3 in parallel).
+        expect(v3Migration, contains("'nutrition_quality_transform_v2'"));
+        expect(v3Migration, contains("'nutrition_quality_transform_v3'"));
+        expect(
+          v3Migration,
+          contains(
+            "p_nutrition_transform_version NOT IN (\n"
+            "       'nutrition_quality_transform_v2',\n"
+            "       'nutrition_quality_transform_v3'\n"
+            "     )",
+          ),
+        );
+        // Every OTHER axis of the version tuple, and the score
+        // reconciliation math, must be untouched.
+        expect(v3Migration, contains("'etiketly_score_v2'"));
+        expect(v3Migration, contains("'updated_nutrition_profile_2023_v1'"));
+        expect(v3Migration, contains("'additive_quality_transform_v1'"));
+        expect(v3Migration, contains('p_snapshot_schema_version IS DISTINCT FROM 1'));
+        expect(v3Migration, contains('0.80 * v_nutrition_quality'));
+        expect(v3Migration, contains('0.20 * v_additive_quality'));
+      },
+    );
   });
 
   test('every scoring-relevant product write path uses trusted lifecycle', () {

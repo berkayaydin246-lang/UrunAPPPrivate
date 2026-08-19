@@ -714,7 +714,7 @@ void main() {
       );
       expect(
         snapshot.nutritionTransformVersion,
-        'nutrition_quality_transform_v2',
+        'nutrition_quality_transform_v3',
       );
       expect(
         snapshot.additiveTransformVersion,
